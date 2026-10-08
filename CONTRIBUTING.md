@@ -2,7 +2,7 @@
 
 Read the [scope decisions](DECISIONS.md), [language specification](spec/00_OVERVIEW.md), [architecture](architecture/MODULES.md), and the relevant [roadmap milestone](docs/ROADMAP.md) before changing a contract.
 
-The repository contains specifications, declarations, fixtures, Python consistency checkers and a foundation workspace. The types and syntax packages implement portable parsing and explicit Markdown enrichment; see [syntax API](docs/10_SYNTAX_API.md). The engine, document CLI and application remain unimplemented. See [foundation toolchain](docs/09_FOUNDATION_TOOLCHAIN.md) for exact installation and infrastructure checks. Document operations are not yet available.
+The repository contains specifications, declarations, fixtures, Python consistency checkers and a foundation workspace. The types and syntax packages implement portable parsing and explicit Markdown enrichment; see [syntax API](docs/10_SYNTAX_API.md). The engine implements binding, typed evaluation, transactional sessions, validated IR and pure import candidates; see [engine API](docs/11_ENGINE_API.md). The document CLI and application remain unimplemented. See [foundation toolchain](docs/09_FOUNDATION_TOOLCHAIN.md) for exact installation and infrastructure checks. Document operations are not yet available.
 
 ## Check a change
 
