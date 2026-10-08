@@ -4,7 +4,8 @@ import { pathToFileURL } from "node:url";
 export function requireCapability(suite, capability) {
   if (["parsing", "semantics"].includes(capability) && suite === "conformance")
     return;
-  if (capability === "infrastructure" && suite === "browser") return;
+  if (["infrastructure", "reading"].includes(capability) && suite === "browser")
+    return;
   throw new Error(
     `NOT_IMPLEMENTED: ${suite}/${capability ?? "product"}; The workspace provides infrastructure tests only`,
   );
@@ -38,4 +39,16 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)
         {
           stdio: "inherit",
         },
+      ).status ?? 1;
+  else if (process.argv[2] === "browser")
+    process.exitCode =
+      spawnSync(
+        "pnpm",
+        [
+          "exec",
+          "playwright",
+          "test",
+          ...(process.argv[3] === "reading" ? ["reader.test.mjs"] : []),
+        ],
+        { stdio: "inherit" },
       ).status ?? 1;

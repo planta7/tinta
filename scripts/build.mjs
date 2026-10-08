@@ -5,7 +5,10 @@ import { classicBundle, inlineScript } from "./packaging.mjs";
 
 await mkdir("build", { recursive: true });
 
-const reader = await classicBundle("packages/reader/src/index.ts");
+const reader = await classicBundle(
+  "packages/reader/src/standalone.ts",
+  "TintaReaderRuntime",
+);
 const worker = await classicBundle("apps/studio/src/worker.ts");
 const studio = await classicBundle("apps/studio/src/index.ts");
 
