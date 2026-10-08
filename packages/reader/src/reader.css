@@ -193,3 +193,76 @@
 .tinta-reader li > input[type="checkbox"] {
   margin-inline-end: 8px;
 }
+
+.tinta-chart-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.tinta-chart-scroll svg {
+  display: block;
+  font:
+    12px system-ui,
+    sans-serif;
+}
+.tinta-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.tinta-chart-legend [aria-pressed="false"] {
+  text-decoration: line-through;
+}
+.tinta-reader figure label {
+  display: block;
+}
+.tinta-reader figure input[type="range"] {
+  width: 100%;
+}
+.tinta-chart-announcement {
+  display: block;
+}
+@media (forced-colors: active) {
+  .tinta-chart-scroll svg path,
+  .tinta-chart-scroll svg rect,
+  .tinta-chart-scroll svg circle,
+  .tinta-chart-scroll svg line {
+    stroke: CanvasText;
+  }
+  .tinta-chart-scroll svg text {
+    fill: CanvasText;
+  }
+  .tinta-chart-scroll svg circle[data-point-id] {
+    stroke: none;
+  }
+}
+.tinta-chart-key {
+  margin-inline-end: 6px;
+  -webkit-text-stroke: 0.5px var(--tinta-text);
+}
+.tinta-series-0 {
+  color: #0072b2;
+}
+.tinta-series-1 {
+  color: #d55e00;
+}
+.tinta-series-2 {
+  color: #009e73;
+}
+.tinta-series-3 {
+  color: #cc79a7;
+}
+.tinta-series-4 {
+  color: #8c6d00;
+}
+.tinta-series-5 {
+  color: #6f4e7c;
+}
+.tinta-chart-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

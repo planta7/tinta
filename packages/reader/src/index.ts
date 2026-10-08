@@ -12,6 +12,7 @@ import type {
   Session,
   Span,
 } from "@tinta/types";
+import { createChartView, type ChartView } from "./chart-view.js";
 import { validateNodes } from "./policy.js";
 
 const mounts = new WeakSet<HTMLElement>();
@@ -91,6 +92,8 @@ export function mountReader(
   status.setAttribute("aria-atomic", "true");
   article.append(toolbar, content, status);
 
+  const charts = new Map<string, ChartView>();
+  let candidateState: Revision["state"];
   const controls = new Map<string, ControlView>();
   const fieldNames = new WeakMap<EventTarget, string>();
   const spans = new Map<string, Span>();
@@ -234,15 +237,26 @@ export function mountReader(
       return placeholder;
     }
     if (node.kind === "chart") {
-      const figure = doc.createElement("figure");
-      const caption = doc.createElement("figcaption");
-      caption.textContent = node.chart.title;
-      const message = doc.createElement("p");
-      message.textContent =
-        "Chart rendering is not implemented in this development reader.";
-      figure.append(caption, message);
-      return figure;
+      let view = charts.get(node.id);
+      if (!view) {
+        view = createChartView(
+          doc,
+          prefix + node.id,
+          node.chart,
+          (name, value) => {
+            const result = session.setControl(name, value);
+            showResult(result, name);
+            return result.ok;
+          },
+        );
+        charts.set(node.id, view);
+      }
+      view.update(node.chart, candidateState);
+      const placeholder = doc.createElement("figure");
+      placeholder.dataset.tintaChart = node.id;
+      return placeholder;
     }
+
     const element = doc.createElement(node.tag);
     element.dataset.tintaNode = `${node.id}:${node.tag}`;
     if (node.tag === "li" && tightItems.has(node.id))
@@ -313,6 +327,7 @@ export function mountReader(
   }
   function key(node: Node): string {
     if (!(node instanceof HTMLElement)) return "text";
+    if (node.dataset.tintaChart) return `chart:${node.dataset.tintaChart}`;
     return node.dataset.tintaControl
       ? `control:${node.dataset.tintaControl}`
       : (node.dataset.tintaNode ?? node.tagName);
@@ -328,7 +343,12 @@ export function mountReader(
     let cursor = parent.firstChild;
     for (const desired of Array.from(candidate.childNodes)) {
       let current = available.get(key(desired))?.shift();
-      if (desired instanceof HTMLElement && desired.dataset.tintaControl) {
+      if (desired instanceof HTMLElement && desired.dataset.tintaChart) {
+        current = charts.get(desired.dataset.tintaChart)!.root;
+      } else if (
+        desired instanceof HTMLElement &&
+        desired.dataset.tintaControl
+      ) {
         current = controls.get(desired.dataset.tintaControl)!.root;
       } else if (
         current instanceof HTMLElement &&
@@ -365,12 +385,14 @@ export function mountReader(
   function project(next: Revision): void {
     if (destroyed || next.number === lastNumber) return;
     validateNodes(next.nodes);
+    candidateState = next.state;
     const focused = content.contains(doc.activeElement)
       ? doc.activeElement
       : null;
     const focusedName = focused ? fieldNames.get(focused) : undefined;
+    const focusedChart = focused?.closest("[data-tinta-chart]");
     const preceding: string[] = [];
-    for (const element of content.querySelectorAll("input, select")) {
+    for (const element of content.querySelectorAll("input, select, button")) {
       if (element === focused) break;
       const name = fieldNames.get(element);
       if (name) preceding.push(name);
@@ -394,10 +416,11 @@ export function mountReader(
     revision = next;
     lastNumber = next.number;
     structuralChange = false;
-    if (focusedName) {
-      const current = controls.get(focusedName)!;
-      if (content.contains(current.field))
-        current.field.focus({ preventScroll: true });
+    if (focusedName || focusedChart) {
+      const field = focusedName
+        ? controls.get(focusedName)!.field
+        : (focused as HTMLElement);
+      if (content.contains(field)) field.focus({ preventScroll: true });
       else {
         structuralChange = true;
         const previous = preceding
@@ -493,6 +516,7 @@ export function mountReader(
   function resetPresentation(): void {
     if (destroyed) return;
     detailStates.clear();
+    for (const view of charts.values()) view.reset();
     for (const details of content.querySelectorAll<HTMLDetailsElement>(
       "details",
     ))
@@ -513,6 +537,8 @@ export function mountReader(
     }
     for (const id of headings.values()) reserved.delete(id);
     controls.clear();
+    for (const view of charts.values()) view.destroy();
+    charts.clear();
     article.remove();
     mounts.delete(native);
   }

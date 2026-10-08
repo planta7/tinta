@@ -10,6 +10,7 @@ import type {
 import { fail, label } from "./common.js";
 import { evaluate, type Environment } from "./expression.js";
 import { inDomain } from "./grid.js";
+import { numericDomain } from "./chart-presentation.js";
 
 function domain(
   values: readonly number[],
@@ -17,24 +18,11 @@ function domain(
   chart: ChartSpec,
 ): void {
   if (!values.length) return;
-  let lo = Math.min(...values),
-    hi = Math.max(...values);
-  if (zero) {
-    lo = Math.min(0, lo);
-    hi = Math.max(0, hi);
-  }
-  if (lo === hi) {
-    const delta = Math.max(1, Math.abs(lo) * 0.05);
-    lo -= delta;
-    hi += delta;
-  }
-  if (
-    !Number.isFinite(lo) ||
-    !Number.isFinite(hi) ||
-    !Number.isFinite(hi - lo) ||
-    hi <= lo
-  )
+  try {
+    numericDomain(values, zero);
+  } catch {
     fail("E_CHART_DOMAIN", chart.span, "evaluate");
+  }
 }
 export function prepare(
   chart: ChartSpec,
@@ -165,6 +153,16 @@ export function prepare(
         chart.kind === "bar" || chart.kind === "area",
         chart,
       );
+      // Any series can remain visible alone after a presentation-only toggle.
+      for (let index = 0; index < series.length; index++) {
+        domain(
+          points
+            .filter((point) => point.seriesIndex === index)
+            .map((point) => point.y),
+          chart.kind === "bar" || chart.kind === "area",
+          chart,
+        );
+      }
     }
   }
   budget.limit("chartMarks", points.length + bins.length, chart.span);
