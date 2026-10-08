@@ -1,0 +1,59 @@
+# Seven ways to explore data
+
+All data here is fictional. Every figure also has a text/data alternative.
+
+@slider factor = 1 (min: 1, max: 3, label: "Value multiplier")
+@slider selected_period = 1 (min: 1, max: 4, label: "Period")
+@choice selected_format = "Text" (options: ["Text", "Audio", "Video"], label: "Format")
+
+@data week
+period:number | actual:number | target:number
+1 | 12 | 15
+2 | 18 | 15
+3 | 26 | 15
+4 | 22 | 15
+@end
+
+@data formats
+format:text | readers:number
+Text | 48
+Audio | 32
+Video | 20
+@end
+
+@data sessions
+minutes:number | pages:number
+12 | 4
+18 | 8
+18 | 7
+25 | 11
+40 | 18
+52 | 24
+@end
+
+## Lines
+@chart line week (x: "period", y: ["actual", "target"], select: selected_period)
+
+## Areas
+@chart area week (x: "period", y: row.actual * factor, select: selected_period)
+
+## Grouped bars
+@chart bar week (x: "period", y: ["actual", "target"], select: selected_period)
+
+The selected period is **{{ selected_period }}**.
+
+## Scatter
+@chart scatter sessions (x: "minutes", y: "pages", title: "Session length and pages")
+
+## Sectors
+@chart pie formats (x: "format", y: "readers", select: selected_format)
+
+## An annular view
+@chart donut formats (x: "format", y: "readers", select: selected_format)
+
+The selected format is **{{ selected_format }}**.
+
+## Histogram
+@chart histogram sessions (x: "minutes", bins: 4, title: "Distribution of session lengths")
+
+The histogram counts observations in intervals; it does not select individual rows.

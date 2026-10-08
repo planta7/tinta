@@ -1,0 +1,48 @@
+# A guide that follows the reader
+
+This is a local documentation example, not a software installation service.
+Choose a platform and the document shows the relevant explanation.
+
+@choice platform = "macOS" (
+  options: ["macOS", "Windows", "Linux"],
+  label: "Your platform",
+)
+@toggle more_detail = false (label: "Show additional context")
+
+## First, open your file
+
+@when platform == "macOS"
+Open the local HTML file in a browser from Finder.
+
+- Keep the source `.tinta` separately for editing.
+- A `.tinta.zip` keeps local images with the source.
+@end
+
+@when platform == "Windows"
+Open the local HTML file in a browser from File Explorer.
+
+The reader does not require an account or a local application server.
+@end
+
+@when platform == "Linux"
+Open the local HTML file using your browser's **Open file** action.
+
+```text
+This code block is descriptive only. Nothing here executes.
+```
+@end
+
+@when more_detail
+### What is inside the file?
+
+An interactive export contains all source data and hidden explanations.
+A static export contains the resolved visible document instead.
+
+@details "Why the distinction matters"
+Hiding an explanation in an interactive file does not make it confidential.
+@end
+@end
+
+## Then continue reading
+
+Your choice is **{{ platform }}**. You remain inside one document.

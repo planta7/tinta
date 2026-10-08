@@ -1,0 +1,23 @@
+@meta (locale: "en-US", currency: "EUR")
+
+# The eleven functions
+
+@slider n = 3 (min: 0, max: 10)
+@data sample
+value:number
+10
+20
+30
+@end
+
+- Conditional: {{ if(n > 5, "Above five", "At most five") }}.
+- Minimum: {{ min(n, 5) }}.
+- Maximum: {{ max(n, 5) }}.
+- Rounded: {{ round(10 / 3, 2) }}.
+- Power: {{ pow(n, 2) }}.
+- Count: {{ count(sample) }}.
+- Sum: {{ sum(sample, "value") }}.
+- Mean: {{ mean(sample, "value") }}.
+- Fixed decimals: {{ fixed(n, 2) }}.
+- Proportion: {{ percent(n / 10) }}.
+- Money: {{ money(n * 19) }}.

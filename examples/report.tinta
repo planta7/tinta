@@ -1,0 +1,49 @@
+@meta (title: "A fictional reading report", locale: "en-US")
+
+# A report with a shared filter
+
+The following data is fictional. The paragraph, table and figures below all
+refer to the same selected rows.
+
+@toggle include_weekends = false (label: "Include weekends")
+@slider minimum = 0 (min: 0, max: 200, step: 5, label: "Minimum readings")
+@choice selected_day = "Mon" (options: ["Mon", "Tue", "Sat", "Sun"], label: "Day to inspect")
+
+@data reading
+day:text | readings:number | audio:number | weekend:boolean
+Mon | 120 | 30 | false
+Tue | 160 | 45 | false
+Sat | 95 | 40 | true
+Sun | 80 | 25 | true
+@end
+
+@view visible = reading (
+  where: (include_weekends or not row.weekend) and row.readings >= minimum,
+  sort: "readings",
+  descending: true,
+)
+@view detail = reading (where: row.day == selected_day)
+@calc total = sum(visible, "readings")
+@calc average = if(count(visible) > 0, mean(visible, "readings"), 0)
+
+There are **{{ count(visible) }} days**, **{{ total }} readings**, and an average
+of **{{ fixed(average, 1) }} readings per selected day**.
+
+@chart bar visible (
+  x: "day", y: ["readings", "audio"], select: selected_day,
+  title: "Compare the selected days", yLabel: "Readings",
+)
+
+The selected day is **{{ selected_day }}**, with
+**{{ sum(detail, "readings") }} readings in the original data**.
+Selection remains available even if the current filter hides that day.
+
+@chart donut visible (x: "day", y: "readings", title: "Share within the selected days")
+
+@details "Read the selected rows"
+@table visible (title: "The same rows used by the report")
+@end
+
+@when count(visible) == 0
+No rows match these choices. Reduce the minimum or include weekends.
+@end

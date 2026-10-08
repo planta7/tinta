@@ -1,0 +1,1433 @@
+{
+  "contractRevision": "1.0-draft.2",
+  "executionStatus": "NOT_RUN",
+  "cases": [
+    {
+      "id": "CT-001",
+      "area": "markdown",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "# Plain\n\nA **normal** document.\n",
+      "expect": {
+        "ok": true,
+        "textContains": [
+          "Plain",
+          "normal"
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-002",
+      "area": "markdown",
+      "phase": "initial",
+      "profile": "markdown",
+      "source": "@slider x = 5\n\n{{ x }}\n",
+      "expect": {
+        "ok": true,
+        "controlCount": 0,
+        "textContains": [
+          "@slider x = 5",
+          "{{ x }}"
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-003",
+      "area": "markdown",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "```text\n@slider x = 5\n{{ x }}\n```\n",
+      "expect": {
+        "ok": true,
+        "controlCount": 0,
+        "textContains": [
+          "{{ x }}"
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-004",
+      "area": "markdown",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "\\@when literal\n\n\\{{ literal }}\n",
+      "expect": {
+        "ok": true,
+        "controlCount": 0,
+        "textContains": [
+          "@when literal",
+          "{{ literal }}"
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-005",
+      "area": "markdown",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "{\"name\": \"reader\"}\n",
+      "expect": {
+        "ok": true,
+        "textContains": [
+          "{\"name\": \"reader\"}"
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-006",
+      "area": "markdown",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "- One\n  - Two\n\n> A quote.\n",
+      "expect": {
+        "ok": true,
+        "textContains": [
+          "One",
+          "Two",
+          "A quote."
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-007",
+      "area": "markdown",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "<script>alert(1)</script>\n",
+      "expect": {
+        "ok": true,
+        "warningCodes": [
+          "W_HTML_INERT"
+        ],
+        "noAuthorExecution": true
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-008",
+      "area": "markdown",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "<!-- private-looking note -->\n\nVisible.\n",
+      "expect": {
+        "ok": true,
+        "textContains": [
+          "Visible."
+        ],
+        "textExcludes": [
+          "private-looking note"
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-009",
+      "area": "markdown",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "[bad](javascript:alert%281%29)\n",
+      "expect": {
+        "ok": true,
+        "warningCodes": [
+          "W_LINK_UNSAFE"
+        ],
+        "noActiveUnsafeLinks": true
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-010",
+      "area": "markdown",
+      "phase": "enrich",
+      "profile": "tinta",
+      "source": "# An existing Markdown note\n\nKeep this JSON-like text: {\"name\": \"reader\"}.\nKeep this template-looking text too: {{ template_value }}.\n\n@team review this line as prose, not a directive.\n\n- A list item.\n  - A nested item with `{{ literal_code }}`.\n\n```text\n@slider not_active = 5\n{{ not_active_either }}\n```\n\n<!-- An author note stays a comment. -->\n\n[An external link](https://example.org/guide)\n",
+      "expect": {
+        "ok": true,
+        "exactSource": "# An existing Markdown note\n\nKeep this JSON-like text: {\"name\": \"reader\"}.\nKeep this template-looking text too: \\{{ template_value }}.\n\n\\@team review this line as prose, not a directive.\n\n- A list item.\n  - A nested item with `{{ literal_code }}`.\n\n```text\n@slider not_active = 5\n{{ not_active_either }}\n```\n\n<!-- An author note stays a comment. -->\n\n[An external link](https://example.org/guide)\n",
+        "editCount": 2
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-011",
+      "area": "syntax",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@card \"Not a layout\"\n",
+      "expect": {
+        "ok": false,
+        "code": "E_DIRECTIVE_UNKNOWN"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-012",
+      "area": "syntax",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@when true\nText.\n",
+      "expect": {
+        "ok": false,
+        "code": "E_BLOCK_UNCLOSED"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-013",
+      "area": "syntax",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@end\n",
+      "expect": {
+        "ok": false,
+        "code": "E_BLOCK_END"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-014",
+      "area": "syntax",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@details \"Empty\"\n\n@end\n",
+      "expect": {
+        "ok": false,
+        "code": "E_BLOCK_EMPTY"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-015",
+      "area": "syntax",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@when true\n@let x = 1\nText.\n@end\n",
+      "expect": {
+        "ok": false,
+        "code": "E_DECLARATION_SCOPE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-016",
+      "area": "syntax",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@toggle show = true\n@when show\n```text\n@end\n```\n@end\n",
+      "expect": {
+        "ok": true,
+        "textContains": [
+          "@end"
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-017",
+      "area": "syntax",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@slider x = 5 (min: 0, min: 1)\n",
+      "expect": {
+        "ok": false,
+        "code": "E_PROPERTY_DUPLICATE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-018",
+      "area": "syntax",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@slider x = 5 (colour: \"red\")\n",
+      "expect": {
+        "ok": false,
+        "code": "E_PROPERTY_UNKNOWN"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-019",
+      "area": "syntax",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@meta (version: \"2.0\")\n",
+      "expect": {
+        "ok": false,
+        "code": "E_VERSION"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-020",
+      "area": "syntax",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "# Heading\n@meta (locale: \"en-US\")\n",
+      "expect": {
+        "ok": false,
+        "code": "E_META_POSITION"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-021",
+      "area": "syntax",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@meta (locale: \"xx-YY\")\n",
+      "expect": {
+        "ok": false,
+        "code": "E_META_VALUE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-022",
+      "area": "syntax",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@slider x = 5 (\n min: 0,\n max: 10,\n)\n\n{{ x }}\n",
+      "expect": {
+        "ok": true,
+        "controls": {
+          "x": 5
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-023",
+      "area": "syntax",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "{{ }}\n",
+      "expect": {
+        "ok": false,
+        "code": "E_EXPRESSION_SYNTAX"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-024",
+      "area": "expressions",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@let value = 2 + 3 * 4\n{{ value }}\n",
+      "expect": {
+        "ok": true,
+        "values": {
+          "value": 14
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-025",
+      "area": "expressions",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@let value = (2 + 3) * 4\n",
+      "expect": {
+        "ok": true,
+        "values": {
+          "value": 20
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-026",
+      "area": "expressions",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@let a = b * 2\n@let b = 3\n",
+      "expect": {
+        "ok": true,
+        "values": {
+          "a": 6,
+          "b": 3
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-027",
+      "area": "expressions",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@let a = n\n@slider n = 1\n",
+      "expect": {
+        "ok": false,
+        "code": "E_CONST_DEPENDENCY"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-028",
+      "area": "expressions",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@calc a = b\n@calc b = a\n",
+      "expect": {
+        "ok": false,
+        "code": "E_CYCLE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-029",
+      "area": "expressions",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@let if = 1\n",
+      "expect": {
+        "ok": false,
+        "code": "E_NAME_RESERVED"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-030",
+      "area": "expressions",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@let value = missing + 1\n",
+      "expect": {
+        "ok": false,
+        "code": "E_NAME_UNKNOWN"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-031",
+      "area": "expressions",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@let value = \"5\" == 5\n",
+      "expect": {
+        "ok": false,
+        "code": "E_TYPE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-032",
+      "area": "expressions",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@let value = not 1\n",
+      "expect": {
+        "ok": false,
+        "code": "E_TYPE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-033",
+      "area": "expressions",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@let value = \"a\" + \"b\"\n",
+      "expect": {
+        "ok": false,
+        "code": "E_TYPE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-034",
+      "area": "expressions",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@let value = if(true, 1, 1 / 0)\n",
+      "expect": {
+        "ok": true,
+        "values": {
+          "value": 1
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-035",
+      "area": "expressions",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@let value = false and (1 / 0 > 1)\n",
+      "expect": {
+        "ok": true,
+        "values": {
+          "value": false
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-036",
+      "area": "expressions",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@let value = if(true, 1, missing)\n",
+      "expect": {
+        "ok": false,
+        "code": "E_NAME_UNKNOWN"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-037",
+      "area": "expressions",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@let value = if(true, 1, \"no\")\n",
+      "expect": {
+        "ok": false,
+        "code": "E_TYPE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-038",
+      "area": "expressions",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@let value = min(1, 2, 3)\n",
+      "expect": {
+        "ok": false,
+        "code": "E_FUNCTION_ARITY"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-039",
+      "area": "expressions",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@let a = min(3, 5)\n@let b = max(3, 5)\n@let c = round(-2.5)\n@let d = pow(2, 3)\n@let e = count([1, 2, 3])\n",
+      "expect": {
+        "ok": true,
+        "values": {
+          "a": 3,
+          "b": 5,
+          "c": -2,
+          "d": 8,
+          "e": 3
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-040",
+      "area": "expressions",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@let n = -5 % 3\n",
+      "expect": {
+        "ok": true,
+        "values": {
+          "n": -2
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-041",
+      "area": "expressions",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@let values = [1, \"two\"]\n",
+      "expect": {
+        "ok": false,
+        "code": "E_TYPE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-042",
+      "area": "expressions",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@calc value = row.x\n",
+      "expect": {
+        "ok": false,
+        "code": "E_ROW_SCOPE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-043",
+      "area": "formatting",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@meta (locale: \"en-US\", currency: \"USD\")\n@let a = fixed(1.2, 2)\n@let b = percent(0.125)\n@let c = money(19.9)\n",
+      "expect": {
+        "ok": true,
+        "values": {
+          "a": "1.20",
+          "b": "12.5%",
+          "c": "$19.90"
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-044",
+      "area": "formatting",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@let a = fixed(1.2, 11)\n",
+      "expect": {
+        "ok": false,
+        "code": "E_DIGITS_RANGE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-045",
+      "area": "state",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@slider value = 0.3 (min: 0, max: 1, step: 0.1)\n",
+      "expect": {
+        "ok": true,
+        "controls": {
+          "value": 0.3
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-046",
+      "area": "state",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@slider value = 0.35 (min: 0, max: 1, step: 0.1)\n",
+      "expect": {
+        "ok": false,
+        "code": "E_STATE_DOMAIN"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-047",
+      "area": "state",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@choice choice = \"other\" (options: [\"a\", \"b\"])\n",
+      "expect": {
+        "ok": false,
+        "code": "E_STATE_DOMAIN"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-048",
+      "area": "state",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@choice choice = \"a\" (options: [\"a\", \"a\"])\n",
+      "expect": {
+        "ok": false,
+        "code": "E_PROPERTY_VALUE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-049",
+      "area": "state",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@slider n = 1\n@when false\n@toggle n = false\n@end\n",
+      "expect": {
+        "ok": false,
+        "code": "E_NAME_DUPLICATE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-050",
+      "area": "state",
+      "phase": "transition",
+      "profile": "tinta",
+      "source": "@slider n = 1 (min: 0, max: 10)\n@calc inverse = 1 / n\n\n{{ inverse }}\n",
+      "expect": {
+        "ok": false,
+        "code": "E_DIV_ZERO",
+        "revision": 0,
+        "controls": {
+          "n": 1
+        },
+        "values": {
+          "inverse": 1
+        }
+      },
+      "status": "NOT_RUN",
+      "update": {
+        "n": 0
+      }
+    },
+    {
+      "id": "CT-051",
+      "area": "state",
+      "phase": "transition",
+      "profile": "tinta",
+      "source": "@slider n = 1 (min: 0, max: 10)\n@calc square = n * n\n",
+      "expect": {
+        "ok": true,
+        "revision": 1,
+        "controls": {
+          "n": 3
+        },
+        "values": {
+          "square": 9
+        }
+      },
+      "status": "NOT_RUN",
+      "update": {
+        "n": 3
+      }
+    },
+    {
+      "id": "CT-052",
+      "area": "state",
+      "phase": "transition",
+      "profile": "tinta",
+      "source": "@slider n = 1\n",
+      "expect": {
+        "ok": true,
+        "revision": 0,
+        "controls": {
+          "n": 1
+        }
+      },
+      "status": "NOT_RUN",
+      "update": {
+        "n": 1
+      }
+    },
+    {
+      "id": "CT-053",
+      "area": "state",
+      "phase": "transition",
+      "profile": "tinta",
+      "source": "@slider n = 1\n",
+      "expect": {
+        "ok": false,
+        "code": "E_STATE_NAME",
+        "revision": 0
+      },
+      "status": "NOT_RUN",
+      "update": {
+        "missing": 2
+      }
+    },
+    {
+      "id": "CT-054",
+      "area": "state",
+      "phase": "transition",
+      "profile": "tinta",
+      "source": "@slider n = 1\n",
+      "expect": {
+        "ok": false,
+        "code": "E_STATE_DOMAIN",
+        "revision": 0
+      },
+      "status": "NOT_RUN",
+      "update": {
+        "n": "1"
+      }
+    },
+    {
+      "id": "CT-055",
+      "area": "state",
+      "phase": "transition",
+      "profile": "tinta",
+      "source": "@slider n = 0.3 (min: 0, max: 1, step: 0.1)\n",
+      "expect": {
+        "ok": false,
+        "code": "E_STATE_DOMAIN",
+        "controls": {
+          "n": 0.3
+        }
+      },
+      "status": "NOT_RUN",
+      "update": {
+        "n": 0.30000000000000004
+      }
+    },
+    {
+      "id": "CT-056",
+      "area": "conditions",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@slider n = 0 (min: 0, max: 10)\n@when n != 0\n{{ 1 / n }}\n@end\nSafe.\n",
+      "expect": {
+        "ok": true,
+        "textContains": [
+          "Safe."
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-057",
+      "area": "conditions",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@details \"Not a guard\"\n{{ 1 / 0 }}\n@end\n",
+      "expect": {
+        "ok": false,
+        "code": "E_DIV_ZERO"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-058",
+      "area": "conditions",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@when false\n@slider hidden = 5\n@end\n\n{{ hidden }}\n",
+      "expect": {
+        "ok": true,
+        "controls": {
+          "hidden": 5
+        },
+        "textContains": [
+          "5"
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-059",
+      "area": "data",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data values\nname:text | amount:number\n\"A | B\" | 2\n\"\" | 3\n@end\n@calc total = sum(values, \"amount\")\n",
+      "expect": {
+        "ok": true,
+        "values": {
+          "total": 5
+        },
+        "rowCounts": {
+          "values": 2
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-060",
+      "area": "data",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@data d\nx:number | x:text\n@end\n",
+      "expect": {
+        "ok": false,
+        "code": "E_DATA_HEADER"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-061",
+      "area": "data",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number\n1\n@end\n",
+      "expect": {
+        "ok": false,
+        "code": "E_DATA_ARITY"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-062",
+      "area": "data",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@data d\nx:number\n\"1\"\n@end\n",
+      "expect": {
+        "ok": false,
+        "code": "E_DATA_VALUE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-063",
+      "area": "data",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number\n@end\n@calc total = sum(d, \"x\")\n@calc size = count(d)\n",
+      "expect": {
+        "ok": true,
+        "values": {
+          "total": 0,
+          "size": 0
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-064",
+      "area": "data",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number\n@end\n@calc average = mean(d, \"x\")\n",
+      "expect": {
+        "ok": false,
+        "code": "E_EMPTY_MEAN"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-065",
+      "area": "data",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@data d\nx:number\n@end\n@calc total = sum(d, \"missing\")\n",
+      "expect": {
+        "ok": false,
+        "code": "E_COLUMN_UNKNOWN"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-066",
+      "area": "data",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number\n@end\n@calc average = if(count(d) > 0, mean(d, \"x\"), 0)\n",
+      "expect": {
+        "ok": true,
+        "values": {
+          "average": 0
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-067",
+      "area": "views",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nlabel:text | amount:number\nA | 10\nB | 20\nC | 20\n@end\n@slider minimum = 15 (min: 0, max: 30)\n@view selected = d (where: row.amount >= minimum, sort: \"amount\", descending: true)\n@calc total = sum(selected, \"amount\")\n",
+      "expect": {
+        "ok": true,
+        "values": {
+          "total": 40
+        },
+        "tableRows": {
+          "selected": [
+            [
+              "B",
+              20
+            ],
+            [
+              "C",
+              20
+            ]
+          ]
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-068",
+      "area": "views",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nlabel:text | amount:number\nA | 10\nB | 20\nC | 20\n@end\n@let amount = 15\n@view selected = d (where: row.amount > amount)\n",
+      "expect": {
+        "ok": true,
+        "rowCounts": {
+          "selected": 2
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-069",
+      "area": "views",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@data d\nlabel:text | amount:number\nA | 10\nB | 20\nC | 20\n@end\n@view selected = d (descending: false)\n",
+      "expect": {
+        "ok": false,
+        "code": "E_PROPERTY_DEPENDENCY"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-070",
+      "area": "views",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@data d\nlabel:text | amount:number\nA | 10\nB | 20\nC | 20\n@end\n@view selected = d (where: row.unknown > 1)\n",
+      "expect": {
+        "ok": false,
+        "code": "E_COLUMN_UNKNOWN"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-071",
+      "area": "views",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@data d\nlabel:text | amount:number\nA | 10\nB | 20\nC | 20\n@end\n@view selected = d (where: count(selected) > 0)\n",
+      "expect": {
+        "ok": false,
+        "code": "E_CYCLE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-072",
+      "area": "views",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nlabel:text | amount:number\nA | 10\nB | 20\nC | 20\n@end\n@view one = d (where: row.amount > 10)\n@view two = one (where: row.label == \"C\")\n",
+      "expect": {
+        "ok": true,
+        "rowCounts": {
+          "one": 2,
+          "two": 1
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-073",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@chart line d (x: \"x\", y: [\"y\", \"other\"])\n",
+      "expect": {
+        "ok": true,
+        "charts": [
+          {
+            "type": "line",
+            "pointCount": 6,
+            "seriesCount": 2
+          }
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-074",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@chart area d (x: \"x\", y: [\"y\", \"other\"])\n",
+      "expect": {
+        "ok": true,
+        "charts": [
+          {
+            "type": "area",
+            "pointCount": 6,
+            "seriesCount": 2
+          }
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-075",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@chart bar d (x: \"x\", y: [\"y\", \"other\"])\n",
+      "expect": {
+        "ok": true,
+        "charts": [
+          {
+            "type": "bar",
+            "pointCount": 6,
+            "seriesCount": 2
+          }
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-076",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@chart scatter d (x: \"x\", y: [\"y\", \"other\"])\n",
+      "expect": {
+        "ok": true,
+        "charts": [
+          {
+            "type": "scatter",
+            "pointCount": 6,
+            "seriesCount": 2
+          }
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-077",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@chart pie d (x: \"x\", y: \"y\")\n",
+      "expect": {
+        "ok": true,
+        "charts": [
+          {
+            "type": "pie",
+            "pointCount": 3,
+            "seriesCount": 1
+          }
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-078",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@chart donut d (x: \"x\", y: \"y\")\n",
+      "expect": {
+        "ok": true,
+        "charts": [
+          {
+            "type": "donut",
+            "pointCount": 3,
+            "seriesCount": 1
+          }
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-079",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number\n0\n1\n2\n3\n4\n@end\n@chart histogram d (x: \"x\", bins: 2)\n",
+      "expect": {
+        "ok": true,
+        "charts": [
+          {
+            "type": "histogram",
+            "binEdges": [
+              0,
+              2,
+              4
+            ],
+            "binCounts": [
+              2,
+              3
+            ]
+          }
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-080",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number\n10\n10\n@end\n@chart histogram d (x: \"x\", bins: 2)\n",
+      "expect": {
+        "ok": true,
+        "charts": [
+          {
+            "type": "histogram",
+            "binEdges": [
+              9.5,
+              10,
+              10.5
+            ],
+            "binCounts": [
+              0,
+              2
+            ]
+          }
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-081",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number\n@end\n@chart histogram d (x: \"x\")\n",
+      "expect": {
+        "ok": true,
+        "charts": [
+          {
+            "type": "histogram",
+            "empty": true,
+            "binCounts": []
+          }
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-082",
+      "area": "charts",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@chart histogram d (x: \"x\", y: \"y\")\n",
+      "expect": {
+        "ok": false,
+        "code": "E_PROPERTY_VALUE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-083",
+      "area": "charts",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@chart pie d (x: \"x\", y: [\"y\", \"other\"])\n",
+      "expect": {
+        "ok": false,
+        "code": "E_CHART_SERIES"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-084",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:text | y:number\nA | -1\n@end\n@chart pie d (x: \"x\", y: \"y\")\n",
+      "expect": {
+        "ok": false,
+        "code": "E_CHART_VALUE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-085",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number\n1 | 1\n1 | 2\n@end\n@chart line d (x: \"x\", y: \"y\")\n",
+      "expect": {
+        "ok": false,
+        "code": "E_CHART_DUPLICATE_X"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-086",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number\n1 | 1\n1 | 2\n@end\n@chart scatter d (x: \"x\", y: \"y\")\n",
+      "expect": {
+        "ok": true,
+        "charts": [
+          {
+            "type": "scatter",
+            "pointCount": 2
+          }
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-087",
+      "area": "charts",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@slider factor = 2 (min: 1, max: 3)\n@chart line d (x: \"x\", y: row.y * factor)\n",
+      "expect": {
+        "ok": true,
+        "charts": [
+          {
+            "type": "line",
+            "yValues": [
+              20,
+              40,
+              30
+            ]
+          }
+        ]
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-088",
+      "area": "selection",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@slider picked = 1 (min: 1, max: 3)\n@chart line d (x: \"x\", y: \"y\", select: picked)\n",
+      "expect": {
+        "ok": true,
+        "controls": {
+          "picked": 1
+        }
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-089",
+      "area": "selection",
+      "phase": "initial",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@slider picked = 1 (min: 1, max: 2)\n@chart line d (x: \"x\", y: \"y\", select: picked)\n",
+      "expect": {
+        "ok": false,
+        "code": "E_SELECTION_DOMAIN"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-090",
+      "area": "selection",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@toggle picked = true\n@chart line d (x: \"x\", y: \"y\", select: picked)\n",
+      "expect": {
+        "ok": false,
+        "code": "E_SELECTION_TARGET"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-091",
+      "area": "selection",
+      "phase": "compile",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@slider picked = 1 (min: 1, max: 3)\n@chart histogram d (x: \"x\", select: picked)\n",
+      "expect": {
+        "ok": false,
+        "code": "E_PROPERTY_VALUE"
+      },
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "CT-092",
+      "area": "selection",
+      "phase": "transition",
+      "profile": "tinta",
+      "source": "@data d\nx:number | y:number | other:number\n1 | 10 | 8\n2 | 20 | 15\n3 | 15 | 12\n@end\n@slider picked = 1 (min: 1, max: 3)\n@slider minimum = 1 (min: 1, max: 3)\n@view visible = d (where: row.x >= minimum)\n@chart line visible (x: \"x\", y: \"y\", select: picked)\n",
+      "expect": {
+        "ok": true,
+        "controls": {
+          "picked": 1,
+          "minimum": 2
+        },
+        "charts": [
+          {
+            "type": "line",
+            "pointCount": 2
+          }
+        ]
+      },
+      "status": "NOT_RUN",
+      "update": {
+        "minimum": 2
+      }
+    },
+    {
+      "id": "CT-093",
+      "area": "imports",
+      "phase": "csv",
+      "profile": "tinta",
+      "source": "code,amount,enabled\n00123,2,true\n00999,3,false\n",
+      "expect": {
+        "ok": true,
+        "columnTypes": [
+          "text",
+          "number",
+          "boolean"
+        ],
+        "rowCount": 2
+      },
+      "status": "NOT_RUN",
+      "importName": "records"
+    },
+    {
+      "id": "CT-094",
+      "area": "imports",
+      "phase": "json",
+      "profile": "tinta",
+      "source": "[{\"name\":\"A\",\"amount\":2},{\"amount\":3,\"name\":\"B\"}]\n",
+      "expect": {
+        "ok": true,
+        "columnTypes": [
+          "text",
+          "number"
+        ],
+        "rowCount": 2
+      },
+      "status": "NOT_RUN",
+      "importName": "records"
+    },
+    {
+      "id": "CT-095",
+      "area": "imports",
+      "phase": "json",
+      "profile": "tinta",
+      "source": "[{\"name\":\"A\",\"nested\":{\"x\":1}}]\n",
+      "expect": {
+        "ok": false,
+        "code": "E_IMPORT_SCHEMA"
+      },
+      "status": "NOT_RUN",
+      "importName": "records"
+    },
+    {
+      "id": "CT-096",
+      "area": "imports",
+      "phase": "json",
+      "profile": "tinta",
+      "source": "[]\n",
+      "expect": {
+        "ok": false,
+        "code": "E_IMPORT_SCHEMA"
+      },
+      "status": "NOT_RUN",
+      "importName": "records"
+    },
+    {
+      "id": "CT-097",
+      "area": "imports",
+      "phase": "json",
+      "profile": "tinta",
+      "source": "[{\"name\":\"A\",\"name\":\"B\"}]\n",
+      "expect": {
+        "ok": false,
+        "code": "E_IMPORT_SCHEMA"
+      },
+      "status": "NOT_RUN",
+      "importName": "records"
+    },
+    {
+      "id": "CT-098",
+      "area": "imports",
+      "phase": "csv",
+      "profile": "tinta",
+      "source": "name,value\n\"A, B\",2\n\"Line\nTwo\",3\n",
+      "expect": {
+        "ok": true,
+        "columnTypes": [
+          "text",
+          "number"
+        ],
+        "rowCount": 2
+      },
+      "status": "NOT_RUN",
+      "importName": "records"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+# A small interactive explanation
+
+@let price = 19
+@slider people = 5 (min: 1, max: 40, label: "People")
+@calc total = people * price
+
+For **{{ people }} people**, the amount is **{{ money(total) }} per month**.
+
+@when people >= 20
+A larger team may need a different arrangement.
+@end

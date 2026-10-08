@@ -1,0 +1,5 @@
+# A local image fixture
+
+This tiny fixture tests local asset packaging, not chart rendering.
+
+![One-pixel packaging fixture](assets/36c907715b80d7cdad0e196256966a3353b771387aefb1116d8769dacc81b675.png)

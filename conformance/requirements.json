@@ -1,0 +1,383 @@
+{
+  "contractRevision": "1.0-draft.2",
+  "status": "EXPECTATIONS_ONLY",
+  "granularity": "area-level seed traceability, to expand to every normative rule during implementation",
+  "requirements": [
+    {
+      "id": "REQ-01",
+      "area": "markdown",
+      "title": "Markdown compatibility and explicit enrichment",
+      "authority": "spec/01_MARKDOWN_AND_LEXING.md",
+      "completeBy": "M1",
+      "cases": [
+        "CT-001",
+        "CT-002",
+        "CT-003",
+        "CT-004",
+        "CT-005",
+        "CT-006",
+        "CT-007",
+        "CT-008",
+        "CT-009",
+        "CT-010"
+      ],
+      "scenarios": [
+        "SC-045"
+      ],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-02",
+      "area": "syntax",
+      "title": "Tokens, blocks, options, spans and root scope",
+      "authority": "spec/01_MARKDOWN_AND_LEXING.md",
+      "completeBy": "M1",
+      "cases": [
+        "CT-011",
+        "CT-012",
+        "CT-013",
+        "CT-014",
+        "CT-015",
+        "CT-016",
+        "CT-017",
+        "CT-018",
+        "CT-019",
+        "CT-020",
+        "CT-021",
+        "CT-022",
+        "CT-023"
+      ],
+      "scenarios": [
+        "SC-046"
+      ],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-03",
+      "area": "expressions",
+      "title": "Strict types, operators, graph and function evaluation",
+      "authority": "spec/02_EXPRESSIONS_AND_STATE.md",
+      "completeBy": "M2",
+      "cases": [
+        "CT-024",
+        "CT-025",
+        "CT-026",
+        "CT-027",
+        "CT-028",
+        "CT-029",
+        "CT-030",
+        "CT-031",
+        "CT-032",
+        "CT-033",
+        "CT-034",
+        "CT-035",
+        "CT-036",
+        "CT-037",
+        "CT-038",
+        "CT-039",
+        "CT-040",
+        "CT-041",
+        "CT-042"
+      ],
+      "scenarios": [],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-04",
+      "area": "formatting",
+      "title": "Metadata-defined numeric presentation",
+      "authority": "spec/02_EXPRESSIONS_AND_STATE.md",
+      "completeBy": "M2",
+      "cases": [
+        "CT-043",
+        "CT-044"
+      ],
+      "scenarios": [],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-05",
+      "area": "state",
+      "title": "Control domains, transactions and lifecycle",
+      "authority": "spec/02_EXPRESSIONS_AND_STATE.md",
+      "completeBy": "M2",
+      "cases": [
+        "CT-045",
+        "CT-046",
+        "CT-047",
+        "CT-048",
+        "CT-049",
+        "CT-050",
+        "CT-051",
+        "CT-052",
+        "CT-053",
+        "CT-054",
+        "CT-055"
+      ],
+      "scenarios": [],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-06",
+      "area": "conditions",
+      "title": "Visibility versus static validation",
+      "authority": "spec/03_DIRECTIVES.md",
+      "completeBy": "M2",
+      "cases": [
+        "CT-056",
+        "CT-057",
+        "CT-058"
+      ],
+      "scenarios": [],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-07",
+      "area": "data",
+      "title": "Typed local data representation",
+      "authority": "spec/04_DATA.md",
+      "completeBy": "M2",
+      "cases": [
+        "CT-059",
+        "CT-060",
+        "CT-061",
+        "CT-062",
+        "CT-063",
+        "CT-064",
+        "CT-065",
+        "CT-066"
+      ],
+      "scenarios": [],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-08",
+      "area": "views",
+      "title": "Shared immutable filters, sorting and aggregates",
+      "authority": "spec/04_DATA.md",
+      "completeBy": "M2",
+      "cases": [
+        "CT-067",
+        "CT-068",
+        "CT-069",
+        "CT-070",
+        "CT-071",
+        "CT-072"
+      ],
+      "scenarios": [],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-09",
+      "area": "charts",
+      "title": "Seven chart data/geometry/inspection contracts",
+      "authority": "spec/05_CHARTS.md",
+      "completeBy": "M4",
+      "cases": [
+        "CT-073",
+        "CT-074",
+        "CT-075",
+        "CT-076",
+        "CT-077",
+        "CT-078",
+        "CT-079",
+        "CT-080",
+        "CT-081",
+        "CT-082",
+        "CT-083",
+        "CT-084",
+        "CT-085",
+        "CT-086",
+        "CT-087"
+      ],
+      "scenarios": [
+        "SC-028",
+        "SC-029",
+        "SC-030",
+        "SC-031",
+        "SC-032",
+        "SC-033",
+        "SC-034"
+      ],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-10",
+      "area": "selection",
+      "title": "Linked scalar selection without hidden state mutation",
+      "authority": "spec/05_CHARTS.md",
+      "completeBy": "M4",
+      "cases": [
+        "CT-088",
+        "CT-089",
+        "CT-090",
+        "CT-091",
+        "CT-092"
+      ],
+      "scenarios": [],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-11",
+      "area": "imports",
+      "title": "Local CSV/JSON schema import",
+      "authority": "spec/04_DATA.md",
+      "completeBy": "M6",
+      "cases": [
+        "CT-093",
+        "CT-094",
+        "CT-095",
+        "CT-096",
+        "CT-097",
+        "CT-098"
+      ],
+      "scenarios": [
+        "SC-044"
+      ],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-12",
+      "area": "files",
+      "title": "Source, assets, bundles and answer snapshots",
+      "authority": "docs/02_FILES_AND_EXPORTS.md",
+      "completeBy": "M5",
+      "cases": [],
+      "scenarios": [
+        "SC-010",
+        "SC-011",
+        "SC-012",
+        "SC-013"
+      ],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-13",
+      "area": "exports",
+      "title": "Independent interactive and minimized static artifacts",
+      "authority": "docs/02_FILES_AND_EXPORTS.md",
+      "completeBy": "M7",
+      "cases": [],
+      "scenarios": [
+        "SC-014",
+        "SC-015",
+        "SC-016",
+        "SC-017",
+        "SC-018",
+        "SC-019"
+      ],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-14",
+      "area": "security",
+      "title": "Untrusted-source, IR, archive and preview boundaries",
+      "authority": "docs/04_SECURITY.md",
+      "completeBy": "M7",
+      "cases": [],
+      "scenarios": [
+        "SC-001",
+        "SC-002",
+        "SC-003",
+        "SC-004",
+        "SC-005",
+        "SC-006",
+        "SC-007",
+        "SC-008",
+        "SC-009"
+      ],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-15",
+      "area": "editor",
+      "title": "Local editing, saving, recovery and worker behaviour",
+      "authority": "docs/03_EDITOR_AND_READER.md",
+      "completeBy": "M6",
+      "cases": [],
+      "scenarios": [
+        "SC-020",
+        "SC-021",
+        "SC-022",
+        "SC-023",
+        "SC-024",
+        "SC-025",
+        "SC-026",
+        "SC-027"
+      ],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-16",
+      "area": "accessibility",
+      "title": "Keyboard, assistive technology and document-first design",
+      "authority": "docs/05_ACCESSIBILITY_AND_DESIGN.md",
+      "completeBy": "M7",
+      "cases": [],
+      "scenarios": [
+        "SC-035",
+        "SC-036",
+        "SC-037"
+      ],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-17",
+      "area": "cli",
+      "title": "Explicit filesystem command contracts",
+      "authority": "docs/06_CLI.md",
+      "completeBy": "M5",
+      "cases": [],
+      "scenarios": [
+        "SC-038",
+        "SC-039"
+      ],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-18",
+      "area": "performance",
+      "title": "Bounded work and measured resource budgets",
+      "authority": "docs/07_VERIFICATION.md",
+      "completeBy": "M7",
+      "cases": [],
+      "scenarios": [
+        "SC-040",
+        "SC-041"
+      ],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    },
+    {
+      "id": "REQ-19",
+      "area": "release",
+      "title": "Reproducible tooling and honest release evidence",
+      "authority": "docs/07_VERIFICATION.md",
+      "completeBy": "M7",
+      "cases": [],
+      "scenarios": [
+        "SC-042",
+        "SC-043"
+      ],
+      "coverageStatus": "SEED_ONLY",
+      "implementationEvidence": []
+    }
+  ]
+}

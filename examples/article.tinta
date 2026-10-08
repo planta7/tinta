@@ -1,0 +1,55 @@
+@meta (version: "1.0", title: "A growth hypothesis", locale: "en-US", currency: "USD")
+
+# A hypothesis you can move
+
+This fictional example explains compounding. It is **not a forecast**.
+Change the rate, then inspect a period in the figure.
+
+@let starting_readers = 100
+@slider growth = 5 (min: 0, max: 20, step: 1, label: "Growth per period (%)")
+@slider period = 2 (min: 0, max: 4, step: 1, label: "Period to inspect")
+@calc selected_readers = round(starting_readers * pow(1 + growth / 100, period))
+
+@data steps
+period:number
+0
+1
+2
+3
+4
+@end
+
+@chart line steps (
+  x: "period",
+  y: round(starting_readers * pow(1 + growth / 100, row.period)),
+  select: period,
+  title: "The same explanation, with another assumption",
+  xLabel: "Period",
+  yLabel: "Readers",
+)
+
+At period **{{ period }}**, the model gives **{{ selected_readers }} readers**.
+The assumed rate is **{{ percent(growth / 100) }} per period**.
+
+@when growth == 0
+Without growth, every period has the same value.
+@end
+
+@details "What the calculation assumes"
+Every period applies the same rate. There is no external data connection.
+
+1. Begin with the initial readership.
+2. Multiply by the same factor for each period.
+3. Round only the displayed count in this example.
+
+```text
+The code in this block is literal:
+@slider not_a_control = 5
+{{ not_an_expression }}
+```
+@end
+
+## Keep reading
+
+Moving the figure changes an assumption inside the explanation; it does not
+turn this article into a page-building interface.
