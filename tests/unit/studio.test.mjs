@@ -70,6 +70,9 @@ test("recovery eviction retains active source and enforces entry limits", () => 
     assets: [],
   });
   const entries = Array.from({ length: 10 }, (_, i) => entry(String(i), i));
+  expect(
+    retainedRecoveries(entries.slice(1), entry("active", -1)),
+  ).toHaveLength(10);
   const result = retainedRecoveries(entries, entry("active", -1));
   expect(result).toHaveLength(10);
   expect(result.some((e) => e.id === "active")).toBe(true);
@@ -137,10 +140,15 @@ describe("compiler transport and watchdog", () => {
       });
       expect(host.staleResponses).toBe(1);
       expect(results).toEqual([]);
-      await vi.advanceTimersByTimeAsync(3000);
+      await vi.advanceTimersByTimeAsync(2999);
+      expect(results).toEqual([]);
+      expect(workers[1].terminated).not.toBe(true);
+      await vi.advanceTimersByTimeAsync(1);
       expect(workers[1].terminated).toBe(true);
       expect(workers[1].request.source).toBe("# Second");
       expect(results[0].diagnostics[0].code).toBe("E_WORKER_TIMEOUT");
+      await vi.advanceTimersByTimeAsync(1);
+      expect(results).toHaveLength(1);
       host.compile("# Retry", "tinta", 3);
       workers[2].onmessage({ data: { arbitrary: "fetch" } });
       expect(workers[2].terminated).toBe(true);
