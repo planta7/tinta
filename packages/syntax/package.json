@@ -1,0 +1,23 @@
+{
+  "name": "@tinta/syntax",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@tinta/types": "workspace:*",
+    "micromark": "4.0.3",
+    "mdast-util-from-markdown": "2.1.0",
+    "micromark-extension-gfm-table": "2.1.2",
+    "micromark-extension-gfm-task-list-item": "2.1.0",
+    "micromark-extension-gfm-strikethrough": "2.1.0",
+    "mdast-util-gfm-table": "2.0.0",
+    "mdast-util-gfm-task-list-item": "2.0.0",
+    "mdast-util-gfm-strikethrough": "2.0.1"
+  }
+}

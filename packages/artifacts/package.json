@@ -1,0 +1,22 @@
+{
+  "name": "@tinta/artifacts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@tinta/types": "workspace:*",
+    "@tinta/syntax": "workspace:*",
+    "@tinta/engine": "workspace:*",
+    "@tinta/charts": "workspace:*",
+    "fflate": "0.8.3",
+    "@noble/hashes": "2.4.0",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@tinta/charts",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@tinta/types": "workspace:*",
+    "@tinta/engine": "workspace:*",
+    "d3-array": "3.2.4",
+    "d3-scale": "4.0.2",
+    "d3-shape": "3.2.0"
+  }
+}

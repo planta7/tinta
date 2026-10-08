@@ -1,0 +1,32 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "packages/types"
+    },
+    {
+      "path": "packages/syntax"
+    },
+    {
+      "path": "packages/engine"
+    },
+    {
+      "path": "packages/charts"
+    },
+    {
+      "path": "packages/reader"
+    },
+    {
+      "path": "packages/artifacts"
+    },
+    {
+      "path": "packages/cli"
+    },
+    {
+      "path": "apps/studio"
+    },
+    {
+      "path": "tests/types"
+    }
+  ]
+}

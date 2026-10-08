@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    "lib": ["ES2022"],
+    "types": []
+  },
+  "include": ["src/**/*.ts"],
+  "references": [
+    {
+      "path": "../types"
+    },
+    {
+      "path": "../syntax"
+    },
+    {
+      "path": "../engine"
+    },
+    {
+      "path": "../charts"
+    }
+  ]
+}

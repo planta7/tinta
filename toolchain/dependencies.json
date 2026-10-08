@@ -1,0 +1,1432 @@
+[
+  {
+    "name": "pnpm",
+    "version": "10.34.6",
+    "engines": {
+      "node": ">=18.12"
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "6a4d1b4d7b8f9b725b1ec3d1cba022e9c89c7102",
+      "tarball": "https://registry.npmjs.org/pnpm/-/pnpm-10.34.6.tgz",
+      "fileCount": 1072,
+      "integrity": "sha512-fhrmaoOpFDwRjMGUTzfMTyuKzd7aSwAc+niQj25G5F4VKSc5ymydAmQmzHV+kxjMmMVVHWoWwWUJewAouoe05g==",
+      "signatures": [
+        {
+          "sig": "MEUCIHciHKBHwqkH34yZb0OgAoHtoOSbngV7JfQN0/Qh+zJSAiEAxMhi3kN0i0bRrOSXAhDqi79UNwuqYuqdZkVFnn0a+CI=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/pnpm@10.34.6",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 19940259
+    },
+    "registry": "https://registry.npmjs.org/pnpm",
+    "releaseLine": "10",
+    "resolvedAtUTC": "2026-10-08T13:11:32.352007+00:00"
+  },
+  {
+    "name": "typescript",
+    "version": "6.0.3",
+    "engines": {
+      "node": ">=14.17"
+    },
+    "license": "Apache-2.0",
+    "dist": {
+      "shasum": "90251dc007916e972786cb94d74d15b185577d21",
+      "tarball": "https://registry.npmjs.org/typescript/-/typescript-6.0.3.tgz",
+      "fileCount": 140,
+      "integrity": "sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==",
+      "signatures": [
+        {
+          "sig": "MEYCIQDv8tVB8x5z1EeS+UHLgSqOywErEEFERRmMNef6kTXsPQIhAMO+L+ktR6FwCDSc+z0KD68md8mvKukeVzgjuBhoie9i",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 24346827
+    },
+    "registry": "https://registry.npmjs.org/typescript",
+    "releaseLine": "6",
+    "resolvedAtUTC": "2026-10-08T13:11:32.906086+00:00"
+  },
+  {
+    "name": "react",
+    "version": "19.3.0",
+    "engines": {
+      "node": ">=0.10.0"
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "e20aa3a14687075ce863351b5878b0608c3fbfb2",
+      "tarball": "https://registry.npmjs.org/react/-/react-19.3.0.tgz",
+      "fileCount": 27,
+      "integrity": "sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog==",
+      "signatures": [
+        {
+          "sig": "MEUCIALru2uJjzTwQTeh/ax6FRZSyVBDySuUEr4k+TiaANpDAiEAgJVCX1upjcvo4FzKCrJW9vcVnWVJwMbuM4Wsc4UM61o=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEYCIQCLRI5uegHedldoJjX7BioMz8AnR5jZmFZB2+1PMyrFagIhAMlHH0dBWncX0Nq4vSqkVKZtP7Jolgae2aodnOtIRrQK",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/react@19.3.0",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 178663
+    },
+    "registry": "https://registry.npmjs.org/react",
+    "releaseLine": "19",
+    "resolvedAtUTC": "2026-10-08T13:11:33.289593+00:00"
+  },
+  {
+    "name": "react-dom",
+    "version": "19.3.0",
+    "peerDependencies": {
+      "react": "^19.3.0"
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "a0ff19161d7f4e9be5469a07278b0c06e00f9001",
+      "tarball": "https://registry.npmjs.org/react-dom/-/react-dom-19.3.0.tgz",
+      "fileCount": 43,
+      "integrity": "sha512-JDk8dgif51OjFoDE70+OT9ICyYr+69HlmihNwp1+Nsfbna3t5sIiCa9ZJktDmQ4/1b/rn26hIAR2uYXDMr5r0Q==",
+      "signatures": [
+        {
+          "sig": "MEUCIQDl7gfoVlOoqKLgPU325X6EcrNHIYuFJJX0R9PHDs9KygIgAQaRzlBCG57IDn6XBjaOL/adBCuf/oiguaTixpmBBjw=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEUCIBJlBwP9e+XpqYfXpAJxCFTZ2i9tt8XCm9JYmuFMXsm1AiEAi9g3MN8fg6vModu7alAeUKmJ6iWO6untLGlvHfX1mb4=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/react-dom@19.3.0",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 8063782
+    },
+    "registry": "https://registry.npmjs.org/react-dom",
+    "releaseLine": "19",
+    "resolvedAtUTC": "2026-10-08T13:11:33.653484+00:00"
+  },
+  {
+    "name": "@types/react",
+    "version": "19.3.0",
+    "peerDependencies": {},
+    "license": "MIT",
+    "dist": {
+      "shasum": "3b3ce8d8c1627fb5ccd4dadd57ef445c5a153b77",
+      "tarball": "https://registry.npmjs.org/@types/react/-/react-19.3.0.tgz",
+      "fileCount": 18,
+      "integrity": "sha512-N0rFCuH9YoxG9/m61l9MfpJKfmLOVU0em7ipIz6TRgSSkvReLB9vL85GB+yr8Bs5leqpvg96JSwF4ZS1s4viQg==",
+      "signatures": [
+        {
+          "sig": "MEQCICO9E9W9sN+6oHDGno2fJYJ8YEsNOa01MoJJmauunAjGAiAVusL8FBYYoRgnVrnz0RY2KMSjP1OlJ7GunY0YhIr0GA==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEYCIQCG/2kbQCjMBz9wJNsFnPRUQFtQzxGIbkrwTxQ3ZYlQrwIhAKZAxRpE46wtsHz27OGDgRmXLV83Q5GivNToLaMzF7Q2",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 408108
+    },
+    "registry": "https://registry.npmjs.org/@types%2freact",
+    "releaseLine": "19",
+    "resolvedAtUTC": "2026-10-08T13:11:33.857539+00:00"
+  },
+  {
+    "name": "@types/react-dom",
+    "version": "19.3.0",
+    "peerDependencies": {
+      "@types/react": "^19.3.0"
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "90294a9266efd928a5266f2110d60d5dba5015d2",
+      "tarball": "https://registry.npmjs.org/@types/react-dom/-/react-dom-19.3.0.tgz",
+      "fileCount": 19,
+      "integrity": "sha512-ZI7bU42mZXXKHn/qNLEw2IrbiINU7X5+vfgdixBHkCNpYWXjKgfQ/P+uyGb5CjOLB9UcnTeg3rylQtV2hym44Q==",
+      "signatures": [
+        {
+          "sig": "MEYCIQDeggFlao9be7yHQ/b9bEJ/aNUgA9ewpLiMScDNunzitAIhAKh8Ct2ZYAjnfZI/KeuIMkZ0Qz2vlOS1C1PkdT2UacvQ",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEYCIQDfRDroOzjwBEz1yqXRbBWKCYOt7p/DKB+WIMPoMWCfUAIhAMPChj/cPQOALZVIGvV0h+QYQERrlQ5RJZb3dptWvQFV",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 32862
+    },
+    "registry": "https://registry.npmjs.org/@types%2freact-dom",
+    "releaseLine": "19",
+    "resolvedAtUTC": "2026-10-08T13:11:34.055671+00:00"
+  },
+  {
+    "name": "vite",
+    "version": "8.3.4",
+    "engines": {
+      "node": "^20.19.0 || >=22.12.0"
+    },
+    "peerDependencies": {
+      "tsx": "^4.8.1",
+      "jiti": ">=1.21.0",
+      "less": "^4.0.0",
+      "sass": "^1.70.0",
+      "yaml": "^2.4.2",
+      "stylus": ">=0.54.8",
+      "terser": "^5.16.0",
+      "esbuild": "^0.27.0 || ^0.28.0",
+      "sugarss": "^5.0.0",
+      "@types/node": "^20.19.0 || >=22.12.0",
+      "sass-embedded": "^1.70.0",
+      "@vitejs/devtools": "^0.7.1"
+    },
+    "peerDependenciesMeta": {
+      "tsx": {
+        "optional": true
+      },
+      "jiti": {
+        "optional": true
+      },
+      "less": {
+        "optional": true
+      },
+      "sass": {
+        "optional": true
+      },
+      "yaml": {
+        "optional": true
+      },
+      "stylus": {
+        "optional": true
+      },
+      "terser": {
+        "optional": true
+      },
+      "esbuild": {
+        "optional": true
+      },
+      "sugarss": {
+        "optional": true
+      },
+      "@types/node": {
+        "optional": true
+      },
+      "sass-embedded": {
+        "optional": true
+      },
+      "@vitejs/devtools": {
+        "optional": true
+      }
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "ba08678ba41ba53f41c251b1772946c27b1c874e",
+      "tarball": "https://registry.npmjs.org/vite/-/vite-8.3.4.tgz",
+      "fileCount": 37,
+      "integrity": "sha512-IftLE8phJhdNRIGNEV4JCCvfNScoZQVfcXaN8TQropWGJtOHcu+iAB9pHcuGvmEb/kddw0LBe/jS8ztdC6xdiQ==",
+      "signatures": [
+        {
+          "sig": "MEUCIQCeAXB/HwdxpjsWJtL4xB1XW4EQghm8FuRmtk5k3Ok9+AIgIFJBcqIWVFWx5JeaTOpO/Noixu1/SIVjcexDfJ4S5PU=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIQDtkEePcVc6vZxhoADsFqkp0VBbSgevSPxwgXXoG/UidQIgLb5bHn+iddppIY99rGaeeiM+n0AMTnlfU1QwNL/lwig="
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/vite@8.3.4",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 2376813
+    },
+    "registry": "https://registry.npmjs.org/vite",
+    "releaseLine": "8",
+    "resolvedAtUTC": "2026-10-08T13:11:34.902414+00:00"
+  },
+  {
+    "name": "@vitejs/plugin-react",
+    "version": "6.1.2",
+    "engines": {
+      "node": "^20.19.0 || >=22.12.0"
+    },
+    "peerDependencies": {
+      "vite": "^8.0.0",
+      "oxc-transform-react": "^0.152.0",
+      "@rolldown/plugin-babel": "^0.1.7 || ^0.2.0",
+      "babel-plugin-react-compiler": "^1.0.0"
+    },
+    "peerDependenciesMeta": {
+      "oxc-transform-react": {
+        "optional": true
+      },
+      "@rolldown/plugin-babel": {
+        "optional": true
+      },
+      "babel-plugin-react-compiler": {
+        "optional": true
+      }
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "924d47e890a78cdf2b72f3f41fe8ab98e089b81e",
+      "tarball": "https://registry.npmjs.org/@vitejs/plugin-react/-/plugin-react-6.1.2.tgz",
+      "fileCount": 8,
+      "integrity": "sha512-fhJNGUdscQa4HkI0xFxwonWyhnVReCPDbXI7FH7jmzpnVCrFQI7PRrhWecO263610vOrs9tr2Y4xcf8uAdFxbw==",
+      "signatures": [
+        {
+          "sig": "MEUCIQCgpYsgjqTlOLHoKHGebF/CVGDeZXj631NLMep/SKoPxwIgQWZS4mOR+zKRUVL7FUDOOFDZyuMuywEGKrwry5GdV1Q=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIQDLH4vCHenzBgP8wEYtZ9kCyKB71ErIPflGwaTlK1x9UwIgD2g6OSfhpU2OeghhDhPrAlwcunG8FMKXva4cki2sYlM="
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/@vitejs%2fplugin-react@6.1.2",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 46296
+    },
+    "registry": "https://registry.npmjs.org/@vitejs%2fplugin-react",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:35.083809+00:00"
+  },
+  {
+    "name": "micromark",
+    "version": "4.0.3",
+    "license": "MIT",
+    "dist": {
+      "shasum": "6d29c0a5383c1dda7975a6c897e0e18d5694f10d",
+      "tarball": "https://registry.npmjs.org/micromark/-/micromark-4.0.3.tgz",
+      "fileCount": 75,
+      "integrity": "sha512-oGYfQzHSG5dOMovQcJ3fyTmZlWAWpi0XA0sJwJs+i6OT88o1+Jtw/8z0CmdowSLxGhhFK89rQ/oXph/wN02PNw==",
+      "signatures": [
+        {
+          "sig": "MEUCIQCQ8xKpQ20CRrioOVo6yKfDGjgNs8NyS7uraOMDBP8FbwIgHbeAg2ku9ZebCvJdA9DTIhxUfkE/7vfK6KdtYrkYcZg=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEYCIQCvO0NbynaTfhrr36cB1VGVMW93RPHhURB5AQR3EKb9WQIhAKtYqEuHF93ms0aT3Y9qCmN5OEtmbpKim37LXrf+pAsq"
+        }
+      ],
+      "unpackedSize": 209945
+    },
+    "registry": "https://registry.npmjs.org/micromark",
+    "releaseLine": "4",
+    "resolvedAtUTC": "2026-10-08T13:11:35.222392+00:00"
+  },
+  {
+    "name": "mdast-util-from-markdown",
+    "version": "2.1.0",
+    "license": "MIT",
+    "dist": {
+      "shasum": "a92a9130c95e0e137e7cffaf85588a7da9e4bda6",
+      "tarball": "https://registry.npmjs.org/mdast-util-from-markdown/-/mdast-util-from-markdown-2.1.0.tgz",
+      "fileCount": 17,
+      "integrity": "sha512-KRLgmPaP2H1ul2bpoJkOS+9pAcDAAj9Nu1mqLnh8NLeJG5tlvj42TH80PIGBpROWlRXLk0lDrWNuZCFy/tsB4A==",
+      "signatures": [
+        {
+          "sig": "MEYCIQDgZigkdOXh1JQwYjgj0r80G1Gb8OGdSYbssxhbPL/IYQIhANc3L+UKz7iZl54mF6A9GLAdQYzU//dUh9K3Bumoo70D",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEYCIQDBNZPqKBoU3lyNUjpMIWFFyoeEh3/kbqkB9ezYVnO2LwIhAP0xnfUJDay6odqe3cB6egxb2E8BUeJbvodXnSnRIHlv"
+        }
+      ],
+      "unpackedSize": 105775
+    },
+    "registry": "https://registry.npmjs.org/mdast-util-from-markdown",
+    "releaseLine": "2",
+    "resolvedAtUTC": "2026-10-08T13:11:35.341621+00:00"
+  },
+  {
+    "name": "micromark-extension-gfm-table",
+    "version": "2.1.2",
+    "license": "MIT",
+    "dist": {
+      "shasum": "54dc246873c0c0bebd84600e578aeb8a5f5de78d",
+      "tarball": "https://registry.npmjs.org/micromark-extension-gfm-table/-/micromark-extension-gfm-table-2.1.2.tgz",
+      "fileCount": 31,
+      "integrity": "sha512-pRzm4kDTu0MjlmBkxmS9yYhw60nncfcEwu9NNdPFSQEFXS95ZKyIIyTSHu/o3ReBUrLKYEq+7YaXCRn/bPB4MA==",
+      "signatures": [
+        {
+          "sig": "MEUCIQDQlXoA6EVYFd21rKDbZ6pI1t66/s6mHG5LrEjbOeVwkwIgYja9lQE7ZuOSXdXqvUEFZl7jdDUJbTmY8MDOrBqrTRw=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEYCIQD5cplUqaLVJ7QY14oe+B3rXPDxfQktJUNeMOnvW3RhHgIhAP2z5m1AzXQWceHiugGFnVPJb5Zgeqhy80je3FVH+1G2"
+        }
+      ],
+      "unpackedSize": 94909
+    },
+    "registry": "https://registry.npmjs.org/micromark-extension-gfm-table",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:35.451307+00:00"
+  },
+  {
+    "name": "micromark-extension-gfm-task-list-item",
+    "version": "2.1.0",
+    "license": "MIT",
+    "dist": {
+      "integrity": "sha512-qIBZhqxqI6fjLDYFTBIa4eivDMnP+OZqsNwmQ3xNLE4Cxwc+zfQEfbs6tzAo2Hjq+bh6q5F+Z8/cksrLFYWQQw==",
+      "shasum": "bcc34d805639829990ec175c3eea12bb5b781f2c",
+      "tarball": "https://registry.npmjs.org/micromark-extension-gfm-task-list-item/-/micromark-extension-gfm-task-list-item-2.1.0.tgz",
+      "fileCount": 15,
+      "unpackedSize": 24410,
+      "signatures": [
+        {
+          "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+          "sig": "MEUCIQCDTR6/9zvtpf/6mIanKprdx2DcvOYUQDDLNDQnStTeMAIgPVpq7nCC8g1dVaaw0KotmcazmoMryUt41NjfONLTs7k="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/micromark-extension-gfm-task-list-item",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:35.620899+00:00"
+  },
+  {
+    "name": "micromark-extension-gfm-strikethrough",
+    "version": "2.1.0",
+    "license": "MIT",
+    "dist": {
+      "integrity": "sha512-ADVjpOOkjz1hhkZLlBiYA9cR2Anf8F4HqZUO6e5eDcPQd0Txw5fxLzzxnEkSkfnD0wziSGiv7sYhk/ktvbf1uw==",
+      "shasum": "86106df8b3a692b5f6a92280d3879be6be46d923",
+      "tarball": "https://registry.npmjs.org/micromark-extension-gfm-strikethrough/-/micromark-extension-gfm-strikethrough-2.1.0.tgz",
+      "fileCount": 15,
+      "unpackedSize": 27585,
+      "signatures": [
+        {
+          "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+          "sig": "MEQCIGNKTuaDzWo9+2bB8Of3unSvoDOBKyLA1IEhLk4skN8nAiAtLdnBI5NJTZLH4s84kJMSF1nhBRDkSfQ2JlwolO8Luw=="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/micromark-extension-gfm-strikethrough",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:35.750326+00:00"
+  },
+  {
+    "name": "mdast-util-gfm-table",
+    "version": "2.0.0",
+    "license": "MIT",
+    "dist": {
+      "integrity": "sha512-78UEvebzz/rJIxLvE7ZtDd/vIQ0RHv+3Mh5DR96p7cS7HsBhYIICDBCu8csTNWNO6tBWfqXPWekRuj2FNOGOZg==",
+      "shasum": "7a435fb6223a72b0862b33afbd712b6dae878d38",
+      "tarball": "https://registry.npmjs.org/mdast-util-gfm-table/-/mdast-util-gfm-table-2.0.0.tgz",
+      "fileCount": 7,
+      "unpackedSize": 30873,
+      "signatures": [
+        {
+          "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+          "sig": "MEQCIGmdY/twMQMyL6u0nhz62rQmdEWnOI2PWsQRxn9d36HHAiAxe8YSlN541G4uCS01jwEmP7fidcOeDZzAIru2ugAvMw=="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/mdast-util-gfm-table",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:35.859186+00:00"
+  },
+  {
+    "name": "mdast-util-gfm-task-list-item",
+    "version": "2.0.0",
+    "license": "MIT",
+    "dist": {
+      "integrity": "sha512-IrtvNvjxC1o06taBAVJznEnkiHxLFTzgonUdy8hzFVeDun0uTjxxrRGVaNFqkU1wJR3RBPEfsxmU6jDWPofrTQ==",
+      "shasum": "e68095d2f8a4303ef24094ab642e1047b991a936",
+      "tarball": "https://registry.npmjs.org/mdast-util-gfm-task-list-item/-/mdast-util-gfm-task-list-item-2.0.0.tgz",
+      "fileCount": 7,
+      "unpackedSize": 18341,
+      "signatures": [
+        {
+          "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+          "sig": "MEYCIQD4h44lF8I1kgXRCsOK3cB+lBrcyd4HXV6iTLoF8HpPhQIhAJ9XBmQi7wBhFfpdALuxUh4v8F8g+WuUOxgutyBzLnpG"
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/mdast-util-gfm-task-list-item",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:35.949425+00:00"
+  },
+  {
+    "name": "mdast-util-gfm-strikethrough",
+    "version": "2.0.1",
+    "license": "MIT",
+    "dist": {
+      "shasum": "96c7a4924cf5342acb6aefc4cd7893419ac816e8",
+      "tarball": "https://registry.npmjs.org/mdast-util-gfm-strikethrough/-/mdast-util-gfm-strikethrough-2.0.1.tgz",
+      "fileCount": 8,
+      "integrity": "sha512-OuJHqvr455pwu2OaOrir7dbzqs4jlWKOtlu9L6GjcIjjQwNyw02VntQsr/Ek6/A13vgnXfUhBekWRUP1OkNivw==",
+      "signatures": [
+        {
+          "sig": "MEUCIQCb7ZmzBbxqenxcLqnI3t/HjLixqXBjzaLwyXy+xiYMwgIgDmH8uz+iQUGCePye890Cls30QYA8zWps5pOC7KmeWSc=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIE1nZfF/1Jcs6+Vqgs6suizYsh2mCuyyaOIA4mV+LbNlAiEA6/OxjhFFooGGO6l8i6ffeGk7LwAPEvFNDJNEsgw1fBI="
+        }
+      ],
+      "unpackedSize": 17849
+    },
+    "registry": "https://registry.npmjs.org/mdast-util-gfm-strikethrough",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:36.099475+00:00"
+  },
+  {
+    "name": "@codemirror/state",
+    "version": "6.7.6",
+    "license": "MIT",
+    "dist": {
+      "shasum": "48af761fae3947745f17fa143cc5b5084225388d",
+      "tarball": "https://registry.npmjs.org/@codemirror/state/-/state-6.7.6.tgz",
+      "fileCount": 8,
+      "integrity": "sha512-kAz+AncRtKuIknedxT1bq4XwXv4UowhbkHU1myPrtVb/jZtImWuV5BXzv5vK6i3kYACsdiZiQKFQQ5Mq7elW8w==",
+      "signatures": [
+        {
+          "sig": "MEYCIQCItkmVlFxghoKYmL/ScttItOjYjQSyaMKZL07EolHWswIhAKrT6llLaTXL3D6NtTqXHaP4p9gh4ejyykXMip0TrL1V",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEQCIBolS20H58ABVrhJfkUo9lKpPHg+WYn+u+D9rqvISZ98AiAvh9XjCLDd9Ibja4L7McrjYoEfQKc/3vWhszViFCiSUQ=="
+        }
+      ],
+      "unpackedSize": 440367
+    },
+    "registry": "https://registry.npmjs.org/@codemirror%2fstate",
+    "releaseLine": "6",
+    "resolvedAtUTC": "2026-10-08T13:11:36.210441+00:00"
+  },
+  {
+    "name": "@codemirror/view",
+    "version": "6.43.14",
+    "license": "MIT",
+    "dist": {
+      "shasum": "a4b76ca6a47ef7c371b41f5c5222ba0815e36991",
+      "tarball": "https://registry.npmjs.org/@codemirror/view/-/view-6.43.14.tgz",
+      "fileCount": 8,
+      "integrity": "sha512-hC45YnmJNR1rz42OF57BLoQNFMV12/13drnvibDsR2quNDmldcb4WvYVV81hFQg56i9lcqQMEDqilhX2QDcGQQ==",
+      "signatures": [
+        {
+          "sig": "MEUCIC6FmEwt2qe5uDGMUbRLkdjfXW2zKlWYMTN5csQeKvj6AiEA9MQImR+DG1Xa6UYEi3yYu/I4WpFFZhjwo//XLngYyfs=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEQCID2mK8W9dz1JuCJbvlfaWfjFVVN3fFAK3eDGl8Gg1WQ5AiApd194nPj09BNVdWeVciPeL36rwGvmsvhigfjQCdnsjA=="
+        }
+      ],
+      "unpackedSize": 1261210
+    },
+    "registry": "https://registry.npmjs.org/@codemirror%2fview",
+    "releaseLine": "6",
+    "resolvedAtUTC": "2026-10-08T13:11:36.393588+00:00"
+  },
+  {
+    "name": "@codemirror/language",
+    "version": "6.13.1",
+    "license": "MIT",
+    "dist": {
+      "shasum": "61eb04c0265102ff9bb24d9a3ee633d37e84e324",
+      "tarball": "https://registry.npmjs.org/@codemirror/language/-/language-6.13.1.tgz",
+      "fileCount": 8,
+      "integrity": "sha512-zfvU2r3TyylQLMj/te+5CnQ0rSqZi8B1oTCBbQkagcLW4Xc6imab6qN+pEJhsuNOLaJqiRyBXp9UhWA1DhVvDw==",
+      "signatures": [
+        {
+          "sig": "MEUCIF2lk6kvMGJ+tlKbCyjWcWB8yA7lUQ8h3jG5RDOsI60qAiEAq2EctPGkaFBKjlMd9eH20eeRzwkqbp+Q7gEw8+CAZJY=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEQCIAZeHbx7+0aFP2+3oU0rKu/uPu7w3KYmqn5BmmfelA56AiAMkptdkM0iLRldI8D1nT7pyhJluSILeaodeCv/1yyTog=="
+        }
+      ],
+      "unpackedSize": 291304
+    },
+    "registry": "https://registry.npmjs.org/@codemirror%2flanguage",
+    "releaseLine": "6",
+    "resolvedAtUTC": "2026-10-08T13:11:36.709489+00:00"
+  },
+  {
+    "name": "@codemirror/commands",
+    "version": "6.11.1",
+    "license": "MIT",
+    "dist": {
+      "shasum": "1ec31ffb4d87babd096b5857e68cdba3bb989abd",
+      "tarball": "https://registry.npmjs.org/@codemirror/commands/-/commands-6.11.1.tgz",
+      "fileCount": 8,
+      "integrity": "sha512-O/4hG3SC1YwcmQ0d2UVNDs+AsaNWd1iHVxbTeEBuqH+6bExAiPK3iS/BvpY6rZGURALv4ZD3sIgcCmRvw3ehBg==",
+      "signatures": [
+        {
+          "sig": "MEUCIBpkJH+rk1HsW24yHX8tDJGM7gj/h7f+6mz88RkVwkYNAiEA9C7FGakuSENk47l4uOCW7Yz5PxVvegv6aKtp/S/Ial4=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIQD2+ncYvJ5nF+8IhCtR/6E7JpqV8C+K8hd0iZydGv+JyAIgcKf4N4lpCZgG42ua+zO1cKyaO0b9LRAXmdvExR1WFOA="
+        }
+      ],
+      "unpackedSize": 246640
+    },
+    "registry": "https://registry.npmjs.org/@codemirror%2fcommands",
+    "releaseLine": "6",
+    "resolvedAtUTC": "2026-10-08T13:11:36.981291+00:00"
+  },
+  {
+    "name": "@codemirror/search",
+    "version": "6.7.2",
+    "license": "MIT",
+    "dist": {
+      "shasum": "93a49eb21c026de473c4fc3a047b8fd67784b0f0",
+      "tarball": "https://registry.npmjs.org/@codemirror/search/-/search-6.7.2.tgz",
+      "fileCount": 8,
+      "integrity": "sha512-gUYkYhT2+n/+VGZ+8EzE5WFkYZUZYm1VOKDudIsNqh42uRVQJ0a6Yss9sdKT3MeOYfuL1N6AZA57oza0Oyr0LA==",
+      "signatures": [
+        {
+          "sig": "MEYCIQCveCEo2ZcesLK5p1xojgkc94URMGqFfuNXFCkznZ515QIhAOZRgYLJJ+thrkptjEswNku9zPfnxf0VSw4jC9M8pFpF",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIQCiWZA06xE2zoqZZv6o++Q/THdCHTIRN+WyZpuCQ5DwRQIgeCy7K12ypTppCs46wS4s68ckzk8DVP+gXyrhy+HSqOs="
+        }
+      ],
+      "unpackedSize": 137655
+    },
+    "registry": "https://registry.npmjs.org/@codemirror%2fsearch",
+    "releaseLine": "6",
+    "resolvedAtUTC": "2026-10-08T13:11:37.311918+00:00"
+  },
+  {
+    "name": "@codemirror/autocomplete",
+    "version": "6.20.3",
+    "license": "MIT",
+    "dist": {
+      "integrity": "sha512-tlosUqb+3BbxCxZdu4tKeRghPFC+QM7q4X5YhKV2eCmPG+1r2F3f4AaSz5sCrFqUtX4Jh20VFTKecl16MgiV9g==",
+      "shasum": "696b740312c6a962e14567b49a3661b5924bc5ae",
+      "tarball": "https://registry.npmjs.org/@codemirror/autocomplete/-/autocomplete-6.20.3.tgz",
+      "fileCount": 8,
+      "unpackedSize": 256089,
+      "signatures": [
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEQCIEapVlno6BvgtFqMcrjgO7XNkdTwp1kDm6DYpRviKws9AiB7Kad6LODutQ2vryvYrRjX6OVmrz6zBS04RVwsZPU75Q=="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/@codemirror%2fautocomplete",
+    "releaseLine": "6",
+    "resolvedAtUTC": "2026-10-08T13:11:37.442222+00:00"
+  },
+  {
+    "name": "@codemirror/lint",
+    "version": "6.9.7",
+    "license": "MIT",
+    "dist": {
+      "integrity": "sha512-28/+iWLYxKxsvGYhSYL7zaCZqLz5+FFFDq9tVsvGv9kv8RY4fFAchJ5WX9M3YrrRlTIsECjsXPqeNgnSmNP2dg==",
+      "shasum": "841fc733674389d91fe49a1c34027ad3babdf105",
+      "tarball": "https://registry.npmjs.org/@codemirror/lint/-/lint-6.9.7.tgz",
+      "fileCount": 8,
+      "unpackedSize": 97441,
+      "signatures": [
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEQCIAoXbzFrG/tcDy0mvPqLxEGvLC/itJlqMyy5e1tG6be2AiBo/7ISAGhf6914Wnz7E8qRsKGpfOI8/MXeBMBea5MnLQ=="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/@codemirror%2flint",
+    "releaseLine": "6",
+    "resolvedAtUTC": "2026-10-08T13:11:37.721726+00:00"
+  },
+  {
+    "name": "@codemirror/lang-markdown",
+    "version": "6.5.2",
+    "license": "MIT",
+    "dist": {
+      "shasum": "530b91442c035ca5d4ea5135c0499b2c15c39872",
+      "tarball": "https://registry.npmjs.org/@codemirror/lang-markdown/-/lang-markdown-6.5.2.tgz",
+      "fileCount": 8,
+      "integrity": "sha512-AwBOdkWYuA//WcM0xO5PfHPUcmz/O2i5o0Nsg1U69SII/loCJlFI1Romd9xp2HYb1kYJRGZotyqRghuHH5n8Kw==",
+      "signatures": [
+        {
+          "sig": "MEUCIGixunzdtmt7afr5gKJqGrqnmDhHjqq01L0F5QWMuNoLAiEA4/MfwcvCVAcCxb+dqSgA0PSNZ5Ywz0ijdH7MKoZX4qg=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIDjpAfw7r0Iy4Zq/T0P94oSyKaylF4ZJb1SvObl9SCW/AiEAizJs14o361/GBu+8hPi/tdbitjIbnZkQCV2Djrf6XYA="
+        }
+      ],
+      "unpackedSize": 72594
+    },
+    "registry": "https://registry.npmjs.org/@codemirror%2flang-markdown",
+    "releaseLine": "6",
+    "resolvedAtUTC": "2026-10-08T13:11:38.010912+00:00"
+  },
+  {
+    "name": "d3-array",
+    "version": "3.2.4",
+    "engines": {
+      "node": ">=12"
+    },
+    "license": "ISC",
+    "dist": {
+      "integrity": "sha512-tdQAmyA18i4J7wprpYq8ClcxZy3SC31QMeByyCFyRt7BVHdREQZ5lpzoe5mFEYZUWe+oq8HBvk9JjpibyEV4Jg==",
+      "shasum": "15fec33b237f97ac5d7c986dc77da273a8ed0bb5",
+      "tarball": "https://registry.npmjs.org/d3-array/-/d3-array-3.2.4.tgz",
+      "fileCount": 66,
+      "unpackedSize": 163730,
+      "signatures": [
+        {
+          "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+          "sig": "MEUCIB7J7S5RpXxWrAU6v5ArgA3IWiAR5RPd494w/lmZfrOGAiEAldBrCDSBSbtKq2iWhLwg0tcrsG9J8WnCNhqNbAhR8+s="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/d3-array",
+    "releaseLine": "3",
+    "resolvedAtUTC": "2026-10-08T13:11:38.211237+00:00"
+  },
+  {
+    "name": "d3-scale",
+    "version": "4.0.2",
+    "engines": {
+      "node": ">=12"
+    },
+    "license": "ISC",
+    "dist": {
+      "integrity": "sha512-GZW464g1SH7ag3Y7hXjf8RoUuAFIqklOAq3MRl4OaWabTFJY9PN/E1YklhXLh+OQ3fM9yS2nOkCoS+WLZ6kvxQ==",
+      "shasum": "82b38e8e8ff7080764f8dcec77bd4be393689396",
+      "tarball": "https://registry.npmjs.org/d3-scale/-/d3-scale-4.0.2.tgz",
+      "fileCount": 29,
+      "unpackedSize": 174363,
+      "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.13\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJh2nlUCRA9TVsSAnZWagAABH8P/2nGPNtPaPZhoF97W5wg\nOvD7e4yY7lbKuduz4QqbYe450qldst/jbEBajI4G2dEKPnRQVvW1iC9niick\nAga5Y8S1uU8KsYTIxiHNx9q5tBZiZNTiACY/r/GgQOCnB3RbF+1XueCZm/vR\nLMyNBpcrYG2fJqx+mhkZk2ahCcxO2QOUY9+OszCdHnRB6PenA5Bb5d7K08Qo\nwdqceMQ3uiAMskjKzaGZHKtgm/mDTmcw858UiUwm9E35awOKTWiTcQuSGc/J\nE4GWS/Luqp0qM/S9mrztP85PVEssE+v5WZeiPQq0AUI6eEBRJRYkpKshXXNC\nIz0cF3Q5jzf3rX2JwOIScqCC4MjN+T3vZqZCxX8HnTEA7shtLGpjOEvXiTe3\nK7WyDcaOeooEgrzwB6ohJVboZcoiIDJa1KDE+Ry3DxGSGJrZe/2sdTl2r/tc\nIpqvR84AZNAcjxCKhLl4QF4/pWk0gl3oHlg+isBLIXQutr8N/NHVSqNUXoI+\n46+NY20v7tc+dSzpa629CrGjkxOwwt8QejzGx334215R3lLf2/lVCpM6TA5M\nX5BnO6WlhXmMJwhO81po4mrTFPswwE+GTDmalCBqioALYk656Jox4399JElQ\nCXTQW5iqnjatw6CNcw9OJA7aQWVpBJmFuVPSJ1wrnWMcO365gVHfFdptuNF/\n/b9f\r\n=jRws\r\n-----END PGP SIGNATURE-----\r\n",
+      "signatures": [
+        {
+          "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+          "sig": "MEQCICTpwtNeJSnXFdWQzBU/6j2bX1dTLmWXNc0ZVUTZQ6WJAiB5lmT4/7u/25EaOMi7T34oTvYqRjV1x5YmOxZTo87GGQ=="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/d3-scale",
+    "releaseLine": "4",
+    "resolvedAtUTC": "2026-10-08T13:11:38.363831+00:00"
+  },
+  {
+    "name": "d3-shape",
+    "version": "3.2.0",
+    "engines": {
+      "node": ">=12"
+    },
+    "license": "ISC",
+    "dist": {
+      "integrity": "sha512-SaLBuwGm3MOViRq2ABk3eLoxwZELpH6zhl3FbAoJ7Vm1gofKx6El1Ib5z23NUEhF9AsGl7y+dzLe5Cw2AArGTA==",
+      "shasum": "a1a839cbd9ba45f28674c69d7f855bcf91dfc6a5",
+      "tarball": "https://registry.npmjs.org/d3-shape/-/d3-shape-3.2.0.tgz",
+      "fileCount": 65,
+      "unpackedSize": 247267,
+      "signatures": [
+        {
+          "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+          "sig": "MEYCIQDTtyw+AtmH6gd2uChXUEmwt8Hpqd75ntYw4hui9d7GpgIhALz/5Dp746uWIQbsJuFjrAJzwiTZLBXwqqxcipxYdD+w"
+        }
+      ],
+      "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v4.10.10\r\nComment: https://openpgpjs.org\r\n\r\nwsFzBAEBCAAGBQJjokelACEJED1NWxICdlZqFiEECWMYAoorWMhJKdjhPU1b\r\nEgJ2VmpoThAAmXLoPCNq5k/30WTprlMofmAjUkC6ml/dUvMCHS0JAUr0h5Ew\r\nbH85QlG64m+tClO9Qdp1iFQcaFwulK2/6sZ0P/MqZ0Fg48hHz7eNcW3OHV2U\r\nCHM1jjKfNlh+hKsvR9DE7oPgCKpcjIcUZfk6HLl2z54HbpELm090by0QG93s\r\nktqHbQKns0B+JiV4hg+YT3WD5xKfmuIQ/zq7MpoyJ8uP90xvrbwi6bFivi4n\r\nu/E6mi6knMYEm53yi7pAIgXxkhLnC1gKqXuh5Nv4EzL/XChAZ9d4Z7cn4SUZ\r\nhHzgURs0o+193zyqvqoT7Grwx7VovMCSX5ddRs+rt/qM+Ow4Of7j9fjgLpTE\r\nuhxb9xGGTdfv8Z0iewCwIb1JHdG8Vc2rLnbbIspCBjoiFi7Cv9fXWJxf+clh\r\n5HfRpK+i3lI/FgRB4pmXTK4EN7eEg4XFTEfMDFOEP+1PtNc4trmpZp+79Gso\r\nkyIThaCMEq/no4+lG3pq/9ZLyS7pG3oUgDUVRohV1Jibez3OVHmzFSL2xhzO\r\nkuY+jK0xj+6y8bC+Nu62YoMg9UVar1Un84Xt9r1NgMk/y9lQ3nVwWajmhl/E\r\nwQXaB8CmkfH3ef+jXV3EC8XfYUl8MdfdIzzwcLrz4so1zBx+Gph8zuEZ9kYt\r\nFwAFhAW5NF/Lo8C1B9a1IAPZZqW3QMper3s=\r\n=A8yy\r\n-----END PGP SIGNATURE-----\r\n"
+    },
+    "registry": "https://registry.npmjs.org/d3-shape",
+    "releaseLine": "3",
+    "resolvedAtUTC": "2026-10-08T13:11:38.476874+00:00"
+  },
+  {
+    "name": "@types/d3-array",
+    "version": "3.2.2",
+    "peerDependencies": {},
+    "license": "MIT",
+    "dist": {
+      "shasum": "e02151464d02d4a1b44646d0fcdb93faf88fde8c",
+      "tarball": "https://registry.npmjs.org/@types/d3-array/-/d3-array-3.2.2.tgz",
+      "fileCount": 5,
+      "integrity": "sha512-hOLWVbm7uRza0BYXpIIW5pxfrKe0W+D5lrFiAEYR+pb6w3N2SwSMaJbXdUfSEv+dT4MfHBLtn5js0LAWaO6otw==",
+      "signatures": [
+        {
+          "sig": "MEYCIQDS4rklZXfmGckm0PXAOJra92DcMd5SkDep8S1EP0vo/wIhAIisCe3Dr7z0fRDHqrnyzTbUZG0XetgP8sGpdWn06zlg",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 52479
+    },
+    "registry": "https://registry.npmjs.org/@types%2fd3-array",
+    "releaseLine": "3",
+    "resolvedAtUTC": "2026-10-08T13:11:38.581890+00:00"
+  },
+  {
+    "name": "@types/d3-scale",
+    "version": "4.0.9",
+    "peerDependencies": {},
+    "license": "MIT",
+    "dist": {
+      "shasum": "57a2f707242e6fe1de81ad7bfcccaaf606179afb",
+      "tarball": "https://registry.npmjs.org/@types/d3-scale/-/d3-scale-4.0.9.tgz",
+      "fileCount": 5,
+      "integrity": "sha512-dLmtwB8zkAeO/juAMfnV+sItKjlsw2lKdZVVy6LRr0cBmegxSABiLEpGVmSJJ8O08i4+sGR6qQtb6WtuwJdvVw==",
+      "signatures": [
+        {
+          "sig": "MEUCIAdiL4WTAf8ItJfO4bLnkKOddH1jHBAQBhccu0c+gc96AiEAmmyEABqrC9KfCAZGJEizYKYYLuv3AUWDoecOAnfdWyM=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 134973
+    },
+    "registry": "https://registry.npmjs.org/@types%2fd3-scale",
+    "releaseLine": "4",
+    "resolvedAtUTC": "2026-10-08T13:11:38.735133+00:00"
+  },
+  {
+    "name": "@types/d3-shape",
+    "version": "3.2.0",
+    "peerDependencies": {},
+    "license": "MIT",
+    "dist": {
+      "shasum": "66ff342011dc243c6c20e6b899523d148aca412d",
+      "tarball": "https://registry.npmjs.org/@types/d3-shape/-/d3-shape-3.2.0.tgz",
+      "fileCount": 5,
+      "integrity": "sha512-kVd74ta9eof3eJOvbNd1vGKS/XERRyQbT26Og63hIsvDO84cjD5gEOhsXf26w3FSoNlPVz84DOFcKv/oou+fMw==",
+      "signatures": [
+        {
+          "sig": "MEYCIQCWecqI1OQr3J4TojU8ivxYFcDitqEgr/kKOLZ8KOXfWgIhALI3q/pa1tKm2FIgz6KHDCdsABMmoiapodiKdQ1ssPXE",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEYCIQDccbfHEPXx99+B5h9nLZrgC0H82Ve2fiYW0k+f+GjAnAIhAPtOcmEYosdZTbkPgZLFK9VFYdNNXMgL86UsyzbLP15b",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 141150
+    },
+    "registry": "https://registry.npmjs.org/@types%2fd3-shape",
+    "releaseLine": "3",
+    "resolvedAtUTC": "2026-10-08T13:11:38.834103+00:00"
+  },
+  {
+    "name": "fflate",
+    "version": "0.8.3",
+    "license": "MIT",
+    "dist": {
+      "shasum": "bc27d8eb30343d4d512abb03480202ce65d825fc",
+      "tarball": "https://registry.npmjs.org/fflate/-/fflate-0.8.3.tgz",
+      "fileCount": 17,
+      "integrity": "sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==",
+      "signatures": [
+        {
+          "sig": "MEUCIQDKHszYJq2f7EvHObBmG6jyQvta31NC5L2CK0carbSMGQIgIVKjNjB3PzYaa/odeFHGG0ovorVN7UIMFpr1PwYcBtY=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 796742
+    },
+    "registry": "https://registry.npmjs.org/fflate",
+    "releaseLine": "0.8",
+    "resolvedAtUTC": "2026-10-08T13:11:38.938171+00:00"
+  },
+  {
+    "name": "@noble/hashes",
+    "version": "2.4.0",
+    "engines": {
+      "node": ">= 20.19.0"
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "e6a3e98edbed3c8659b28bb8f9b18ca02ec8ea4b",
+      "tarball": "https://registry.npmjs.org/@noble/hashes/-/hashes-2.4.0.tgz",
+      "integrity": "sha512-X5XaVWZIBCT7HHZGm5I7ZQXDwLG+bGXuSrMQAW+7Zvl87h1kmc1ZB1VSRJcpUfoUrGQp4Fkoxm5kZ+Ms+aW+eA==",
+      "fileCount": 60,
+      "unpackedSize": 691646,
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/@noble%2fhashes@2.4.0",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "signatures": [
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIQD5/zhgZaTaRKNdw4p94/s5ICjMK4pjrZszeQnHqmhjYAIgFlSsdpDfVMaUE+3CApwSyRdp4t4goJqUge1/zYwWo+g="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/@noble%2fhashes",
+    "releaseLine": "2",
+    "resolvedAtUTC": "2026-10-08T13:11:39.055389+00:00"
+  },
+  {
+    "name": "ajv",
+    "version": "8.20.0",
+    "license": "MIT",
+    "dist": {
+      "integrity": "sha512-Thbli+OlOj+iMPYFBVBfJ3OmCAnaSyNn4M1vz9T6Gka5Jt9ba/HIR56joy65tY6kx/FCF5VXNB819Y7/GUrBGA==",
+      "shasum": "304b3636add88ba7d936760dd50ece006dea95f9",
+      "tarball": "https://registry.npmjs.org/ajv/-/ajv-8.20.0.tgz",
+      "fileCount": 466,
+      "unpackedSize": 1033496,
+      "signatures": [
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIBfrVdhp5WGXcUASldcdcwqMi+toiB4jnfvInba3JZgCAiEA+gqJmfPQOJlXKjVEQlsjXbBKFxga9bRsHx5m9lSgRyM="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/ajv",
+    "releaseLine": "8",
+    "resolvedAtUTC": "2026-10-08T13:11:39.278648+00:00"
+  },
+  {
+    "name": "ajv-formats",
+    "version": "3.0.1",
+    "peerDependencies": {
+      "ajv": "^8.0.0"
+    },
+    "peerDependenciesMeta": {
+      "ajv": {
+        "optional": true
+      }
+    },
+    "license": "MIT",
+    "dist": {
+      "integrity": "sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==",
+      "shasum": "3d5dc762bca17679c3c2ea7e90ad6b7532309578",
+      "tarball": "https://registry.npmjs.org/ajv-formats/-/ajv-formats-3.0.1.tgz",
+      "fileCount": 15,
+      "unpackedSize": 56763,
+      "signatures": [
+        {
+          "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA",
+          "sig": "MEUCIQCNjmZ9iM4dJkMswBBQvly7urSTFzJJBcAEdkDXyHjTYQIgIy06JeUFo1/lGNnbGrOf2WiAlyZEYe3K+SBvP3QUq/s="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/ajv-formats",
+    "releaseLine": "3",
+    "resolvedAtUTC": "2026-10-08T13:11:39.369626+00:00"
+  },
+  {
+    "name": "vitest",
+    "version": "5.0.3",
+    "engines": {
+      "node": "^22.12.0 || ^24.0.0 || >=26.0.0"
+    },
+    "peerDependencies": {
+      "vite": "^6.4.0 || ^7.0.0 || ^8.0.0",
+      "jsdom": "*",
+      "happy-dom": "*",
+      "@vitest/ui": "5.0.3",
+      "@types/node": "^22.0.0 || >=24.0.0",
+      "@edge-runtime/vm": "*",
+      "@opentelemetry/api": "^1.9.0",
+      "@vitest/coverage-v8": "5.0.3",
+      "@vitest/browser-preview": "5.0.3",
+      "@vitest/coverage-istanbul": "5.0.3",
+      "@vitest/browser-playwright": "5.0.3",
+      "@vitest/browser-webdriverio": "^5.0.0-beta.5 || >=5.0.0"
+    },
+    "peerDependenciesMeta": {
+      "vite": {
+        "optional": false
+      },
+      "jsdom": {
+        "optional": true
+      },
+      "happy-dom": {
+        "optional": true
+      },
+      "@vitest/ui": {
+        "optional": true
+      },
+      "@types/node": {
+        "optional": true
+      },
+      "@edge-runtime/vm": {
+        "optional": true
+      },
+      "@opentelemetry/api": {
+        "optional": true
+      },
+      "@vitest/coverage-v8": {
+        "optional": true
+      },
+      "@vitest/browser-preview": {
+        "optional": true
+      },
+      "@vitest/coverage-istanbul": {
+        "optional": true
+      },
+      "@vitest/browser-playwright": {
+        "optional": true
+      },
+      "@vitest/browser-webdriverio": {
+        "optional": true
+      }
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "0d07cdc353bb0da4ff936e4471c1aa55f34c42ed",
+      "tarball": "https://registry.npmjs.org/vitest/-/vitest-5.0.3.tgz",
+      "integrity": "sha512-xMw97S3rjdtj5dkVat7jCsqWBpvchs3RlpQctUqwJD0KkERk40vz2fJ77lDwW/Vzh/pk18eItYAzkodhSes3jQ==",
+      "fileCount": 103,
+      "unpackedSize": 2759444,
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/vitest@5.0.3",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "signatures": [
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIEKg6A4v1/3T/dV60WT589wBM/REifuLf/GjsguvoI6kAiEAwoblCSNq2cKMTTHwVyYQi4I38jpfeAw8tSKbBYZLp3c="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/vitest",
+    "releaseLine": "5",
+    "resolvedAtUTC": "2026-10-08T13:11:39.539278+00:00"
+  },
+  {
+    "name": "@vitest/coverage-v8",
+    "version": "5.0.3",
+    "peerDependencies": {
+      "vitest": "5.0.3",
+      "@vitest/browser": "5.0.3"
+    },
+    "peerDependenciesMeta": {
+      "@vitest/browser": {
+        "optional": true
+      }
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "9b66ecd349fe3c8333a7f95e965165bb98b6d76a",
+      "tarball": "https://registry.npmjs.org/@vitest/coverage-v8/-/coverage-v8-5.0.3.tgz",
+      "integrity": "sha512-+klsyz7BvT1vCU28Zkfzms1Ia78XD0V41U3FUtRaa3S+vOr/EXvK1O6BvVD7l1RzEjm6SONR2aybOvDDf9u0mQ==",
+      "fileCount": 11,
+      "unpackedSize": 29156,
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/@vitest%2fcoverage-v8@5.0.3",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "signatures": [
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIDWjWVmf5pflUfvg0VTdbjbNMqkxZJhanOd8IUzRToLqAiEA50neJAJ6/BiKdjtq1+i7hGMAyI+Knm2yNHGyyjLdn5w="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/@vitest%2fcoverage-v8",
+    "releaseLine": "5",
+    "resolvedAtUTC": "2026-10-08T13:11:39.664370+00:00"
+  },
+  {
+    "name": "@playwright/test",
+    "version": "1.64.0",
+    "engines": {
+      "node": ">=20"
+    },
+    "license": "Apache-2.0",
+    "dist": {
+      "shasum": "af51c4f1dd5f689b2ff16e6eacf27ac00843f239",
+      "tarball": "https://registry.npmjs.org/@playwright/test/-/test-1.64.0.tgz",
+      "fileCount": 11,
+      "integrity": "sha512-oTN9FNYuN6bqQMwiho6jJKLCG2/QOYCixGXuCjRmzOq23eODeukuY2XiAVoVpAECbuezMt1MHQjAiQxK8F+Y+g==",
+      "signatures": [
+        {
+          "sig": "MEUCIGwd51zzl/s8Ynfqb0g5X4T+qVJV9EBVQ/iTzmv37UcCAiEAh2l1BiEXafRIyIvzZNem1KBq9ghLXR3nlaCvwN0/ico=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEQCIBopA8fVjn2UeqqCfyPot2liG+Devo2O0ihw6z9lbhgNAiB+H4G3cKuPWJRlL4qND+igTMpXrIR0QBLfyapqtbt5jQ==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/@playwright%2ftest@1.64.0",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 28542
+    },
+    "registry": "https://registry.npmjs.org/@playwright%2ftest",
+    "releaseLine": "1",
+    "resolvedAtUTC": "2026-10-08T13:11:40.071773+00:00"
+  },
+  {
+    "name": "@axe-core/playwright",
+    "version": "4.13.0",
+    "peerDependencies": {
+      "playwright-core": ">= 1.0.0"
+    },
+    "license": "MPL-2.0",
+    "dist": {
+      "shasum": "4826467c9622df26f0d75b4c1747c8d92ee599de",
+      "tarball": "https://registry.npmjs.org/@axe-core/playwright/-/playwright-4.13.0.tgz",
+      "fileCount": 7,
+      "integrity": "sha512-6YLx+kxXu5GJceG4ozFg+33a2EMTdjYwWGloJ3sb9Kta5pp+ZNS53uxGVog5JetIY8s++P5UrtX+cri+u0VAVg==",
+      "signatures": [
+        {
+          "sig": "MEQCIGur3Zhj2VOuJBR0/k/wwB40oSKqWSwfggSuao1bMu2rAiBUrNBQ8hwzAhypJG7vTsHmzxugPxqQxSa3TfDmbw2D7Q==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEQCICxSAqtpFBjIBfyFmneGbaAzZO9WcACGgfyFP3ZeP1bfAiBgzqa0odMXRVLZbJHQ1etSSvmqvcGAMLmkoRPxDekutg==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/@axe-core%2fplaywright@4.13.0",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 47180
+    },
+    "registry": "https://registry.npmjs.org/@axe-core%2fplaywright",
+    "releaseLine": "4",
+    "resolvedAtUTC": "2026-10-08T13:11:40.446269+00:00"
+  },
+  {
+    "name": "fast-check",
+    "version": "4.10.2",
+    "engines": {
+      "node": ">=12.17.0"
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "f668c9f2ccf52eefcdc2bc9a295588d82a029f49",
+      "tarball": "https://registry.npmjs.org/fast-check/-/fast-check-4.10.2.tgz",
+      "integrity": "sha512-iK2f+YrcmoeGqk6fA0ea2bptcu/itMIm4NfEozq6N25+aG6h7s5HZbB/k1aV7b5w5sFLMCbbtRUsTVR+BgC3xw==",
+      "fileCount": 11,
+      "unpackedSize": 1523883,
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/fast-check@4.10.2",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "signatures": [
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIQDwaK5rhg1dMLFIFAbuHqGbODX01h4ck2w+1V2NiScMrwIgHQ9jHbPWqvowkBSAGsuYZNEdSBKvr6cBgc4eP/adXm4="
+        }
+      ]
+    },
+    "registry": "https://registry.npmjs.org/fast-check",
+    "releaseLine": "4",
+    "resolvedAtUTC": "2026-10-08T13:11:40.601510+00:00"
+  },
+  {
+    "name": "esbuild",
+    "version": "0.28.2",
+    "engines": {
+      "node": ">=18"
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "0f43bd1bad955b72d24e2261e3abe5957ccf0816",
+      "tarball": "https://registry.npmjs.org/esbuild/-/esbuild-0.28.2.tgz",
+      "fileCount": 7,
+      "integrity": "sha512-HKVLS8dvII+xoKW9kmqxbRKrnWEXfJJr/FZhhJmiqIB0e053QNYFqOBouTMO/k5sID4MvCiUCvv8b9M4h32wIA==",
+      "signatures": [
+        {
+          "sig": "MEYCIQCUNxdzUXI/rpHaMMcf/skpuDBkNL7aLEXFFc0dex0NCAIhAMDKoRFFyK2uR0qEIAoCe4pdRrJ3ld2ZCoHNyNuX6ju7",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIQC8VkNobVdJrr03U9huHI7n2VhWQ2shvrTvNYB1Mx8gigIgFkrOTUauuovxR8qg94n81hYvSw6PI2qEQkNiqHkmjcg="
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/esbuild@0.28.2",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 147361
+    },
+    "registry": "https://registry.npmjs.org/esbuild",
+    "releaseLine": "0",
+    "resolvedAtUTC": "2026-10-08T13:11:40.834680+00:00"
+  },
+  {
+    "name": "@types/node",
+    "version": "24.19.1",
+    "peerDependencies": {},
+    "license": "MIT",
+    "dist": {
+      "shasum": "3a1c3ed9e9fc94fe48d4a72d83dfd0bfcf379c62",
+      "tarball": "https://registry.npmjs.org/@types/node/-/node-24.19.1.tgz",
+      "fileCount": 88,
+      "integrity": "sha512-aS3/DG0oM05K0RIXXP+hKjinGG5IgSSVGzswZxW3O0sS3pH4/fycXundUC9XsszgKCk4gHXylTEK6hyFxVxnoQ==",
+      "signatures": [
+        {
+          "sig": "MEYCIQD+48ykmov9T0Rnzoihncc5ifqeYIbW81WS6kyoRo6TXgIhAO5tAL9r+d1M1nKOuX/xQxyWEMw4ASvexlK8cb4jkmJ6",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEYCIQCE7DgGRyKheaUKRNTFbtz1zCPHoaCG9aS8GjOICyO5KwIhAIIT8hMbSlUiy0nFQJ7nhbN884gU6D0GRH7zONUcStrt",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 2613546
+    },
+    "registry": "https://registry.npmjs.org/@types%2fnode",
+    "releaseLine": "24",
+    "resolvedAtUTC": "2026-10-08T13:11:41.250980+00:00"
+  },
+  {
+    "name": "eslint",
+    "version": "10.12.0",
+    "engines": {
+      "node": "^20.19.0 || ^22.13.0 || >=24"
+    },
+    "peerDependencies": {
+      "jiti": "*"
+    },
+    "peerDependenciesMeta": {
+      "jiti": {
+        "optional": true
+      }
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "4f2f7e679bdce9d71438c2900f2c8d4d297332b0",
+      "tarball": "https://registry.npmjs.org/eslint/-/eslint-10.12.0.tgz",
+      "fileCount": 421,
+      "integrity": "sha512-npHjrHb2o4ehH3mE+YuxABR+0gyb0aVWCIolgJDArwCiHEIsonBm3ZKjel5b0U5+a+MbEvIyRCGCzD3eKKK2NA==",
+      "signatures": [
+        {
+          "sig": "MEQCIACiuX8cuqJW7bxeMOsKGVHqdBXYfPXYBb5PuH973SL8AiAD6iWD4BwsFcJHHdhW6qixRf4sDVAEwqo3MQxHE3vd1g==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEQCICroNkqaTnX/nfg9Z2D39H7ZqDb5Z3h++5yIrobmmo9jAiByt7PnOjO2oa46qh6ejj4VqSxuvYCF1JOg6VrIhBxhhg=="
+        }
+      ],
+      "unpackedSize": 2947964
+    },
+    "registry": "https://registry.npmjs.org/eslint",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:41.578619+00:00"
+  },
+  {
+    "name": "@eslint/js",
+    "version": "10.0.1",
+    "engines": {
+      "node": "^20.19.0 || ^22.13.0 || >=24"
+    },
+    "peerDependencies": {
+      "eslint": "^10.0.0"
+    },
+    "peerDependenciesMeta": {
+      "eslint": {
+        "optional": true
+      }
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "1e8a876f50117af8ab67e47d5ad94d38d6622583",
+      "tarball": "https://registry.npmjs.org/@eslint/js/-/js-10.0.1.tgz",
+      "fileCount": 7,
+      "integrity": "sha512-zeR9k5pd4gxjZ0abRoIaxdc7I3nDktoXZk2qOv9gCNWx3mVwEn32VRhyLaRsDiJjTs0xq/T8mfPtyuXu7GWBcA==",
+      "signatures": [
+        {
+          "sig": "MEUCIQC01PnD397TPFwX0F9HFSExrqR/ahZ/msR5jN0S2R716wIgJi3MsB6EmezIqYLGeLnGsuRmVAmSBUdcpNLONJnD71s=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 15687
+    },
+    "registry": "https://registry.npmjs.org/@eslint%2fjs",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:41.723516+00:00"
+  },
+  {
+    "name": "typescript-eslint",
+    "version": "8.71.1",
+    "engines": {
+      "node": "^18.18.0 || ^20.9.0 || >=21.1.0"
+    },
+    "peerDependencies": {
+      "eslint": "^8.57.0 || ^9.0.0 || ^10.0.0",
+      "typescript": ">=4.8.4 <6.1.0"
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "dabf06af972d975ea25b27d73e161193ea41075d",
+      "tarball": "https://registry.npmjs.org/typescript-eslint/-/typescript-eslint-8.71.1.tgz",
+      "fileCount": 13,
+      "integrity": "sha512-oiNVPC3/NbV1FpaHU07l8O6ynqG9v4PAiW2WvTrAmZdR0f2HI/gE668ElMLCK7Xbsu5k2fK5C4fXNiq05j7/nQ==",
+      "signatures": [
+        {
+          "sig": "MEYCIQDwPC8MIiJtPwkBCpPeOzK81Jq/R22BNKlNR3e48CfLbgIhAKxWrj6J8hc8ZELC82FLO/VmKAhWG3agLXCTRaL9BibT",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEYCIQCu7RVjWUiF0lRGLcC6K6y6yMV0s7pkkYqYdgh6za/lFAIhAKYwqVjMjYmLxLTpu5G4xEEl4DJD3CkNI1k2+mEvtwzG",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/typescript-eslint@8.71.1",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 42688
+    },
+    "registry": "https://registry.npmjs.org/typescript-eslint",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:42.008477+00:00"
+  },
+  {
+    "name": "prettier",
+    "version": "3.9.9",
+    "engines": {
+      "node": ">=14"
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "09b826918c91cd4cbc80e0cbd1d2a922ff04f233",
+      "tarball": "https://registry.npmjs.org/prettier/-/prettier-3.9.9.tgz",
+      "fileCount": 56,
+      "integrity": "sha512-Z/CJHIkdujO/OtN7nXUii0Rf3VT5SRuhjBA82Xvu2XhBUgX3nhP67T0LHceBdQLex7OOFGTox+Q5Yg8Jk2Qivg==",
+      "signatures": [
+        {
+          "sig": "MEQCIFQupf/9HnKLjQF/o53mlXO58o96s2kOnnAIB8W/PzvmAiBeDz5s1AeO4tthFc9PZok3n7W4EwnYchSjUPTWRG5oXA==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIQD/xLNVctF1yHIun5ThrkGR0hoLb/IpTn31jtGjSdQkzgIgHx4XXYySCbUa9zw4qSuoPG0FetXEMV+E/3g04ca2vXw="
+        }
+      ],
+      "unpackedSize": 9958979
+    },
+    "registry": "https://registry.npmjs.org/prettier",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:42.150183+00:00"
+  },
+  {
+    "name": "globals",
+    "version": "17.13.0",
+    "engines": {
+      "node": ">=18"
+    },
+    "license": "MIT",
+    "dist": {
+      "shasum": "ab2134b5ededbf2fbe2831dd0acc36f4f1ddeac5",
+      "tarball": "https://registry.npmjs.org/globals/-/globals-17.13.0.tgz",
+      "fileCount": 6,
+      "integrity": "sha512-RwMTC61u7hrG3ZJMkZQOK4JLJrKS8QtoTii63EmWvFXHqycY9FObBJQCbsLxSO8kjKhWE5kV1GC+Vb1g3RI0Zg==",
+      "signatures": [
+        {
+          "sig": "MEUCIQCJh3tH+GPb5uR8CECspSFViMYLu6NqLmQzWWUlSf/lggIgFZA0rn0Ctra7/xgzquqvYkQPpBFjoZIAZPZ/1W2KbxA=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U",
+          "sig": "MEUCIC2EvNfh3gvDsa6HTCF8MjCs3//7gVv9foGSPi0YpMrHAiEA/W01oEP5Dn9ZWTqESdLCD2Wi+k5+uiP0VTofqR88X3o="
+        }
+      ],
+      "unpackedSize": 257100
+    },
+    "registry": "https://registry.npmjs.org/globals",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:42.304286+00:00"
+  },
+  {
+    "name": "semver",
+    "version": "7.8.5",
+    "engines": {
+      "node": ">=10"
+    },
+    "license": "ISC",
+    "dist": {
+      "shasum": "39b646037dd50c14fb451e7e4cac58ed8b863f69",
+      "tarball": "https://registry.npmjs.org/semver/-/semver-7.8.5.tgz",
+      "fileCount": 53,
+      "integrity": "sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==",
+      "signatures": [
+        {
+          "sig": "MEQCIA1IMvQVanynk4boyVwPRYxqwVyNO88VINzVnIEactQlAiB/YQz4fEE45VLTLw/CEEHBWzh+hzED63yilqQQZPcQ1Q==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/semver@7.8.5",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 101065
+    },
+    "registry": "https://registry.npmjs.org/semver",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:42.522324+00:00"
+  },
+  {
+    "name": "yaml",
+    "version": "2.9.1",
+    "engines": {
+      "node": ">= 14.6"
+    },
+    "license": "ISC",
+    "dist": {
+      "shasum": "c16233fb31944e705cfefaff38795587f57588ce",
+      "tarball": "https://registry.npmjs.org/yaml/-/yaml-2.9.1.tgz",
+      "fileCount": 233,
+      "integrity": "sha512-3NxN8+78OdzbT7C/WjGsyfPAtJaN3FNDsWxv7Y7mcDsT/oOmgW8BpyQQFFBnvZE3j9Y2Sdz1ULFLezL7Eb2yFw==",
+      "signatures": [
+        {
+          "sig": "MEYCIQCXweoDJonUiEWYTyxwNhwkcM8EXhvt9mDlbSZLSz5y+AIhANjA4bIT0WVdnUVFH8/fMfgste4HrAyiPTXuCIhRWrwO",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEQCIH44ZynxSWIsGoaau+xjdzwJYPox6tD96SXMBvb2bdD1AiA16ZB3In4BqY1xyaT9TLO1cFCFGDZ8ovTGdN6yzjMcpA==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 686297
+    },
+    "registry": "https://registry.npmjs.org/yaml",
+    "releaseLine": null,
+    "resolvedAtUTC": "2026-10-08T13:11:42.650923+00:00"
+  }
+]

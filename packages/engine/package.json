@@ -1,0 +1,17 @@
+{
+  "name": "@tinta/engine",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@tinta/types": "workspace:*",
+    "@tinta/syntax": "workspace:*",
+    "@noble/hashes": "2.4.0"
+  }
+}

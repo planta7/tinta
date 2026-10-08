@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Optional public type/schema checks, not runtime Tinta conformance.
-Requires an installed tsc executable and Python jsonschema. M0 must repeat the
+Requires an installed tsc executable and Python jsonschema. The locked toolchain must repeat the
 checks using its locked TypeScript and Ajv; the local tool version is recorded.
 """
 from pathlib import Path
@@ -85,7 +85,7 @@ def main():
     report = {'kind':'contract-checks','checkedAtUTC':datetime.now(timezone.utc).isoformat(),
               'status':'FAIL' if failed else 'PASS',
               'scope':'Type compilation and envelope schemas only; no semantic IR validation or runtime tests.',
-              'runtimeTestsExecuted':False, 'localToolsAreNotM0Lock':True,
+              'runtimeTestsExecuted':False, 'ambientToolsAreNotLockedToolchain':True,
               'environment':{'python':platform.python_version(),'jsonschema':dependency_version},
               'commands':commands,
               'counts':{'checks':len(checks),'passed':len(checks)-failed,'failed':failed}, 'checks':checks}
@@ -100,7 +100,7 @@ def main():
     for item in checks:
         if not item['passed']:
             print('FAIL:',item['check'],item['detail'])
-    print('No Tinta runtime or language implementation was exercised. Ambient tools do not establish the M0 dependency lock.')
+    print('No Tinta runtime or language implementation was exercised. Ambient tools do not establish the project dependency lock.')
     return 1 if failed else 0
 
 if __name__ == '__main__':

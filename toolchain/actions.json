@@ -1,0 +1,18 @@
+[
+  {
+    "repository": "https://github.com/actions/checkout",
+    "ref": "refs/tags/v5",
+    "commit": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+    "actionDefinitionSha256": "d59219cb79590abdb877deaa14e3b65a00c05318bf5a6f3b989b9162b5d08c35",
+    "review": "Official action definition inspected. Node 24 runner; checkout credentials disabled; setup cache disabled. No publishing steps.",
+    "resolvedAtUTC": "2026-10-08T13:22:12.144126+00:00"
+  },
+  {
+    "repository": "https://github.com/actions/setup-node",
+    "ref": "refs/tags/v5",
+    "commit": "a0853c24544627f65ddf259abe73b1d18a591444",
+    "actionDefinitionSha256": "ecb4d4624961e84f02739e223d2e947f2e95c28407d7b811ee71caf118d7ba09",
+    "review": "Official action definition inspected. Node 24 runner; checkout credentials disabled; setup cache disabled. No publishing steps.",
+    "resolvedAtUTC": "2026-10-08T13:22:12.144204+00:00"
+  }
+]

@@ -1,0 +1,16 @@
+node_modules
+dist
+build
+coverage
+reports
+.local
+pnpm-lock.yaml
+# Existing specification and fixtures retain their original bytes.
+conformance
+contracts
+schemas
+spec
+examples
+docs
+architecture
+*.md

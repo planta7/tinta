@@ -1,0 +1,50 @@
+{
+  "name": "tinta-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.6",
+  "engines": {
+    "node": "24.21.0",
+    "pnpm": "10.34.6"
+  },
+  "scripts": {
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "typecheck": "tsc -b",
+    "test:unit": "vitest run --coverage",
+    "test:conformance": "node scripts/capabilities.mjs conformance",
+    "test:browser": "node scripts/capabilities.mjs browser",
+    "build": "tsc -b && node scripts/build.mjs",
+    "check:architecture": "node scripts/architecture.mjs",
+    "check:licenses": "node scripts/licenses.mjs",
+    "verify": "node scripts/verify.mjs",
+    "test:browser:infrastructure": "playwright test",
+    "check:dependencies": "node scripts/dependencies.mjs"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "vite": "8.3.4",
+    "@vitejs/plugin-react": "6.1.2",
+    "@types/d3-array": "3.2.2",
+    "@types/d3-scale": "4.0.9",
+    "@types/d3-shape": "3.2.0",
+    "vitest": "5.0.3",
+    "@vitest/coverage-v8": "5.0.3",
+    "@playwright/test": "1.64.0",
+    "@axe-core/playwright": "4.13.0",
+    "fast-check": "4.10.2",
+    "esbuild": "0.28.2",
+    "@types/node": "24.19.1",
+    "eslint": "10.12.0",
+    "@eslint/js": "10.0.1",
+    "typescript-eslint": "8.71.1",
+    "prettier": "3.9.9",
+    "globals": "17.13.0",
+    "semver": "7.8.5",
+    "yaml": "2.9.1",
+    "ajv": "8.20.0"
+  }
+}
