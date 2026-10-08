@@ -16,15 +16,12 @@ Infrastructure coverage applies to the architecture scanner, capability selectio
 
 CI performs verification only on pull requests and pushes to the repository's configured default branch. It has read-only repository permissions, does not retain checkout credentials, and performs no deployment, package publication or artifact upload. Hosted CI execution and manual device acceptance are separate from local automated results.
 
-## Local Linux verification
+## Native browser verification
 
-When a native browser cannot start on macOS, run the unchanged infrastructure suite in the pinned official Playwright Linux image:
+`pnpm verify` runs Chromium, Firefox and WebKit together through Playwright on the host. To run just these infrastructure tests after building, use `pnpm test:browser:infrastructure`.
 
-```sh
-docker build --file docker/verify.Dockerfile --tag tinta-verify:local .
-docker run --rm --init --shm-size=1g tinta-verify:local
-```
+Browser tests import `test` and `expect` from `tests/browser/fixtures.mjs`. The shared fixture gives each Firefox worker its own temporary application-data directories through `MOZ_APP_DATA` and `MOZ_LOCAL_APP_DATA`, in addition to Playwright's temporary profile. These directories are removed after the browser closes, including when a test fails. An abruptly killed process can leave temporary directories for the operating system to clean up. Chromium and WebKit use their normal Playwright launch options.
 
-Docker Desktop must be running. The image is pinned by digest, checks Node 24.21.0, installs pnpm 10.34.6 and uses the frozen lockfile. Tests run as the unprivileged `pwuser`. The build context includes public project inputs and excludes private automation, Git metadata, dependencies and build outputs. There are no host mounts, published ports or permission changes in these commands. The run prints the complete result; preserve its output when recording verification evidence.
+This isolation avoids Firefox's startup access to personal browser data, which can fail under macOS app-data protection even when a temporary profile is supplied. See [Mozilla's profile startup issue](https://bugzilla.mozilla.org/show_bug.cgi?id=2069536). It uses the unchanged pinned browser build and does not require additional privacy permissions or changes to browser sandboxing. Browser binaries remain in Playwright's default cache, or the location explicitly selected by `PLAYWRIGHT_BROWSERS_PATH`; test data lives under the operating system's temporary directory.
 
-A successful Linux run qualifies that environment only. Native macOS Firefox can fail before tests with `Could not find profile folder` because macOS app-data protection denies initialization even with an existing temporary profile. See [Mozilla's startup issue](https://bugzilla.mozilla.org/show_bug.cgi?id=2060476). Keep native failures separate from Linux results; do not skip Firefox or replace its pinned build. The container workflow does not repair or change macOS privacy permissions.
+Activate Node 24.21.0 in the invoking shell before running pnpm. The `.nvmrc` and `.node-version` files declare the version but do not change an already-running shell; with nvm, run `nvm use`. The strict engine check rejects other Node versions before verification starts.
