@@ -22,10 +22,14 @@ export async function readerCoverage(entries, mapPath) {
       wrapperLength: 0,
       sourceMap,
     });
+    for (const path of Object.keys(converted)) {
+      if (!path.startsWith(resolve("packages/reader/src") + "/"))
+        delete converted[path];
+    }
     merged.merge(converted);
   }
   const paths = merged.files();
-  const expected = ["index.ts", "policy.ts", "standalone.ts"];
+  const expected = ["index.ts", "policy.ts", "standalone.ts", "chart-view.ts"];
   if (
     expected.some(
       (name) => !paths.includes(resolve("packages/reader/src", name)),

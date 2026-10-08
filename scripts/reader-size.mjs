@@ -15,7 +15,7 @@ const result = await build({
 const bytes = result.outputFiles[0].contents;
 const inputs = Object.keys(result.metafile.inputs);
 const forbidden = inputs.filter((path) =>
-  /(?:packages\/(?:syntax|engine)\/|node_modules\/.*(?:react|codemirror)|compiler|program-validator)/i.test(
+  /(?:packages\/(?:syntax)\/|node_modules\/.*(?:react|codemirror)|compiler|program-validator|packages\/engine\/(?:src|dist)\/(?!chart-presentation\.(?:ts|js)|index\.(?:ts|js)))/i.test(
     path,
   ),
 );

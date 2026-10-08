@@ -10,10 +10,11 @@ if (
     "--suite parsing",
     "--suite semantics",
     "--suite reading",
+    "--suite charting",
   ].includes(suite)
 ) {
   console.error(
-    "NOT_IMPLEMENTED: supported aggregate suites are infrastructure, parsing, semantics and reading",
+    "NOT_IMPLEMENTED: supported aggregate suites are infrastructure, parsing, semantics, reading and charting",
   );
   process.exit(1);
 }
@@ -21,7 +22,9 @@ if (
 const commands = [
   ["python3", "scripts/check_spec.py"],
   ["python3", "-m", "unittest", "discover", "-s", "scripts/tests", "-v"],
-  ...(["--suite semantics", "--suite reading"].includes(suite)
+  ...(["--suite semantics", "--suite reading", "--suite charting"].includes(
+    suite,
+  )
     ? [["node", "scripts/program-schema.mjs", "--check"]]
     : []),
   ...[
@@ -35,12 +38,14 @@ const commands = [
     "test:browser:infrastructure",
     "check:licenses",
   ].map((s) => ["pnpm", s]),
-  ...(["--suite semantics", "--suite reading"].includes(suite)
+  ...(["--suite semantics", "--suite reading", "--suite charting"].includes(
+    suite,
+  )
     ? [
         ["pnpm", "test:conformance", "parsing"],
         ["pnpm", "test:conformance", "semantics"],
         ["node", "scripts/engine-size.mjs"],
-        ...(suite === "--suite reading"
+        ...(["--suite reading", "--suite charting"].includes(suite)
           ? [
               ["node", "scripts/reader-coverage.mjs"],
               ["node", "scripts/reader-size.mjs"],
