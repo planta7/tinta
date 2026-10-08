@@ -227,10 +227,25 @@ describe("real dependencies and packaging", () => {
     }
   });
 
-  it("propagates missing-entry build errors", async () =>
-    await expect(
-      classicBundle("/nonexistent/tinta-entry.ts"),
-    ).rejects.toThrow());
+  it("propagates missing-entry build errors", () => {
+    const result = spawnSync(
+      process.execPath,
+      [
+        "--input-type=module",
+        "-e",
+        'import { classicBundle } from "./scripts/packaging.mjs"; ' +
+          'await classicBundle("/nonexistent/tinta-entry.ts");',
+      ],
+      { encoding: "utf8" },
+    );
+
+    expect(result.error).toBeUndefined();
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain(
+      'Could not resolve "/nonexistent/tinta-entry.ts"',
+    );
+    expect(result.stdout).toBe("");
+  });
 });
 
 it("reports an explicit nonzero status for unsupported capabilities", async () => {
