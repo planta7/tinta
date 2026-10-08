@@ -4,9 +4,13 @@ import { mkdirSync, writeFileSync } from "node:fs";
 const requested = process.argv.slice(2);
 const suite = requested.length ? requested.join(" ") : "--suite infrastructure";
 
-if (!["--suite infrastructure", "--suite parsing"].includes(suite)) {
+if (
+  !["--suite infrastructure", "--suite parsing", "--suite semantics"].includes(
+    suite,
+  )
+) {
   console.error(
-    "NOT_IMPLEMENTED: supported aggregate suites are infrastructure and parsing",
+    "NOT_IMPLEMENTED: supported aggregate suites are infrastructure, parsing and semantics",
   );
   process.exit(1);
 }
@@ -14,6 +18,9 @@ if (!["--suite infrastructure", "--suite parsing"].includes(suite)) {
 const commands = [
   ["python3", "scripts/check_spec.py"],
   ["python3", "-m", "unittest", "discover", "-s", "scripts/tests", "-v"],
+  ...(suite === "--suite semantics"
+    ? [["node", "scripts/program-schema.mjs", "--check"]]
+    : []),
   ...[
     "format:check",
     "lint",
@@ -25,9 +32,15 @@ const commands = [
     "test:browser:infrastructure",
     "check:licenses",
   ].map((s) => ["pnpm", s]),
-  ...(suite === "--suite parsing"
-    ? [["pnpm", "test:conformance", "parsing"]]
-    : [["pnpm", "audit", "--audit-level=high"]]),
+  ...(suite === "--suite semantics"
+    ? [
+        ["pnpm", "test:conformance", "parsing"],
+        ["pnpm", "test:conformance", "semantics"],
+        ["node", "scripts/engine-size.mjs"],
+      ]
+    : suite === "--suite parsing"
+      ? [["pnpm", "test:conformance", "parsing"]]
+      : [["pnpm", "audit", "--audit-level=high"]]),
 ];
 
 const results = [];

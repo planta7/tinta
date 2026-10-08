@@ -14,13 +14,23 @@ export default defineConfig({
         "scripts/packaging.mjs",
         "scripts/capabilities.mjs",
         "packages/syntax/dist/**/*.js",
+        "packages/engine/dist/**/*.js",
       ],
-      exclude: ["packages/syntax/dist/registry.js"],
+      exclude: [
+        "packages/syntax/dist/registry.js",
+        "packages/engine/dist/registry.js",
+        "packages/engine/dist/program-validator.js",
+      ],
       thresholds: {
         statements: 85,
         branches: 80,
         functions: 85,
         lines: 85,
+        "packages/engine/dist/**": {
+          statements: 95,
+          branches: 90,
+          lines: 95,
+        },
         "packages/syntax/dist/**": {
           statements: 95,
           branches: 90,

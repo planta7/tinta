@@ -99,7 +99,9 @@ export function checkWorkspace(root = process.cwd()) {
     if (manifest.private !== true) throw new Error(`Public package: ${owner}`);
     for (const dependency of Object.keys(manifest.dependencies ?? {}))
       checkImport(owner, dependency);
-    for (const file of files(`${base}/src`).filter((p) => p.endsWith(".ts"))) {
+    for (const file of files(`${base}/src`).filter((p) =>
+      /\.(?:ts|js)$/.test(p),
+    )) {
       const text = readFileSync(file, "utf8");
       inspectSource(owner, text, file);
       const tree = ts.createSourceFile(

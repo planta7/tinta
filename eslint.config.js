@@ -10,6 +10,7 @@ export default tseslint.config(
       "coverage/**",
       "reports/**",
       ".local/**",
+      "packages/engine/src/program-validator.js",
     ],
   },
   js.configs.recommended,
