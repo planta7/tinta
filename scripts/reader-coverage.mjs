@@ -1,7 +1,7 @@
 import { createRequire } from "node:module";
 import { readFile, writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
-import { resolve } from "node:path";
+import { resolve, dirname } from "node:path";
 import { parseAstAsync } from "vite";
 
 // Reuse the exact converter and coverage map shipped with the locked provider.
@@ -11,9 +11,20 @@ const { createCoverageMap } = await import(
   provider.resolve("@vitest/istanbul-lib-coverage")
 );
 
-export async function readerCoverage(entries, mapPath) {
+export async function readerCoverage(entries, mapPath, options = {}) {
+  const expected = options.sources ?? [
+    "index.ts",
+    "policy.ts",
+    "standalone.ts",
+    "chart-view.ts",
+  ];
+  const report = options.report ?? "reports/verification/reader-coverage.json";
   const merged = createCoverageMap({});
   const sourceMap = JSON.parse(await readFile(mapPath, "utf8"));
+  sourceMap.sources = sourceMap.sources.map((source) =>
+    resolve(dirname(mapPath), sourceMap.sourceRoot ?? "", source),
+  );
+  delete sourceMap.sourceRoot;
   for (const entry of entries) {
     const converted = await convert({
       ast: parseAstAsync(entry.source),
@@ -23,13 +34,14 @@ export async function readerCoverage(entries, mapPath) {
       sourceMap,
     });
     for (const path of Object.keys(converted)) {
-      if (!path.startsWith(resolve("packages/reader/src") + "/"))
+      if (
+        !expected.some((name) => path === resolve("packages/reader/src", name))
+      )
         delete converted[path];
     }
     merged.merge(converted);
   }
   const paths = merged.files();
-  const expected = ["index.ts", "policy.ts", "standalone.ts", "chart-view.ts"];
   if (
     expected.some(
       (name) => !paths.includes(resolve("packages/reader/src", name)),
@@ -39,7 +51,7 @@ export async function readerCoverage(entries, mapPath) {
   }
   const summary = merged.getCoverageSummary().toJSON();
   await writeFile(
-    "reports/verification/reader-coverage.json",
+    report,
     JSON.stringify({ summary, files: merged.toJSON() }, null, 2) + "\n",
   );
   return summary;
@@ -50,7 +62,10 @@ if (
   import.meta.url === pathToFileURL(process.argv[1]).href
 ) {
   const { summary } = JSON.parse(
-    await readFile("reports/verification/reader-coverage.json", "utf8"),
+    await readFile(
+      process.argv[2] ?? "reports/verification/reader-coverage.json",
+      "utf8",
+    ),
   );
   for (const [kind, minimum] of Object.entries({
     statements: 85,
