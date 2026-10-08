@@ -1,0 +1,22 @@
+name: Verify foundation
+on:
+  pull_request:
+  push:
+jobs:
+  verify:
+    if: github.event_name == 'pull_request' || github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - run: npm install --global pnpm@10.34.6
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm verify
