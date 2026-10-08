@@ -17,11 +17,11 @@ A larger team may need a different arrangement.
 
 Source is UTF-8 `.tinta`; `.tinta.zip` bundles source and local images. Existing `.md` files retain Markdown behaviour until explicitly enriched into a separate document.
 
-Tinta is local-only. The engine, reader and planned CLI, reference editor and HTML exports have no accounts, hosting, sync, telemetry, remote data or AI features. It is a document language, not an application or website framework.
+Tinta is local-only. The engine, reader, CLI and HTML exports, and the planned reference editor have no accounts, hosting, sync, telemetry, remote data or AI features. It is a document language, not an application or website framework.
 
 ## Status
 
-Contract revision **1.0-draft.2** is a draft specification with type declarations, schemas and fixtures. The portable parser and typed engine are implemented, including transactional sessions, pure chart preparation and CSV/JSON import candidates. The document reader renders safe Markdown, native controls, conditions, tables and all seven interactive chart types with keyboard inspection and linked selection. Image decoding, the editor, document CLI and exports remain unimplemented. The 98 conformance cases have a public semantic adapter; reader browser-effect scenarios have automated tests; artifact scenarios remain pending. Source expectations are kept separate from actual execution evidence.
+Contract revision **1.0-draft.2** is a draft specification with type declarations, schemas and fixtures. The portable parser and typed engine are implemented, including transactional sessions, pure chart preparation and CSV/JSON import candidates. The document reader renders safe Markdown, native controls, conditions, tables and all seven interactive chart types with keyboard inspection and linked selection. Local raster resources, source bundles, answer snapshots, the document CLI and static/interactive HTML exports are implemented as draft tooling. The editor remains unimplemented. The 98 conformance cases have a public semantic adapter; reader browser-effect scenarios have automated tests; artifact scenarios have dedicated unit and file-origin browser tests. Cross-platform qualification remains distinct from local automated checks. Source expectations are kept separate from actual execution evidence.
 
 ## Explore
 
