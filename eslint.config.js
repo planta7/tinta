@@ -14,7 +14,12 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ["scripts/**/*.mjs", "*.js", "tests/**/*.mjs"],
+    files: [
+      "scripts/**/*.mjs",
+      "conformance/runner/**/*.mjs",
+      "*.js",
+      "tests/**/*.mjs",
+    ],
     languageOptions: { globals: globals.node },
   },
   {

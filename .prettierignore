@@ -6,7 +6,8 @@ reports
 .local
 pnpm-lock.yaml
 # Existing specification and fixtures retain their original bytes.
-conformance
+conformance/*.json
+conformance/*.md
 contracts
 schemas
 spec
@@ -14,3 +15,6 @@ examples
 docs
 architecture
 *.md
+# Exact upstream corpus and license bytes are hash-verified.
+third_party/commonmark/spec.json
+third_party/commonmark/LICENSE

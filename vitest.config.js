@@ -12,8 +12,20 @@ export default defineConfig({
         "scripts/architecture.mjs",
         "scripts/packaging.mjs",
         "scripts/capabilities.mjs",
+        "packages/syntax/dist/**/*.js",
       ],
-      thresholds: { statements: 85, branches: 80, functions: 85, lines: 85 },
+      exclude: ["packages/syntax/dist/registry.js"],
+      thresholds: {
+        statements: 85,
+        branches: 80,
+        functions: 85,
+        lines: 85,
+        "packages/syntax/dist/**": {
+          statements: 95,
+          branches: 90,
+          lines: 95,
+        },
+      },
     },
   },
 });

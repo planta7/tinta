@@ -1,0 +1,9 @@
+{
+  "version": "0.31.2",
+  "corpusUrl": "https://spec.commonmark.org/0.31.2/spec.json",
+  "licenseUrl": "https://raw.githubusercontent.com/commonmark/commonmark-spec/0.31.2/LICENSE",
+  "sha256": {
+    "spec.json": "d431b29d97b6f73e69d547109cf5081578fac931e72afe95639ebe766c1b2a20",
+    "LICENSE": "3e4806ba6f20073e8ce40da5a0c4b59f7f44287965f538e195a4d734d833557b"
+  }
+}

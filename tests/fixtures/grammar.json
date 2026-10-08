@@ -1,0 +1,415 @@
+[
+  {
+    "production": "document",
+    "positive": "Text\n@let x=1",
+    "malformed": "@end",
+    "boundary": "",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "directive",
+    "positive": "@slider x=1",
+    "malformed": "@unknown",
+    "boundary": "@meta ()",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "meta",
+    "positive": "@meta (title:\"a\",locale:\"en-US\")",
+    "malformed": "@meta (title \"a\")",
+    "boundary": "@meta ()",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "let",
+    "positive": "@let x=1",
+    "malformed": "@let x=",
+    "boundary": "@let x=(\n1\n)",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "calc",
+    "positive": "@calc x=1",
+    "malformed": "@calc x=\n1",
+    "boundary": "@calc x=(\n1\n)",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "slider",
+    "positive": "@slider x=-1",
+    "malformed": "@slider x=- 1",
+    "boundary": "@slider x=+0",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "toggle",
+    "positive": "@toggle x=true",
+    "malformed": "@toggle x=True",
+    "boundary": "@toggle x=false",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "choice",
+    "positive": "@choice x=\"a\" (options:[\"a\"])",
+    "malformed": "@choice x=\"a\"",
+    "boundary": "@choice x=\"\" (options:[\"\"])",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "when",
+    "positive": "@when true\n- x\n@end",
+    "malformed": "@when true\n<!-- note -->\n@end",
+    "boundary": "@when true\nx\n@end",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "details",
+    "positive": "@details \"Title\"\nx\n@end",
+    "malformed": "@details 1\nx\n@end",
+    "boundary": "@details\nx\n@end",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "data",
+    "positive": "@data d\nx:number\n1\n@end",
+    "malformed": "@data d\n@end",
+    "boundary": "@data d\n\nx:number\n\n@end",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "view",
+    "positive": "@view v=d (where:row.x>1)",
+    "malformed": "@view v=",
+    "boundary": "@view v=d",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "table",
+    "positive": "@table d (title:\"Title\")",
+    "malformed": "@table",
+    "boundary": "@table d",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "chart",
+    "positive": "@chart line d (x:\"x\",y:\"y\")",
+    "malformed": "@chart map d (x:\"x\")",
+    "boundary": "@chart histogram d ()",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "end",
+    "positive": "@when true\nx\n@end",
+    "malformed": "@when true\nx\n@end extra",
+    "boundary": "@when true\nx\n@end\t ",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "chart-type",
+    "positive": "@chart line d (x:\"x\",y:\"y\")",
+    "malformed": "@chart map d (x:\"x\")",
+    "boundary": "@chart histogram d ()",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "flow-body",
+    "positive": "@when true\n- x\n@end",
+    "malformed": "@when true\n<!-- note -->\n@end",
+    "boundary": "@when true\nx\n@end",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "markdown-node",
+    "positive": "**text**",
+    "malformed": "**unterminated",
+    "boundary": "",
+    "malformedIsLiteral": true
+  },
+  {
+    "production": "options",
+    "positive": "@meta (title:\"a\",locale:\"en-US\")",
+    "malformed": "@meta (title \"a\")",
+    "boundary": "@meta ()",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "option",
+    "positive": "@meta (title:\"a\")",
+    "malformed": "@meta (title:)",
+    "boundary": "@meta (title:\"a\",)",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "interpolation",
+    "positive": "{{ 1 }}",
+    "malformed": "{{ 1",
+    "boundary": "{{1}}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "inline-expression",
+    "positive": "{{ 1 + 2 }}",
+    "malformed": "{{ 1\n+2 }}",
+    "boundary": "{{1}}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "expression",
+    "positive": "{{ 1+2*3 }}",
+    "malformed": "{{ 1+ }}",
+    "boundary": "{{0}}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "or-expr",
+    "positive": "{{ true or false }}",
+    "malformed": "{{ true or }}",
+    "boundary": "{{ true }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "and-expr",
+    "positive": "{{ true and false }}",
+    "malformed": "{{ true and }}",
+    "boundary": "{{ true }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "equality",
+    "positive": "{{ 1 == 2 }}",
+    "malformed": "{{ 1 == }}",
+    "boundary": "{{ 1 != 2 }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "ordering",
+    "positive": "{{ 1 <= 2 }}",
+    "malformed": "{{ 1 < }}",
+    "boundary": "{{ 1 >= 2 }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "additive",
+    "positive": "{{ 1 + 2 }}",
+    "malformed": "{{ 1 + }}",
+    "boundary": "{{ 1 - 2 }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "multiplicative",
+    "positive": "{{ 1 * 2 }}",
+    "malformed": "{{ 1 / }}",
+    "boundary": "{{ 1 % 2 }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "unary",
+    "positive": "{{ not true }}",
+    "malformed": "{{ not }}",
+    "boundary": "{{ +-1 }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "unary-tail",
+    "positive": "{{ not true }}",
+    "malformed": "{{ not }}",
+    "boundary": "{{ +-1 }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "unary-prefix",
+    "positive": "{{ not true }}",
+    "malformed": "{{ not }}",
+    "boundary": "{{ +-1 }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "primary",
+    "positive": "{{ (1) }}",
+    "malformed": "{{ () }}",
+    "boundary": "{{ [] }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "row-field",
+    "positive": "{{ row.field }}",
+    "malformed": "{{ row. }}",
+    "boundary": "{{ row.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "call",
+    "positive": "{{ min(1,2) }}",
+    "malformed": "{{ min(1,) }}",
+    "boundary": "{{ count() }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "function-name",
+    "positive": "{{ if(true,1,2) }}",
+    "malformed": "{{ custom(1) }}",
+    "boundary": "{{ money(1) }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "list",
+    "positive": "{{ [1,2] }}",
+    "malformed": "{{ [1,,2] }}",
+    "boundary": "{{ [] }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "boolean",
+    "positive": "@toggle x=true",
+    "malformed": "@toggle x=True",
+    "boundary": "@toggle x=false",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "signed-number",
+    "positive": "@slider x=-1",
+    "malformed": "@slider x=- 1",
+    "boundary": "@slider x=+0",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "number",
+    "positive": "{{ 1.2e-3 }}",
+    "malformed": "{{ 01 }}",
+    "boundary": "{{ 0 }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "string",
+    "positive": "{{ \"abc\" }}",
+    "malformed": "{{ \"\\ud800\" }}",
+    "boundary": "{{ \"\" }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "identifier",
+    "positive": "@let name=1",
+    "malformed": "@let constructor=1",
+    "boundary": "@let xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=1",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "letter",
+    "positive": "@let Z_a=1",
+    "malformed": "@let \u00e9=1",
+    "boundary": "@let z=1",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "digit",
+    "positive": "{{ 123 }}",
+    "malformed": "{{ 1_0 }}",
+    "boundary": "{{ 0 }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "nonzero",
+    "positive": "{{ 9 }}",
+    "malformed": "{{ 01 }}",
+    "boundary": "{{ 1 }}",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "data-body",
+    "positive": "@data d\nx:number\n1\n@end",
+    "malformed": "@data d\n@end",
+    "boundary": "@data d\n\nx:number\n\n@end",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "typed-header",
+    "positive": "@data d\nx:text|y:number\n@end",
+    "malformed": "@data d\n|x:text|\n@end",
+    "boundary": "@data d\nx:text\n@end",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "header-cell",
+    "positive": "@data d\nx:text\n@end",
+    "malformed": "@data d\nx:array\n@end",
+    "boundary": "@data d\n x : text \n@end",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "data-type",
+    "positive": "@data d\nx:boolean\n@end",
+    "malformed": "@data d\nx:null\n@end",
+    "boundary": "@data d\nx:number\n@end",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "data-row",
+    "positive": "@data d\nx:text\nabc\n@end",
+    "malformed": "@data d\nx:text\na|b\n@end",
+    "boundary": "@data d\nx:text\n\"\"\n@end",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "data-cell",
+    "positive": "@data d\nx:text\n\"a|b\"\n@end",
+    "malformed": "@data d\nx:text\n\"a\" b\n@end",
+    "boundary": "@data d\nx:text\n\"\"\n@end",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "blank-line",
+    "positive": "@data d\n\nx:text\n@end",
+    "malformed": "@data d\n!\nx:text\n@end",
+    "boundary": "@data d\n \t\nx:text\n@end",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "line-end",
+    "positive": "@let x=1\n",
+    "malformed": "@let x=1 extra",
+    "boundary": "@let x=1",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "wsp",
+    "positive": "@slider x = 1 ( min : 0 )",
+    "malformed": "@slider x\u000b=1",
+    "boundary": "@slider x=1(min:0)",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "ws1",
+    "positive": "@let\tx=1",
+    "malformed": "@let(x)=1",
+    "boundary": "@let x=1",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "ws",
+    "positive": "@meta (\n title : \"x\"\n)",
+    "malformed": "@meta (title\u000b:\"x\")",
+    "boundary": "@meta ()",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "newline",
+    "positive": "@let x=1\r\n@let y=2",
+    "malformed": "@let x=1\u000b@let y=2",
+    "boundary": "@let x=1\r@let y=2",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "tab",
+    "positive": "@let\tx\t=\t1",
+    "malformed": "@let x=\u000b1",
+    "boundary": "@let x=1\t",
+    "malformedIsLiteral": false
+  },
+  {
+    "production": "eof",
+    "positive": "@let x=1",
+    "malformed": "@let x=",
+    "boundary": "",
+    "malformedIsLiteral": false
+  }
+]
