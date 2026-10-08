@@ -22,6 +22,7 @@ export function normalizeAssetPath(destination: string): string {
   if (path.startsWith("./")) path = path.slice(2);
   return normalizedPath(path);
 }
+
 function normalizedPath(path: string): string {
   if (
     /[\\?#:]/.test(path) ||
@@ -43,6 +44,7 @@ export function inspectImage(bytes: Uint8Array): {
 } {
   if (!bytes.length || bytes.length > limits.assetBytes)
     reject("E_LIMIT", "Image byte limit exceeded.");
+
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const bad = (): never =>
     reject("E_ASSET_TYPE", "Unsupported, animated or malformed raster image.");
@@ -65,6 +67,7 @@ export function inspectImage(bytes: Uint8Array): {
       end = false,
       palette = false,
       dataEnded = false;
+
     while (offset + 12 <= bytes.length) {
       const length = view.getUint32(offset);
       const tag = word(offset + 4);
@@ -136,6 +139,7 @@ export function inspectImage(bytes: Uint8Array): {
     let offset = 2,
       scanned = false,
       ended = false;
+
     while (offset < bytes.length) {
       if (bytes[offset++] !== 255) bad();
       while (bytes[offset] === 255) offset++;
@@ -151,6 +155,7 @@ export function inspectImage(bytes: Uint8Array): {
         offset + 2 > bytes.length
       )
         bad();
+
       const length = view.getUint16(offset);
       if (length < 2 || offset + length > bytes.length) bad();
       if ([192, 193, 194].includes(marker!)) {
@@ -188,6 +193,7 @@ export function inspectImage(bytes: Uint8Array): {
       image = false;
     let canvasWidth: number | undefined;
     let canvasHeight: number | undefined;
+
     while (offset + 8 <= bytes.length) {
       const tag = word(offset),
         length = view.getUint32(offset + 4, true),
@@ -252,8 +258,15 @@ export function inspectImage(bytes: Uint8Array): {
   if (!width || !height) bad();
   if (width * height > limits.imagePixels)
     reject("E_LIMIT", "Image pixel limit exceeded.");
-  return { mime, extension, width, height };
+
+  return {
+    mime,
+    extension,
+    width,
+    height,
+  };
 }
+
 export function createAsset(bytes: Uint8Array): Result<Asset> {
   return attempt(() => {
     const image = inspectImage(bytes);
@@ -266,13 +279,16 @@ export function createAsset(bytes: Uint8Array): Result<Asset> {
     };
   });
 }
+
 export function validateAssets(assets: AssetStore): Map<string, Asset> {
   const result = new Map<string, Asset>();
   const unique = new Set<string>();
   let total = 0;
+
   for (const [key, asset] of assets) {
     if (normalizedPath(key) !== key)
       reject("E_ASSET_PATH", "Asset keys must be normalized.");
+
     const image = inspectImage(asset.bytes);
     const digest = hash(asset.bytes);
     if (
@@ -297,8 +313,10 @@ export function validateAssets(assets: AssetStore): Map<string, Asset> {
       reject("E_LIMIT", "Asset store limit exceeded.");
     result.set(key, { ...asset, bytes: Uint8Array.from(asset.bytes) });
   }
+
   return result;
 }
+
 export function imageDestinations(
   nodes: readonly (DocNode | ResolvedNode)[],
 ): string[] {
@@ -316,6 +334,7 @@ export function imageDestinations(
   }
   return [...new Set(destinations)];
 }
+
 export function requiredAssets(
   program: Program,
   assets: AssetStore,

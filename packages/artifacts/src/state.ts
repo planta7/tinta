@@ -20,6 +20,7 @@ export function createStateSnapshot(session: Session): StateEnvelope {
     ),
   };
 }
+
 export function validateStateSnapshot(
   program: Program,
   payload: unknown,
@@ -42,6 +43,7 @@ export function validateStateSnapshot(
       Array.isArray(envelope.controls)
     )
       reject("E_SNAPSHOT", "Invalid snapshot controls.");
+
     const session = unwrap(
       createSession(program, { baseline: envelope.controls as ControlState }),
     );

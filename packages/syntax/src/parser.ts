@@ -13,6 +13,7 @@ import { ExpressionParser } from "./expression.js";
 import { Source, SyntaxFailure } from "./source.js";
 
 type MdNode = CompileContext["stack"][number];
+
 export type SyntaxKind =
   MdNode["type"] | "directive" | "interpolation" | "error";
 
@@ -71,13 +72,18 @@ export function parseRecovering(
     const tokens: EditorToken[] = [];
     const definitions = new Map<
       string,
-      { url: string; title?: string | null | undefined }
+      {
+        url: string;
+        title?: string | null | undefined;
+      }
     >();
-    const pending: { node: MdNode; depth: number }[] = [
-      { node: ast, depth: 0 },
-    ];
+    const pending: {
+      node: MdNode;
+      depth: number;
+    }[] = [{ node: ast, depth: 0 }];
 
     let markdownNodes = 0;
+
     while (pending.length) {
       const { node, depth } = pending.pop()!;
       source.limit("markdownDepth", depth, node.position?.start.offset ?? 0);
@@ -147,6 +153,7 @@ export function parseRecovering(
               end,
               "Interpolation needs }} on the same physical line.",
             );
+
           const p = new ExpressionParser(source, start + 2, end - 2),
             expression = p.parse();
           p.finish();
@@ -253,6 +260,7 @@ export function parseRecovering(
         };
       }
       tokens.push({ kind: result.kind, span });
+
       return result;
     }
 
@@ -279,6 +287,7 @@ export function parseRecovering(
       tokens,
       diagnostics: source.diagnostics,
     };
+
     return {
       ok: true,
       value,
@@ -293,7 +302,10 @@ export function parseRecovering(
 
 function groupBlocks(source: Source, root: SyntaxNode): SyntaxNode {
   const children: SyntaxNode[] = [];
-  const stack: { opener: SyntaxNode; children: SyntaxNode[] }[] = [];
+  const stack: {
+    opener: SyntaxNode;
+    children: SyntaxNode[];
+  }[] = [];
   let seenContent = false;
   const addError = (
     code: string,
@@ -396,6 +408,7 @@ function groupBlocks(source: Source, root: SyntaxNode): SyntaxNode {
     addError("E_BLOCK_UNCLOSED", frame.opener, "Block needs @end.", true);
     target().push({ ...frame.opener, children: frame.children });
   }
+
   return {
     ...root,
     span: source.span(0, source.text.length),
@@ -437,6 +450,7 @@ function anchors(root: SyntaxNode, source: Source): SyntaxNode {
       full.add(anchor);
       attributes = { ...attributes, anchor };
     }
+
     return {
       ...node,
       ...(attributes ? { attributes } : {}),
@@ -489,6 +503,7 @@ function anchors(root: SyntaxNode, source: Source): SyntaxNode {
         active: safe,
       };
     }
+
     return {
       ...node,
       ...(attributes ? { attributes } : {}),

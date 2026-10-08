@@ -72,6 +72,7 @@ export function validAttribute(
     if (name === "disabled") return value === true;
     if (name === "checked") return typeof value === "boolean";
   }
+
   return false;
 }
 
@@ -79,6 +80,7 @@ export function validAttribute(
 export function validateNodes(nodes: readonly ResolvedNode[]): void {
   const seen = new WeakSet<object>();
   const pending = [nodes];
+
   while (pending.length) {
     const items = pending.pop()!;
     if (!Array.isArray(items)) throw new Error("Invalid render tree.");

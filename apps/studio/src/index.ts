@@ -101,6 +101,7 @@ function dialog(
     previous.inert = true;
     previous.setAttribute("aria-hidden", "true");
   }
+
   const element = node("dialog");
   const heading = node("h2", title);
   heading.id = "dialog-" + token();
@@ -212,6 +213,7 @@ class Studio {
         event.altKey
       )
         return;
+
       const key = event.key.toLowerCase();
       if (key === "s") {
         event.preventDefault();
@@ -581,6 +583,7 @@ class Studio {
             this.chooseFiles([file], true);
           });
       });
+
     const file = files[0]!;
     const profile = profileFor(file.name);
     if (!profile)
@@ -738,6 +741,7 @@ class Studio {
               throw new Error(
                 "Source is checking or invalid. Export is unavailable.",
               );
+
             const revision = this.revision;
             let bytes: Uint8Array, name: string, type: string;
             if (format.value === "Answers snapshot") {
@@ -803,6 +807,7 @@ class Studio {
       if (kind.includes("data")) {
         if (this.profile !== "tinta")
           throw new Error("Enrich as Tinta before importing data.");
+
         const importer = kind === "CSV data" ? importCsv : importJson;
         dialog("Preview data import", (body, close) => {
           if (!this.valid || !this.session || !this.editor) {
@@ -814,6 +819,7 @@ class Studio {
             );
             return;
           }
+
           const used = new Set(
             this.session.program.declarations.map((item) => item.name),
           );
@@ -822,8 +828,10 @@ class Studio {
               .replace(/[^A-Za-z0-9_]/g, "_")
               .replace(/^[0-9]/, "data_$&") || "imported_data";
           let defaultName = baseName;
+
           for (let suffix = 2; used.has(defaultName); suffix++)
             defaultName = baseName + "_" + suffix;
+
           const position = insertionBoundary(
             this.session.program,
             sourceOffset(this.source, this.editor.view.state.selection.main.to),
@@ -923,6 +931,7 @@ class Studio {
                   throw new Error(
                     "Enter meaningful alt text or mark the image decorative.",
                   );
+
                 const key = path ? normalizeAssetPath(path.value) : asset.path;
                 if (
                   path &&
@@ -940,6 +949,7 @@ class Studio {
                   throw new Error(
                     "Choose an exact image destination from the source.",
                   );
+
                 const candidate = new Map(this.assets);
                 candidate.set(key, asset);
                 validateAssets(candidate);
@@ -1060,4 +1070,5 @@ class Studio {
     }, 1000);
   }
 }
+
 new Studio();

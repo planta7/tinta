@@ -40,7 +40,9 @@ export interface CliResult {
   readonly stdout: string;
   readonly stderr: string;
 }
+
 const version = "tinta 0.0.0; source format 1.0; IR ABI tinta-ir-1\n";
+
 function decodeInput(bytes: Uint8Array): string {
   try {
     return decodeUtf8(bytes);
@@ -68,6 +70,7 @@ async function stdinBytes(
   }
   return Buffer.concat(chunks);
 }
+
 export async function run(
   argv: readonly string[],
   signal: AbortSignal = new AbortController().signal,
@@ -76,6 +79,7 @@ export async function run(
     return { exitCode: 0, stdout: help, stderr: "" };
   if (argv.length === 1 && argv[0] === "--version")
     return { exitCode: 0, stdout: version, stderr: "" };
+
   let command = argv[0] ?? "",
     json = argv.includes("--json");
   const diagnostics: Diagnostic[] = [],
@@ -145,6 +149,7 @@ export async function run(
       const extension = extname(input).toLowerCase();
       if (![".csv", ".json"].includes(extension) || input === "-")
         usage("Import input must be a CSV or JSON file.");
+
       const bytes = await readBounded(input, 5242880);
       let columns: readonly ImportColumn[] | undefined;
       const schema = flag("schema");
@@ -189,6 +194,7 @@ export async function run(
             );
         columns = envelope.columns as ImportColumn[];
       }
+
       const imported = unwrap(
         (extension === ".csv" ? importCsv : importJson)(bytes, {
           name: flag("name")!,
@@ -207,10 +213,12 @@ export async function run(
       await produce(
         artifact(encodeUtf8(imported.source), "text/plain", "data.tinta"),
       );
+
       return finish(0);
     }
     if (input === "-" && !["check", "build", "enrich"].includes(command))
       usage("This command does not accept standard input.");
+
     const bundle = input.toLowerCase().endsWith(".tinta.zip");
     if (command === "unpack" && !bundle)
       usage("Unpack requires a source bundle.");
@@ -224,6 +232,7 @@ export async function run(
       usage("Enrich requires Markdown source.");
     if (bundle && (flag("profile") === "markdown" || flag("asset-root")))
       usage("Bundles use their declared profile and resources.");
+
     let profile: SourceProfile = "tinta";
     if (command !== "enrich") {
       const selected =
@@ -238,6 +247,7 @@ export async function run(
     }
     if (profile === "markdown" && flag("state") === "snapshot")
       usage("Markdown permits initial state only.");
+
     const bytes =
       input === "-"
         ? await stdinBytes(limits.sourceBytes, signal)
@@ -260,6 +270,7 @@ export async function run(
       );
       return finish(0);
     }
+
     const opened = bundle ? unwrap(await openBundle(bytes)) : undefined;
     if (command === "unpack") {
       const loaded = opened!;
@@ -281,6 +292,7 @@ export async function run(
       human = `Unpacked ${entries.size} files into ${resolve(target)}.\n`;
       return finish(0);
     }
+
     const compiled = compile(
       opened?.source ?? {
         bytes,
@@ -337,6 +349,7 @@ export async function run(
         diagnostics.some((item) => item.severity === "warning")
       )
         return finish(1);
+
       return finish(0);
     } finally {
       session.destroy();
@@ -377,9 +390,11 @@ export async function run(
         end: { offset: 0, line: 1, column: 1 },
       },
     });
+
     return finish(exitCode);
   }
 }
+
 export async function main(): Promise<void> {
   const controller = new AbortController();
   const interrupt = (): void => {

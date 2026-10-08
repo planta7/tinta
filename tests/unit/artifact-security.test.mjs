@@ -43,7 +43,13 @@ const bytes = (mime) =>
 const png = bytes("image/png"),
   asset = unwrap(createAsset(png));
 const program = (text) =>
-  unwrap(compile({ text, profile: "tinta", uri: "tinta:/document.tinta" }));
+  unwrap(
+    compile({
+      text,
+      profile: "tinta",
+      uri: "tinta:/document.tinta",
+    }),
+  );
 const validBundle = async () =>
   unwrap(await packSource(program("# Source\n"), new Map())).bytes;
 
@@ -265,7 +271,11 @@ test("source rebasing traverses nested lists and table image cells", async () =>
 });
 test("invalid export options and Markdown source bundles fail explicitly", async () => {
   const compiled = unwrap(
-      compile({ text: "# Plain", profile: "markdown", uri: "tinta:plain" }),
+      compile({
+        text: "# Plain",
+        profile: "markdown",
+        uri: "tinta:plain",
+      }),
     ),
     session = unwrap(createSession(compiled));
   expect((await packSource(compiled, new Map())).ok).toBe(false);

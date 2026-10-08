@@ -110,12 +110,15 @@ export function staticNodes(
           )
           .join("") +
         `</tbody></table>`;
+
       return (
         `<figure><figcaption>${escapeHtml(chart.title)}</figcaption>` +
         `${svg}<p>${escapeHtml(scene.message)}</p>${table}</figure>`
       );
     }
+
     const content = staticNodes(node.children, assets, budget);
+
     return (
       `<${node.tag}${attributes(node.attributes)}` +
       (node.tag === "a" && !String(node.attributes.href).startsWith("#")
@@ -130,6 +133,7 @@ export function staticNodes(
         : `${content}</${node.tag}>`)
     );
   };
+
   return nodes
     .map((node) => {
       const before = budget.bytes;
@@ -141,6 +145,7 @@ export function staticNodes(
     })
     .join("");
 }
+
 export function staticHtml(
   session: Session,
   assets: AssetStore,
@@ -180,11 +185,13 @@ export function staticHtml(
     const bytes = encodeUtf8(html);
     if (bytes.length > limits.htmlBytes)
       reject("E_LIMIT", "HTML byte limit exceeded.");
+
     return artifact(bytes, "text/html", "document.html");
   } finally {
     selected.destroy();
   }
 }
+
 export async function exportHtml(
   session: Session,
   assets: AssetStore,
@@ -239,6 +246,7 @@ function interactiveHtml(
       `\nTintaExportRuntime.start("${hash(encodeUtf8(payload))}");\n`;
     if (/<\/script/i.test(code) || /<\/style/i.test(readerStyle))
       reject("E_EXPORT_INVALID", "Unsafe trusted runtime delimiter.");
+
     const digest = (value: string): string =>
       base64(
         Uint8Array.from(
@@ -275,6 +283,7 @@ function interactiveHtml(
     const bytes = encodeUtf8(html);
     if (bytes.length > limits.htmlBytes)
       reject("E_LIMIT", "HTML byte limit exceeded.");
+
     return artifact(bytes, "text/html", "document.html");
   } finally {
     chosen.destroy();

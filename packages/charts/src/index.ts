@@ -23,6 +23,7 @@ export interface SceneNode {
   readonly text?: string;
   readonly pointId?: string;
 }
+
 export interface ChartScene {
   readonly width: number;
   readonly height: number;
@@ -30,6 +31,7 @@ export interface ChartScene {
   readonly message: string;
   readonly total: number;
 }
+
 export const palette = [
   "#0072B2",
   "#D55E00",
@@ -47,10 +49,12 @@ const shapes = [
   symbolCross,
   symbolStar,
 ];
+
 export function coordinate(value: number): string {
   if (!Number.isFinite(value)) throw new Error("E_CHART_DOMAIN");
   return String(Number(value.toFixed(3)));
 }
+
 export function tickLabel(value: string | number): string {
   const characters = [...String(value)];
   return characters.length > 14
@@ -112,6 +116,7 @@ export function chartScene(
         .innerRadius(chart.type === "donut" ? radius * 0.6 : 0)
         .outerRadius(radius)
         .digits(3);
+
       for (const slice of slices) {
         if (slice.data.y === 0) continue;
         const index = chart.points.findIndex(
@@ -143,6 +148,7 @@ export function chartScene(
         `Visible total: ${view.total}`,
       );
     }
+
     return finish();
   }
   if (!view.yDomain) return finish();
@@ -170,7 +176,13 @@ export function chartScene(
       : numeric
         ? numeric(point.x as number)
         : pointScale(String(point.x))!;
-  add("line", { x1: left, x2: left, y1: top, y2: bottom, stroke: "#59636e" });
+  add("line", {
+    x1: left,
+    x2: left,
+    y1: top,
+    y2: bottom,
+    stroke: "#59636e",
+  });
   add("line", {
     x1: left,
     x2: right,
@@ -181,7 +193,12 @@ export function chartScene(
   for (const value of ticks(view.yDomain[0], view.yDomain[1], 5)) {
     add(
       "text",
-      { x: left - 8, y: y(value), "text-anchor": "end", fill: "#1f2328" },
+      {
+        x: left - 8,
+        y: y(value),
+        "text-anchor": "end",
+        fill: "#1f2328",
+      },
       tickLabel(value),
     );
   }
@@ -250,6 +267,7 @@ export function chartScene(
     }
     return finish();
   }
+
   const visibleSeries = chart.series
     .map((series, index) => ({ ...series, index }))
     .filter((series) => !hidden.has(series.id));
@@ -257,6 +275,7 @@ export function chartScene(
     .domain(visibleSeries.map((series) => series.index))
     .range([0, band.bandwidth()])
     .paddingInner(0.1);
+
   for (const series of visibleSeries) {
     const points = view.points.filter(
       (point) => point.seriesIndex === series.index,
@@ -275,6 +294,7 @@ export function chartScene(
           "fill-opacity": 0.15,
         });
       }
+
       const shape = line<ChartPoint>()
         .x(x)
         .y((point) => y(point.y))
@@ -320,14 +340,26 @@ export function chartScene(
           d: path ?? "",
           transform: `translate(${coordinate(x(point))},${coordinate(y(point.y))})`,
         });
-      } else add("circle", { ...common, cx: x(point), cy: y(point.y), r: 4 });
+      } else
+        add("circle", {
+          ...common,
+          cx: x(point),
+          cy: y(point.y),
+          r: 4,
+        });
       add(
         "circle",
-        { cx: x(point), cy: y(point.y), r: 12, fill: "transparent" },
+        {
+          cx: x(point),
+          cy: y(point.y),
+          r: 12,
+          fill: "transparent",
+        },
         undefined,
         point.id,
       );
     }
   }
+
   return finish();
 }

@@ -96,6 +96,7 @@ test.afterAll(async ({ browserName }) => {
   if (browserName === "chromium")
     await readerCoverage(coverage, runtime + ".map");
 });
+
 async function mount(page, source = documentSource, options = {}) {
   return page.evaluate(
     ({ source, options }) => globalThis.readerTest.mount(source, options),
@@ -423,7 +424,12 @@ test("mount rejects foreign, forged and duplicate hosts, preserves host siblings
     const value = host.querySelector("input[type=range]").value;
     again.value.destroy();
     frame.remove();
-    return { codes, left, value, number: session.getRevision().number };
+    return {
+      codes,
+      left,
+      value,
+      number: session.getRevision().number,
+    };
   });
   expect(result.codes).toEqual(Array(8).fill("E_PROTOCOL"));
   expect(result.left).toBe("Host content");
@@ -593,12 +599,25 @@ test("untrusted render plans fail before host mutation and subscriber failures a
     const badNodes = [
       { ...base, tag: "script" },
       { ...base, attributes: { onclick: "alert(1)" } },
-      { ...base, tag: "a", attributes: { href: "javascript:alert(1)" } },
+      {
+        ...base,
+        tag: "a",
+        attributes: { href: "javascript:alert(1)" },
+      },
       { ...base, tag: "input", attributes: { type: "text" } },
       { kind: "unknown", id: "n000001" },
       { kind: "text", id: "n000001", value: {} },
-      { kind: "image", id: "n000001", destination: 1, alt: "a" },
-      { kind: "chart", id: "n000001", chart: { title: null } },
+      {
+        kind: "image",
+        id: "n000001",
+        destination: 1,
+        alt: "a",
+      },
+      {
+        kind: "chart",
+        id: "n000001",
+        chart: { title: null },
+      },
       {
         kind: "control",
         id: "n000001",
@@ -621,7 +640,12 @@ test("untrusted render plans fail before host mutation and subscriber failures a
       {
         kind: "control",
         id: "n000001",
-        definition: { kind: "choice", name: "x", label: "X", options: ["a"] },
+        definition: {
+          kind: "choice",
+          name: "x",
+          label: "X",
+          options: ["a"],
+        },
         value: "b",
       },
       {
@@ -1313,7 +1337,11 @@ test("seed conformance fixtures project successful revisions and preserve reject
         };
       const created = globalThis.readerTest.createSession(compiled.value);
       if (!created.ok)
-        return { ok: false, mounted: false, diagnostics: created.diagnostics };
+        return {
+          ok: false,
+          mounted: false,
+          diagnostics: created.diagnostics,
+        };
       const session = created.value;
       const host = document.createElement("div");
       document.querySelector("main").append(host);

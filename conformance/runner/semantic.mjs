@@ -98,6 +98,7 @@ export function observe(fixture) {
     charts,
   };
 }
+
 export function assertSemanticCase(fixture) {
   const observed = observe(fixture),
     expected = fixture.expect;
@@ -160,6 +161,7 @@ export function assertSemanticCase(fixture) {
     deferred,
   };
 }
+
 if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(process.argv[1]).href

@@ -24,6 +24,7 @@ export class PreviewHost {
     baseline: ControlState;
   };
   private onHello: (event: MessageEvent<unknown>) => void;
+
   constructor(
     parent: HTMLElement,
     program: Program,
@@ -56,6 +57,7 @@ export class PreviewHost {
           JSON.stringify({ protocol: "tinta-host-1", kind: "hello" })
       )
         return;
+
       const channel = new MessageChannel();
       this.port = channel.port1;
       this.port.onmessage = (message: MessageEvent<unknown>) => {

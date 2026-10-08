@@ -326,7 +326,12 @@ test("import schema is strict, complete and does not silently coerce JSON", asyn
     {
       kind: "tinta-import-schema",
       columns: [
-        { input: "value", name: "renamed", type: "number", extra: true },
+        {
+          input: "value",
+          name: "renamed",
+          type: "number",
+          extra: true,
+        },
       ],
     },
   ]) {

@@ -2,6 +2,7 @@ import { compile, createSession } from "../../packages/engine/dist/index.js";
 const { mountReader } = globalThis.TintaReaderRuntime.TintaReader;
 
 const instances = [];
+
 function mount(
   source,
   { profile = "tinta", baseline, observerThrows = false } = {},
@@ -30,9 +31,15 @@ function mount(
     },
   );
   if (!result.ok) throw new Error(JSON.stringify(result));
-  instances.push({ session, handle: result.value, host, diagnostics });
+  instances.push({
+    session,
+    handle: result.value,
+    host,
+    diagnostics,
+  });
   return instances.length - 1;
 }
+
 globalThis.readerTest = {
   mount,
   instances,

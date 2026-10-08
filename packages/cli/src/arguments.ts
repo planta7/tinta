@@ -37,9 +37,11 @@ const allowed: Record<string, readonly string[]> = {
   studio: ["output", "force", "json"],
 };
 const booleans = ["with-assets", "json", "warnings-as-errors", "force"];
+
 export function usage(message: string): never {
   throw new HostFailure("E_PROTOCOL", message, 2);
 }
+
 export function parseArguments(argv: readonly string[]): {
   command: string;
   input: string;
@@ -48,6 +50,7 @@ export function parseArguments(argv: readonly string[]): {
   const command = argv[0] ?? "";
   if (!Object.hasOwn(allowed, command))
     usage("Unknown or missing command. Use --help.");
+
   const options: NonNullable<ParseArgsConfig["options"]> = Object.fromEntries(
     allowed[command]!.map((name) => [
       name,
@@ -66,13 +69,16 @@ export function parseArguments(argv: readonly string[]): {
   } catch {
     usage("Unknown flag or invalid flag value.");
   }
+
   const seen = new Set<string>();
+
   for (const token of parsed.tokens) {
     if (token.kind !== "option") continue;
     if (seen.has(token.name)) usage("Duplicate flag.");
     seen.add(token.name);
     if (token.value === "") usage("Missing flag value.");
   }
+
   const flags = parsed.values as Record<string, string | true>;
   const operands = parsed.positionals;
   if (operands.length !== (command === "studio" ? 0 : 1))
@@ -97,5 +103,6 @@ export function parseArguments(argv: readonly string[]): {
     usage("--asset-root requires --with-assets.");
   if (command === "studio" && flags.force && !flags.output)
     usage("--force requires --output.");
+
   return { command, input: operands[0] ?? "", flags };
 }

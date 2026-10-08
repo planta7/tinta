@@ -51,6 +51,7 @@ export function validateRecovery(value: unknown): Recovery {
   validateAssets(new Map(candidate.assets));
   if (recoveryBytes(candidate) > 30 * 1024 * 1024)
     throw new Error("Recovery copy exceeds storage limit.");
+
   return candidate;
 }
 

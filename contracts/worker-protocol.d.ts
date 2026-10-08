@@ -25,7 +25,10 @@ export type WorkerRequest = MessageBase &
         uri: string;
         profile: SourceProfile;
       }>
-    | Readonly<{ kind: "cancel"; targetRequestId: number }>
+    | Readonly<{
+        kind: "cancel";
+        targetRequestId: number;
+      }>
   );
 
 export type WorkerResponse = MessageBase &
@@ -35,8 +38,14 @@ export type WorkerResponse = MessageBase &
         program: ProgramIR;
         diagnostics: readonly Diagnostic[];
       }>
-    | Readonly<{ kind: "rejected"; diagnostics: readonly Diagnostic[] }>
-    | Readonly<{ kind: "cancelled"; targetRequestId: number }>
+    | Readonly<{
+        kind: "rejected";
+        diagnostics: readonly Diagnostic[];
+      }>
+    | Readonly<{
+        kind: "cancelled";
+        targetRequestId: number;
+      }>
   );
 
 /** Optional load assetPaths maps normalized relative source paths to supplied canonical
@@ -53,9 +62,15 @@ export type PreviewRequest = MessageBase &
         assetPaths?: Readonly<Record<string, string>>;
         baseline?: ControlState;
       }>
-    | Readonly<{ kind: "set-controls"; controls: ControlState }>
+    | Readonly<{
+        kind: "set-controls";
+        controls: ControlState;
+      }>
     | Readonly<{ kind: "reset" }>
-    | Readonly<{ kind: "set-enabled"; enabled: boolean }>
+    | Readonly<{
+        kind: "set-enabled";
+        enabled: boolean;
+      }>
     | Readonly<{ kind: "get-state" }>
     | Readonly<{ kind: "destroy" }>
   );
@@ -68,8 +83,14 @@ export type PreviewResponse = MessageBase &
         controls: ControlState;
         sessionRevision: number;
       }>
-    | Readonly<{ kind: "action-result"; result: Result<Revision> }>
-    | Readonly<{ kind: "diagnostics"; diagnostics: readonly Diagnostic[] }>
+    | Readonly<{
+        kind: "action-result";
+        result: Result<Revision>;
+      }>
+    | Readonly<{
+        kind: "diagnostics";
+        diagnostics: readonly Diagnostic[];
+      }>
     | Readonly<{ kind: "destroyed" }>
   );
 

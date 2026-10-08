@@ -17,6 +17,7 @@ type Construct = Extract<
   ReturnType<typeof markdownParser>["constructs"]["flow"][number],
   { tokenize: unknown }
 >;
+
 type Tokenizer = Construct["tokenize"];
 type State = Parameters<Tokenizer>[1];
 export type MarkdownRoot = ReturnType<typeof fromMarkdown>;
@@ -43,6 +44,7 @@ export function directiveExtent(
     depth = 0,
     quoted = false,
     escaped = false;
+
   for (; i < source.text.length; i++) {
     const c = source.text[i]!;
     source.charge("compileOperations", i);
@@ -71,6 +73,7 @@ export function directiveExtent(
     }
     return source.text.length;
   }
+
   return i;
 }
 
@@ -83,7 +86,10 @@ export function markdown(
   const bom = source.text.startsWith("\ufeff") ? 1 : 0;
   // Resolve image labels with ordinary Markdown inline rules first. Their alt
   // text must not be reinterpreted even when braces contain brackets or markup.
-  const imageSpans: { start: number; end: number }[] = [];
+  const imageSpans: {
+    start: number;
+    end: number;
+  }[] = [];
   if (active && inline) {
     const pending = [
       markdown(
@@ -104,6 +110,7 @@ export function markdown(
     }
     imageSpans.sort((a, b) => a.start - b.start);
   }
+
   const isImage = (offset: number): boolean => {
     let lo = 0,
       hi = imageSpans.length;
@@ -149,8 +156,10 @@ export function markdown(
               }
               effects.consume(code);
             }
+
             return consume;
           };
+
           return (code) => {
             effects.enter(directiveToken);
             return consume(code);
@@ -199,6 +208,7 @@ export function markdown(
                 effects.consume(code);
                 return body;
               };
+
               return (code) => {
                 effects.enter(interpolationToken);
                 effects.consume(code);
@@ -280,6 +290,7 @@ export function markdown(
   const pending = [
     tree as import("mdast-util-from-markdown").CompileContext["stack"][number],
   ];
+
   while (pending.length) {
     const node = pending.pop()!;
     if (node.position)
@@ -289,5 +300,6 @@ export function markdown(
       };
     if ("children" in node) pending.push(...node.children);
   }
+
   return tree;
 }

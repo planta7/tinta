@@ -25,7 +25,13 @@ mkdirSync("reports/verification", { recursive: true });
 writeFileSync(
   "reports/verification/reader-size.json",
   JSON.stringify(
-    { bytes: bytes.length, gzipBytes, maximumGzipBytes, inputs, forbidden },
+    {
+      bytes: bytes.length,
+      gzipBytes,
+      maximumGzipBytes,
+      inputs,
+      forbidden,
+    },
     null,
     2,
   ) + "\n",

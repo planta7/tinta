@@ -24,6 +24,7 @@ export function numericDomain(
   ) {
     throw new Error("E_CHART_DOMAIN");
   }
+
   return [lo, hi];
 }
 
@@ -73,5 +74,12 @@ export function chartPresentation(
           chart.type === "bar" || chart.type === "area",
         )
       : undefined;
-  return { points, total, message, xDomain, yDomain };
+
+  return {
+    points,
+    total,
+    message,
+    xDomain,
+    yDomain,
+  };
 }

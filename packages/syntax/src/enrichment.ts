@@ -66,6 +66,7 @@ export function enrichMarkdown(input: SourceInput): Result<Enrichment> {
     }));
 
   let enriched = source;
+
   for (const edit of edits)
     enriched =
       enriched.slice(0, edit.start) +

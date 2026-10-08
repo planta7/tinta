@@ -34,6 +34,7 @@ export function reconcile(
   const answers: Record<string, string | number | boolean> =
     Object.create(null);
   const reset: string[] = [];
+
   for (const control of program.declarations.filter(isControl)) {
     const before = old.get(control.name);
     if (before && signature(before) === signature(control)) {
@@ -43,6 +44,7 @@ export function reconcile(
       reset.push(control.name);
     }
   }
+
   const changed = initial.value.setControls(answers);
   if (!changed.ok) {
     initial.value.destroy();
@@ -51,6 +53,7 @@ export function reconcile(
       reset: program.declarations.filter(isControl).map((d) => d.name),
     };
   }
+
   return { result: initial, reset };
 }
 

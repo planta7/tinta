@@ -83,6 +83,7 @@ async function exported(
     session.destroy();
   }
 }
+
 async function visit(page, bytes, operation) {
   const folder = await mkdtemp(join(tmpdir(), "tinta-export-"));
   try {
@@ -101,6 +102,7 @@ async function visit(page, bytes, operation) {
     await rm(folder, { recursive: true, force: true });
   }
 }
+
 for (const name of ["article", "report", "guide", "chart-atlas"]) {
   test(`offline standalone ${name} initializes complete document`, async ({
     page,

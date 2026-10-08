@@ -41,7 +41,11 @@ function reject(): void {
           severity: "error",
           phase: "host",
           message: "Invalid preview message. The channel has been closed.",
-          span: { uri: "tinta:/preview", start: position, end: position },
+          span: {
+            uri: "tinta:/preview",
+            start: position,
+            end: position,
+          },
         },
       ],
     });
@@ -109,6 +113,7 @@ window.addEventListener("message", (event: MessageEvent<unknown>) => {
       const program = decodeProgram(data.program);
       if (!program.ok) return reject();
       const assets = new Map<string, Asset>();
+
       for (const asset of data.assets) {
         if (
           !record(asset) ||
@@ -142,6 +147,7 @@ window.addEventListener("message", (event: MessageEvent<unknown>) => {
       } catch {
         return reject();
       }
+
       const created = createSession(program.value);
       if (!created.ok) return reject();
       if (
@@ -151,6 +157,7 @@ window.addEventListener("message", (event: MessageEvent<unknown>) => {
         created.value.destroy();
         return reject();
       }
+
       const scroll = window.scrollY;
       reader?.destroy();
       session?.destroy();

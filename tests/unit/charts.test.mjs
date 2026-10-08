@@ -29,6 +29,7 @@ function prepared(
   return session.value.getRevision().nodes.find((node) => node.kind === "chart")
     .chart;
 }
+
 describe("safe chart scenes", () => {
   for (const type of [
     "line",

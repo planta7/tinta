@@ -28,10 +28,12 @@ export class CompilerHost {
     sourceRevision: 0,
   };
   staleResponses = 0;
+
   constructor(
     private code: string,
     private receive: (result: Compilation) => void,
   ) {}
+
   compile(source: string, profile: SourceProfile, revision: number): void {
     this.stop();
     this.header = {
@@ -48,6 +50,7 @@ export class CompilerHost {
     } catch {
       return this.fail("E_ENCODING", "Source contains invalid Unicode.");
     }
+
     const url = URL.createObjectURL(
       new Blob([this.code], { type: "text/javascript" }),
     );

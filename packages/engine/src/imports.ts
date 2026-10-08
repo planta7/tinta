@@ -19,6 +19,7 @@ const numberToken = /^[+-]?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?$/;
 const validName = (name: string): boolean =>
   /^[A-Za-z_][A-Za-z0-9_]{0,63}$/.test(name) &&
   !(registry.reservedIdentifiers as readonly string[]).includes(name);
+
 function decode(bytes: Uint8Array, budget: Budget): string {
   budget.limit("importBytes", bytes.length);
   try {
@@ -27,8 +28,10 @@ function decode(bytes: Uint8Array, budget: Budget): string {
     fail("E_ENCODING", span, "decode");
   }
 }
+
 function mapping(headers: readonly string[]): string[] {
   const used = new Set<string>();
+
   return headers.map((header) => {
     let name =
       header
@@ -49,6 +52,7 @@ function mapping(headers: readonly string[]): string[] {
     return candidate;
   });
 }
+
 function candidate(
   headers: string[],
   rows: Scalar[][],
@@ -90,6 +94,7 @@ function candidate(
       )
     )
       type = "number";
+
     return { input, name: names[i]!, type };
   });
   const columns = options.columns ? [...options.columns] : inferred;
@@ -104,10 +109,12 @@ function candidate(
     )
   )
     fail("E_IMPORT_SCHEMA", span);
+
   const lines = [
     `@data ${options.name}`,
     columns.map((c) => `${c.name}:${c.type}`).join(" | "),
   ];
+
   for (const row of rows) {
     budget.charge();
     if (row.length !== headers.length) fail("E_IMPORT_SCHEMA", span);
@@ -136,6 +143,7 @@ function candidate(
               fail("E_IMPORT_SCHEMA", span);
             return String(value);
           }
+
           const token = String(value);
           if (
             !numberToken.test(token) ||
@@ -143,6 +151,7 @@ function candidate(
             !Number.isFinite(Number(token))
           )
             fail("E_IMPORT_SCHEMA", span);
+
           return String(Number(token));
         })
         .join(" | "),
@@ -153,8 +162,10 @@ function candidate(
   // A candidate must already fit the source parser's limits and string grammar.
   const parsed = parse({ uri: span.uri, profile: "tinta", text: source });
   if (!parsed.ok) fail("E_IMPORT_SCHEMA", span);
+
   return { source, columns, rowCount: rows.length };
 }
+
 export function importCsv(
   bytes: Uint8Array,
   options: DataImportOptions,
@@ -185,6 +196,7 @@ export function importCsv(
       budget.limit("totalCells", Math.max(0, records.length - 1) * row.length);
       row = [];
     };
+
     for (let i = 0; i < source.length; i++) {
       budget.charge();
       const char = source[i]!;
@@ -217,9 +229,11 @@ export function importCsv(
     const headers = records.shift();
     if (!headers || records.some((r) => r.length !== headers.length))
       fail("E_IMPORT_SCHEMA", span);
+
     return candidate(headers, records, options, budget, false);
   });
 }
+
 /** A bounded JSON reader detects repeated keys before they can be erased. */
 export function importJson(
   bytes: Uint8Array,
@@ -241,6 +255,7 @@ export function importJson(
       const begin = offset;
       token('"');
       let escaped = false;
+
       while (offset < source.length) {
         budget.charge();
         const char = source[offset++]!;
@@ -317,6 +332,7 @@ export function importJson(
     }
     space();
     if (offset !== source.length) fail("E_IMPORT_SCHEMA", span);
+
     return candidate(headers, rows, options, budget, true);
   });
 }

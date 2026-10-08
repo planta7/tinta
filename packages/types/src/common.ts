@@ -14,6 +14,7 @@ export const limits = {
   htmlBytes: 41943040,
 } as const;
 export const hash = (bytes: Uint8Array): string => bytesToHex(sha256(bytes));
+
 export class ArtifactFailure extends Error {
   constructor(
     readonly code: string,
@@ -22,9 +23,11 @@ export class ArtifactFailure extends Error {
     super(message);
   }
 }
+
 export function reject(code: string, message: string): never {
   throw new ArtifactFailure(code, message);
 }
+
 export function diagnostic(code: string, message: string): Diagnostic {
   return {
     code,
@@ -38,6 +41,7 @@ export function diagnostic(code: string, message: string): Diagnostic {
     },
   };
 }
+
 export function attempt<T>(operation: () => T): Result<T> {
   try {
     return { ok: true, value: operation(), diagnostics: [] };
@@ -55,6 +59,7 @@ export function attempt<T>(operation: () => T): Result<T> {
     };
   }
 }
+
 export function unwrap<T>(result: Result<T>): T {
   if (!result.ok) {
     const first = result.diagnostics[0];
@@ -65,13 +70,20 @@ export function unwrap<T>(result: Result<T>): T {
   }
   return result.value;
 }
+
 export function artifact(
   bytes: Uint8Array,
   mediaType: string,
   suggestedName: string,
 ): Artifact {
-  return { bytes, mediaType, suggestedName, sha256: hash(bytes) };
+  return {
+    bytes,
+    mediaType,
+    suggestedName,
+    sha256: hash(bytes),
+  };
 }
+
 export function canonicalJson(value: unknown): string {
   const sort = (item: unknown): unknown => {
     if (Array.isArray(item)) return item.map(sort);
@@ -94,6 +106,7 @@ export function strictJson(
 ): unknown {
   if (text.length > maximum || encodeUtf8(text).length > maximum)
     reject("E_LIMIT", "JSON byte limit exceeded.");
+
   let offset = 0;
   let tokens = 0;
   const whitespace = () => {
@@ -154,6 +167,7 @@ export function strictJson(
       }
       invalid();
     }
+
     const token =
       /^(?:true|false|null|-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)/.exec(
         text.slice(offset),
@@ -162,13 +176,16 @@ export function strictJson(
     offset += token[0].length;
     const parsed: unknown = JSON.parse(token[0]);
     if (typeof parsed === "number" && !Number.isFinite(parsed)) invalid();
+
     return parsed;
   };
   const result = value(0);
   whitespace();
   if (offset !== text.length) invalid();
+
   return result;
 }
+
 export function object(
   value: unknown,
   keys: readonly string[],
@@ -184,6 +201,7 @@ export function object(
     reject(code, "Envelope fields do not match the contract.");
   return value as Record<string, unknown>;
 }
+
 export function crc32(bytes: Uint8Array): number {
   let crc = 0xffffffff;
   for (const byte of bytes) {
@@ -193,8 +211,10 @@ export function crc32(bytes: Uint8Array): number {
   }
   return (crc ^ 0xffffffff) >>> 0;
 }
+
 const alphabet =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
 export function base64(bytes: Uint8Array): string {
   const parts: string[] = [];
   let part = "";

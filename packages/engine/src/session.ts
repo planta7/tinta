@@ -35,6 +35,7 @@ function compare(a: Scalar, b: Scalar): number {
   }
   return a < b ? -1 : a > b ? 1 : 0;
 }
+
 function revision(
   program: Program,
   state: ControlState,
@@ -53,6 +54,7 @@ function revision(
   const get = (name: string): RuntimeValue =>
     Object.hasOwn(values, name) ? values[name]! : tables[name]!;
   const env: Environment = { get, budget, metadata: program.metadata };
+
   for (const d of bound.order) {
     if (d.kind === "let") values[d.name] = bound.constants.get(d.name) as Value;
     else if (d.kind === "calc")
@@ -82,6 +84,7 @@ function revision(
       tables[d.name] = { columns: table.columns, rows };
     } else values[d.name] = state[d.name]!;
   }
+
   let marks = 0;
   const text = (id: string, value: string): ResolvedNode => {
     budget.limit("textValueUnits", value.length);
@@ -92,10 +95,17 @@ function revision(
     tag: SafeHtmlTag,
     children: readonly ResolvedNode[],
     attributes: Readonly<Record<string, Scalar>> = {},
-  ): ResolvedNode => ({ kind: "element", id, tag, attributes, children });
+  ): ResolvedNode => ({
+    kind: "element",
+    id,
+    tag,
+    attributes,
+    children,
+  });
   function resolve(node: DocNode): ResolvedNode[] {
     const children = (): ResolvedNode[] =>
       "children" in node ? node.children.flatMap(resolve) : [];
+
     switch (node.kind) {
       case "text":
       case "raw-html":
@@ -247,6 +257,7 @@ function revision(
         ];
       case "data-table": {
         const table = tables[node.source]!;
+
         return [
           element(node.id, "table", [
             element(node.id, "caption", [
@@ -289,6 +300,7 @@ function revision(
       }
     }
   }
+
   return freeze({
     number,
     state,
@@ -298,6 +310,7 @@ function revision(
     diagnostics: [],
   });
 }
+
 export function createSession(
   program: Program,
   options?: { readonly baseline?: ControlState },
@@ -307,12 +320,15 @@ export function createSession(
     start: { offset: 0, line: 1, column: 1 },
     end: { offset: 0, line: 1, column: 1 },
   };
+
   return attempt(() => {
     const bound = programs.get(program);
     if (!bound) fail("E_PROTOCOL", fallback, "host");
     const baseline = record<Scalar>();
+
     for (const [name, control] of bound.controls)
       baseline[name] = control.initial;
+
     const validate = (update: ControlState): void => {
       for (const [name, value] of Object.entries(update)) {
         const control = bound.controls.get(name);
@@ -336,6 +352,7 @@ export function createSession(
     const listeners = new Set<(revision: Revision) => void>();
     const setControls = (update: ControlState): Result<Revision> => {
       const diagnostics: Diagnostic[] = [];
+
       return attempt(() => {
         if (destroyed || notifying) fail("E_PROTOCOL", fallback, "host");
         validate(update);
@@ -344,6 +361,7 @@ export function createSession(
           current.state,
           update,
         );
+
         for (const name of Object.keys(candidate))
           if (Object.is(candidate[name], -0)) candidate[name] = 0;
         if (
@@ -352,6 +370,7 @@ export function createSession(
           )
         )
           return current;
+
         const next = revision(program, candidate, current.number + 1);
         current = next;
         notifying = true;
@@ -373,9 +392,11 @@ export function createSession(
         } finally {
           notifying = false;
         }
+
         return current;
       }, diagnostics);
     };
+
     return {
       program,
       getRevision: () => current,

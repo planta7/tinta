@@ -4,16 +4,19 @@ import { crc32, decodeUtf8, encodeUtf8, limits, reject } from "./common.js";
 export function writeZip(entries: ReadonlyMap<string, Uint8Array>): Uint8Array {
   let localSize = 0,
     centralSize = 0;
+
   for (const [name, data] of entries) {
     localSize += 30 + encodeUtf8(name).length + data.length;
     centralSize += 46 + encodeUtf8(name).length;
   }
   if (localSize + centralSize + 22 > limits.bundleBytes)
     reject("E_LIMIT", "Bundle byte limit exceeded.");
+
   const bytes = new Uint8Array(localSize + centralSize + 22),
     view = new DataView(bytes.buffer);
   let offset = 0,
     central = localSize;
+
   for (const [name, data] of entries) {
     const path = encodeUtf8(name),
       crc = crc32(data);
@@ -47,6 +50,7 @@ export function writeZip(entries: ReadonlyMap<string, Uint8Array>): Uint8Array {
   view.setUint16(central + 10, entries.size, true);
   view.setUint32(central + 12, centralSize, true);
   view.setUint32(central + 16, localSize, true);
+
   return bytes;
 }
 
@@ -54,6 +58,7 @@ export function writeZip(entries: ReadonlyMap<string, Uint8Array>): Uint8Array {
 export function readZip(bytes: Uint8Array): Map<string, Uint8Array> {
   if (bytes.length > limits.bundleBytes)
     reject("E_LIMIT", "Compressed bundle limit exceeded.");
+
   const invalid = (): never =>
     reject("E_BUNDLE", "Invalid ZIP structure, CRC or entry metadata.");
   if (bytes.length < 22) invalid();
@@ -67,6 +72,7 @@ export function readZip(bytes: Uint8Array): Map<string, Uint8Array> {
     return view.getUint32(offset, true);
   };
   let end = bytes.length - 22;
+
   while (end >= Math.max(0, bytes.length - 65557) && u32(end) !== 0x06054b50)
     end--;
   if (
@@ -77,17 +83,20 @@ export function readZip(bytes: Uint8Array): Map<string, Uint8Array> {
     u16(end + 6)
   )
     invalid();
+
   const count = u16(end + 10),
     centralSize = u32(end + 12),
     centralStart = u32(end + 16);
   if (count > 102) reject("E_LIMIT", "ZIP entry limit exceeded.");
   if (count < 2 || count !== u16(end + 8) || centralStart + centralSize !== end)
     invalid();
+
   const result = new Map<string, Uint8Array>(),
     seen = new Set<string>();
   let offset = centralStart,
     nextLocal = 0,
     expanded = 0;
+
   for (let index = 0; index < count; index++) {
     if (u32(offset) !== 0x02014b50) invalid();
     const flags = u16(offset + 8),
@@ -143,6 +152,7 @@ export function readZip(bytes: Uint8Array): Map<string, Uint8Array> {
       u16(local + 26) !== nameLength
     )
       invalid();
+
     const localExtra = u16(local + 28),
       dataStart = local + 30 + nameLength + localExtra;
     checkExtra(local + 30 + nameLength, localExtra);
@@ -160,6 +170,7 @@ export function readZip(bytes: Uint8Array): Map<string, Uint8Array> {
         u32(local + 22) !== size)
     )
       invalid();
+
     const ceiling =
       name === "document.tinta"
         ? limits.sourceBytes
@@ -168,6 +179,7 @@ export function readZip(bytes: Uint8Array): Map<string, Uint8Array> {
           : limits.assetBytes;
     if (size > ceiling || expanded + size > limits.bundleBytes)
       reject("E_LIMIT", "Expanded bundle limit exceeded.");
+
     const packed = bytes.subarray(dataStart, dataStart + compressed);
     let data: Uint8Array;
     if (method === 0) {
@@ -198,6 +210,7 @@ export function readZip(bytes: Uint8Array): Map<string, Uint8Array> {
       }
       data = new Uint8Array(actual);
       let at = 0;
+
       for (const chunk of chunks) {
         data.set(chunk, at);
         at += chunk.length;
@@ -226,5 +239,6 @@ export function readZip(bytes: Uint8Array): Map<string, Uint8Array> {
     !result.has("document.tinta")
   )
     invalid();
+
   return result;
 }

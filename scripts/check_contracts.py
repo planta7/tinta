@@ -27,14 +27,14 @@ def command(args):
             'argv': args,
             'exitCode': p.returncode,
             'stdout': p.stdout,
-            'stderr': p.stderr
+            'stderr': p.stderr,
         }
     except (OSError, subprocess.TimeoutExpired) as exc:
         return {
             'argv': args,
             'exitCode': None,
             'stdout': '',
-            'stderr': str(exc)
+            'stderr': str(exc),
         }
 
 
@@ -47,12 +47,13 @@ def main():
 
     try:
         from jsonschema import Draft202012Validator
+
         dependency_version = version('jsonschema')
     except ImportError as exc:
         add(
             'schema-validator-prerequisite',
             False,
-            'NOT_RUN: Python jsonschema is required: ' + str(exc)
+            'NOT_RUN: Python jsonschema is required: ' + str(exc),
         )
 
     if dependency_version is not None:
@@ -63,12 +64,16 @@ def main():
                 '--strict',
                 '--exactOptionalPropertyTypes',
                 '--noUncheckedIndexedAccess',
-                '--target', 'ES2022',
-                '--lib', 'ES2022',
-                '--module', 'NodeNext',
-                '--moduleResolution', 'NodeNext',
+                '--target',
+                'ES2022',
+                '--lib',
+                'ES2022',
+                '--module',
+                'NodeNext',
+                '--moduleResolution',
+                'NodeNext',
                 'contracts/public-api.d.ts',
-                'contracts/worker-protocol.d.ts'
+                'contracts/worker-protocol.d.ts',
             ]
             ver = command(['tsc', '--version'])
             result = command(cmd)
@@ -76,7 +81,7 @@ def main():
             add(
                 'public-types-compile',
                 result['exitCode'] == 0,
-                result['stderr'] or result['stdout']
+                result['stderr'] or result['stdout'],
             )
 
             schemas = {
@@ -105,10 +110,10 @@ def main():
                         'kind': 'tinta-import-schema',
                         'columns': [
                             {'input': 'Name', 'name': 'name', 'type': 'text'}
-                        ]
+                        ],
                     },
-                    'import.schema.json'
-                )
+                    'import.schema.json',
+                ),
             ]
             for label, value, sch in positive:
                 valid = Draft202012Validator(schemas[sch])
@@ -130,9 +135,12 @@ def main():
                 ('version', {'formatVersion': '9.0'}),
                 ('null', {'controls': {'people': None}}),
                 ('array', {'controls': []}),
-                ('object-answer', {'controls': {'people': {'value': 5}}})
+                ('object-answer', {'controls': {'people': {'value': 5}}}),
             ]:
-                add('reject-state-' + label, not sv.is_valid(dict(state, **patch)))
+                add(
+                    'reject-state-' + label,
+                    not sv.is_valid(dict(state, **patch)),
+                )
 
             bv = Draft202012Validator(schemas['bundle.schema.json'])
             for label, patch in [
@@ -140,21 +148,33 @@ def main():
                 ('assets-type', {'assets': {}}),
                 (
                     'source-path',
-                    {'source': dict(bundle['source'], path='../document.tinta')}
+                    {
+                        'source': dict(
+                            bundle['source'], path='../document.tinta'
+                        )
+                    },
                 ),
                 (
                     'asset-path',
-                    {'assets': [dict(bundle['assets'][0], path='../evil.png')]}
+                    {'assets': [dict(bundle['assets'][0], path='../evil.png')]},
                 ),
                 (
                     'asset-mime',
-                    {'assets': [dict(bundle['assets'][0], mime='image/svg+xml')]}
-                )
+                    {
+                        'assets': [
+                            dict(bundle['assets'][0], mime='image/svg+xml')
+                        ]
+                    },
+                ),
             ]:
-                add('reject-bundle-' + label, not bv.is_valid(dict(bundle, **patch)))
+                add(
+                    'reject-bundle-' + label,
+                    not bv.is_valid(dict(bundle, **patch)),
+                )
 
             # Envelope validation is deliberately separate from the future IR decoder.
             from referencing import Registry, Resource
+
             resources = Registry().with_resources(
                 (name, Resource.from_contents(value))
                 for name, value in schemas.items()
@@ -169,25 +189,33 @@ def main():
                 'abi': 'tinta-ir-1',
                 'program': {},
                 'baseline': state,
-                'assets': []
+                'assets': [],
             }
             add('positive-interactive-envelope', validator.is_valid(envelope))
             for key, value in [
                 ('abi', 'unsupported'),
                 ('kind', 'unsupported'),
                 ('baseline', dict(state, sourceSha256='wrong')),
-                ('unknown', True)
+                ('unknown', True),
             ]:
                 add(
                     'reject-interactive-' + key,
-                    not validator.is_valid(dict(envelope, **{key: value}))
+                    not validator.is_valid(dict(envelope, **{key: value})),
                 )
-        except (OSError, ValueError, KeyError, TypeError, zipfile.BadZipFile) as exc:
+        except (
+            OSError,
+            ValueError,
+            KeyError,
+            TypeError,
+            zipfile.BadZipFile,
+        ) as exc:
             add('public-input', False, str(exc))
     else:
         result = command(['tsc', '--version'])
         commands.append(result)
-        add('typescript-prerequisite', result['exitCode'] == 0, result['stderr'])
+        add(
+            'typescript-prerequisite', result['exitCode'] == 0, result['stderr']
+        )
 
     failed = sum(not c['passed'] for c in checks)
     report = {
@@ -199,20 +227,22 @@ def main():
         'ambientToolsAreNotLockedToolchain': True,
         'environment': {
             'python': platform.python_version(),
-            'jsonschema': dependency_version
+            'jsonschema': dependency_version,
         },
         'commands': commands,
         'counts': {
             'checks': len(checks),
             'passed': len(checks) - failed,
-            'failed': failed
+            'failed': failed,
         },
-        'checks': checks
+        'checks': checks,
     }
     if args.report:
         target = args.report.resolve()
         if target in set(source_files()):
-            print('Refusing to overwrite public input:', target, file=sys.stderr)
+            print(
+                'Refusing to overwrite public input:', target, file=sys.stderr
+            )
             return 1
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(json.dumps(report, indent=2) + '\n')

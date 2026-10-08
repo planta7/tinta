@@ -70,6 +70,7 @@ export function stringValue(
       "String contains an unpaired surrogate.",
     );
   source.limit("textValueUnits", result.length, token.start);
+
   return result;
 }
 
@@ -180,6 +181,7 @@ export class ExpressionParser {
           op.end,
           "Word operator needs token boundaries.",
         );
+
       const operator = op.raw as BinaryOperator;
       const right = this.parse(precedence[operator]!, depth + 1);
       left = this.node({
@@ -192,6 +194,7 @@ export class ExpressionParser {
     }
 
     this.source.limit("expressionUnits", left.span.end.offset - begin, begin);
+
     return left;
   }
 
@@ -261,6 +264,7 @@ export class ExpressionParser {
           t.end,
           "Invalid numeric token.",
         );
+
       const value = Number(raw);
       if (!Number.isFinite(value))
         this.source.fail(
@@ -269,6 +273,7 @@ export class ExpressionParser {
           t.end,
           "Numeric literal must be finite.",
         );
+
       return this.node({
         kind: "literal",
         value,
@@ -310,6 +315,7 @@ export class ExpressionParser {
           this.peek().start,
           "Call opening parenthesis must be on the function-name line.",
         );
+
       const args: Expr[] = [];
       if (!this.accept(")")) {
         do {
@@ -317,6 +323,7 @@ export class ExpressionParser {
         } while (this.accept(","));
         this.expect(")");
       }
+
       return this.node({
         kind: "call",
         name: raw as Builtin,
@@ -331,6 +338,7 @@ export class ExpressionParser {
         t.end,
         "Expected an expression.",
       );
+
     return this.node({
       kind: "name",
       name: identifier(this.source, t),

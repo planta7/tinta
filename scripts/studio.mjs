@@ -5,6 +5,7 @@ import { classicBundle } from "./packaging.mjs";
 const digest = (text) => createHash("sha256").update(text).digest("base64");
 const script = (text) =>
   text.replace(/<\/script/gi, "<\\/script").replace(/<!--/g, "<\\!--");
+
 export async function buildStudio() {
   const worker = await classicBundle(
     "apps/studio/dist/worker.js",
@@ -71,7 +72,12 @@ export async function buildStudio() {
       " }}";
   await writeFile(
     "apps/studio/dist/studio-runtime.js",
-    Object.entries({ workerCode: worker.code, previewHtml, examples, snippets })
+    Object.entries({
+      workerCode: worker.code,
+      previewHtml,
+      examples,
+      snippets,
+    })
       .map(([key, value]) => `export const ${key} = ${JSON.stringify(value)};`)
       .join("\n"),
   );

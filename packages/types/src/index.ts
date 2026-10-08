@@ -10,7 +10,16 @@ export type SourceInput = Readonly<
   {
     uri: string;
     profile: SourceProfile;
-  } & ({ text: string; bytes?: never } | { bytes: Uint8Array; text?: never })
+  } & (
+    | {
+        text: string;
+        bytes?: never;
+      }
+    | {
+        bytes: Uint8Array;
+        text?: never;
+      }
+  )
 >;
 
 export interface Position {
@@ -24,6 +33,7 @@ export interface Span {
   readonly start: Position;
   readonly end: Position;
 }
+
 export type Phase =
   | "decode"
   | "parse"
@@ -55,7 +65,10 @@ export type Result<T> =
       value: T;
       diagnostics: readonly Diagnostic[];
     }>
-  | Readonly<{ ok: false; diagnostics: readonly Diagnostic[] }>;
+  | Readonly<{
+      ok: false;
+      diagnostics: readonly Diagnostic[];
+    }>;
 
 export interface Metadata {
   readonly version: "1.0";
@@ -72,6 +85,7 @@ export interface Metadata {
   readonly currency:
     "USD" | "EUR" | "GBP" | "JPY" | "CHF" | "CAD" | "AUD" | "CNY";
 }
+
 export type Builtin =
   | "if"
   | "min"
@@ -84,7 +98,9 @@ export type Builtin =
   | "fixed"
   | "percent"
   | "money";
+
 export type UnaryOperator = "+" | "-" | "not";
+
 export type BinaryOperator =
   | "+"
   | "-"
@@ -111,9 +127,21 @@ export type Expr =
         value: Scalar;
         raw: string;
       }>)
-  | (Located & Readonly<{ kind: "list"; items: readonly Expr[] }>)
-  | (Located & Readonly<{ kind: "name"; name: string }>)
-  | (Located & Readonly<{ kind: "row-field"; field: string }>)
+  | (Located &
+      Readonly<{
+        kind: "list";
+        items: readonly Expr[];
+      }>)
+  | (Located &
+      Readonly<{
+        kind: "name";
+        name: string;
+      }>)
+  | (Located &
+      Readonly<{
+        kind: "row-field";
+        field: string;
+      }>)
   | (Located &
       Readonly<{
         kind: "unary";
@@ -187,8 +215,16 @@ export type ControlDefinition =
 
 export type Declaration =
   | ControlDefinition
-  | (BaseDeclaration & Readonly<{ kind: "let" | "calc"; expression: Expr }>)
-  | (BaseDeclaration & Readonly<{ kind: "data"; table: TableValue }>)
+  | (BaseDeclaration &
+      Readonly<{
+        kind: "let" | "calc";
+        expression: Expr;
+      }>)
+  | (BaseDeclaration &
+      Readonly<{
+        kind: "data";
+        table: TableValue;
+      }>)
   | (BaseDeclaration &
       Readonly<{
         kind: "view";
@@ -197,11 +233,19 @@ export type Declaration =
         sort?: string;
         descending: boolean;
       }>);
+
 export type ChartType =
   "line" | "area" | "bar" | "scatter" | "pie" | "donut" | "histogram";
+
 export type SeriesSource =
-  | Readonly<{ kind: "columns"; columns: readonly string[] }>
-  | Readonly<{ kind: "expression"; expression: Expr }>;
+  | Readonly<{
+      kind: "columns";
+      columns: readonly string[];
+    }>
+  | Readonly<{
+      kind: "expression";
+      expression: Expr;
+    }>;
 
 export interface ChartSpec extends Located {
   readonly id: NodeId;
@@ -221,8 +265,16 @@ export interface BaseNode extends Located {
 }
 
 export type DocNode =
-  | (BaseNode & Readonly<{ kind: "text"; value: string }>)
-  | (BaseNode & Readonly<{ kind: "interpolation"; expression: Expr }>)
+  | (BaseNode &
+      Readonly<{
+        kind: "text";
+        value: string;
+      }>)
+  | (BaseNode &
+      Readonly<{
+        kind: "interpolation";
+        expression: Expr;
+      }>)
   | (BaseNode &
       Readonly<{
         kind: "paragraph" | "emphasis" | "strong" | "delete" | "blockquote";
@@ -256,8 +308,16 @@ export type DocNode =
         language?: string;
         value: string;
       }>)
-  | (BaseNode & Readonly<{ kind: "raw-html"; value: string }>)
-  | (BaseNode & Readonly<{ kind: "break"; hard: boolean }>)
+  | (BaseNode &
+      Readonly<{
+        kind: "raw-html";
+        value: string;
+      }>)
+  | (BaseNode &
+      Readonly<{
+        kind: "break";
+        hard: boolean;
+      }>)
   | (BaseNode & Readonly<{ kind: "thematic-break" }>)
   | (BaseNode &
       Readonly<{
@@ -286,14 +346,22 @@ export type DocNode =
         summary: string;
         children: readonly DocNode[];
       }>)
-  | (BaseNode & Readonly<{ kind: "control"; name: string }>)
+  | (BaseNode &
+      Readonly<{
+        kind: "control";
+        name: string;
+      }>)
   | (BaseNode &
       Readonly<{
         kind: "data-table";
         source: string;
         title: string;
       }>)
-  | (BaseNode & Readonly<{ kind: "chart"; chart: ChartSpec }>);
+  | (BaseNode &
+      Readonly<{
+        kind: "chart";
+        chart: ChartSpec;
+      }>);
 
 export interface ListItem extends BaseNode {
   readonly checked?: boolean;
@@ -332,6 +400,7 @@ export interface Enrichment {
   readonly edits: readonly TextEdit[];
   readonly originalSha256: HexSha256;
 }
+
 export type ControlState = Readonly<Record<string, Scalar>>;
 
 export interface ChartPoint {
@@ -358,12 +427,16 @@ export interface PreparedChart {
   readonly yLabel: string;
   readonly source: string;
   readonly select?: string;
-  readonly series: readonly { readonly id: string; readonly label: string }[];
+  readonly series: readonly {
+    readonly id: string;
+    readonly label: string;
+  }[];
   readonly points: readonly ChartPoint[];
   readonly bins: readonly HistogramBin[];
   readonly table: TableValue;
   readonly empty: boolean;
 }
+
 export type SafeHtmlTag =
   | "article"
   | "section"
@@ -406,6 +479,7 @@ export type SafeHtmlTag =
   | "output"
   | "div"
   | "span";
+
 export type ResolvedNode =
   | Readonly<{
       kind: "text";
@@ -479,6 +553,7 @@ export interface Asset {
   readonly bytes: Uint8Array;
   readonly sha256: HexSha256;
 }
+
 export type AssetStore = ReadonlyMap<string, Asset>;
 
 export interface StateEnvelope {
@@ -494,6 +569,7 @@ export interface Artifact {
   readonly suggestedName: string;
   readonly sha256: HexSha256;
 }
+
 export type ExportOptions = Readonly<{
   format: "interactive" | "static";
   answers: "initial" | "current";

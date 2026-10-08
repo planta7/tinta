@@ -24,8 +24,12 @@ export function validatePngData(
         [0, 1, 1, 2],
       ]
     : [[0, 0, 1, 1]];
-  const rows: { length: number; count: number }[] = [];
+  const rows: {
+    length: number;
+    count: number;
+  }[] = [];
   let expected = 0;
+
   for (const [x, y, dx, dy] of passes) {
     const columns = Math.max(0, Math.ceil((width - x!) / dx!)),
       count = Math.max(0, Math.ceil((height - y!) / dy!));
@@ -34,10 +38,12 @@ export function validatePngData(
     rows.push({ length, count });
     expected += length * count;
   }
+
   const length = parts.reduce((sum, part) => sum + part.length, 0);
   if (length < 6) bad();
   const packed = new Uint8Array(length);
   let at = 0;
+
   for (const part of parts) {
     packed.set(part, at);
     at += part.length;
@@ -49,6 +55,7 @@ export function validatePngData(
     packed[1]! & 32
   )
     bad();
+
   let count = 0,
     pass = 0,
     row = 0,
@@ -80,6 +87,7 @@ export function validatePngData(
   } catch {
     bad();
   }
+
   const checksum = new DataView(packed.buffer).getUint32(packed.length - 4);
   if (count !== expected || checksum !== (b * 65536 + a) >>> 0) bad();
 }

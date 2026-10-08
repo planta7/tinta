@@ -33,6 +33,7 @@ export function imageDestinationEdits(
   }[] = [];
   const links = new Set<string>();
   const pending = [tree as import("./markdown.js").MarkdownNode];
+
   while (pending.length) {
     const node = pending.pop()!;
     if (node.type === "definition" && !definitions.has(node.identifier))
@@ -63,6 +64,7 @@ export function imageDestinationEdits(
     const definition = definitions.get(reference.identifier);
     if (definition && !links.has(reference.identifier)) ranges.push(definition);
   }
+
   const bom = parsed.value.source.startsWith("\ufeff") ? 1 : 0;
   const events = postprocess(
     tokenize({ extensions: dialect })
@@ -71,8 +73,15 @@ export function imageDestinationEdits(
   );
   const edits = new Map<number, TextEdit>();
   const labels = new Map<number, number>();
-  const titles = new Map<number, { start: number; end: number }>();
+  const titles = new Map<
+    number,
+    {
+      start: number;
+      end: number;
+    }
+  >();
   let definitionStart = -1;
+
   for (const [kind, token] of events) {
     if (kind !== "enter") continue;
     if (token.type === "label")
@@ -114,6 +123,7 @@ export function imageDestinationEdits(
     const candidate = ranges[low - 1];
     return candidate && end <= candidate.end ? candidate : undefined;
   };
+
   for (const [kind, token] of events) {
     if (
       kind !== "enter" ||
@@ -129,6 +139,7 @@ export function imageDestinationEdits(
     if (replacement !== undefined)
       edits.set(start, { start, end, replacement });
   }
+
   return {
     ok: true,
     value: [...edits.values()].sort((a, b) => b.start - a.start),

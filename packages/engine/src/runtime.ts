@@ -17,6 +17,7 @@ export function restoreExportProgram(
     start: { offset: 0, line: 1, column: 1 },
     end: { offset: 0, line: 1, column: 1 },
   };
+
   return attempt(() => {
     const budget = new Budget(span, "decode");
     const serialized = JSON.stringify(payload);

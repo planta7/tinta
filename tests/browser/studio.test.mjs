@@ -86,6 +86,7 @@ async function example(page, name = "guide") {
   ).toBeEnabled();
   await expect(page.frameLocator("iframe").getByRole("article")).toBeVisible();
 }
+
 test("standalone reading, sandbox, answers, edit and invalid recovery", async ({
   page,
 }) => {

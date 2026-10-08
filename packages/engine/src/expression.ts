@@ -16,17 +16,21 @@ export type Type =
   | "list:number"
   | "list:boolean"
   | readonly Column[];
+
 export type RuntimeValue = Value | TableValue;
+
 export interface Environment {
   readonly get: (name: string) => RuntimeValue;
   readonly metadata: Metadata;
   readonly budget: Budget;
   readonly row?: ReadonlyMap<string, Scalar>;
 }
+
 export function tableType(type: Type, expr: Expr): readonly Column[] {
   if (typeof type === "string") fail("E_TYPE", expr.span);
   return type;
 }
+
 export function infer(
   expr: Expr,
   get: (name: string, expr: Expr) => Type,
@@ -38,6 +42,7 @@ export function infer(
   const requireType = (child: Expr, expected: Type): void => {
     if (visit(child) !== expected) fail("E_TYPE", child.span);
   };
+
   switch (expr.kind) {
     case "literal":
       return scalarType(expr.value);
@@ -121,16 +126,19 @@ export function infer(
         return "number";
       }
       args.forEach((arg) => requireType(arg, "number"));
+
       return ["fixed", "percent", "money"].includes(expr.name)
         ? "text"
         : "number";
     }
   }
 }
+
 export function numeric(value: number, expr: Expr): number {
   if (!Number.isFinite(value)) fail("E_NUMBER_RANGE", expr.span, "evaluate");
   return value === 0 ? 0 : value;
 }
+
 export function format(value: Scalar, metadata: Metadata): string {
   if (typeof value !== "number") return String(value);
   if (Math.abs(value) >= 1e21 || (value !== 0 && Math.abs(value) < 1e-10))
@@ -140,10 +148,12 @@ export function format(value: Scalar, metadata: Metadata): string {
     maximumFractionDigits: 10,
   }).format(value);
 }
+
 export function evaluate(expr: Expr, env: Environment): RuntimeValue {
   env.budget.charge(expr.span);
   const visit = (child: Expr): RuntimeValue => evaluate(child, env);
   const number = (child: Expr): number => visit(child) as number;
+
   switch (expr.kind) {
     case "literal":
       return expr.value;
@@ -169,6 +179,7 @@ export function evaluate(expr: Expr, env: Environment): RuntimeValue {
       if (expr.operator === "!=") return a !== b;
       const x = a as number,
         y = b as number;
+
       switch (expr.operator) {
         case "+":
           return numeric(x + y, expr);
@@ -215,6 +226,7 @@ export function evaluate(expr: Expr, env: Environment): RuntimeValue {
           ? total
           : numeric(total / table.rows.length, expr);
       }
+
       const a = number(args[0]!);
       const b = args[1] ? number(args[1]) : 0;
       if (

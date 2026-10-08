@@ -35,6 +35,7 @@ function literal(expr: Expr): Scalar {
     return (expr.operator === "-" ? -1 : 1) * expr.operand.value || 0;
   fail("E_PROPERTY_VALUE", expr.span);
 }
+
 function option(
   d: DirectiveSyntax,
   key: string,
@@ -47,12 +48,14 @@ function option(
     fail("E_PROPERTY_VALUE", expr?.span ?? node.span);
   return value;
 }
+
 export function compile(
   input: SourceInput,
   options?: CompilerOptions,
 ): Result<Program> {
   const parsed = parse(input, options);
   if (!parsed.ok) return parsed;
+
   return attempt(
     () => {
       const { tree, source, bytes } = parsed.value;
@@ -80,6 +83,7 @@ export function compile(
           const d = node.directive,
             name = d.binding ?? "";
           const declaration = { ...base, name };
+
           for (const [key, expression] of Object.entries(d.options))
             locations.set(`${node.id}:option:${key}`, expression.span);
           d.columnSpans?.forEach((span, i) =>
@@ -100,6 +104,7 @@ export function compile(
             );
             return value;
           };
+
           switch (d.name) {
             case "meta": {
               const version = option(d, "version", "1.0", node);
@@ -207,6 +212,7 @@ export function compile(
                 );
                 const divisor =
                   10n ** BigInt(6 - budget.limits.sliderFractionalDigits!);
+
                 for (const value of [
                   control.grid.minUnits,
                   control.grid.stepUnits,
@@ -258,6 +264,7 @@ export function compile(
               if (!inDomain(control, initial))
                 fail("E_STATE_DOMAIN", d.expression!.span);
               declarations.push(control);
+
               return [{ ...base, kind: "control", name }];
             }
             case "when":
@@ -301,6 +308,7 @@ export function compile(
                 (kind !== "histogram" && d.options.bins)
               )
                 fail("E_PROPERTY_VALUE", node.span);
+
               const y = d.options.y;
               let series: ChartSpec["y"];
               if (y?.kind === "literal" && typeof y.value === "string")
@@ -325,14 +333,17 @@ export function compile(
                 series.columns.length !== 1
               )
                 fail("E_CHART_SERIES", y!.span);
+
               const select = d.options.select;
               if (select && select.kind !== "name")
                 fail("E_SELECTION_TARGET", select.span);
+
               const bins = option(d, "bins", 8, node) as number;
               if (!Number.isInteger(bins) || bins < 2 || bins > 30)
                 fail("E_PROPERTY_VALUE", node.span);
               if (kind === "histogram")
                 budget.limit("histogramBinsMax", bins, node.span);
+
               const typeLabel = {
                 line: "Line chart",
                 area: "Area chart",
@@ -362,6 +373,7 @@ export function compile(
                 ...(select?.kind === "name" ? { select: select.name } : {}),
                 ...(kind === "histogram" ? { bins } : {}),
               };
+
               return [{ ...base, kind: "chart", chart }];
             }
             case "end":
@@ -377,7 +389,11 @@ export function compile(
             return [{ ...base, kind: "text", value: node.value! }];
           case "interpolation":
             return [
-              { ...base, kind: "interpolation", expression: node.expression! },
+              {
+                ...base,
+                kind: "interpolation",
+                expression: node.expression!,
+              },
             ];
           case "html":
             return /^(?:\s*<!--(?:(?!-->)[\s\S])*-->)+\s*$/.test(node.value!)
@@ -495,6 +511,7 @@ export function compile(
       const bound = bind(ir, budget, locations);
       const program = freeze(ir) as Program;
       programs.set(program, bound);
+
       return program;
     },
     parsed.diagnostics,

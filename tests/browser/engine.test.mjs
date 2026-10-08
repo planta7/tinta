@@ -32,6 +32,7 @@ function execute(api, cases) {
       return { revision: session.getRevision(), transition };
     });
 }
+
 test("typed engine agrees with Node across offline compilation, decoding and transactions", async ({
   page,
 }, testInfo) => {

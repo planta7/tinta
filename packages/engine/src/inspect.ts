@@ -1,12 +1,16 @@
 import { Budget, fail } from "./common.js";
+
 /** Reject cycles, accessors and excessive structure before recursive schema traversal. */
 export function inspect(value: unknown, budget: Budget): void {
-  const stack: { value: unknown; depth: number; leave?: boolean }[] = [
-      { value, depth: 0 },
-    ],
+  const stack: {
+      value: unknown;
+      depth: number;
+      leave?: boolean;
+    }[] = [{ value, depth: 0 }],
     seen = new Set<object>();
   let nodes = 0,
     units = 0;
+
   while (stack.length) {
     const item = stack.pop()!;
     if (item.leave) {

@@ -30,22 +30,34 @@ export class HostFailure extends Error {
     super(message);
   }
 }
+
 const isMissing = (error: unknown): boolean =>
   !!error &&
   typeof error === "object" &&
   "code" in error &&
   error.code === "ENOENT";
-export async function identity(
-  path: string,
-): Promise<{ path: string; dev: number; ino: number } | undefined> {
+
+export async function identity(path: string): Promise<
+  | {
+      path: string;
+      dev: number;
+      ino: number;
+    }
+  | undefined
+> {
   try {
     const stat = await lstat(path);
-    return { path: await realpath(path), dev: stat.dev, ino: stat.ino };
+    return {
+      path: await realpath(path),
+      dev: stat.dev,
+      ino: stat.ino,
+    };
   } catch (error) {
     if (isMissing(error)) return undefined;
     throw error;
   }
 }
+
 export async function assertOutput(
   output: string,
   inputs: readonly string[],
@@ -53,6 +65,7 @@ export async function assertOutput(
 ): Promise<void> {
   const target = resolve(output),
     existing = await identity(target);
+
   for (const input of inputs) {
     if (input === "-") continue;
     const original = await identity(input);
@@ -80,10 +93,12 @@ export async function assertOutput(
     if (!(stat.mode & 0o222))
       throw new HostFailure("E_IO", "Output is read-only.");
   }
+
   const parent = await lstat(dirname(target));
   if (!parent.isDirectory() || parent.isSymbolicLink())
     throw new HostFailure("E_IO", "Output directory must be a real directory.");
 }
+
 export async function readBounded(
   path: string,
   maximum: number,
@@ -93,6 +108,7 @@ export async function readBounded(
     throw new HostFailure("E_IO", "Input must be a regular file, not a link.");
   if (before.size > maximum)
     throw new ArtifactFailure("E_LIMIT", "Input byte limit exceeded.");
+
   const handle = await open(
     path,
     constants.O_RDONLY | (constants.O_NOFOLLOW ?? 0),
@@ -105,8 +121,10 @@ export async function readBounded(
       !actual.isFile()
     )
       throw new HostFailure("E_IO", "Input identity changed while opening.");
+
     const chunks: Uint8Array[] = [];
     let total = 0;
+
     for (;;) {
       const buffer = Buffer.alloc(Math.min(65536, maximum - total + 1));
       const { bytesRead } = await handle.read(buffer);
@@ -119,6 +137,7 @@ export async function readBounded(
         );
       chunks.push(buffer.subarray(0, bytesRead));
     }
+
     const after = await lstat(path);
     if (
       after.dev !== actual.dev ||
@@ -128,11 +147,13 @@ export async function readBounded(
       after.mtimeMs !== before.mtimeMs
     )
       throw new HostFailure("E_IO", "Input changed while reading.");
+
     return Buffer.concat(chunks);
   } finally {
     await handle.close();
   }
 }
+
 export async function resolveAssets(
   program: Program,
   root: string | undefined,
@@ -145,17 +166,21 @@ export async function resolveAssets(
       "E_ASSET_MISSING",
       "Relative images require an explicit document root.",
     );
+
   const granted = await realpath(root);
   if ((await lstat(root)).isSymbolicLink())
     throw new ArtifactFailure(
       "E_ASSET_PATH",
       "Asset root cannot be a symbolic link.",
     );
+
   let total = 0;
   const unique = new Set<string>();
+
   for (const destination of destinations) {
     const key = normalizeAssetPath(destination);
     let path = granted;
+
     for (const part of key.split("/")) {
       path = join(path, part);
       let stat;
@@ -175,6 +200,7 @@ export async function resolveAssets(
           "Image paths cannot traverse symbolic links.",
         );
     }
+
     const member = relative(granted, await realpath(path));
     if (
       member.startsWith(`..${sep}`) ||
@@ -185,6 +211,7 @@ export async function resolveAssets(
         "E_ASSET_PATH",
         "Image escaped its granted root.",
       );
+
     const asset = unwrap(
       createAsset(await readBounded(path, limits.assetBytes)),
     );
@@ -201,8 +228,10 @@ export async function resolveAssets(
       throw new ArtifactFailure("E_LIMIT", "Document image limits exceeded.");
     assets.set(key, asset);
   }
+
   return assets;
 }
+
 export async function atomicWrite(
   output: string,
   bytes: Uint8Array,
@@ -240,6 +269,7 @@ export async function atomicWrite(
     });
   }
 }
+
 export async function unpackTree(
   output: string,
   entries: ReadonlyMap<string, Uint8Array>,
@@ -251,6 +281,7 @@ export async function unpackTree(
       "E_OUTPUT_EXISTS",
       "Unpack target must be a new directory.",
     );
+
   const stage = join(
     dirname(target),
     `.${basename(target)}.${randomUUID()}.tmp`,

@@ -8,6 +8,7 @@ import { chartPresentation, legendKey } from "@tinta/engine/chart-presentation";
 import { chartScene, coordinate } from "@tinta/charts";
 
 type Datum = ChartPoint | HistogramBin;
+
 export interface ChartView {
   readonly root: HTMLElement;
   update(chart: PreparedChart, state: ControlState): void;
@@ -144,6 +145,7 @@ export function createChartView(
     svg.setAttribute("viewBox", `0 0 ${scene.width} ${scene.height}`);
     svg.setAttribute("aria-hidden", "true");
     const pointById = new Map(chart.points.map((point) => [point.id, point]));
+
     for (const node of scene.nodes) {
       const child = doc.createElementNS(svg.namespaceURI, node.tag);
       for (const [name, value] of Object.entries(node.attributes)) {
@@ -198,6 +200,7 @@ export function createChartView(
             "Visibility",
             ...(chart.select ? ["Selection"] : []),
           ];
+
     for (const name of names) {
       const th = element("th", name);
       th.scope = "col";
@@ -225,6 +228,7 @@ export function createChartView(
         const row = element("tr");
         row.append(element("td", String(point.x)));
         const visibility: string[] = [];
+
         for (let j = 0; j < chart.series.length; j++) {
           const datum = chart.points[i + j]!;
           row.append(element("td", String(datum.y)));
@@ -292,8 +296,10 @@ export function createChartView(
           }))
         : [];
     const active = new Set(entries.map((entry) => entry.key));
+
     for (const [key, button] of buttons) if (!active.has(key)) button.remove();
     let legendCursor = legend.firstChild;
+
     for (const [entryIndex, entry] of entries.entries()) {
       let button = buttons.get(entry.key);
       if (!button) {
@@ -402,6 +408,7 @@ export function createChartView(
     }
   });
   observer.observe(root);
+
   return {
     root,
     update(next, nextState) {

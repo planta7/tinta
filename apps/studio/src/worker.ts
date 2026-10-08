@@ -53,6 +53,7 @@ self.addEventListener("message", (event: MessageEvent<unknown>) => {
     });
     return;
   }
+
   const session = createSession(result.value);
   if (!session.ok) {
     self.postMessage({

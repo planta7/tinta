@@ -22,7 +22,11 @@ import fc from "fast-check";
 
 const program = (text, profile = "tinta") =>
   unwrap(
-    compile({ text, profile, uri: "file:///private/sensitive/source.tinta" }),
+    compile({
+      text,
+      profile,
+      uri: "file:///private/sensitive/source.tinta",
+    }),
   );
 const imageBytes = readFileSync(
   "examples/assets/36c907715b80d7cdad0e196256966a3353b771387aefb1116d8769dacc81b675.png",

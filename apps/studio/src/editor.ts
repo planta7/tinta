@@ -46,8 +46,12 @@ const assetHistory = invertedEffects.of((transaction) =>
     : [],
 );
 
-export const tokenEffect =
-  StateEffect.define<readonly { from: number; to: number }[]>();
+export const tokenEffect = StateEffect.define<
+  readonly {
+    from: number;
+    to: number;
+  }[]
+>();
 const tokens = StateField.define<DecorationSet>({
   create: () => Decoration.none,
   update(value, transaction) {
@@ -72,10 +76,12 @@ const tokens = StateField.define<DecorationSet>({
   },
   provide: (field) => EditorView.decorations.from(field),
 });
+
 export class SourceEditor {
   readonly view: EditorView;
   private profile = new Compartment();
   private source = "";
+
   constructor(
     parent: HTMLElement,
     source: string,
@@ -105,6 +111,7 @@ export class SourceEditor {
         transaction.effects.some((effect) => effect.is(rawEffect))
       )
         return null;
+
       const original = transaction.startState.field(rawField);
       let rebuilt = "";
       let last = 0;
@@ -118,6 +125,7 @@ export class SourceEditor {
           last = end;
         },
       );
+
       return { effects: rawEffect.of(rebuilt + original.slice(last)) };
     });
     this.view = new EditorView({

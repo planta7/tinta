@@ -19,6 +19,7 @@ export interface Bound {
   readonly constants: ReadonlyMap<string, RuntimeValue>;
   readonly limits: Readonly<Record<string, number>>;
 }
+
 export function walkFlow(
   nodes: readonly DocNode[],
   visit: (node: DocNode) => void,
@@ -34,6 +35,7 @@ export function walkFlow(
       );
   }
 }
+
 export function references(expr: Expr): Expr[] {
   if (expr.kind === "name") return [expr];
   if (expr.kind === "binary")
@@ -43,6 +45,7 @@ export function references(expr: Expr): Expr[] {
   if (expr.kind === "list") return expr.items.flatMap(references);
   return [];
 }
+
 export function bind(
   ir: ProgramIR,
   budget: Budget,
@@ -133,8 +136,12 @@ export function bind(
       .length,
   );
   const graph = new Map<string, string[]>();
+
   for (const d of symbols.values()) {
-    const refs: { name: string; span: Span }[] = [];
+    const refs: {
+      name: string;
+      span: Span;
+    }[] = [];
     if (d.kind === "view") refs.push({ name: d.source, span: d.span });
     const expr =
       "expression" in d
@@ -145,7 +152,9 @@ export function bind(
     if (expr)
       for (const ref of references(expr))
         if (ref.kind === "name") refs.push(ref);
+
     const edges: string[] = [];
+
     for (const ref of refs) {
       budget.charge(ref.span);
       if (!symbols.has(ref.name)) report("E_NAME_UNKNOWN", ref.span);
@@ -202,7 +211,10 @@ export function bind(
   function visit(d: Declaration): void {
     if (types.has(d.name)) return;
 
-    const deps: { name: string; span: Span }[] = [];
+    const deps: {
+      name: string;
+      span: Span;
+    }[] = [];
     if (d.kind === "view") deps.push({ name: d.source, span: d.span });
     const expr =
       "expression" in d
@@ -219,6 +231,7 @@ export function bind(
         fail("E_CONST_DEPENDENCY", ref.span, "bind");
       visit(target);
     }
+
     const get = (name: string, expr: Expr): Type => {
       declaration(name, expr.span);
       return types.get(name)!;
@@ -295,6 +308,7 @@ export function bind(
     }
   });
   const constants = new Map<string, RuntimeValue>();
+
   for (const d of order)
     if (d.kind === "let")
       constants.set(
@@ -305,6 +319,7 @@ export function bind(
           budget,
         }),
       );
+
   return {
     order,
     controls,

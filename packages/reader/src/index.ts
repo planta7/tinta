@@ -23,6 +23,7 @@ const reservedHeadings = new WeakMap<Document, Set<string>>();
 let nextInstance = 0;
 
 type Field = HTMLInputElement | HTMLSelectElement;
+
 interface ControlView {
   readonly root: HTMLDivElement;
   readonly field: Field;
@@ -87,6 +88,7 @@ export function mountReader(
       ],
     };
   }
+
   const doc = native.ownerDocument;
   const prefix = `tinta-reader-${++nextInstance}-`;
   const article = doc.createElement("article");
@@ -220,6 +222,7 @@ export function mountReader(
           field.append(option);
         }
       }
+
       const output = doc.createElement("output");
       output.htmlFor.value = field.id;
       output.setAttribute("aria-live", "off");
@@ -229,11 +232,18 @@ export function mountReader(
       error.className = "tinta-control-error";
       field.setAttribute("aria-describedby", error.id);
       root.append(label, field, output, error);
-      view = { root, field, output, error, definition: d };
+      view = {
+        root,
+        field,
+        output,
+        error,
+        definition: d,
+      };
       controls.set(d.name, view);
       fieldNames.set(field, d.name);
     }
     updateField(view, node.value);
+
     return view.root.cloneNode(true) as HTMLElement;
   }
   function render(node: ResolvedNode, open: ReadonlySet<string>): Node {
@@ -246,6 +256,7 @@ export function mountReader(
       } catch {
         /* The placeholder remains inert. */
       }
+
       const asset = key === undefined ? undefined : assets.get(key);
       if (asset) {
         const image = doc.createElement("img");
@@ -254,6 +265,7 @@ export function mountReader(
         image.src = `data:${asset.mime};base64,${base64(asset.bytes)}`;
         return image;
       }
+
       const placeholder = doc.createElement("span");
       placeholder.className = "tinta-image-placeholder";
       placeholder.textContent =
@@ -264,6 +276,7 @@ export function mountReader(
         "W_ASSET_UNAVAILABLE",
         "Preview image unavailable; export remains blocked.",
       );
+
       return placeholder;
     }
     if (node.kind === "chart") {
@@ -351,8 +364,10 @@ export function mountReader(
         }
       }
       wrapper.append(element);
+
       return wrapper;
     }
+
     return element;
   }
   function key(node: Node): string {
@@ -364,13 +379,16 @@ export function mountReader(
   }
   function reconcile(parent: Node, candidate: Node): void {
     const available = new Map<string, Node[]>();
+
     for (const child of Array.from(parent.childNodes)) {
       const name = key(child);
       const bucket = available.get(name) ?? [];
       bucket.push(child);
       available.set(name, bucket);
     }
+
     let cursor = parent.firstChild;
+
     for (const desired of Array.from(candidate.childNodes)) {
       let current = available.get(key(desired))?.shift();
       if (desired instanceof HTMLElement && desired.dataset.tintaChart) {
@@ -422,6 +440,7 @@ export function mountReader(
     const focusedName = focused ? fieldNames.get(focused) : undefined;
     const focusedChart = focused?.closest("[data-tinta-chart]");
     const preceding: string[] = [];
+
     for (const element of content.querySelectorAll("input, select, button")) {
       if (element === focused) break;
       const name = fieldNames.get(element);
@@ -434,6 +453,7 @@ export function mountReader(
       if (details.open) detailStates.add(id);
       else detailStates.delete(id);
     }
+
     const open = detailStates;
     const focusedDetails = focused
       ?.closest("details")
@@ -441,6 +461,7 @@ export function mountReader(
     const wasSummary = focused?.tagName === "SUMMARY";
     const previousWarnings = new Set(warnings.keys());
     const fragment = doc.createDocumentFragment();
+
     for (const node of next.nodes) fragment.append(render(node, open));
     reconcile(content, fragment);
     revision = next;
@@ -516,6 +537,7 @@ export function mountReader(
     const view = controls.get(name)!;
     if ((view.definition.kind === "slider") !== (event.type === "input"))
       return;
+
     const value =
       view.definition.kind === "toggle"
         ? (view.field as HTMLInputElement).checked
@@ -634,6 +656,7 @@ export function mountReader(
     native.append(article);
     mounts.add(native);
     report([...warnings.values()]);
+
     return {
       ok: true,
       value: { resetPresentation, destroy },

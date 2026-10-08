@@ -24,6 +24,7 @@ function domain(
     fail("E_CHART_DOMAIN", chart.span, "evaluate");
   }
 }
+
 export function prepare(
   chart: ChartSpec,
   table: TableValue,
@@ -41,12 +42,14 @@ export function prepare(
     (!numericX && (chart.kind === "line" || chart.kind === "area"))
   )
     budget.limit("chartCategories", table.rows.length, chart.span);
+
   const rows = [...table.rows];
   if (numericX && (chart.kind === "line" || chart.kind === "area"))
     rows.sort((a, b) => {
       budget.charge(chart.span);
       return (a.cells[xIndex] as number) - (b.cells[xIndex] as number);
     });
+
   const xs = rows.map((row) => row.cells[xIndex] as number | string);
   if (
     chart.kind !== "scatter" &&
@@ -58,6 +61,7 @@ export function prepare(
     for (const x of xs)
       if (!inDomain(controls.get(chart.select)!, x))
         fail("E_SELECTION_DOMAIN", chart.span, "evaluate");
+
   const series =
     chart.y?.kind === "columns"
       ? chart.y.columns.map((name) => ({ id: name, label: label(name) }))
@@ -82,10 +86,12 @@ export function prepare(
       hi <= lo
     )
       fail("E_CHART_DOMAIN", chart.span, "evaluate");
+
     const count = chart.bins!;
     const edges = Array.from({ length: count + 1 }, (_, i) =>
       i === 0 ? lo : i === count ? hi : lo + (i * (hi - lo)) / count,
     );
+
     for (let i = 0; i < count; i++) {
       budget.charge(chart.span);
       if (!Number.isFinite(edges[i + 1]) || edges[i + 1]! <= edges[i]!)
@@ -98,7 +104,9 @@ export function prepare(
         count: 0,
       });
     }
+
     const counts = bins.map(() => 0);
+
     for (const x of values) {
       budget.charge(chart.span);
       const index = bins.findIndex(
@@ -113,6 +121,7 @@ export function prepare(
     });
   } else if (chart.y) {
     let total = 0;
+
     for (const row of rows) {
       budget.charge(chart.span);
       const fields = new Map<string, Scalar>(
@@ -166,6 +175,7 @@ export function prepare(
     }
   }
   budget.limit("chartMarks", points.length + bins.length, chart.span);
+
   return {
     id: chart.id,
     type: chart.kind,

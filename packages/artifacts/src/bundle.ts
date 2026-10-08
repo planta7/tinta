@@ -30,6 +30,7 @@ export async function packSource(
   return attempt(() => {
     if (program.profile !== "tinta")
       reject("E_EXPORT_INVALID", "Source bundles require the Tinta profile.");
+
     const copy = canonicalSource(program, assets);
     const source = encodeUtf8(copy.program.source);
     const sorted = [...copy.assets.values()].sort((a, b) =>
@@ -50,6 +51,7 @@ export async function packSource(
         sha256,
       })),
     };
+
     return artifact(
       writeZip(
         new Map([
@@ -63,6 +65,7 @@ export async function packSource(
     );
   });
 }
+
 export async function openBundle(
   bytes: Uint8Array,
 ): Promise<Result<OpenedBundle>> {
@@ -74,6 +77,7 @@ export async function openBundle(
     } catch {
       reject("E_ENCODING", "Bundle metadata is not valid UTF-8.");
     }
+
     const manifest = object(strictJson(manifestText, 65536), [
       "kind",
       "formatVersion",
@@ -87,6 +91,7 @@ export async function openBundle(
       manifest.assets.length > 100
     )
       reject("E_BUNDLE", "Invalid bundle manifest.");
+
     const source = object(manifest.source, ["path", "bytes", "sha256"]);
     const sourceBytes = entries.get("document.tinta")!;
     if (
@@ -97,7 +102,9 @@ export async function openBundle(
       reject("E_HASH_MISMATCH", "Bundle source hash or length mismatch.");
     if (entries.size !== manifest.assets.length + 2)
       reject("E_BUNDLE", "Bundle entries do not match the manifest.");
+
     const assets = new Map<string, Asset>();
+
     for (const entry of manifest.assets) {
       const item = object(entry, ["path", "mime", "bytes", "sha256"]);
       if (
@@ -128,6 +135,7 @@ export async function openBundle(
     requiredAssets(program, assets);
     const session = unwrap(createSession(program));
     session.destroy();
+
     return { source: input, assets };
   });
 }

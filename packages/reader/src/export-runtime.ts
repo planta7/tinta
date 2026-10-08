@@ -24,6 +24,7 @@ export function start(expectedHash: string): void {
     const text = document.getElementById("tinta-payload")?.textContent ?? "";
     if (text.length > 41943040 || hash(encodeUtf8(text)) !== expectedHash)
       throw new Error("Payload hash mismatch.");
+
     const envelope = object(strictJson(text), [
       "kind",
       "formatVersion",
@@ -42,6 +43,7 @@ export function start(expectedHash: string): void {
       envelope.assets.length > 100
     )
       throw new Error("Invalid artifact envelope.");
+
     const program = unwrap(
       restoreExportProgram(
         envelope.program,
@@ -60,7 +62,9 @@ export function start(expectedHash: string): void {
       baseline.sourceSha256 !== program.sourceSha256
     )
       throw new Error("Invalid answer snapshot.");
+
     const assets = new Map<string, Asset>();
+
     for (const item of envelope.assets) {
       const entry = object(item, ["path", "mime", "sha256", "base64"]);
       if (
@@ -69,10 +73,12 @@ export function start(expectedHash: string): void {
         !/^[A-Za-z0-9+/]*={0,2}$/.test(entry.base64)
       )
         throw new Error("Invalid raster encoding.");
+
       const binary = atob(entry.base64),
         bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
       if (base64(bytes) !== entry.base64)
         throw new Error("Noncanonical raster encoding.");
+
       const asset = unwrap(createAsset(bytes));
       if (
         asset.path !== entry.path ||
@@ -87,6 +93,7 @@ export function start(expectedHash: string): void {
     for (const destination of imageDestinations(program.flow))
       if (!assets.has(normalizeAssetPath(destination)))
         throw new Error("Missing raster resource.");
+
     const session = unwrap(
       createSession(program, { baseline: baseline.controls as ControlState }),
     );

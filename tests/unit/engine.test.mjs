@@ -13,21 +13,25 @@ import {
 import { assertSemanticCase } from "../../conformance/runner/semantic.mjs";
 
 const input = (text) => ({ text, uri: "tinta:test", profile: "tinta" });
+
 function program(text, options) {
   const result = compile(input(text), options);
   expect(result.ok, JSON.stringify(result.diagnostics)).toBe(true);
   return result.value;
 }
+
 function session(text, options) {
   const result = createSession(program(text), options);
   expect(result.ok, JSON.stringify(result.diagnostics)).toBe(true);
   return result.value;
 }
+
 function error(result, code) {
   expect(result.ok).toBe(false);
   expect(result.diagnostics.map((d) => d.code)).toContain(code);
   expect(result).not.toHaveProperty("value");
 }
+
 const fixtures = JSON.parse(
   readFileSync("conformance/cases.json", "utf8"),
 ).cases;
@@ -225,7 +229,12 @@ describe("transactions", () => {
       {},
       { n: 2 },
       { n: 0, enabled: true, color: "red" },
-      { n: 1, enabled: true, color: "red", other: 1 },
+      {
+        n: 1,
+        enabled: true,
+        color: "red",
+        other: 1,
+      },
     ])
       expect(createSession(p, { baseline }).ok).toBe(false);
     error(createSession({ ...p }), "E_PROTOCOL");

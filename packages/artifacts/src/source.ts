@@ -8,7 +8,10 @@ import { reject, unwrap } from "./common.js";
 export function canonicalSource(
   program: Program,
   assets: AssetStore,
-): { program: Program; assets: AssetStore } {
+): {
+  program: Program;
+  assets: AssetStore;
+} {
   const required = requiredAssets(program, assets);
   const destinations = new Map<string, string>();
   const visit = (nodes: Program["flow"]): void => {
@@ -34,8 +37,10 @@ export function canonicalSource(
   };
   const edits = unwrap(imageDestinationEdits(input, destinations));
   let text = program.source;
+
   for (const edit of edits)
     text = text.slice(0, edit.start) + edit.replacement + text.slice(edit.end);
+
   const copied = unwrap(
     compile({
       text,
@@ -56,8 +61,10 @@ export function canonicalSource(
     );
   if (controls(program) !== controls(copied))
     reject("E_EXPORT_INVALID", "Source rebasing changed control definitions.");
+
   const session = unwrap(createSession(copied));
   session.destroy();
+
   return {
     program: copied,
     assets: new Map([...required.values()].map((asset) => [asset.path, asset])),

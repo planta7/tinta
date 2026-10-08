@@ -256,6 +256,7 @@ function parseData(
     raw: string;
   }[] = [];
   let offset = start;
+
   for (const raw of source.text.slice(start, end).split(/\r\n|\r|\n/)) {
     lines.push({
       start: offset,
@@ -266,6 +267,7 @@ function parseData(
     if (source.text[offset] === "\r") offset++;
     if (source.text[offset] === "\n") offset++;
   }
+
   const opener = lines.shift()!;
 
   const p = new ExpressionParser(source, start + 5, opener.end);
@@ -276,6 +278,7 @@ function parseData(
       opener.end,
       "Data name requires whitespace.",
     );
+
   const binding = identifier(source, p.take());
   p.finish("E_DIRECTIVE_SYNTAX");
   const close = lines[lines.length - 1];
@@ -291,6 +294,7 @@ function parseData(
   const header = nonblank.shift();
   if (!header)
     source.fail("E_DATA_HEADER", start, end, "Data requires a typed header.");
+
   const names = new Set<string>();
   const headerCells = splitCells(source, header.start, header.end);
   const columns = headerCells.map((cell): Column => {
@@ -322,6 +326,7 @@ function parseData(
         line.end,
         "Data cannot contain a directive.",
       );
+
     const cells = splitCells(source, line.start, line.end);
     if (cells.length !== columns.length)
       source.fail(
@@ -330,6 +335,7 @@ function parseData(
         line.end,
         "Row width differs from header.",
       );
+
     const values = cells.map((cell, i): Scalar => {
       source.charge("totalCells", cell.start);
       if (columns[i]!.type === "text") {
@@ -360,12 +366,14 @@ function parseData(
       }
       source.fail("E_DATA_VALUE", cell.start, cell.end, "Invalid typed cell.");
     });
+
     return {
       cells: values,
       cellSpans: cells.map((cell) => source.span(cell.start, cell.end)),
       span: source.span(line.start, line.end),
     };
   });
+
   return {
     name: "data",
     binding,

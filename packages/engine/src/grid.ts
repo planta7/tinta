@@ -18,6 +18,7 @@ export function units(raw: string): bigint | undefined {
   }
   return match[1] === "-" ? -value : value;
 }
+
 export function grid(
   min: string,
   max: string,
@@ -39,6 +40,7 @@ export function grid(
     (b - a) / s > 100000n
   )
     fail("E_STATE_DOMAIN", span);
+
   return {
     scale: 1000000,
     minUnits: String(a),
@@ -46,6 +48,7 @@ export function grid(
     ticks: Number((b - a) / s),
   };
 }
+
 export function inDomain(control: ControlDefinition, value: unknown): boolean {
   if (control.kind === "toggle") return typeof value === "boolean";
   if (control.kind === "choice")

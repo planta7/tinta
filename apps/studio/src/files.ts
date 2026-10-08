@@ -43,6 +43,7 @@ export async function saveFile(
     }
     return "Saved";
   }
+
   const url = URL.createObjectURL(new Blob([new Uint8Array(bytes)], { type }));
   const link = document.createElement("a");
   link.href = url;
@@ -51,6 +52,7 @@ export async function saveFile(
   link.click();
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 30000);
+
   return type === "text/plain"
     ? "Source download started — check your browser's Downloads."
     : "Download started — check your browser's Downloads.";

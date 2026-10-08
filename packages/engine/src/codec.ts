@@ -10,6 +10,7 @@ import { compile, programs } from "./compiler.js";
 import validate from "./program-validator.js";
 
 import { inspect } from "./inspect.js";
+
 function same(a: unknown, b: unknown, budget: Budget): boolean {
   budget.charge();
   if (a === b) return true;
@@ -24,6 +25,7 @@ function same(a: unknown, b: unknown, budget: Budget): boolean {
     )
   );
 }
+
 export function decodeProgram(
   payload: unknown,
   options?: CompilerOptions,
@@ -42,10 +44,15 @@ export function decodeProgram(
   if (!checked.ok) return checked;
   const { ir, budget } = checked.value;
   const compiled = compile(
-    { uri: ir.sourceUri, profile: ir.profile, text: ir.source },
+    {
+      uri: ir.sourceUri,
+      profile: ir.profile,
+      text: ir.source,
+    },
     options,
   );
   if (!compiled.ok) return compiled;
+
   return attempt(() => {
     budget.charge(span, programs.get(compiled.value)!.compileOperations);
     if (ir.sourceSha256 !== compiled.value.sourceSha256)
@@ -54,6 +61,7 @@ export function decodeProgram(
     return compiled.value;
   }, compiled.diagnostics);
 }
+
 export function encodeProgram(program: Program): ProgramIR {
   if (!programs.has(program))
     throw new TypeError("Only validated programs can be encoded.");

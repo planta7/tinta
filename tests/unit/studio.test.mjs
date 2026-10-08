@@ -112,9 +112,11 @@ describe("compiler transport and watchdog", () => {
       constructor() {
         workers.push(this);
       }
+
       postMessage(value) {
         this.request = value;
       }
+
       terminate() {
         this.terminated = true;
       }

@@ -3,12 +3,14 @@ import Ajv2020 from "ajv/dist/2020.js";
 import standaloneCode from "ajv/dist/standalone/index.js";
 import { format, resolveConfig } from "prettier";
 import { writeFileSync, readFileSync } from "node:fs";
+
 function save(path, contents) {
   if (process.argv.includes("--check")) {
     if (readFileSync(path, "utf8") !== contents)
       throw new Error(`Stale generated schema/validator: ${path}`);
   } else writeFileSync(path, contents);
 }
+
 const program = ts.createProgram(["contracts/public-api.d.ts"], {
   strict: true,
   target: ts.ScriptTarget.ES2022,
@@ -20,6 +22,7 @@ const root = source.statements.find(
 );
 const definitions = {};
 const ids = new Map();
+
 function schema(type) {
   if (type.flags & ts.TypeFlags.StringLiteral) return { const: type.value };
   if (type.flags & ts.TypeFlags.NumberLiteral) return { const: type.value };
@@ -61,6 +64,7 @@ function schema(type) {
   };
   return { $ref: `#/$defs/${name}` };
 }
+
 const rootSchema = schema(checker.getTypeAtLocation(root));
 const output = {
   $schema: "https://json-schema.org/draft/2020-12/schema",
