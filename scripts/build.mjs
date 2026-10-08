@@ -19,6 +19,8 @@ const reader = await classicBundle(
 const exportRuntime = await classicBundle(
   "packages/reader/src/export-runtime.ts",
   "TintaExportRuntime",
+  "browser",
+  { minify: true },
 );
 const licenseRoots = new Set();
 for (const input of exportRuntime.inputs) {

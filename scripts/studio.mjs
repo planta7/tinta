@@ -11,8 +11,14 @@ export async function buildStudio() {
     "apps/studio/dist/worker.js",
     undefined,
     "neutral",
+    { minify: true },
   );
-  const preview = await classicBundle("apps/studio/dist/preview.js");
+  const preview = await classicBundle(
+    "apps/studio/dist/preview.js",
+    undefined,
+    "browser",
+    { minify: true },
+  );
   const readerStyle = await readFile("packages/reader/src/reader.css", "utf8");
   const previewCode = script(preview.code);
   const previewPolicy =
@@ -70,16 +76,27 @@ export async function buildStudio() {
       "{{ " +
       functions[name] +
       " }}";
+  // Separate generated data modules let Vite split the development build.
+  // The standalone IIFE still embeds every runtime in one offline HTML file.
+  await mkdir("apps/studio/dist/runtime", { recursive: true });
+  for (const [name, value] of Object.entries({
+    workerCode: worker.code,
+    previewHtml,
+  })) {
+    await writeFile(
+      `apps/studio/dist/runtime/${name}.js`,
+      `export const ${name} = ${JSON.stringify(value)};\n`,
+    );
+  }
   await writeFile(
     "apps/studio/dist/studio-runtime.js",
-    Object.entries({
-      workerCode: worker.code,
-      previewHtml,
-      examples,
-      snippets,
-    })
-      .map(([key, value]) => `export const ${key} = ${JSON.stringify(value)};`)
-      .join("\n"),
+    'export { workerCode } from "./runtime/workerCode.js";\n' +
+      'export { previewHtml } from "./runtime/previewHtml.js";\n' +
+      Object.entries({ examples, snippets })
+        .map(
+          ([key, value]) => `export const ${key} = ${JSON.stringify(value)};`,
+        )
+        .join("\n"),
   );
   const studio = await classicBundle("apps/studio/dist/index.js");
   const licenseRoots = new Set();

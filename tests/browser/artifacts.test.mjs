@@ -27,6 +27,7 @@ test.beforeAll(async ({ browserName }) => {
     entryPoints: ["packages/reader/src/export-runtime.ts"],
     outfile: coverageRuntime,
     bundle: true,
+    minify: true,
     format: "iife",
     globalName: "TintaExportRuntime",
     platform: "browser",

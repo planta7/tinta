@@ -1,10 +1,16 @@
 import { build } from "esbuild";
 
 // Build infrastructure only: this is not a document exporter or source executor.
-export async function classicBundle(entry, globalName, platform = "browser") {
+export async function classicBundle(
+  entry,
+  globalName,
+  platform = "browser",
+  { minify = false } = {},
+) {
   const result = await build({
     entryPoints: [entry],
     bundle: true,
+    minify,
     format: "iife",
     ...(globalName ? { globalName } : {}),
     platform,

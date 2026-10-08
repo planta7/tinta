@@ -19,6 +19,7 @@ test.beforeAll(async ({ browserName }) => {
       entryPoints: ["apps/studio/dist/" + name + ".js"],
       outfile: path,
       bundle: true,
+      minify: name === "preview",
       format: "iife",
       platform: "browser",
       target: "es2022",
