@@ -1,1 +1,195 @@
-/* Foundation stylesheet. Reader presentation is not implemented. */
+.tinta-reader {
+  --tinta-text: #1f2328;
+  --tinta-surface: #ffffff;
+  --tinta-secondary: #f6f8fa;
+  --tinta-muted: #59636e;
+  --tinta-border: #d0d7de;
+  --tinta-accent: #0969da;
+  --tinta-error: #b42318;
+  box-sizing: border-box;
+  max-width: min(800px, 72ch);
+  margin: 0 auto;
+  padding: 24px;
+  background: var(--tinta-surface);
+  color: var(--tinta-text);
+  font:
+    17px/1.65 system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  overflow-wrap: anywhere;
+}
+.tinta-reader *,
+.tinta-reader *::before,
+.tinta-reader *::after {
+  box-sizing: border-box;
+}
+.tinta-reader p {
+  margin: 1em 0;
+}
+.tinta-reader h1 {
+  font-size: 2em;
+}
+.tinta-reader h2 {
+  font-size: 1.5em;
+}
+.tinta-reader h3 {
+  font-size: 1.2em;
+}
+.tinta-reader h1,
+.tinta-reader h2,
+.tinta-reader h3,
+.tinta-reader h4,
+.tinta-reader h5,
+.tinta-reader h6 {
+  line-height: 1.25;
+}
+.tinta-reader a {
+  color: var(--tinta-accent);
+  text-decoration: underline;
+}
+.tinta-reader :focus-visible {
+  outline: 2px solid var(--tinta-accent);
+  outline-offset: 2px;
+}
+.tinta-reader button,
+.tinta-reader input,
+.tinta-reader select {
+  font: inherit;
+  accent-color: var(--tinta-accent);
+  max-width: 100%;
+  min-height: 24px;
+}
+.tinta-reader button {
+  min-height: 32px;
+  padding: 4px 12px;
+  color: var(--tinta-text);
+  background: var(--tinta-secondary);
+  border: 1px solid var(--tinta-border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.tinta-reader summary {
+  min-height: 24px;
+  cursor: pointer;
+}
+.tinta-control {
+  margin: 1em 0;
+}
+.tinta-control label {
+  display: block;
+  font-weight: 600;
+}
+.tinta-control input[type="range"] {
+  width: min(100%, 20em);
+  vertical-align: middle;
+}
+.tinta-control input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+}
+.tinta-control output {
+  margin-inline-start: 12px;
+}
+.tinta-control-error {
+  display: block;
+  color: var(--tinta-error);
+}
+.tinta-reader-status {
+  color: var(--tinta-muted);
+  min-height: 1.65em;
+  margin-top: 1em;
+}
+.tinta-reader code,
+.tinta-reader pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: var(--tinta-secondary);
+}
+.tinta-reader pre {
+  margin: 0;
+  padding: 12px;
+  overflow-wrap: normal;
+}
+.tinta-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+.tinta-reader table {
+  border-collapse: collapse;
+  min-width: 100%;
+}
+.tinta-reader caption {
+  text-align: start;
+  font-weight: 600;
+}
+.tinta-reader th,
+.tinta-reader td {
+  text-align: start;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--tinta-border);
+}
+.tinta-reader blockquote {
+  margin-inline: 0;
+  padding-inline-start: 16px;
+  border-inline-start: 3px solid var(--tinta-border);
+}
+.tinta-reader figure {
+  margin: 1em 0;
+}
+.tinta-reader details {
+  margin: 1em 0;
+}
+.tinta-image-placeholder {
+  color: var(--tinta-muted);
+}
+@media (max-width: 600px) {
+  .tinta-reader {
+    padding: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tinta-reader,
+  .tinta-reader * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (forced-colors: active) {
+  .tinta-reader {
+    color: CanvasText;
+    background: Canvas;
+  }
+  .tinta-reader :focus-visible {
+    outline-color: Highlight;
+  }
+  .tinta-reader a {
+    color: LinkText;
+  }
+  .tinta-control-error,
+  .tinta-reader-status,
+  .tinta-image-placeholder {
+    color: CanvasText;
+  }
+}
+
+.tinta-reader .tinta-align-left {
+  text-align: left;
+}
+.tinta-reader .tinta-align-right {
+  text-align: right;
+}
+.tinta-reader .tinta-align-center {
+  text-align: center;
+}
+
+.tinta-reader .tinta-tight-item > p,
+.tinta-reader li > input[type="checkbox"] + p {
+  display: inline;
+}
+.tinta-reader li > input[type="checkbox"] {
+  margin-inline-end: 8px;
+}
