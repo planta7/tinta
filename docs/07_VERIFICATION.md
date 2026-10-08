@@ -38,7 +38,42 @@ Use deterministic generated documents, commit their generator seeds and final ha
 
 Qualification reference: macOS arm64 machine with >=16GiB RAM, no artificial CPU throttle, plugged in; record exact CPU, OS, power mode and browser. Warm measurements: 10 warm-up runs then 50 measured runs, no dev server/HMR, median and p95. Cold opening: 10 fresh contexts. Exclude browser startup from language compile timing but include parsing in cold document evaluation. Maintain separate compile, evaluate, SVG preparation, DOM commit and export timings.
 
-Targets on the reference machine: S initial compile+evaluate p95 <=150ms; M <=750ms; S answer update p95 <=50ms; M <=150ms; dense figure preparation+DOM update p95 <=250ms; valid L completes or reports a documented limit within 3s worker watchdog without source loss; export <=2s for M excluding an OS save dialog; incremental retained heap after 100 mount/destroy cycles <=10MiB above stabilized baseline. No single main-thread synchronous operation in Studio should exceed 50ms for M; compilation runs in a worker. Standalone reader operation budgets remain mandatory even if a large input cannot meet the small-document target.
+Targets on the reference machine: S initial compile+evaluate p95 <=150ms; M <=750ms; S answer update p95 <=50ms; M <=150ms; dense figure preparation+DOM update p95 <=250ms; valid L completes or reports a documented limit within 3s worker watchdog without source loss; export <=2s for M excluding an OS save dialog; incremental retained heap after 100 mount/destroy cycles <=10MiB above stabilized baseline. Studio responsiveness follows the interaction protocol below; compilation runs in a worker. Standalone reader operation budgets remain mandatory even if a large input cannot meet the small-document target.
+
+### Studio interaction protocol
+
+For the medium corpus, run three fresh browser contexts. In each context measure
+source typing and a dependent chart control separately, with 10 warm-up actions
+and 50 measured actions per scenario. Use the production offline artifact on the
+reference machine. Each run must meet all of these budgets:
+
+| Metric | Acceptance budget | Purpose |
+|---|---|---|
+| Typing event to editor paint opportunity, p95 | <=100ms | Prompt feedback while writing |
+| Control event to updated reader paint opportunity, p95 | <=150ms | Preserve the medium answer-update budget |
+| Typing event to updated preview paint opportunity, p95 | <=1000ms | Include the 200ms debounce, worker work and presentation |
+| Maximum observed main-thread task during either scenario | <=200ms | Reject severe individual stalls even with a good p95 |
+
+A paint opportunity is measured conservatively by two consecutive animation-frame
+callbacks after the relevant DOM update. It is a laboratory proxy, not proof of
+pixels being presented or a field Interaction to Next Paint score. Record event
+timestamps, completion timestamps, raw samples, median, p95 and maximum. Preview
+completion must observe the changed document, not merely the worker response.
+Verify control values and source edits after measurement. Missing events, missing
+observer support, timeouts and incomplete samples fail the measurement.
+
+Keep 50ms as the diagnostic long-task target. Report long-task count, maximum,
+excess time above 50ms, and the fraction of actions containing a long task; do not
+silently discard outliers. Record browsing-context attribution without claiming
+it identifies individual product functions. Avoid automation DOM polling during
+timed intervals. Preserve all three runs, including failures; do not retry until
+a passing run appears. A failed run blocks acceptance pending investigation.
+
+These are engineering budgets chosen before evaluation, not thresholds derived
+from the current implementation's results. The one-second preview budget does
+not replace the existing compile/evaluate or reader-update budgets. See the
+[responsiveness decision](../decisions/studio-responsiveness.md) for rationale,
+measurement limits and the superseded absolute 50ms criterion.
 
 Bundle ceilings: portable core+syntax+engine <=500KiB gzip, reader+charts <=350KiB gzip excluding document payload/assets, standalone Studio <=3MiB gzip excluding bundled example raster fixtures. Report actual minified/gzip bytes and dependency composition. These are engineering targets to prove or explicitly block on, not performance measured without measurements. Do not silently lift ceilings or claim success based on estimated sizes.
 

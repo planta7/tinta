@@ -27,6 +27,7 @@ PUBLIC_ROOTS = (
     'conformance',
     'examples',
     'docs',
+    'decisions',
     'scripts',
     'patches',
     'third_party',

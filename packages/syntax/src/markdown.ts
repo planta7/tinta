@@ -90,7 +90,9 @@ export function markdown(
     start: number;
     end: number;
   }[] = [];
-  if (active && inline) {
+  // Without an image opener there is no alt-text region to protect. Avoid a
+  // second complete Markdown traversal for the common image-free document.
+  if (active && inline && source.text.includes("![")) {
     const pending = [
       markdown(
         source,

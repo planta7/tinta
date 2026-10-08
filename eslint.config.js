@@ -25,7 +25,7 @@ export default tseslint.config(
     languageOptions: { globals: globals.node },
   },
   {
-    files: ["tests/browser/**/*.mjs"],
+    files: ["tests/browser/**/*.mjs", "scripts/performance-browser.mjs"],
     languageOptions: { globals: globals.browser },
   },
   { rules: { "@typescript-eslint/no-explicit-any": "error" } },

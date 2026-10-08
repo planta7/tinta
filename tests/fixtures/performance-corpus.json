@@ -1,0 +1,32 @@
+[
+  {
+    "name": "small",
+    "seed": 730241,
+    "bytes": 21873,
+    "sha256": "6b5f2e05579fdcacd31e7932257f99362f29e3e06d617fefd3a9ee160e7655d5"
+  },
+  {
+    "name": "medium",
+    "seed": 730241,
+    "bytes": 255627,
+    "sha256": "b8ce42e86fc7f75ed05eedb931d2a7a11730560367b58d38b35ac25968c479a3"
+  },
+  {
+    "name": "large",
+    "seed": 730241,
+    "bytes": 2097152,
+    "sha256": "0fd3659d4bc5ed39acab7e2348e727cbf07f0f7ab1700778dd1fa806d468b127"
+  },
+  {
+    "name": "dense",
+    "seed": 730241,
+    "bytes": 79888,
+    "sha256": "80dba5833e00347d21b4fddcbf5bc6511712054bfedf92126594eafdf224a8ad"
+  },
+  {
+    "name": "marks",
+    "seed": 730241,
+    "bytes": 80074,
+    "sha256": "39344212923659ea2568ed1c537569644d67fc7bdd92f8c7328ec5bfc3d5e23c"
+  }
+]
