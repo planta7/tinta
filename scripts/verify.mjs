@@ -1,8 +1,11 @@
 import { spawnSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 const requested = process.argv.slice(2);
-if (requested.length && requested.join(" ") !== "--suite infrastructure") {
-  console.error("NOT_IMPLEMENTED: supported aggregate suite is infrastructure");
+const suite = requested.length ? requested.join(" ") : "--suite infrastructure";
+if (!["--suite infrastructure", "--suite parsing"].includes(suite)) {
+  console.error(
+    "NOT_IMPLEMENTED: supported aggregate suites are infrastructure and parsing",
+  );
   process.exit(1);
 }
 const commands = [
@@ -19,7 +22,9 @@ const commands = [
     "test:browser:infrastructure",
     "check:licenses",
   ].map((s) => ["pnpm", s]),
-  ["pnpm", "audit", "--audit-level=high"],
+  ...(suite === "--suite parsing"
+    ? [["pnpm", "test:conformance", "parsing"]]
+    : [["pnpm", "audit", "--audit-level=high"]]),
 ];
 const results = [];
 for (const command of commands) {
@@ -37,6 +42,6 @@ for (const command of commands) {
 mkdirSync("reports/verification", { recursive: true });
 writeFileSync(
   "reports/verification/verify.json",
-  JSON.stringify({ suite: "infrastructure", results }, null, 2) + "\n",
+  JSON.stringify({ suite: suite.slice(8), results }, null, 2) + "\n",
 );
 process.exitCode = results.some((r) => r.exitCode !== 0) ? 1 : 0;

@@ -131,3 +131,16 @@ else {
 console.log(
   `License PASS: ${inventory.length} locked records, ${packages.size} installed packages, ${notices.size} notice groups`,
 );
+
+const corpusProvenance = read("third_party/commonmark/provenance.json");
+if (corpusProvenance.version !== "0.31.2")
+  throw new Error("Unexpected CommonMark corpus version");
+const corpusLicense = readFileSync("third_party/commonmark/LICENSE", "utf8");
+if (
+  !corpusLicense.includes("CC-BY-SA 4.0") ||
+  !corpusLicense.includes("John MacFarlane")
+)
+  throw new Error("Missing CommonMark specification attribution/license");
+console.log(
+  "CommonMark corpus: separate upstream CC-BY-SA 4.0 attribution retained; not project MIT.",
+);

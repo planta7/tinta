@@ -19,7 +19,18 @@ from zipfile import ZipFile, BadZipFile
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = None
-PUBLIC_ROOTS = ('architecture', 'spec', 'contracts', 'schemas', 'conformance', 'examples', 'docs', 'scripts')
+PUBLIC_ROOTS = (
+    'architecture',
+    'spec',
+    'contracts',
+    'schemas',
+    'conformance',
+    'examples',
+    'docs',
+    'scripts',
+    'patches',
+    'third_party',
+)
 PUBLIC_TOP = ('README.md', 'CONTRIBUTING.md', 'DECISIONS.md', 'LICENSE', 'SECURITY.md', '.gitignore')
 checks: list[dict[str, object]] = []
 
