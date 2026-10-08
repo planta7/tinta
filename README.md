@@ -32,6 +32,8 @@ Contract revision **1.0-draft.2** is a draft specification with type declaration
 - [Contracts](contracts/CONTRACT_RULES.md) and [conformance](conformance/README.md)
 - [Roadmap](docs/ROADMAP.md), [contributing](CONTRIBUTING.md) and [security](SECURITY.md)
 
+The foundation workspace and locked toolchain are described in [foundation tooling](docs/09_FOUNDATION_TOOLCHAIN.md). Empty package scaffolds do not implement the language.
+
 ## Available checks
 
 ```sh

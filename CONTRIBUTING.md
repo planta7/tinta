@@ -2,7 +2,7 @@
 
 Read the [scope decisions](DECISIONS.md), [language specification](spec/00_OVERVIEW.md), [architecture](architecture/MODULES.md), and the relevant [roadmap milestone](docs/ROADMAP.md) before changing a contract.
 
-The repository currently contains specifications, declarations, fixtures and Python consistency checkers. There is no installed application workspace or working CLI. M0 defines future dependency resolution and infrastructure; later milestones implement the language in order.
+The repository contains specifications, declarations, fixtures, Python consistency checkers and a foundation workspace. The package modules are empty; no working document CLI or application is implemented. See [foundation toolchain](docs/09_FOUNDATION_TOOLCHAIN.md) for exact installation and infrastructure checks. Document operations are not yet available.
 
 ## Check a change
 
