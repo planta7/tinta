@@ -21,7 +21,7 @@ import { classicBundle, inlineScript } from "../../scripts/packaging.mjs";
 import { requireCapability } from "../../scripts/capabilities.mjs";
 const json = (p) => JSON.parse(readFileSync(p, "utf8"));
 describe("workspace capability boundaries", () => {
-  it("checks the actual workspace", () => expect(checkWorkspace()).toBe(9));
+  it("checks the actual workspace", () => expect(checkWorkspace()).toBe(16));
   for (const [owner, dependency] of [
     ["engine", "node:fs"],
     ["types", "fs"],

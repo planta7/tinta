@@ -1,0 +1,84 @@
+diff --git a/dev/lib/create-tokenizer.js b/dev/lib/create-tokenizer.js
+index b61ae359768d4541d16b40fb74a1294783ab4547..bea244489250fba394e32a7c35ac484477e810c1 100644
+--- a/dev/lib/create-tokenizer.js
++++ b/dev/lib/create-tokenizer.js
+@@ -64,7 +64,7 @@ const debug = createDebug('micromark')
+  * @returns {TokenizeContext}
+  *   Context.
+  */
+-export function createTokenizer(parser, initialize, from) {
++export function createTokenizer(parser, initialize, from, observeTokenizer) {
+   /** @type {Point} */
+   let point = {
+     _bufferIndex: -1,
+@@ -231,6 +231,7 @@ export function createTokenizer(parser, initialize, from) {
+    *   Nothing.
+    */
+   function go(code) {
++    observeTokenizer?.('transition', point.offset)
+     assert(consumed === true, 'expected character to be consumed')
+     consumed = undefined
+     debug('main: passing `%s` to %s', code, state && state.name)
+@@ -295,6 +296,7 @@ export function createTokenizer(parser, initialize, from) {
+ 
+   /** @type {Effects['enter']} */
+   function enter(type, fields) {
++    observeTokenizer?.('enter', point.offset, type, stack)
+     /** @type {Token} */
+     // @ts-expect-error Patch instead of assign required fields to help GC.
+     const token = fields || {}
+diff --git a/dev/lib/parse.js b/dev/lib/parse.js
+index ffb0f88a2b90ab4605f4961617bd766f5c3af1e0..01c9507590cfef2c6ffa19b4d25387b267684725 100644
+--- a/dev/lib/parse.js
++++ b/dev/lib/parse.js
+@@ -52,7 +52,7 @@ export function parse(options) {
+     return creator
+     /** @type {Create} */
+     function creator(from) {
+-      return createTokenizer(parser, initial, from)
++      return createTokenizer(parser, initial, from, settings.observeTokenizer)
+     }
+   }
+ }
+diff --git a/lib/create-tokenizer.js b/lib/create-tokenizer.js
+index ad8b247adbb0c5baf8686ad411ca494e467948dc..5f545954ec935c8832b5e89c7aba0fc535bbb729 100644
+--- a/lib/create-tokenizer.js
++++ b/lib/create-tokenizer.js
+@@ -58,7 +58,7 @@ import { resolveAll } from 'micromark-util-resolve-all';
+  * @returns {TokenizeContext}
+  *   Context.
+  */
+-export function createTokenizer(parser, initialize, from) {
++export function createTokenizer(parser, initialize, from, observeTokenizer) {
+   /** @type {Point} */
+   let point = {
+     _bufferIndex: -1,
+@@ -228,6 +228,7 @@ export function createTokenizer(parser, initialize, from) {
+    *   Nothing.
+    */
+   function go(code) {
++    observeTokenizer?.('transition', point.offset)
+     consumed = undefined;
+     expectedCode = code;
+     state = state(code);
+@@ -271,6 +272,7 @@ export function createTokenizer(parser, initialize, from) {
+ 
+   /** @type {Effects['enter']} */
+   function enter(type, fields) {
++    observeTokenizer?.('enter', point.offset, type, stack)
+     /** @type {Token} */
+     // @ts-expect-error Patch instead of assign required fields to help GC.
+     const token = fields || {};
+diff --git a/lib/parse.js b/lib/parse.js
+index 468231986a450bae77540807dba5b655ab3becfd..10a33e945ed853cdcbe04c6a606644f94b35dbc6 100644
+--- a/lib/parse.js
++++ b/lib/parse.js
+@@ -50,7 +50,7 @@ export function parse(options) {
+     return creator;
+     /** @type {Create} */
+     function creator(from) {
+-      return createTokenizer(parser, initial, from);
++      return createTokenizer(parser, initial, from, settings.observeTokenizer);
+     }
+   }
+ }
