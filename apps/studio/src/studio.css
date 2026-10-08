@@ -1,0 +1,212 @@
+:root {
+  color-scheme: light;
+  font:
+    16px/1.5 system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  --text: #1f2328;
+  --surface: #ffffff;
+  --secondary: #f6f8fa;
+  --muted: #59636e;
+  --border: #d0d7de;
+  --accent: #0969da;
+  --error: #b42318;
+}
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--text);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  padding: 0.45rem 0.75rem;
+  min-height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--secondary);
+  color: var(--text);
+  cursor: pointer;
+}
+
+button:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+header {
+  padding: 1rem;
+  border-bottom: 1px solid GrayText;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+header strong {
+  margin-right: auto;
+}
+
+.welcome {
+  max-width: 44rem;
+  margin: 8vh auto;
+  padding: 1.5rem;
+}
+
+.welcome button {
+  margin: 0.4rem;
+}
+
+.status,
+.diagnostics,
+.preferences {
+  padding: 0.5rem 1rem;
+}
+
+.status {
+  min-height: 1.5rem;
+}
+
+.panes {
+  display: block;
+}
+
+.source-pane {
+  display: none;
+}
+
+.editing .panes {
+  display: grid;
+  grid-template-columns: 48% 52%;
+}
+
+.editing .source-pane {
+  display: block;
+  min-width: 400px;
+}
+
+.preview-pane {
+  min-height: 75vh;
+}
+
+iframe {
+  display: block;
+  width: 100%;
+  height: 78vh;
+  border: 0;
+}
+
+.cm-editor {
+  height: 78vh;
+  border-right: 1px solid GrayText;
+}
+
+.cm-scroller {
+  overflow: auto;
+}
+
+.cm-content {
+  font:
+    14px/1.55 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Consolas,
+    monospace;
+}
+
+.tinta-token {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+}
+
+.tabs {
+  display: none;
+}
+
+dialog {
+  max-width: min(44rem, 88vw);
+  max-height: 85vh;
+  overflow: auto;
+  border: 1px solid GrayText;
+  padding: 1.5rem;
+}
+
+dialog::backdrop {
+  background: #0008;
+}
+
+dialog label {
+  display: block;
+  margin: 0.75rem 0;
+}
+
+dialog pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 35vh;
+  overflow: auto;
+}
+
+dialog button {
+  margin: 0.3rem;
+}
+
+.diagnostics button {
+  display: block;
+  text-align: left;
+}
+
+@media (max-width: 1099px) {
+  .editing .panes {
+    display: block;
+  }
+
+  .editing .tabs {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .editing .source-pane {
+    min-width: 0;
+  }
+
+  .editing[data-tab="source"] .preview-pane {
+    display: none;
+  }
+
+  .editing[data-tab="preview"] .source-pane {
+    display: none;
+  }
+
+  header {
+    padding: 0.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto;
+  }
+}
+
+header h1 {
+  font-size: 1rem;
+  margin: 0;
+}
