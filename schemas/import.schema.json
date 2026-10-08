@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tinta data import column mapping",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "columns"
+  ],
+  "properties": {
+    "kind": {
+      "const": "tinta-import-schema"
+    },
+    "columns": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "input",
+          "name",
+          "type"
+        ],
+        "properties": {
+          "input": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+          },
+          "type": {
+            "enum": [
+              "text",
+              "number",
+              "boolean"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

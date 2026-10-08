@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tinta source bundle manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "formatVersion",
+    "source",
+    "assets"
+  ],
+  "properties": {
+    "kind": {
+      "const": "tinta-source-bundle"
+    },
+    "formatVersion": {
+      "const": "1.0"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "bytes",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "const": "document.tinta"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2097152
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "assets": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "mime",
+          "bytes",
+          "sha256"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^assets/[a-f0-9]{64}\\.(png|jpg|webp)$"
+          },
+          "mime": {
+            "enum": [
+              "image/png",
+              "image/jpeg",
+              "image/webp"
+            ]
+          },
+          "bytes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10485760
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    }
+  }
+}

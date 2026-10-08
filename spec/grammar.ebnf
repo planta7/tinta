@@ -1,0 +1,84 @@
+(* Tinta 1.0-draft.2. Normative Tinta grammar composed with CommonMark 0.31.2.
+   Markdown lexical contexts, flow eligibility, whitespace and source spans
+   are specified in 01_MARKDOWN_AND_LEXING.md. This is not a replacement
+   grammar for CommonMark. NL may end a directive only at bracket depth zero.
+   Static-literal and semantic restrictions are in 02/03/04; errors are not JS.
+   Terminals are quoted; ? ... ? denotes a lexical class defined here. *)
+
+document       = { markdown-node | directive } ;
+directive      = meta | let | calc | slider | toggle | choice | when | details
+               | data | view | table | chart ;
+meta           = "@meta", wsp, options, line-end ;
+let            = "@let", ws1, identifier, wsp, "=", wsp, expression, line-end ;
+calc           = "@calc", ws1, identifier, wsp, "=", wsp, expression, line-end ;
+slider         = "@slider", ws1, identifier, wsp, "=", wsp, signed-number,
+                 [ wsp, options ], line-end ;
+toggle         = "@toggle", ws1, identifier, wsp, "=", wsp, boolean,
+                 [ wsp, options ], line-end ;
+choice         = "@choice", ws1, identifier, wsp, "=", wsp, string,
+                 wsp, options, line-end ;
+when           = "@when", ws1, expression, line-end, flow-body, end ;
+details        = "@details", [ ws1, string ], line-end, flow-body, end ;
+data           = "@data", ws1, identifier, line-end, data-body, end ;
+view           = "@view", ws1, identifier, wsp, "=", wsp, identifier,
+                 [ wsp, options ], line-end ;
+table          = "@table", ws1, identifier, [ wsp, options ], line-end ;
+chart          = "@chart", ws1, chart-type, ws1, identifier, wsp, options, line-end ;
+end            = "@end", wsp, line-end ;
+chart-type     = "line" | "area" | "bar" | "scatter" | "pie" | "donut" | "histogram" ;
+flow-body      = ? nonempty Markdown+Tinta flow, with contextual @end recognition ? ;
+markdown-node  = ? CommonMark node plus allowed table/task/strikethrough extensions ? ;
+options        = "(", ws, [ option, { ws, ",", ws, option }, [ ws, "," ] ], ws, ")" ;
+option         = identifier, ws, ":", ws, expression ;
+(* Options are expression-shaped tokens. Static option fields accept only the
+   field-specific literal productions; select accepts a single identifier.
+   This semantic distinction is mandatory, not arbitrary general evaluation. *)
+
+interpolation  = "{{", wsp, inline-expression, wsp, "}}" ;
+inline-expression = ? expression without physical newline ? ;
+expression     = or-expr ;
+or-expr        = and-expr, { ws, "or", ws, and-expr } ;
+and-expr       = equality, { ws, "and", ws, equality } ;
+equality       = ordering, { ws, ("==" | "!="), ws, ordering } ;
+ordering       = additive, { ws, ("<" | "<=" | ">" | ">="), ws, additive } ;
+additive       = multiplicative, { ws, ("+" | "-"), ws, multiplicative } ;
+multiplicative = unary, { ws, ("*" | "/" | "%"), ws, unary } ;
+unary          = [ ("+" | "-" | "not"), ws ], unary-tail ;
+unary-tail     = unary-prefix | primary ;
+unary-prefix   = ("+" | "-" | "not"), ws, unary-tail ;
+primary        = number | string | boolean | list | row-field | call | identifier
+               | "(", ws, expression, ws, ")" ;
+row-field      = "row", ".", identifier ;
+call           = function-name, wsp, "(", ws,
+                 [ expression, { ws, ",", ws, expression } ], ws, ")" ;
+function-name  = "if" | "min" | "max" | "round" | "pow" | "count"
+               | "sum" | "mean" | "fixed" | "percent" | "money" ;
+list           = "[", ws, [ expression, { ws, ",", ws, expression }, [ ws, "," ] ], ws, "]" ;
+boolean        = "true" | "false" ;
+signed-number  = [ "+" | "-" ], number ;
+number         = ("0" | nonzero, { digit }), [ ".", digit, { digit } ],
+                 [ ("e" | "E"), [ "+" | "-" ], digit, { digit } ] ;
+string         = ? JSON double-quoted string, no literal newline/unpaired surrogate ? ;
+identifier     = (letter | "_"), { letter | digit | "_" } ;
+letter         = ? ASCII A-Z or a-z ? ;
+digit          = "0" | nonzero ;
+nonzero        = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+
+(* Operators written as words require identifier-token boundaries on each
+   side. nottrue is one identifier, not the tokens not + true. The lexer uses
+   maximal munch: <= before <; != before !; an unknown token is an error. *)
+data-body      = { blank-line }, typed-header, line-end,
+                 { blank-line | data-row, line-end } ;
+typed-header   = header-cell, { wsp, "|", wsp, header-cell } ;
+header-cell    = wsp, identifier, wsp, ":", wsp, data-type, wsp ;
+data-type      = "text" | "number" | "boolean" ;
+data-row       = data-cell, { "|", data-cell } ;
+data-cell      = ? quote-aware cell lexical production and typed interpretation in 04_DATA.md ? ;
+blank-line     = wsp, newline ;
+line-end       = wsp, (newline | eof) ;
+wsp            = { " " | tab } ;
+ws1            = (" " | tab), wsp ;
+ws             = { " " | tab | ? newline only within open delimiters ? } ;
+newline        = ? CRLF, LF or CR ? ;
+tab            = ? U+0009 ? ;
+eof            = ? end of input ? ;

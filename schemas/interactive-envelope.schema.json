@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Interactive artifact envelope; program validated by typed ABI decoder",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "formatVersion",
+    "engineVersion",
+    "abi",
+    "program",
+    "baseline",
+    "assets"
+  ],
+  "properties": {
+    "kind": {
+      "const": "tinta-interactive"
+    },
+    "formatVersion": {
+      "const": "1.0"
+    },
+    "engineVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "abi": {
+      "const": "tinta-ir-1"
+    },
+    "program": {
+      "type": "object",
+      "description": "Must additionally pass decodeProgram against contracts/public-api.d.ts and full semantic validation."
+    },
+    "baseline": {
+      "$ref": "state.schema.json"
+    },
+    "assets": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "mime",
+          "sha256",
+          "base64"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "pattern": "^assets/[a-f0-9]{64}\\.(png|jpg|webp)$"
+          },
+          "mime": {
+            "enum": [
+              "image/png",
+              "image/jpeg",
+              "image/webp"
+            ]
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "base64": {
+            "type": "string",
+            "maxLength": 13981016,
+            "pattern": "^[A-Za-z0-9+/]*={0,2}$"
+          }
+        }
+      }
+    }
+  }
+}

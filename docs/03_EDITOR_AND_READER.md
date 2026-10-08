@@ -1,0 +1,59 @@
+# Reference editor and reader contract
+
+## App form
+
+The reference editor is a local web application with a mandatory standalone `tinta-studio.html` production artifact. It can be opened as a local file without a server. Development may use a loopback Vite server; that does not introduce a product backend. No account, app-specific database service, publication route, AI sidebar or network API is present.
+
+A new session opens a small welcome surface with **New document**, **Open file**, and **Explore examples**. Opening a document starts in Reading mode. The top toolbar exposes filename, profile badge (`Markdown` or `Tinta 1.0 draft`), **Edit / Read**, **Open**, **New**, **Save source**, **Save bundle**, **Export**, and **Reset reading**. Menus may group actions at narrow widths; they may not hide their labels behind unexplained icons. Existing Markdown exposes **Enrich as Tinta**; Tinta files do not.
+
+Reading mode is a centered article, not a dashboard. Edit mode at widths >=1100 CSS px shows a 48% source / 52% preview split with minimum 400px per pane; below 1100 uses labelled Source/Preview tabs, never squashes both panes. The split is fixed in V1, not a general layout designer. Source position and scroll are retained when switching modes. On narrow mobile screens, editing is available through the source tab but the release promise prioritizes reading.
+
+## Source editor
+
+CodeMirror 6 provides plain text, undo/redo, find/replace, line numbers, wrapping, bracket matching, indentation and keyboard editing. Use Markdown language support plus a Tinta extension for highlighting/completion, but do not implement a second authoritative parser in the editor. Semantic diagnostics come from the engine. Completion snippets derive from the directive/function registry and generate syntactically complete defaults. No AI completion, formatter on save or automatic prose rewriting.
+
+Tab inserts two spaces at a cursor in ordinary text but preserves existing tabs and indentation in source. CommonMark code indentation still follows its base rules; two-space insertion is an editor preference, not a Tinta block rule. The editor never automatically indents an entire existing Markdown fragment to wrap it in a condition; insert `@when ...` and `@end` around the selection at root boundaries.
+
+Compile edits after 200ms idle and immediately on an explicit **Check** action, mode switch to Reading or export request. Run compile/type/evaluation work in a worker with the defined protocol/watchdog. Increment document revision on every source edit; ignore stale worker responses. While a compile is pending, show `Checking…`; keep the previous preview, but disable export. Initial new empty Markdown/Tinta text is valid.
+
+## Invalid and recovered source
+
+On parse/type/initial-evaluation error, show diagnostics with stable code, English message and a clickable line/column. Clicking selects the source span without moving another document. Keep the last valid preview labelled `Preview is from the last valid source. Fix the errors to update it.` Disable its interactive controls and exports. Raw source saving remains available for recovery. An entirely new invalid document with no previous render shows its error panel, not a blank successful page.
+
+When a revised source compiles, reconcile reader answers by name and definition signature. Retain an answer only when control kind and its entire domain definition are unchanged (slider min/max/step; choice options in order; toggle boolean domain) and the retained value is valid. A changed authored initial alone counts as a changed definition and resets that control to the new initial. Removed controls disappear; new controls start at their initial. Report `N answers reset after source changes` when N>0, listing names in an expandable note. Then evaluate the retained candidate once. If it fails, fall back to all new authored initial values; if that also fails, the source is invalid. Never claim a mixed partially reconciled result succeeded.
+
+Any successful source compile resets figure-local legends/pins and closes details; maintain source editor focus and article scroll as far as possible. A pure reader control update preserves those presentation states as specified for charts. Invalid user control actions are transactional reader errors, not invalid source edits.
+
+## File opening and saving
+
+Open accepts one main `.md`, `.tinta` or `.tinta.zip` file. Unknown extensions require an explicit profile choice, not content guessing. Dropping multiple main files offers a single-file choice; it does not concatenate them. Opening/new while source has changes since its last save/download checkpoint asks **Save**, **Discard**, or **Cancel**; Cancel is default. Bundle import validates fully before replacing the current buffer/assets.
+
+File picker and download APIs are the baseline across browsers. Feature-detected File System Access can remember a file handle within the current tab, with explicit user permission; do not require it in Firefox/Safari. Browser handles are never assumed to survive reload or permission revocation. A successful writable-stream close can display `Saved`; fallback download displays `Source download started — check your browser's Downloads.` Set the content checkpoint when bytes are handed off successfully, not before; acknowledge that browser cancellation after handoff is not observable. Subsequent source edits mark the buffer changed. Reader answers never set the source dirty flag.
+
+Save source is permitted while invalid and preserves the text for recovery. Bundle save requires valid current source, successful authored-initial evaluation and all referenced source assets. Preserve invalid drafts through raw source saving or opt-in recovery, not through a bundle falsely presented as validated. HTML export always requires valid current source and a successful chosen-state evaluation.
+
+On raw `.tinta` save with assets, warn that sidecars are not included and recommend bundle. For a new unsaved source the default filename is `untitled.tinta`; for enrichment replace `.md` with `.tinta` in a new file, never the old path. Export default is `<stem>.interactive.html` or `<stem>.static.html`; state is `<stem>.tinta.state.json`; bundle is `<stem>.tinta.zip`. Filename sanitization replaces filesystem-reserved characters with `_` and never modifies source title metadata.
+
+## Local recovery — not saved files
+
+The welcome/preferences surface contains **Keep local recovery copies on this device**, off by default. Enabling it permits IndexedDB storage of source, its selected profile and imported raster bytes after 1000ms idle. The latest source and its last-known filename/title are stored; reader answers, external absolute paths, directory handles and file handles are not. There are at most 10 entries and 30MiB combined data, with least-recently-edited entries evicted only after an explicit storage notice identifies the policy. Never silently discard the active entry to meet quota.
+
+Recoveries are offered after reload, never loaded without selection. Label them recovery copies, not saved documents. Provide **Delete this recovery** and **Delete all local recovery copies**, with confirmation for bulk deletion. Disabling recovery offers deletion and otherwise stops future writes. Storage unavailable/denied/quota failure is a nonblocking warning; source stays in memory and save/export remains usable. In private/file-origin environments storage behaviour must be tested, not assumed. No service worker or remote backup is used.
+
+## Assets and data import
+
+Import menus offer **CSV data**, **JSON data**, **Local image**, and **Add missing image files**. Show type mapping, bounds/errors and exact inserted source before committing data. Image insertion collects alt text and stores hashed bytes. Both source and asset additions are one undoable transaction. Undoing an insertion removes newly orphaned in-memory assets only when no source/undo state references them; actual original disk files are never deleted.
+
+Missing asset resolution matches normalized relative paths or explicit user-selected replacement, not just basenames when ambiguous. A replacement for one image cannot silently replace every different path sharing a filename. Memory asset references follow the resolved path map; export canonicalizes by content hash.
+
+## Export flow
+
+Export menu: **Interactive HTML**, **Static HTML**, **Answers snapshot**. HTML dialog shows Initial answers / Current answers, default Initial, with the exact state and presentation/privacy notes from the file contract. No Publish/Upload/Share button. A source compile still in flight blocks confirmation. Recheck the source revision immediately before writing so a delayed export cannot use a stale buffer. A changed source during export cancels that export with an explanatory status.
+
+Reset reading in the editor restores source control defaults, all chart entries visible, no inspection pins and all details closed; it preserves source, editor cursor and file dirty state. Exports use their own selected answer baseline. Reset is always available, including after rejected input.
+
+## Keyboard commands
+
+Primary modifier is Command on macOS and Control elsewhere. Primary+S saves source; Primary+Shift+S opens Save source as; Primary+O opens; Primary+N creates after the unsaved check; Primary+F finds in source only when editing; Primary+Shift+E opens the export dialog; Escape closes the topmost dialog or chart local pin as context requires. Do not hijack browser refresh, zoom, tab or accessibility shortcuts. Every toolbar function has a keyboard-accessible labelled button/menu item as an alternative.
+
+Dialogs trap focus only while open, restore it to the triggering control, and default destructive choices to Cancel. Disabling a focused control due to pending compilation must leave focus on a stable containing action/status, never the document body without explanation. Source/preview scroll synchronization is not a V1 feature; there is no hidden promise of pixel-perfect synchronized panes.

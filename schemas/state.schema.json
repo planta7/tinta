@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tinta answer snapshot",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "kind",
+    "formatVersion",
+    "sourceSha256",
+    "controls"
+  ],
+  "properties": {
+    "kind": {
+      "const": "tinta-state"
+    },
+    "formatVersion": {
+      "const": "1.0"
+    },
+    "sourceSha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "controls": {
+      "type": "object",
+      "maxProperties": 128,
+      "propertyNames": {
+        "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
+      },
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "string",
+            "maxLength": 65536
+          },
+          {
+            "type": "number"
+          },
+          {
+            "type": "boolean"
+          }
+        ]
+      }
+    }
+  }
+}
