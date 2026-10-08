@@ -23,7 +23,7 @@ import { requireCapability } from "../../scripts/capabilities.mjs";
 const json = (p) => JSON.parse(readFileSync(p, "utf8"));
 
 describe("workspace capability boundaries", () => {
-  it("checks the actual workspace", () => expect(checkWorkspace()).toBe(30));
+  it("checks the actual workspace", () => expect(checkWorkspace()).toBe(32));
 
   for (const [owner, dependency] of [
     ["engine", "node:fs"],
@@ -31,6 +31,7 @@ describe("workspace capability boundaries", () => {
     ["reader", "react"],
     ["artifacts", "@codemirror/view"],
     ["reader", "@tinta/studio"],
+    ["engine", "@tinta/reader/internal"],
     ["types", "@tinta/engine"],
   ])
     it(`rejects ${owner} -> ${dependency}`, () =>
@@ -48,6 +49,11 @@ describe("workspace capability boundaries", () => {
   ])
     it(`rejects unsafe source ${source}`, () =>
       expect(() => inspectSource("engine", source)).toThrow());
+
+  it("permits approved pure engine subpaths in the geometry adapter", () =>
+    expect(() =>
+      checkImport("charts", "@tinta/engine/chart-presentation"),
+    ).not.toThrow());
 
   it("allows type-only local imports and pure calculations", () =>
     expect(() =>

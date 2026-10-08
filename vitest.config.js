@@ -15,6 +15,7 @@ export default defineConfig({
         "scripts/capabilities.mjs",
         "packages/syntax/dist/**/*.js",
         "packages/engine/dist/**/*.js",
+        "packages/charts/dist/**/*.js",
       ],
       exclude: [
         "packages/syntax/dist/registry.js",
@@ -26,6 +27,11 @@ export default defineConfig({
         branches: 80,
         functions: 85,
         lines: 85,
+        "packages/charts/dist/**": {
+          statements: 90,
+          branches: 85,
+          lines: 90,
+        },
         "packages/engine/dist/**": {
           statements: 95,
           branches: 90,

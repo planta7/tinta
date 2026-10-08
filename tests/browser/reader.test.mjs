@@ -451,7 +451,7 @@ test("observer failures cannot stop updates or another reader instance", async (
   await expect(page.locator("article")).toContainText("Amount: 8");
 });
 
-test("standalone runtime has a callable reader API and explicitly identifies pending charts", async ({
+test("standalone runtime has a callable reader API and renders safe chart geometry", async ({
   page,
 }) => {
   const script = await readFile("build/reader.js", "utf8");
@@ -466,7 +466,13 @@ test("standalone runtime has a callable reader API and explicitly identifies pen
     '# Figure\n@data d\nx:text | y:number\na | 1\n@end\n@chart bar d (x: "x", y: "y", title: "A figure")\n',
   );
   await expect(page.locator("figcaption")).toHaveText("A figure");
-  await expect(page.locator("figure")).toContainText("not implemented");
+  await expect(page.locator("figure svg")).toHaveAttribute(
+    "aria-hidden",
+    "true",
+  );
+  await expect(
+    page.getByRole("button", { name: "Pin inspection", exact: true }),
+  ).toBeEnabled();
 });
 
 test("accessible document reflows, supports keyboard and records screenshot baselines", async ({
@@ -837,4 +843,684 @@ test("unavailable host callbacks and destroyed sessions yield local errors with 
       () => globalThis.readerTest.instances[0].diagnostics.at(-1).message,
     ),
   ).toContain("cleanup failed");
+});
+
+for (const name of ["article", "report", "guide", "chart-atlas"]) {
+  test(`complete ${name} example has finite figures and accessible alternatives`, async ({
+    page,
+  }) => {
+    await mount(page, await readFile(`examples/${name}.tinta`, "utf8"));
+    const figures = page.locator("figure");
+    for (const figure of await figures.all()) {
+      await expect(figure.locator("svg")).toHaveAttribute(
+        "aria-hidden",
+        "true",
+      );
+      await expect(figure.getByLabel("Inspect data point")).toHaveAttribute(
+        "aria-valuetext",
+        /1 of/,
+      );
+      await figure.locator("summary").click();
+      await expect(figure.locator("table tbody tr").first()).toBeVisible();
+    }
+    const svg = await page
+      .locator("svg")
+      .evaluateAll((nodes) => nodes.map((node) => node.outerHTML).join(""));
+    expect(svg).not.toMatch(/NaN|Infinity|onload|foreignObject/);
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  });
+}
+
+test("SC-028: all seven native explorers provide keyboard actions and matching data", async ({
+  page,
+}) => {
+  await mount(page, await readFile("examples/chart-atlas.tinta", "utf8"));
+  const figures = page.locator("figure");
+  await expect(figures).toHaveCount(7);
+  for (const figure of await figures.all()) {
+    const range = figure.getByLabel("Inspect data point");
+    const maximum = Number(await range.getAttribute("max"));
+    await range.focus();
+    await range.press("End");
+    await expect(range).toHaveValue(String(maximum));
+    await expect(range).toHaveAttribute(
+      "aria-valuetext",
+      new RegExp(`${maximum} of ${maximum}`),
+    );
+    await range.press("Home");
+    await expect(range).toHaveValue("1");
+    await range.press("ArrowRight");
+    await expect(range).toHaveValue("2");
+    await range.press("PageUp");
+    await expect(range).toHaveValue(String(Math.min(12, maximum)));
+    await range.press("PageDown");
+    await expect(range).toHaveValue(
+      String(Math.max(1, Math.min(12, maximum) - 10)),
+    );
+    const button = figure.getByRole("button", {
+      name: /^(Use inspected value|Pin inspection)$/,
+    });
+    await button.focus();
+    await button.press("Enter");
+    await expect(button).toBeFocused();
+    await expect(figure.locator("p").last()).toContainText("Pinned");
+    await button.press("Escape");
+    await expect(figure.locator("p").last()).not.toContainText("Pinned");
+    await button.press("Space");
+    await expect(figure.locator("output")).toContainText("Pinned");
+  }
+});
+
+test("SC-029 and SC-030: shared selection, pointer inspection, outside filters and no-op revisions", async ({
+  page,
+}) => {
+  await mount(page, await readFile("examples/report.tinta", "utf8"));
+  const figure = page.locator("figure").first();
+  const range = figure.getByLabel("Inspect data point");
+  const revision = () =>
+    page.evaluate(
+      () => globalThis.readerTest.instances[0].session.getRevision().number,
+    );
+  const before = await revision();
+  const first = figure.locator("svg [data-point-id]").first();
+  await first.hover();
+  await expect(range).toHaveAttribute("aria-valuetext", /Tue/);
+  expect(await revision()).toBe(before);
+  await first.click();
+  await expect(page.getByLabel("Day to inspect")).toHaveValue("Tue");
+  expect(await revision()).toBe(before + 1);
+  await expect(figure.locator("svg [data-selected]")).toHaveCount(2);
+  await expect(page.locator("article")).toContainText(
+    "The selected day is Tue",
+  );
+  await first.click();
+  expect(await revision()).toBe(before + 1);
+  await page.getByLabel("Day to inspect").selectOption("Mon");
+  await expect(figure.locator("svg [data-selected]")).toHaveCount(2);
+  await page.getByLabel("Minimum readings").fill("150");
+  await expect(page.getByLabel("Day to inspect")).toHaveValue("Mon");
+  await expect(figure).toContainText(
+    "The selected value is not in this figure's current data.",
+  );
+  await expect(figure.locator("svg [data-selected]")).toHaveCount(0);
+  await range.focus();
+  await range.press("End");
+  await figure
+    .getByRole("button", { name: "Use inspected value", exact: true })
+    .focus();
+  await figure
+    .getByRole("button", { name: "Use inspected value", exact: true })
+    .click();
+  await expect(page.getByLabel("Day to inspect")).toHaveValue("Tue");
+  await expect(
+    figure.getByRole("button", { name: "Use inspected value", exact: true }),
+  ).toBeFocused();
+});
+
+test("SC-031: legend visibility is local, persistent across filtering and resettable", async ({
+  page,
+}) => {
+  await mount(page, await readFile("examples/report.tinta", "utf8"));
+  const figure = page.locator("figure").first();
+  const donut = page.locator("figure").last();
+  const before = await page.evaluate(() =>
+    JSON.stringify(globalThis.readerTest.instances[0].session.getRevision()),
+  );
+  await figure.getByRole("button", { name: "readings", exact: true }).click();
+  await figure.getByRole("button", { name: "audio", exact: true }).click();
+  await expect(figure).toContainText("All series are hidden.");
+  await expect(figure.getByLabel("Inspect data point")).toBeDisabled();
+  await expect(
+    figure.getByRole("button", { name: "Use inspected value", exact: true }),
+  ).toBeDisabled();
+  await figure.locator("summary").click();
+  await expect(figure.locator("table")).toContainText("Hidden");
+  await donut.getByRole("button", { name: "Mon: 120", exact: true }).click();
+  await expect(donut).toContainText("Visible total: 160");
+  expect(
+    await page.evaluate(() =>
+      JSON.stringify(globalThis.readerTest.instances[0].session.getRevision()),
+    ),
+  ).toBe(before);
+  await page.getByLabel("Minimum readings").fill("150");
+  await page.getByLabel("Minimum readings").fill("0");
+  await expect(
+    donut.getByRole("button", { name: "Mon: 120", exact: true }),
+  ).toHaveAttribute("aria-pressed", "false");
+  await donut.getByRole("button", { name: "Tue: 160", exact: true }).click();
+  await expect(donut).toContainText("All categories are hidden.");
+  await page
+    .getByRole("button", { name: "Reset reading", exact: true })
+    .click();
+  await expect(figure.getByLabel("Inspect data point")).toBeEnabled();
+  await expect(donut).toContainText("Visible total: 280");
+  await expect(
+    donut.getByRole("button", { name: "Mon: 120", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+});
+
+const boundaryCharts = `# Boundaries
+@slider chosen = 1 (min: 1, max: 3, label: "Chosen")
+@toggle empty = false (label: "Empty")
+@data values
+x:number | y:number
+1 | 0
+@end
+@view filtered = values (where: not empty)
+@chart line filtered (x: "x", y: "y", select: chosen)
+@chart pie filtered (x: "x", y: "y")
+@chart donut filtered (x: "x", y: "y")
+@chart histogram filtered (x: "x", bins: 2)
+`;
+test("SC-032: zero, single, empty inspectors and histogram reset", async ({
+  page,
+}) => {
+  await mount(page, boundaryCharts);
+  const figures = page.locator("figure");
+  for (const figure of (await figures.all()).slice(0, 3)) {
+    await expect(figure.getByLabel("Inspect data point")).toBeDisabled();
+    await expect(
+      figure.getByRole("button", {
+        name: /^(Use inspected value|Pin inspection)$/,
+      }),
+    ).toBeEnabled();
+  }
+  await expect(figures.nth(1)).toContainText("All visible values are zero.");
+  await expect(figures.nth(2)).toContainText("Not applicable");
+  await expect(figures.nth(1).locator("svg path")).toHaveCount(0);
+  const histogram = figures.last();
+  await histogram.getByLabel("Inspect data point").focus();
+  await histogram.getByLabel("Inspect data point").press("End");
+  await histogram
+    .getByRole("button", { name: "Pin inspection", exact: true })
+    .click();
+  await expect(histogram).toContainText("Count: 1");
+  await page.getByLabel("Empty", { exact: true }).check();
+  for (const figure of await figures.all()) {
+    await expect(figure).toContainText("No data matches the current choices.");
+    await expect(figure.getByLabel("Inspect data point")).toBeDisabled();
+  }
+  await page.getByLabel("Empty", { exact: true }).uncheck();
+  await expect(histogram.getByLabel("Inspect data point")).toHaveValue("1");
+  await expect(histogram.locator("p").last()).not.toContainText("Pinned");
+});
+
+test("linked chart failure rolls back narrative and every figure", async ({
+  page,
+}) => {
+  await mount(
+    page,
+    `# Atomic selection
+@slider chosen = 1 (min: 1, max: 2, label: "Chosen")
+@calc amount = 1 / (2 - chosen)
+Value: {{ amount }}
+@data values
+x:number | y:number
+1 | 1
+2 | 2
+@end
+@chart bar values (x: "x", y: "y", select: chosen)
+@chart line values (x: "x", y: "y", select: chosen)
+`,
+  );
+  const figure = page.locator("figure").first();
+  const range = figure.getByLabel("Inspect data point");
+  await range.focus();
+  await range.press("End");
+  const before = await page
+    .locator("svg")
+    .evaluateAll((nodes) => nodes.map((node) => node.outerHTML));
+  await figure
+    .getByRole("button", { name: "Use inspected value", exact: true })
+    .click();
+  await expect(page.getByLabel("Chosen", { exact: true })).toHaveValue("1");
+  await expect(page.locator(".tinta-reader-status")).toContainText(
+    "Change rejected",
+  );
+  expect(
+    await page
+      .locator("svg")
+      .evaluateAll((nodes) => nodes.map((node) => node.outerHTML)),
+  ).toEqual(before);
+  expect(
+    await page.evaluate(
+      () => globalThis.readerTest.instances[0].session.getRevision().number,
+    ),
+  ).toBe(0);
+  await expect(page.locator("article")).toContainText("Value: 1");
+});
+
+test("SC-034: responsive scenes retain explorer focus and provide review artifacts", async ({
+  page,
+  browserName,
+}) => {
+  await mount(page, await readFile("examples/chart-atlas.tinta", "utf8"));
+  const directory = resolve("reports/verification/chart-visuals", browserName);
+  await mkdir(directory, { recursive: true });
+  const range = page.locator("figure").first().getByLabel("Inspect data point");
+  await range.focus();
+  await range.press("End");
+  for (const width of [1440, 1024, 768, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect
+      .poll(() => page.locator("figure svg").first().getAttribute("width"))
+      .toBe(
+        String(
+          Math.max(
+            280,
+            Math.min(
+              800,
+              Math.round(
+                await page
+                  .locator("figure")
+                  .first()
+                  .evaluate((node) => node.getBoundingClientRect().width),
+              ),
+            ),
+          ),
+        ),
+      );
+    await expect(range).toBeFocused();
+    await expect(range).toHaveValue("8");
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBe(width);
+    await page.screenshot({
+      path: `${directory}/${width}.png`,
+      fullPage: true,
+    });
+    await writeFile(
+      `${directory}/${width}.json`,
+      JSON.stringify(
+        await page
+          .locator("figure")
+          .evaluateAll((nodes) => nodes.map((node) => node.outerHTML)),
+        null,
+        2,
+      ),
+    );
+  }
+  await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
+  await page.screenshot({
+    path: `${directory}/forced-colors.png`,
+    fullPage: true,
+  });
+  await page.emulateMedia({ forcedColors: "none" });
+  await page.addStyleTag({ content: ".tinta-reader { font-size: 34px; }" });
+  await page.screenshot({ path: `${directory}/text-zoom.png`, fullPage: true });
+  await page.evaluate(() =>
+    globalThis.readerTest.instances[0].handle.destroy(),
+  );
+  await page.setViewportSize({ width: 800, height: 600 });
+  await expect(page.locator("article")).toHaveCount(0);
+});
+
+test("SC-033: overlapping scatter points select x across rows and series", async ({
+  page,
+}) => {
+  await mount(
+    page,
+    `# Duplicate observations
+@slider chosen = 1 (min: 1, max: 2, label: "Chosen")
+@data values
+x:number | a:number | b:number
+1 | 5 | 5
+1 | 5 | 8
+2 | 3 | 4
+@end
+@chart scatter values (x: "x", y: ["a", "b"], select: chosen)
+Selected: {{ chosen }}
+`,
+  );
+  const figure = page.locator("figure");
+  const range = figure.getByLabel("Inspect data point");
+  await expect(range).toHaveAttribute("max", "6");
+  await expect(figure.locator("svg [data-selected]")).toHaveCount(4);
+  await range.focus();
+  for (let i = 1; i <= 6; i++) {
+    await expect(range).toHaveAttribute(
+      "aria-valuetext",
+      new RegExp(`${i} of 6`),
+    );
+    if (i < 6) await range.press("ArrowRight");
+  }
+  await figure
+    .getByRole("button", { name: "Use inspected value", exact: true })
+    .click();
+  await expect(page.getByLabel("Chosen", { exact: true })).toHaveValue("2");
+  await expect(figure.locator("svg [data-selected]")).toHaveCount(2);
+  await figure.locator("summary").click();
+  await expect(figure.locator("tbody tr")).toHaveCount(3);
+  await figure
+    .getByRole("button", { name: "Use 1", exact: true })
+    .first()
+    .click();
+  await expect(figure.locator("svg [data-selected]")).toHaveCount(4);
+});
+
+test("SC-034: chart observers and listeners are disposed through 100 mounts", async ({
+  page,
+}) => {
+  await mount(page, boundaryCharts);
+  const result = await page.evaluate(async () => {
+    const session = globalThis.readerTest.instances[0].session;
+    globalThis.readerTest.instances[0].handle.destroy();
+    const host = document.createElement("div");
+    document.querySelector("main").append(host);
+    const NativeObserver = globalThis.ResizeObserver;
+    const add = EventTarget.prototype.addEventListener;
+    const remove = EventTarget.prototype.removeEventListener;
+    let observers = 0,
+      disconnected = 0,
+      events = 0,
+      removed = 0;
+    const callbacks = [];
+    globalThis.ResizeObserver = class extends NativeObserver {
+      constructor(callback) {
+        super(callback);
+        callbacks.push(callback);
+        observers++;
+      }
+      disconnect() {
+        disconnected++;
+        super.disconnect();
+      }
+    };
+    EventTarget.prototype.addEventListener = function (...args) {
+      events++;
+      return add.apply(this, args);
+    };
+    EventTarget.prototype.removeEventListener = function (...args) {
+      removed++;
+      return remove.apply(this, args);
+    };
+    try {
+      for (let i = 0; i < 100; i++) {
+        const result = globalThis.readerTest.mountReader(
+          session,
+          { nativeElement: host },
+          { assets: new Map() },
+        );
+        if (!result.ok) throw new Error(JSON.stringify(result));
+        host
+          .querySelector("figure input")
+          .dispatchEvent(new Event("input", { bubbles: true }));
+        result.value.resetPresentation();
+        result.value.destroy();
+        result.value.destroy();
+      }
+      for (const callback of callbacks)
+        callback([{ contentRect: { width: 390 } }]);
+      await new Promise((done) => setTimeout(done, 180));
+      return {
+        observers,
+        disconnected,
+        events,
+        removed,
+        children: host.childElementCount,
+      };
+    } finally {
+      globalThis.ResizeObserver = NativeObserver;
+      EventTarget.prototype.addEventListener = add;
+      EventTarget.prototype.removeEventListener = remove;
+    }
+  });
+  expect(result.observers).toBe(400);
+  expect(result.disconnected).toBe(400);
+  expect(result.events).toBeGreaterThan(3000);
+  expect(result.removed).toBe(result.events);
+  expect(result.children).toBe(0);
+});
+
+test("seed conformance fixtures project successful revisions and preserve rejected transitions", async ({
+  page,
+  browserName,
+}) => {
+  const fixtures = JSON.parse(
+    await readFile("conformance/cases.json", "utf8"),
+  ).cases;
+  const results = [];
+  for (const fixture of fixtures) {
+    if (["csv", "json", "enrich"].includes(fixture.phase)) {
+      results.push({
+        id: fixture.id,
+        readerEffect: "NOT_RUN",
+        reason:
+          "Local artifact/import UI; pure candidate semantics checked separately.",
+      });
+      continue;
+    }
+    const result = await page.evaluate((fixture) => {
+      const compiled = globalThis.readerTest.compile({
+        text: fixture.source,
+        profile: fixture.profile,
+      });
+      if (!compiled.ok || fixture.phase === "compile")
+        return {
+          ok: compiled.ok,
+          mounted: false,
+          diagnostics: compiled.diagnostics,
+        };
+      const created = globalThis.readerTest.createSession(compiled.value);
+      if (!created.ok)
+        return { ok: false, mounted: false, diagnostics: created.diagnostics };
+      const session = created.value;
+      const host = document.createElement("div");
+      document.querySelector("main").append(host);
+      const mounted = globalThis.readerTest.mountReader(
+        session,
+        { nativeElement: host },
+        { assets: new Map() },
+      );
+      if (!mounted.ok) throw new Error(JSON.stringify(mounted));
+      const before = host.textContent;
+      const update =
+        fixture.phase === "transition"
+          ? session.setControls(fixture.update)
+          : created;
+      const result = {
+        ok: update.ok,
+        mounted: true,
+        text: host.textContent,
+        before,
+        diagnostics: update.diagnostics,
+        charts: Array.from(host.querySelectorAll("figure")).map((figure) => ({
+          svg: !!figure.querySelector("svg"),
+          range: !!figure.querySelector("input[type=range]"),
+          table: !!figure.querySelector("table"),
+          content: figure.textContent,
+        })),
+        unsafeLinks: Array.from(host.querySelectorAll("a")).some((a) =>
+          /^(javascript|data):/i.test(a.getAttribute("href")),
+        ),
+        activeAuthorNodes: host.querySelectorAll(
+          "script, iframe, style, [onerror], [onload]",
+        ).length,
+      };
+      mounted.value.destroy();
+      session.destroy();
+      host.remove();
+      return result;
+    }, fixture);
+    expect(result.ok, fixture.id).toBe(fixture.expect.ok);
+    if (result.mounted) {
+      for (const text of fixture.expect.textContains ?? [])
+        expect(result.text, fixture.id).toContain(text);
+      for (const text of fixture.expect.textExcludes ?? [])
+        expect(result.text, fixture.id).not.toContain(text);
+      if (!result.ok) expect(result.text, fixture.id).toBe(result.before);
+      if (fixture.expect.noAuthorExecution)
+        expect(result.activeAuthorNodes).toBe(0);
+      if (fixture.expect.noActiveUnsafeLinks)
+        expect(result.unsafeLinks).toBe(false);
+      for (const chart of result.charts)
+        expect([chart.svg, chart.range, chart.table], fixture.id).toEqual([
+          true,
+          true,
+          true,
+        ]);
+    }
+    results.push({
+      id: fixture.id,
+      readerEffect: result.mounted ? "PASS" : "NOT_APPLICABLE",
+      observed: result,
+    });
+  }
+  await writeFile(
+    `reports/verification/chart-effects-${browserName}.json`,
+    JSON.stringify(results, null, 2),
+  );
+});
+
+test("focused chart controls retain focus when an external update empties their data", async ({
+  page,
+}) => {
+  await mount(
+    page,
+    boundaryCharts.replace("1 | 0\n@end", "1 | 0\n2 | 1\n@end"),
+  );
+  const figure = page.locator("figure").first();
+  const range = figure.getByLabel("Inspect data point");
+  await range.focus();
+  await page.evaluate(() =>
+    globalThis.readerTest.instances[0].session.setControl("empty", true),
+  );
+  await expect(range).toBeFocused();
+  await expect(range).toBeDisabled();
+  await range.press("ArrowRight");
+  await range.press("PageUp");
+  await expect(range).toHaveValue("1");
+  await page.evaluate(() =>
+    globalThis.readerTest.instances[0].session.setControl("empty", false),
+  );
+  await expect(range).toBeEnabled();
+  await expect(range).toBeFocused();
+  const button = figure.getByRole("button", {
+    name: "Use inspected value",
+    exact: true,
+  });
+  await button.focus();
+  await page.evaluate(() =>
+    globalThis.readerTest.instances[0].session.setControl("empty", true),
+  );
+  await expect(button).toBeFocused();
+  await expect(button).toBeDisabled();
+  await button.press("Enter");
+  expect(
+    await page.evaluate(
+      () => globalThis.readerTest.instances[0].session.getRevision().number,
+    ),
+  ).toBe(3);
+});
+
+test("a self-hiding figure action recovers focus to the preceding native control", async ({
+  page,
+}) => {
+  await mount(
+    page,
+    `# Conditional figure
+@slider chosen = 1 (min: 1, max: 2, label: "Chosen")
+@data values
+x:number | y:number
+1 | 1
+2 | 2
+@end
+@when chosen == 1
+@chart bar values (x: "x", y: "y", select: chosen)
+@end
+`,
+  );
+  const range = page.getByLabel("Inspect data point");
+  await range.focus();
+  await range.press("End");
+  const action = page.getByRole("button", {
+    name: "Use inspected value",
+    exact: true,
+  });
+  await action.focus();
+  await action.press("Enter");
+  await expect(page.locator("figure")).toHaveCount(0);
+  await expect(page.getByLabel("Chosen", { exact: true })).toBeFocused();
+  await expect(page.locator(".tinta-reader-status")).toContainText(
+    "A focused control was hidden",
+  );
+});
+
+test("a failing chart domain rejects a linked selection atomically", async ({
+  page,
+}) => {
+  await mount(
+    page,
+    `# Chart rollback
+@slider chosen = 1 (min: 1, max: 2, label: "Chosen")
+Chosen: {{ chosen }}
+@data values
+x:number | y:number
+1 | 1
+2 | 2
+@end
+@chart bar values (x: "x", y: "y", select: chosen)
+@chart pie values (x: "x", y: 1 - chosen)
+`,
+  );
+  const before = await page
+    .locator("svg")
+    .evaluateAll((nodes) => nodes.map((node) => node.outerHTML));
+  await page
+    .locator("figure")
+    .first()
+    .locator("svg [data-point-id]")
+    .last()
+    .click();
+  await expect(page.getByLabel("Chosen", { exact: true })).toHaveValue("1");
+  await expect(page.locator(".tinta-reader-status")).toContainText(
+    "E_CHART_VALUE",
+  );
+  expect(
+    await page
+      .locator("svg")
+      .evaluateAll((nodes) => nodes.map((node) => node.outerHTML)),
+  ).toEqual(before);
+  await expect(page.locator("article")).toContainText("Chosen: 1");
+});
+
+test("pointer pins, escape and explorer focus keep inspection local", async ({
+  page,
+}) => {
+  await mount(page, await readFile("examples/chart-atlas.tinta", "utf8"));
+  const figure = page.locator("figure").nth(3);
+  const marks = figure.locator("svg [data-point-id]");
+  const text = figure.locator("p").last();
+  const range = figure.getByLabel("Inspect data point");
+  await marks.first().hover();
+  await expect(text).toContainText("minutes: 12");
+  await figure.locator("figcaption").hover();
+  await expect(text).toHaveText("");
+  await marks.first().click();
+  await marks.last().hover();
+  await expect(text).toContainText("minutes: 12");
+  await expect(text).toContainText("Pinned");
+  await range.focus();
+  await range.press("Escape");
+  await range.press("End");
+  await expect(figure.locator("output")).toContainText("minutes: 52");
+  await marks.first().hover();
+  await expect(text).toContainText("minutes: 52");
+  await figure
+    .getByRole("button", { name: "Pin inspection", exact: true })
+    .focus();
+  await figure
+    .getByRole("button", { name: "Pin inspection", exact: true })
+    .press("Escape");
+  await page
+    .getByRole("button", { name: "Reset reading", exact: true })
+    .focus();
+  await marks.first().hover();
+  await expect(text).toContainText("minutes: 12");
+  expect(
+    await page.evaluate(
+      () => globalThis.readerTest.instances[0].session.getRevision().number,
+    ),
+  ).toBe(0);
+  await expect(figure.locator("output")).not.toContainText("minutes: 12");
 });
