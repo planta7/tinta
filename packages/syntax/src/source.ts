@@ -213,6 +213,10 @@ export class Source {
       });
   }
 
+  get compileOperations(): number {
+    return this.counts.get("compileOperations") ?? 0;
+  }
+
   charge(name: string, at: number, amount = 1): void {
     const n = (this.counts.get(name) ?? 0) + amount;
     this.counts.set(name, n);

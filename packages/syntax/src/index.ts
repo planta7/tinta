@@ -11,3 +11,4 @@ export type {
   DataRowSyntax,
 } from "./directive.js";
 export { enrichMarkdown } from "./enrichment.js";
+export { decodeUtf8, encodeUtf8 } from "./source.js";

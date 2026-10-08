@@ -12,6 +12,7 @@ export type DirectiveName = (typeof registry.directives)[number];
 
 export interface DataRowSyntax {
   readonly cells: readonly Scalar[];
+  readonly cellSpans: readonly Span[];
   readonly span: Span;
 }
 
@@ -24,6 +25,7 @@ export interface DirectiveSyntax {
   readonly summary?: string;
   readonly options: Readonly<Record<string, Expr>>;
   readonly columns?: readonly Column[];
+  readonly columnSpans?: readonly Span[];
   readonly rows?: readonly DataRowSyntax[];
 }
 
@@ -290,28 +292,27 @@ function parseData(
   if (!header)
     source.fail("E_DATA_HEADER", start, end, "Data requires a typed header.");
   const names = new Set<string>();
-  const columns = splitCells(source, header.start, header.end).map(
-    (cell): Column => {
-      const m =
-        /^([A-Za-z_][A-Za-z0-9_]*)[ \t]*:[ \t]*(text|number|boolean)$/.exec(
-          cell.raw,
-        );
-      if (
-        !m ||
-        names.has(m[1]!) ||
-        (registry.reservedIdentifiers as readonly string[]).includes(m[1]!)
-      )
-        source.fail(
-          "E_DATA_HEADER",
-          cell.start,
-          cell.end,
-          "Invalid or duplicate data header.",
-        );
-      source.limit("identifierUnits", m[1]!.length, cell.start);
-      names.add(m[1]!);
-      return { name: m[1]!, type: m[2] as Column["type"] };
-    },
-  );
+  const headerCells = splitCells(source, header.start, header.end);
+  const columns = headerCells.map((cell): Column => {
+    const m =
+      /^([A-Za-z_][A-Za-z0-9_]*)[ \t]*:[ \t]*(text|number|boolean)$/.exec(
+        cell.raw,
+      );
+    if (
+      !m ||
+      names.has(m[1]!) ||
+      (registry.reservedIdentifiers as readonly string[]).includes(m[1]!)
+    )
+      source.fail(
+        "E_DATA_HEADER",
+        cell.start,
+        cell.end,
+        "Invalid or duplicate data header.",
+      );
+    source.limit("identifierUnits", m[1]!.length, cell.start);
+    names.add(m[1]!);
+    return { name: m[1]!, type: m[2] as Column["type"] };
+  });
   source.limit("tableRows", nonblank.length, header.end);
   const rows = nonblank.map((line): DataRowSyntax => {
     if (/^@[a-z][a-z0-9_]*(?=[ \t(]|$)/.test(line.raw))
@@ -359,12 +360,17 @@ function parseData(
       }
       source.fail("E_DATA_VALUE", cell.start, cell.end, "Invalid typed cell.");
     });
-    return { cells: values, span: source.span(line.start, line.end) };
+    return {
+      cells: values,
+      cellSpans: cells.map((cell) => source.span(cell.start, cell.end)),
+      span: source.span(line.start, line.end),
+    };
   });
   return {
     name: "data",
     binding,
     columns,
+    columnSpans: headerCells.map((cell) => source.span(cell.start, cell.end)),
     rows,
     options: {},
   };

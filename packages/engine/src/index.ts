@@ -1,2 +1,4 @@
-// Foundation scaffold. No document operations are implemented.
-export {};
+export { compile } from "./compiler.js";
+export { createSession } from "./session.js";
+export { encodeProgram, decodeProgram } from "./codec.js";
+export { importCsv, importJson } from "./imports.js";

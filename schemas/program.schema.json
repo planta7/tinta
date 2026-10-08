@@ -1,0 +1,984 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tinta closed program IR",
+  "$ref": "#/$defs/shape1",
+  "$defs": {
+    "shape1": {
+      "type": "object",
+      "properties": {
+        "abi": { "const": "tinta-ir-1" },
+        "sourceVersion": { "const": "1.0" },
+        "contractRevision": { "const": "1.0-draft.2" },
+        "profile": { "anyOf": [{ "const": "markdown" }, { "const": "tinta" }] },
+        "source": { "type": "string" },
+        "sourceUri": { "type": "string" },
+        "sourceSha256": { "type": "string" },
+        "metadata": { "$ref": "#/$defs/shape2" },
+        "declarations": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/$defs/shape3" },
+              { "$ref": "#/$defs/shape7" },
+              { "$ref": "#/$defs/shape8" },
+              { "$ref": "#/$defs/shape9" },
+              { "$ref": "#/$defs/shape17" },
+              { "$ref": "#/$defs/shape21" }
+            ]
+          }
+        },
+        "flow": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/$defs/shape22" },
+              { "$ref": "#/$defs/shape23" },
+              { "$ref": "#/$defs/shape24" },
+              { "$ref": "#/$defs/shape25" },
+              { "$ref": "#/$defs/shape26" },
+              { "$ref": "#/$defs/shape27" },
+              { "$ref": "#/$defs/shape28" },
+              { "$ref": "#/$defs/shape29" },
+              { "$ref": "#/$defs/shape30" },
+              { "$ref": "#/$defs/shape31" },
+              { "$ref": "#/$defs/shape32" },
+              { "$ref": "#/$defs/shape34" },
+              { "$ref": "#/$defs/shape35" },
+              { "$ref": "#/$defs/shape36" },
+              { "$ref": "#/$defs/shape37" },
+              { "$ref": "#/$defs/shape38" },
+              { "$ref": "#/$defs/shape39" }
+            ]
+          }
+        }
+      },
+      "required": [
+        "abi",
+        "sourceVersion",
+        "contractRevision",
+        "profile",
+        "source",
+        "sourceUri",
+        "sourceSha256",
+        "metadata",
+        "declarations",
+        "flow"
+      ],
+      "additionalProperties": false
+    },
+    "shape2": {
+      "type": "object",
+      "properties": {
+        "version": { "const": "1.0" },
+        "title": { "type": "string" },
+        "locale": {
+          "anyOf": [
+            { "const": "en-US" },
+            { "const": "en-GB" },
+            { "const": "es-ES" },
+            { "const": "fr-FR" },
+            { "const": "de-DE" },
+            { "const": "ja-JP" },
+            { "const": "zh-CN" },
+            { "const": "zh-TW" }
+          ]
+        },
+        "currency": {
+          "anyOf": [
+            { "const": "USD" },
+            { "const": "EUR" },
+            { "const": "GBP" },
+            { "const": "JPY" },
+            { "const": "CHF" },
+            { "const": "CAD" },
+            { "const": "AUD" },
+            { "const": "CNY" }
+          ]
+        }
+      },
+      "required": ["version", "title", "locale", "currency"],
+      "additionalProperties": false
+    },
+    "shape3": {
+      "type": "object",
+      "properties": {
+        "kind": { "const": "slider" },
+        "initial": { "type": "number" },
+        "label": { "type": "string" },
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "step": { "type": "number" },
+        "grid": { "$ref": "#/$defs/shape4" },
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" }
+      },
+      "required": [
+        "kind",
+        "initial",
+        "label",
+        "min",
+        "max",
+        "step",
+        "grid",
+        "id",
+        "name",
+        "span"
+      ],
+      "additionalProperties": false
+    },
+    "shape4": {
+      "type": "object",
+      "properties": {
+        "scale": { "type": "number" },
+        "minUnits": { "type": "string" },
+        "stepUnits": { "type": "string" },
+        "ticks": { "type": "number" }
+      },
+      "required": ["scale", "minUnits", "stepUnits", "ticks"],
+      "additionalProperties": false
+    },
+    "shape5": {
+      "type": "object",
+      "properties": {
+        "uri": { "type": "string" },
+        "start": { "$ref": "#/$defs/shape6" },
+        "end": { "$ref": "#/$defs/shape6" }
+      },
+      "required": ["uri", "start", "end"],
+      "additionalProperties": false
+    },
+    "shape6": {
+      "type": "object",
+      "properties": {
+        "offset": { "type": "number" },
+        "line": { "type": "number" },
+        "column": { "type": "number" }
+      },
+      "required": ["offset", "line", "column"],
+      "additionalProperties": false
+    },
+    "shape7": {
+      "type": "object",
+      "properties": {
+        "kind": { "const": "toggle" },
+        "initial": { "type": "boolean" },
+        "label": { "type": "string" },
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" }
+      },
+      "required": ["kind", "initial", "label", "id", "name", "span"],
+      "additionalProperties": false
+    },
+    "shape8": {
+      "type": "object",
+      "properties": {
+        "kind": { "const": "choice" },
+        "initial": { "type": "string" },
+        "label": { "type": "string" },
+        "options": { "type": "array", "items": { "type": "string" } },
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" }
+      },
+      "required": ["kind", "initial", "label", "options", "id", "name", "span"],
+      "additionalProperties": false
+    },
+    "shape9": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "anyOf": [{ "const": "let" }, { "const": "calc" }] },
+        "expression": {
+          "anyOf": [
+            { "$ref": "#/$defs/shape10" },
+            { "$ref": "#/$defs/shape11" },
+            { "$ref": "#/$defs/shape12" },
+            { "$ref": "#/$defs/shape13" },
+            { "$ref": "#/$defs/shape14" },
+            { "$ref": "#/$defs/shape15" },
+            { "$ref": "#/$defs/shape16" }
+          ]
+        }
+      },
+      "required": ["id", "name", "span", "kind", "expression"],
+      "additionalProperties": false
+    },
+    "shape10": {
+      "type": "object",
+      "properties": {
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "literal" },
+        "value": {
+          "anyOf": [
+            { "type": "string" },
+            { "type": "number" },
+            { "const": false },
+            { "const": true }
+          ]
+        },
+        "raw": { "type": "string" }
+      },
+      "required": ["span", "kind", "value", "raw"],
+      "additionalProperties": false
+    },
+    "shape11": {
+      "type": "object",
+      "properties": {
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "list" },
+        "items": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/$defs/shape10" },
+              { "$ref": "#/$defs/shape11" },
+              { "$ref": "#/$defs/shape12" },
+              { "$ref": "#/$defs/shape13" },
+              { "$ref": "#/$defs/shape14" },
+              { "$ref": "#/$defs/shape15" },
+              { "$ref": "#/$defs/shape16" }
+            ]
+          }
+        }
+      },
+      "required": ["span", "kind", "items"],
+      "additionalProperties": false
+    },
+    "shape12": {
+      "type": "object",
+      "properties": {
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "name" },
+        "name": { "type": "string" }
+      },
+      "required": ["span", "kind", "name"],
+      "additionalProperties": false
+    },
+    "shape13": {
+      "type": "object",
+      "properties": {
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "row-field" },
+        "field": { "type": "string" }
+      },
+      "required": ["span", "kind", "field"],
+      "additionalProperties": false
+    },
+    "shape14": {
+      "type": "object",
+      "properties": {
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "unary" },
+        "operator": {
+          "anyOf": [{ "const": "+" }, { "const": "-" }, { "const": "not" }]
+        },
+        "operand": {
+          "anyOf": [
+            { "$ref": "#/$defs/shape10" },
+            { "$ref": "#/$defs/shape11" },
+            { "$ref": "#/$defs/shape12" },
+            { "$ref": "#/$defs/shape13" },
+            { "$ref": "#/$defs/shape14" },
+            { "$ref": "#/$defs/shape15" },
+            { "$ref": "#/$defs/shape16" }
+          ]
+        }
+      },
+      "required": ["span", "kind", "operator", "operand"],
+      "additionalProperties": false
+    },
+    "shape15": {
+      "type": "object",
+      "properties": {
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "binary" },
+        "operator": {
+          "anyOf": [
+            { "const": "+" },
+            { "const": "-" },
+            { "const": "*" },
+            { "const": "/" },
+            { "const": "%" },
+            { "const": "==" },
+            { "const": "!=" },
+            { "const": "<" },
+            { "const": "<=" },
+            { "const": ">" },
+            { "const": ">=" },
+            { "const": "and" },
+            { "const": "or" }
+          ]
+        },
+        "left": {
+          "anyOf": [
+            { "$ref": "#/$defs/shape10" },
+            { "$ref": "#/$defs/shape11" },
+            { "$ref": "#/$defs/shape12" },
+            { "$ref": "#/$defs/shape13" },
+            { "$ref": "#/$defs/shape14" },
+            { "$ref": "#/$defs/shape15" },
+            { "$ref": "#/$defs/shape16" }
+          ]
+        },
+        "right": {
+          "anyOf": [
+            { "$ref": "#/$defs/shape10" },
+            { "$ref": "#/$defs/shape11" },
+            { "$ref": "#/$defs/shape12" },
+            { "$ref": "#/$defs/shape13" },
+            { "$ref": "#/$defs/shape14" },
+            { "$ref": "#/$defs/shape15" },
+            { "$ref": "#/$defs/shape16" }
+          ]
+        }
+      },
+      "required": ["span", "kind", "operator", "left", "right"],
+      "additionalProperties": false
+    },
+    "shape16": {
+      "type": "object",
+      "properties": {
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "call" },
+        "name": {
+          "anyOf": [
+            { "const": "if" },
+            { "const": "min" },
+            { "const": "max" },
+            { "const": "round" },
+            { "const": "pow" },
+            { "const": "count" },
+            { "const": "sum" },
+            { "const": "mean" },
+            { "const": "fixed" },
+            { "const": "percent" },
+            { "const": "money" }
+          ]
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/$defs/shape10" },
+              { "$ref": "#/$defs/shape11" },
+              { "$ref": "#/$defs/shape12" },
+              { "$ref": "#/$defs/shape13" },
+              { "$ref": "#/$defs/shape14" },
+              { "$ref": "#/$defs/shape15" },
+              { "$ref": "#/$defs/shape16" }
+            ]
+          }
+        }
+      },
+      "required": ["span", "kind", "name", "arguments"],
+      "additionalProperties": false
+    },
+    "shape17": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "data" },
+        "table": { "$ref": "#/$defs/shape18" }
+      },
+      "required": ["id", "name", "span", "kind", "table"],
+      "additionalProperties": false
+    },
+    "shape18": {
+      "type": "object",
+      "properties": {
+        "columns": { "type": "array", "items": { "$ref": "#/$defs/shape19" } },
+        "rows": { "type": "array", "items": { "$ref": "#/$defs/shape20" } }
+      },
+      "required": ["columns", "rows"],
+      "additionalProperties": false
+    },
+    "shape19": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "type": {
+          "anyOf": [
+            { "const": "number" },
+            { "const": "boolean" },
+            { "const": "text" }
+          ]
+        }
+      },
+      "required": ["name", "type"],
+      "additionalProperties": false
+    },
+    "shape20": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "cells": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "type": "string" },
+              { "type": "number" },
+              { "const": false },
+              { "const": true }
+            ]
+          }
+        }
+      },
+      "required": ["id", "cells"],
+      "additionalProperties": false
+    },
+    "shape21": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "view" },
+        "source": { "type": "string" },
+        "where": {
+          "anyOf": [
+            { "$ref": "#/$defs/shape10" },
+            { "$ref": "#/$defs/shape11" },
+            { "$ref": "#/$defs/shape12" },
+            { "$ref": "#/$defs/shape13" },
+            { "$ref": "#/$defs/shape14" },
+            { "$ref": "#/$defs/shape15" },
+            { "$ref": "#/$defs/shape16" }
+          ]
+        },
+        "sort": { "anyOf": [{ "type": "string" }] },
+        "descending": { "type": "boolean" }
+      },
+      "required": ["id", "name", "span", "kind", "source", "descending"],
+      "additionalProperties": false
+    },
+    "shape22": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "text" },
+        "value": { "type": "string" }
+      },
+      "required": ["id", "span", "kind", "value"],
+      "additionalProperties": false
+    },
+    "shape23": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "interpolation" },
+        "expression": {
+          "anyOf": [
+            { "$ref": "#/$defs/shape10" },
+            { "$ref": "#/$defs/shape11" },
+            { "$ref": "#/$defs/shape12" },
+            { "$ref": "#/$defs/shape13" },
+            { "$ref": "#/$defs/shape14" },
+            { "$ref": "#/$defs/shape15" },
+            { "$ref": "#/$defs/shape16" }
+          ]
+        }
+      },
+      "required": ["id", "span", "kind", "expression"],
+      "additionalProperties": false
+    },
+    "shape24": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": {
+          "anyOf": [
+            { "const": "paragraph" },
+            { "const": "emphasis" },
+            { "const": "strong" },
+            { "const": "delete" },
+            { "const": "blockquote" }
+          ]
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/$defs/shape22" },
+              { "$ref": "#/$defs/shape23" },
+              { "$ref": "#/$defs/shape24" },
+              { "$ref": "#/$defs/shape25" },
+              { "$ref": "#/$defs/shape26" },
+              { "$ref": "#/$defs/shape27" },
+              { "$ref": "#/$defs/shape28" },
+              { "$ref": "#/$defs/shape29" },
+              { "$ref": "#/$defs/shape30" },
+              { "$ref": "#/$defs/shape31" },
+              { "$ref": "#/$defs/shape32" },
+              { "$ref": "#/$defs/shape34" },
+              { "$ref": "#/$defs/shape35" },
+              { "$ref": "#/$defs/shape36" },
+              { "$ref": "#/$defs/shape37" },
+              { "$ref": "#/$defs/shape38" },
+              { "$ref": "#/$defs/shape39" }
+            ]
+          }
+        }
+      },
+      "required": ["id", "span", "kind", "children"],
+      "additionalProperties": false
+    },
+    "shape25": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "heading" },
+        "level": {
+          "anyOf": [
+            { "const": 1 },
+            { "const": 2 },
+            { "const": 3 },
+            { "const": 4 },
+            { "const": 5 },
+            { "const": 6 }
+          ]
+        },
+        "anchor": { "type": "string" },
+        "children": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/$defs/shape22" },
+              { "$ref": "#/$defs/shape23" },
+              { "$ref": "#/$defs/shape24" },
+              { "$ref": "#/$defs/shape25" },
+              { "$ref": "#/$defs/shape26" },
+              { "$ref": "#/$defs/shape27" },
+              { "$ref": "#/$defs/shape28" },
+              { "$ref": "#/$defs/shape29" },
+              { "$ref": "#/$defs/shape30" },
+              { "$ref": "#/$defs/shape31" },
+              { "$ref": "#/$defs/shape32" },
+              { "$ref": "#/$defs/shape34" },
+              { "$ref": "#/$defs/shape35" },
+              { "$ref": "#/$defs/shape36" },
+              { "$ref": "#/$defs/shape37" },
+              { "$ref": "#/$defs/shape38" },
+              { "$ref": "#/$defs/shape39" }
+            ]
+          }
+        }
+      },
+      "required": ["id", "span", "kind", "level", "anchor", "children"],
+      "additionalProperties": false
+    },
+    "shape26": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "link" },
+        "destination": { "type": "string" },
+        "title": { "anyOf": [{ "type": "string" }] },
+        "children": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/$defs/shape22" },
+              { "$ref": "#/$defs/shape23" },
+              { "$ref": "#/$defs/shape24" },
+              { "$ref": "#/$defs/shape25" },
+              { "$ref": "#/$defs/shape26" },
+              { "$ref": "#/$defs/shape27" },
+              { "$ref": "#/$defs/shape28" },
+              { "$ref": "#/$defs/shape29" },
+              { "$ref": "#/$defs/shape30" },
+              { "$ref": "#/$defs/shape31" },
+              { "$ref": "#/$defs/shape32" },
+              { "$ref": "#/$defs/shape34" },
+              { "$ref": "#/$defs/shape35" },
+              { "$ref": "#/$defs/shape36" },
+              { "$ref": "#/$defs/shape37" },
+              { "$ref": "#/$defs/shape38" },
+              { "$ref": "#/$defs/shape39" }
+            ]
+          }
+        }
+      },
+      "required": ["id", "span", "kind", "destination", "children"],
+      "additionalProperties": false
+    },
+    "shape27": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "image" },
+        "destination": { "type": "string" },
+        "alt": { "type": "string" },
+        "title": { "anyOf": [{ "type": "string" }] }
+      },
+      "required": ["id", "span", "kind", "destination", "alt"],
+      "additionalProperties": false
+    },
+    "shape28": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "code" },
+        "block": { "type": "boolean" },
+        "language": { "anyOf": [{ "type": "string" }] },
+        "value": { "type": "string" }
+      },
+      "required": ["id", "span", "kind", "block", "value"],
+      "additionalProperties": false
+    },
+    "shape29": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "raw-html" },
+        "value": { "type": "string" }
+      },
+      "required": ["id", "span", "kind", "value"],
+      "additionalProperties": false
+    },
+    "shape30": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "break" },
+        "hard": { "type": "boolean" }
+      },
+      "required": ["id", "span", "kind", "hard"],
+      "additionalProperties": false
+    },
+    "shape31": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "thematic-break" }
+      },
+      "required": ["id", "span", "kind"],
+      "additionalProperties": false
+    },
+    "shape32": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "list" },
+        "ordered": { "type": "boolean" },
+        "start": { "type": "number" },
+        "tight": { "type": "boolean" },
+        "items": { "type": "array", "items": { "$ref": "#/$defs/shape33" } }
+      },
+      "required": ["id", "span", "kind", "ordered", "start", "tight", "items"],
+      "additionalProperties": false
+    },
+    "shape33": {
+      "type": "object",
+      "properties": {
+        "checked": { "anyOf": [{ "const": false }, { "const": true }] },
+        "children": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/$defs/shape22" },
+              { "$ref": "#/$defs/shape23" },
+              { "$ref": "#/$defs/shape24" },
+              { "$ref": "#/$defs/shape25" },
+              { "$ref": "#/$defs/shape26" },
+              { "$ref": "#/$defs/shape27" },
+              { "$ref": "#/$defs/shape28" },
+              { "$ref": "#/$defs/shape29" },
+              { "$ref": "#/$defs/shape30" },
+              { "$ref": "#/$defs/shape31" },
+              { "$ref": "#/$defs/shape32" },
+              { "$ref": "#/$defs/shape34" },
+              { "$ref": "#/$defs/shape35" },
+              { "$ref": "#/$defs/shape36" },
+              { "$ref": "#/$defs/shape37" },
+              { "$ref": "#/$defs/shape38" },
+              { "$ref": "#/$defs/shape39" }
+            ]
+          }
+        },
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" }
+      },
+      "required": ["children", "id", "span"],
+      "additionalProperties": false
+    },
+    "shape34": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "markdown-table" },
+        "align": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "const": "left" },
+              { "const": "right" },
+              { "const": "center" },
+              { "const": "none" }
+            ]
+          }
+        },
+        "header": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "anyOf": [
+                { "$ref": "#/$defs/shape22" },
+                { "$ref": "#/$defs/shape23" },
+                { "$ref": "#/$defs/shape24" },
+                { "$ref": "#/$defs/shape25" },
+                { "$ref": "#/$defs/shape26" },
+                { "$ref": "#/$defs/shape27" },
+                { "$ref": "#/$defs/shape28" },
+                { "$ref": "#/$defs/shape29" },
+                { "$ref": "#/$defs/shape30" },
+                { "$ref": "#/$defs/shape31" },
+                { "$ref": "#/$defs/shape32" },
+                { "$ref": "#/$defs/shape34" },
+                { "$ref": "#/$defs/shape35" },
+                { "$ref": "#/$defs/shape36" },
+                { "$ref": "#/$defs/shape37" },
+                { "$ref": "#/$defs/shape38" },
+                { "$ref": "#/$defs/shape39" }
+              ]
+            }
+          }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  { "$ref": "#/$defs/shape22" },
+                  { "$ref": "#/$defs/shape23" },
+                  { "$ref": "#/$defs/shape24" },
+                  { "$ref": "#/$defs/shape25" },
+                  { "$ref": "#/$defs/shape26" },
+                  { "$ref": "#/$defs/shape27" },
+                  { "$ref": "#/$defs/shape28" },
+                  { "$ref": "#/$defs/shape29" },
+                  { "$ref": "#/$defs/shape30" },
+                  { "$ref": "#/$defs/shape31" },
+                  { "$ref": "#/$defs/shape32" },
+                  { "$ref": "#/$defs/shape34" },
+                  { "$ref": "#/$defs/shape35" },
+                  { "$ref": "#/$defs/shape36" },
+                  { "$ref": "#/$defs/shape37" },
+                  { "$ref": "#/$defs/shape38" },
+                  { "$ref": "#/$defs/shape39" }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "required": ["id", "span", "kind", "align", "header", "rows"],
+      "additionalProperties": false
+    },
+    "shape35": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "when" },
+        "condition": {
+          "anyOf": [
+            { "$ref": "#/$defs/shape10" },
+            { "$ref": "#/$defs/shape11" },
+            { "$ref": "#/$defs/shape12" },
+            { "$ref": "#/$defs/shape13" },
+            { "$ref": "#/$defs/shape14" },
+            { "$ref": "#/$defs/shape15" },
+            { "$ref": "#/$defs/shape16" }
+          ]
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/$defs/shape22" },
+              { "$ref": "#/$defs/shape23" },
+              { "$ref": "#/$defs/shape24" },
+              { "$ref": "#/$defs/shape25" },
+              { "$ref": "#/$defs/shape26" },
+              { "$ref": "#/$defs/shape27" },
+              { "$ref": "#/$defs/shape28" },
+              { "$ref": "#/$defs/shape29" },
+              { "$ref": "#/$defs/shape30" },
+              { "$ref": "#/$defs/shape31" },
+              { "$ref": "#/$defs/shape32" },
+              { "$ref": "#/$defs/shape34" },
+              { "$ref": "#/$defs/shape35" },
+              { "$ref": "#/$defs/shape36" },
+              { "$ref": "#/$defs/shape37" },
+              { "$ref": "#/$defs/shape38" },
+              { "$ref": "#/$defs/shape39" }
+            ]
+          }
+        }
+      },
+      "required": ["id", "span", "kind", "condition", "children"],
+      "additionalProperties": false
+    },
+    "shape36": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "details" },
+        "summary": { "type": "string" },
+        "children": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              { "$ref": "#/$defs/shape22" },
+              { "$ref": "#/$defs/shape23" },
+              { "$ref": "#/$defs/shape24" },
+              { "$ref": "#/$defs/shape25" },
+              { "$ref": "#/$defs/shape26" },
+              { "$ref": "#/$defs/shape27" },
+              { "$ref": "#/$defs/shape28" },
+              { "$ref": "#/$defs/shape29" },
+              { "$ref": "#/$defs/shape30" },
+              { "$ref": "#/$defs/shape31" },
+              { "$ref": "#/$defs/shape32" },
+              { "$ref": "#/$defs/shape34" },
+              { "$ref": "#/$defs/shape35" },
+              { "$ref": "#/$defs/shape36" },
+              { "$ref": "#/$defs/shape37" },
+              { "$ref": "#/$defs/shape38" },
+              { "$ref": "#/$defs/shape39" }
+            ]
+          }
+        }
+      },
+      "required": ["id", "span", "kind", "summary", "children"],
+      "additionalProperties": false
+    },
+    "shape37": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "control" },
+        "name": { "type": "string" }
+      },
+      "required": ["id", "span", "kind", "name"],
+      "additionalProperties": false
+    },
+    "shape38": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "data-table" },
+        "source": { "type": "string" },
+        "title": { "type": "string" }
+      },
+      "required": ["id", "span", "kind", "source", "title"],
+      "additionalProperties": false
+    },
+    "shape39": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "span": { "$ref": "#/$defs/shape5" },
+        "kind": { "const": "chart" },
+        "chart": { "$ref": "#/$defs/shape40" }
+      },
+      "required": ["id", "span", "kind", "chart"],
+      "additionalProperties": false
+    },
+    "shape40": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "kind": {
+          "anyOf": [
+            { "const": "line" },
+            { "const": "area" },
+            { "const": "bar" },
+            { "const": "scatter" },
+            { "const": "pie" },
+            { "const": "donut" },
+            { "const": "histogram" }
+          ]
+        },
+        "source": { "type": "string" },
+        "x": { "type": "string" },
+        "y": {
+          "anyOf": [
+            { "$ref": "#/$defs/shape41" },
+            { "$ref": "#/$defs/shape42" }
+          ]
+        },
+        "title": { "type": "string" },
+        "xLabel": { "type": "string" },
+        "yLabel": { "type": "string" },
+        "select": { "anyOf": [{ "type": "string" }] },
+        "bins": { "anyOf": [{ "type": "number" }] },
+        "span": { "$ref": "#/$defs/shape5" }
+      },
+      "required": [
+        "id",
+        "kind",
+        "source",
+        "x",
+        "title",
+        "xLabel",
+        "yLabel",
+        "span"
+      ],
+      "additionalProperties": false
+    },
+    "shape41": {
+      "type": "object",
+      "properties": {
+        "kind": { "const": "columns" },
+        "columns": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["kind", "columns"],
+      "additionalProperties": false
+    },
+    "shape42": {
+      "type": "object",
+      "properties": {
+        "kind": { "const": "expression" },
+        "expression": {
+          "anyOf": [
+            { "$ref": "#/$defs/shape10" },
+            { "$ref": "#/$defs/shape11" },
+            { "$ref": "#/$defs/shape12" },
+            { "$ref": "#/$defs/shape13" },
+            { "$ref": "#/$defs/shape14" },
+            { "$ref": "#/$defs/shape15" },
+            { "$ref": "#/$defs/shape16" }
+          ]
+        }
+      },
+      "required": ["kind", "expression"],
+      "additionalProperties": false
+    }
+  }
+}

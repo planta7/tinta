@@ -39,6 +39,7 @@ export interface EditorToken {
 
 /** Lossless syntax, deliberately distinct from a validated/typed Program. */
 export interface ParsedSource {
+  readonly compileOperations: number;
   readonly source: string;
   readonly bytes: Uint8Array;
   readonly tree: SyntaxNode;
@@ -271,6 +272,7 @@ export function parseRecovering(
     );
 
     const value = {
+      compileOperations: source.compileOperations,
       source: source.text,
       bytes: source.bytes,
       tree: anchored,
