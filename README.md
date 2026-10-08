@@ -21,7 +21,7 @@ Tinta is local-only. The engine, reader and planned CLI, reference editor and HT
 
 ## Status
 
-Contract revision **1.0-draft.2** is a draft specification with type declarations, schemas and fixtures. The portable parser and typed engine are implemented, including transactional sessions, pure chart preparation and CSV/JSON import candidates. The document reader renders safe Markdown, native controls, conditions and tables. Chart rendering, image decoding, the editor, document CLI and exports remain unimplemented. The 98 conformance cases have a public semantic adapter; reader browser-effect scenarios have automated tests; artifact scenarios remain pending. Source expectations are kept separate from actual execution evidence.
+Contract revision **1.0-draft.2** is a draft specification with type declarations, schemas and fixtures. The portable parser and typed engine are implemented, including transactional sessions, pure chart preparation and CSV/JSON import candidates. The document reader renders safe Markdown, native controls, conditions, tables and all seven interactive chart types with keyboard inspection and linked selection. Image decoding, the editor, document CLI and exports remain unimplemented. The 98 conformance cases have a public semantic adapter; reader browser-effect scenarios have automated tests; artifact scenarios remain pending. Source expectations are kept separate from actual execution evidence.
 
 ## Explore
 
