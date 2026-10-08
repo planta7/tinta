@@ -13,5 +13,13 @@
     "@tinta/types": "workspace:*",
     "@tinta/engine": "workspace:*",
     "@tinta/artifacts": "workspace:*"
-  }
+  },
+  "bin": {
+    "tinta": "./bin.mjs"
+  },
+  "files": [
+    "dist",
+    "assets",
+    "bin.mjs"
+  ]
 }

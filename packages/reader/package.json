@@ -13,5 +13,8 @@
     "@tinta/types": "workspace:*",
     "@tinta/engine": "workspace:*",
     "@tinta/charts": "workspace:*"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

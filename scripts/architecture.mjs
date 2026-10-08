@@ -58,6 +58,13 @@ export function inspectSource(owner, text, filename = "input.ts") {
     if (
       !["cli", "studio", "reader"].includes(owner) &&
       ts.isIdentifier(node) &&
+      !(
+        ts.isPropertyAccessExpression(node.parent) &&
+        node.parent.name === node &&
+        !["globalThis", "self", "global"].includes(
+          node.parent.expression.getText(tree),
+        )
+      ) &&
       [
         "fetch",
         "localStorage",

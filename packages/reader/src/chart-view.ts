@@ -76,6 +76,7 @@ export function createChartView(
   let histogramDomain = "";
   let timer: ReturnType<typeof setTimeout> | undefined;
   let destroyed = false;
+  let resizeFrame: number | undefined;
   const listeners: Array<() => void> = [];
   const buttons = new Map<string, HTMLButtonElement>();
   const tableButtons = new Map<string, HTMLButtonElement>();
@@ -95,7 +96,10 @@ export function createChartView(
   }
   function datumText(datum: Datum): string {
     if ("count" in datum)
-      return `${chart.xLabel}: [${datum.lower}, ${datum.upper}${datum.upperInclusive ? "]" : ")"}; Count: ${datum.count}`;
+      return (
+        `${chart.xLabel}: [${datum.lower}, ${datum.upper}` +
+        `${datum.upperInclusive ? "]" : ")"}; Count: ${datum.count}`
+      );
     const series = chart.series[datum.seriesIndex]!.label;
     let text = `${chart.xLabel}: ${datum.x}; ${series}: ${datum.y}`;
     if (chart.type === "pie" || chart.type === "donut") {
@@ -166,7 +170,10 @@ export function createChartView(
       chart.type === "pie" || chart.type === "donut"
         ? ` Visible total: ${scene.total}.`
         : "";
-    description.textContent = `${scene.message || `${chart.type} chart. Explore values below or show the complete data table.`}${total}${outside}`;
+    description.textContent =
+      (scene.message ||
+        `${chart.type} chart. Explore values below or show the complete data table.`) +
+      `${total}${outside}`;
   }
   function rebuildTable(): void {
     const focused = tableScroll.contains(doc.activeElement)
@@ -176,7 +183,8 @@ export function createChartView(
     table.append(
       element(
         "caption",
-        `${chart.title} — ${chart.table.rows.length} source rows; all prepared data, including hidden entries`,
+        `${chart.title} — ${chart.table.rows.length} source rows; ` +
+          `all prepared data, including hidden entries`,
       ),
     );
     const head = element("thead");
@@ -386,7 +394,11 @@ export function createChartView(
     const next = entries[0]?.contentRect.width;
     if (next && Math.round(next) !== width) {
       width = Math.round(next);
-      draw();
+      if (resizeFrame !== undefined) cancelAnimationFrame(resizeFrame);
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = undefined;
+        if (!destroyed) draw();
+      });
     }
   });
   observer.observe(root);
@@ -417,6 +429,7 @@ export function createChartView(
     destroy() {
       destroyed = true;
       observer.disconnect();
+      if (resizeFrame !== undefined) cancelAnimationFrame(resizeFrame);
       if (timer !== undefined) clearTimeout(timer);
       for (const remove of listeners) remove();
       root.remove();

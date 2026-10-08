@@ -13,7 +13,7 @@ import type {
   Value,
 } from "@tinta/types";
 import { attempt, Budget, fail, freeze, record } from "./common.js";
-import { programs } from "./compiler.js";
+import { programs } from "./programs.js";
 import {
   evaluate,
   format,

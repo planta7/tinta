@@ -7,7 +7,25 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./utf8": {
+      "types": "./dist/utf8.d.ts",
+      "import": "./dist/utf8.js"
+    },
+    "./common": {
+      "types": "./dist/common.d.ts",
+      "import": "./dist/common.js"
+    },
+    "./assets": {
+      "types": "./dist/assets.d.ts",
+      "import": "./dist/assets.js"
     }
   },
-  "dependencies": {}
+  "dependencies": {
+    "@noble/hashes": "2.4.0",
+    "fflate": "0.8.3"
+  },
+  "files": [
+    "dist"
+  ]
 }

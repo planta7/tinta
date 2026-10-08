@@ -22,6 +22,9 @@ importers:
       '@playwright/test':
         specifier: 1.64.0
         version: 1.64.0
+      '@tinta/cli':
+        specifier: workspace:*
+        version: link:packages/cli
       '@types/d3-array':
         specifier: 3.2.2
         version: 3.2.2
@@ -248,7 +251,14 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
 
-  packages/types: {}
+  packages/types:
+    dependencies:
+      '@noble/hashes':
+        specifier: 2.4.0
+        version: 2.4.0
+      fflate:
+        specifier: 0.8.3
+        version: 0.8.3
 
 packages:
 

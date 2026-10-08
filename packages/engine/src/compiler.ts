@@ -18,10 +18,11 @@ import type {
 } from "@tinta/types";
 import { attempt, Budget, fail, freeze, label } from "./common.js";
 import { grid, inDomain, units } from "./grid.js";
-import { bind, type Bound } from "./binding.js";
+import { bind } from "./binding.js";
 import { registry } from "./registry.js";
 
-export const programs = new WeakMap<Program, Bound>();
+import { programs } from "./programs.js";
+export { programs } from "./programs.js";
 
 function literal(expr: Expr): Scalar {
   if (expr.kind === "literal") return expr.value;

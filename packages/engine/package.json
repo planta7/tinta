@@ -11,11 +11,18 @@
     "./chart-presentation": {
       "types": "./dist/chart-presentation.d.ts",
       "import": "./dist/chart-presentation.js"
+    },
+    "./runtime": {
+      "types": "./dist/runtime.d.ts",
+      "import": "./dist/runtime.js"
     }
   },
   "dependencies": {
     "@tinta/types": "workspace:*",
     "@tinta/syntax": "workspace:*",
     "@noble/hashes": "2.4.0"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

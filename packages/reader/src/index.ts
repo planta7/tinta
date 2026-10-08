@@ -15,6 +15,9 @@ import type {
 import { createChartView, type ChartView } from "./chart-view.js";
 import { validateNodes } from "./policy.js";
 
+import { normalizeAssetPath, validateAssets } from "@tinta/types/assets";
+import { base64 } from "@tinta/types/common";
+
 const mounts = new WeakSet<HTMLElement>();
 const reservedHeadings = new WeakMap<Document, Set<string>>();
 let nextInstance = 0;
@@ -73,6 +76,17 @@ export function mountReader(
     };
   }
 
+  let assets: ReturnType<typeof validateAssets>;
+  try {
+    assets = validateAssets(options.assets);
+  } catch {
+    return {
+      ok: false,
+      diagnostics: [
+        diagnostic("E_ASSET_TYPE", "Invalid reader asset capability."),
+      ],
+    };
+  }
   const doc = native.ownerDocument;
   const prefix = `tinta-reader-${++nextInstance}-`;
   const article = doc.createElement("article");
@@ -226,9 +240,25 @@ export function mountReader(
     if (node.kind === "text") return doc.createTextNode(node.value);
     if (node.kind === "control") return control(node);
     if (node.kind === "image") {
+      let key: string | undefined;
+      try {
+        key = normalizeAssetPath(node.destination);
+      } catch {
+        /* The placeholder remains inert. */
+      }
+      const asset = key === undefined ? undefined : assets.get(key);
+      if (asset) {
+        const image = doc.createElement("img");
+        image.alt = node.alt;
+        if (node.title !== undefined) image.title = node.title;
+        image.src = `data:${asset.mime};base64,${base64(asset.bytes)}`;
+        return image;
+      }
       const placeholder = doc.createElement("span");
       placeholder.className = "tinta-image-placeholder";
-      placeholder.textContent = `Image unavailable: ${node.alt || "Decorative image"}. Add local images or open a source bundle.`;
+      placeholder.textContent =
+        `Image unavailable: ${node.alt || "Decorative image"}. ` +
+        `Add local images or open a source bundle.`;
       warn(
         node,
         "W_ASSET_UNAVAILABLE",

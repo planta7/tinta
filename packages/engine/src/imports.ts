@@ -115,7 +115,11 @@ function candidate(
       columns
         .map((column, i) => {
           const value = row[i]!;
-          if (json && scalarType(value) !== column.type)
+          if (
+            json &&
+            column.type !== "text" &&
+            scalarType(value) !== column.type
+          )
             fail("E_IMPORT_SCHEMA", span);
           if (column.type === "text") {
             const text = String(value);

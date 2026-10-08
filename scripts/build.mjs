@@ -1,5 +1,11 @@
-import { mkdir, writeFile, copyFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import {
+  mkdir,
+  writeFile,
+  copyFile,
+  readFile,
+  readdir,
+} from "node:fs/promises";
+import { resolve, dirname, join } from "node:path";
 import { build as viteBuild } from "vite";
 import { classicBundle, inlineScript } from "./packaging.mjs";
 
@@ -9,6 +15,37 @@ const reader = await classicBundle(
   "packages/reader/src/standalone.ts",
   "TintaReaderRuntime",
 );
+const exportRuntime = await classicBundle(
+  "packages/reader/src/export-runtime.ts",
+  "TintaExportRuntime",
+);
+const licenseRoots = new Set();
+for (const input of exportRuntime.inputs) {
+  const match = /^(.*node_modules\/(?:@[^/]+\/)?[^/]+)\//.exec(input);
+  if (match) licenseRoots.add(match[1]);
+}
+const notices = [await readFile("LICENSE", "utf8")];
+for (const root of [...licenseRoots].sort()) {
+  const names = (await readdir(root)).filter((name) =>
+    /^(license|licence|copying|notice)([._-]|$)/i.test(name),
+  );
+  if (!names.length) throw new Error(`Missing runtime license: ${root}`);
+  for (const name of names)
+    notices.push(await readFile(join(root, name), "utf8"));
+}
+exportRuntime.code +=
+  "\n/*!\n" + notices.join("\n\n").replace(/\*\//g, "* /") + "\n*/\n";
+await writeFile(
+  "packages/artifacts/dist/runtime-data.js",
+  `export const readerCode = ${JSON.stringify(exportRuntime.code)};\n` +
+    `export const readerStyle = ${JSON.stringify(
+      await readFile("packages/reader/src/reader.css", "utf8"),
+    )};\n`,
+);
+await writeFile(
+  "build/export-runtime.json",
+  JSON.stringify(exportRuntime, null, 2),
+);
 const worker = await classicBundle("apps/studio/src/worker.ts");
 const studio = await classicBundle("apps/studio/src/index.ts");
 
@@ -16,9 +53,26 @@ await writeFile("build/reader.js", reader.code);
 await copyFile("packages/reader/src/reader.css", "build/reader.css");
 await writeFile("build/worker.js", worker.code);
 
+for (const name of [
+  "types",
+  "syntax",
+  "engine",
+  "charts",
+  "reader",
+  "artifacts",
+  "cli",
+]) {
+  const target = `packages/${name}/dist/LICENSE`;
+  await mkdir(dirname(target), { recursive: true });
+  await copyFile("LICENSE", target);
+}
+
 await writeFile(
   "build/tinta-studio.html",
-  `<!doctype html><html lang="en"><meta charset="UTF-8"><title>Tinta foundation</title><p>Foundation scaffold. Document editing is not implemented.</p>${inlineScript(studio.code)}</html>`,
+  `<!doctype html><html lang="en"><meta charset="UTF-8">` +
+    `<title>Tinta foundation</title>` +
+    `<p>Foundation scaffold. Document editing is not implemented.</p>` +
+    `${inlineScript(studio.code)}</html>`,
 );
 
 await writeFile(
