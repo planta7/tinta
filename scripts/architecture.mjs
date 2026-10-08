@@ -3,6 +3,7 @@ import { resolve, relative } from "node:path";
 import { pathToFileURL } from "node:url";
 import ts from "typescript";
 import { builtinModules } from "node:module";
+
 export const edges = {
   types: [],
   syntax: ["types"],
@@ -13,6 +14,7 @@ export const edges = {
   cli: ["types", "engine", "artifacts"],
   studio: ["types", "syntax", "engine", "charts", "reader", "artifacts"],
 };
+
 export function checkImport(owner, specifier) {
   if (
     specifier.startsWith("@tinta/") &&
@@ -30,6 +32,7 @@ export function checkImport(owner, specifier) {
   )
     throw new Error(`Editor dependency in ${owner}`);
 }
+
 export function inspectSource(owner, text, filename = "input.ts") {
   const tree = ts.createSourceFile(
     filename,
@@ -37,6 +40,7 @@ export function inspectSource(owner, text, filename = "input.ts") {
     ts.ScriptTarget.ES2022,
     true,
   );
+
   function visit(node) {
     if (
       (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) &&
@@ -74,13 +78,16 @@ export function inspectSource(owner, text, filename = "input.ts") {
       throw new Error("Ambient randomness");
     ts.forEachChild(node, visit);
   }
+
   visit(tree);
 }
+
 export function files(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
     e.isDirectory() ? files(`${dir}/${e.name}`) : [`${dir}/${e.name}`],
   );
 }
+
 export function checkWorkspace(root = process.cwd()) {
   let count = 0;
   for (const owner of Object.keys(edges)) {
@@ -112,10 +119,13 @@ export function checkWorkspace(root = process.cwd()) {
           if (relative(base, target).startsWith(".."))
             throw new Error(`Cross-package relative import: ${file}`);
         }
+
       count++;
     }
   }
+
   return count;
 }
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)
   console.log(`Architecture PASS: ${checkWorkspace()} source files`);

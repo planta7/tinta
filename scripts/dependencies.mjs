@@ -2,15 +2,21 @@ import { readFileSync } from "node:fs";
 import { parse } from "yaml";
 import semver from "semver";
 import { edges } from "./architecture.mjs";
+
 const read = (p) => JSON.parse(readFileSync(p, "utf8"));
+
 const root = read("package.json"),
   records = read("toolchain/dependencies.json");
+
 if (process.versions.node !== root.engines.node)
   throw new Error("Wrong Node baseline");
+
 const lock = parse(readFileSync("pnpm-lock.yaml", "utf8"));
+
 for (const [name, entry] of Object.entries(lock.packages))
   if (!entry.resolution?.integrity)
     throw new Error(`Missing integrity: ${name}`);
+
 for (const path of [
   "package.json",
   ...Object.keys(edges).map((n) =>
@@ -37,6 +43,7 @@ for (const path of [
       throw new Error(`Engine mismatch: ${name}`);
   }
 }
+
 console.log(
   `Dependency pins PASS: ${records.length} resolved direct tools/helpers, ${Object.keys(lock.packages).length} integrity records; install enforces peers`,
 );
@@ -46,6 +53,7 @@ const browsers = read(
     root.devDependencies["@playwright/test"] +
     "/node_modules/playwright-core/browsers.json",
 );
+
 if (
   JSON.stringify(browsers) !== JSON.stringify(read("toolchain/browsers.json"))
 )

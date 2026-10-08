@@ -19,9 +19,12 @@ import {
 } from "../../scripts/architecture.mjs";
 import { classicBundle, inlineScript } from "../../scripts/packaging.mjs";
 import { requireCapability } from "../../scripts/capabilities.mjs";
+
 const json = (p) => JSON.parse(readFileSync(p, "utf8"));
+
 describe("workspace capability boundaries", () => {
   it("checks the actual workspace", () => expect(checkWorkspace()).toBe(16));
+
   for (const [owner, dependency] of [
     ["engine", "node:fs"],
     ["types", "fs"],
@@ -32,6 +35,7 @@ describe("workspace capability boundaries", () => {
   ])
     it(`rejects ${owner} -> ${dependency}`, () =>
       expect(() => checkImport(owner, dependency)).toThrow());
+
   for (const source of [
     'import fs from "node:fs"',
     'export * from "react"',
@@ -44,6 +48,7 @@ describe("workspace capability boundaries", () => {
   ])
     it(`rejects unsafe source ${source}`, () =>
       expect(() => inspectSource("engine", source)).toThrow());
+
   it("allows type-only local imports and pure calculations", () =>
     expect(() =>
       inspectSource(
@@ -52,6 +57,7 @@ describe("workspace capability boundaries", () => {
       ),
     ).not.toThrow());
 });
+
 describe("capability gates", () => {
   for (const suite of ["conformance", "browser"])
     it(`does not pretend ${suite} exists`, () => {
@@ -64,9 +70,11 @@ describe("capability gates", () => {
       expect(result.status).toBe(1);
       expect(result.stderr).toContain("NOT_IMPLEMENTED");
     });
+
   it("allows explicitly selected infrastructure browser scope", () =>
     expect(() => requireCapability("browser", "infrastructure")).not.toThrow());
 });
+
 describe("registry and Ajv 2020 envelope checks, not IR validation", () => {
   const ajv = new Ajv2020({
     strict: true,
@@ -75,20 +83,25 @@ describe("registry and Ajv 2020 envelope checks, not IR validation", () => {
     useDefaults: false,
     removeAdditional: false,
   });
+
   for (const name of ["state", "bundle", "import", "interactive-envelope"])
     ajv.addSchema(json(`schemas/${name}.schema.json`), `${name}.schema.json`);
+
   it("compiles all four schemas", () => {
     for (const name of ["state", "bundle", "import", "interactive-envelope"])
       expect(ajv.getSchema(`${name}.schema.json`)).toBeTypeOf("function");
   });
+
   it("preserves registry identity and unique closed enums", () => {
     const registry = json("spec/registry.json");
     expect(registry.contractRevision).toBe("1.0-draft.2");
     expect(registry.profiles).toEqual(["markdown", "tinta"]);
+
     for (const key of ["directives", "functions", "chartTypes"])
       expect(new Set(registry[key]).size).toBe(registry[key].length);
     expect(registry.chartTypes).toHaveLength(7);
   });
+
   for (const [name, value] of [
     ["state", json("examples/article.tinta.state.json")],
     [
@@ -103,7 +116,11 @@ describe("registry and Ajv 2020 envelope checks, not IR validation", () => {
       {
         kind: "tinta-source-bundle",
         formatVersion: "1.0",
-        source: { path: "document.tinta", bytes: 0, sha256: "a".repeat(64) },
+        source: {
+          path: "document.tinta",
+          bytes: 0,
+          sha256: "a".repeat(64),
+        },
         assets: [],
       },
     ],
@@ -111,18 +128,23 @@ describe("registry and Ajv 2020 envelope checks, not IR validation", () => {
     it(`validates ${name}, rejects extra/missing/wrong-kind fields without mutation`, () => {
       const validate = ajv.getSchema(`${name}.schema.json`);
       const before = JSON.stringify(value);
+
       expect(validate(value)).toBe(true);
       expect(validate({ ...value, unknown: true })).toBe(false);
       expect(validate({ ...value, kind: "wrong" })).toBe(false);
+
       const missing = { ...value };
       delete missing.kind;
       expect(validate(missing)).toBe(false);
+
       expect(JSON.stringify(value)).toBe(before);
     });
   }
+
   it("rejects invalid state values and hashes", () => {
     const validate = ajv.getSchema("state.schema.json"),
       state = json("examples/article.tinta.state.json");
+
     for (const patch of [
       { controls: { x: null } },
       { controls: { x: {} } },
@@ -132,6 +154,7 @@ describe("registry and Ajv 2020 envelope checks, not IR validation", () => {
     ])
       expect(validate({ ...state, ...patch })).toBe(false);
   });
+
   it("checks envelope references without claiming empty IR is valid", () => {
     const validate = ajv.getSchema("interactive-envelope.schema.json");
     const envelope = {
@@ -143,17 +166,20 @@ describe("registry and Ajv 2020 envelope checks, not IR validation", () => {
       baseline: json("examples/article.tinta.state.json"),
       assets: [],
     };
+
     expect(validate(envelope)).toBe(true);
     expect(validate({ ...envelope, baseline: {} })).toBe(false);
     expect(validate({ ...envelope, abi: "wrong" })).toBe(false);
   });
 });
+
 describe("real dependencies and packaging", () => {
   for (const owner of ["syntax", "engine", "charts", "artifacts", "studio"])
     it(`imports ${owner} production helpers in Node`, async () => {
       const base =
         (owner === "studio" ? "apps/" : "packages/") + owner + "/package.json";
       const require = createRequire(join(process.cwd(), base));
+
       for (const name of Object.keys(json(base).dependencies).filter(
         (n) => !n.startsWith("@tinta/"),
       )) {
@@ -165,6 +191,7 @@ describe("real dependencies and packaging", () => {
         expect(Object.keys(module).length).toBeGreaterThan(0);
       }
     });
+
   it("bundles a dependency into one classic script with no external imports", async () => {
     const dir = mkdtempSync(join(tmpdir(), "tinta-packaging-"));
     try {
@@ -173,6 +200,7 @@ describe("real dependencies and packaging", () => {
         join(dir, "entry.ts"),
         'import {value} from "./value.js"; globalThis.foundationValue = value;',
       );
+
       const bundle = await classicBundle(join(dir, "entry.ts"));
       expect(bundle.inputs).toHaveLength(2);
       expect(bundle.code).toContain("42");
@@ -184,11 +212,13 @@ describe("real dependencies and packaging", () => {
       rmSync(dir, { recursive: true, force: true });
     }
   });
+
   it("propagates missing-entry build errors", async () =>
     await expect(
       classicBundle("/nonexistent/tinta-entry.ts"),
     ).rejects.toThrow());
 });
+
 it("reports an explicit nonzero status for unsupported capabilities", async () => {
   const { capabilityExitCode } = await import("../../scripts/capabilities.mjs");
   const messages = [];
@@ -204,6 +234,7 @@ it("reports an explicit nonzero status for unsupported capabilities", async () =
 });
 
 const assertions = [];
+
 afterEach(() => {
   const state = expect.getState();
   assertions.push({
@@ -211,6 +242,7 @@ afterEach(() => {
     assertions: state.assertionCalls,
   });
 });
+
 afterAll(() => {
   mkdirSync("reports/verification", { recursive: true });
   writeFileSync(

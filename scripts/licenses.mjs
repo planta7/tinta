@@ -7,7 +7,9 @@ import {
 } from "node:fs";
 import { join } from "node:path";
 import { parse } from "yaml";
+
 const read = (p) => JSON.parse(readFileSync(p, "utf8"));
+
 const accepted = new Set([
   "MIT",
   "ISC",
@@ -21,8 +23,10 @@ const accepted = new Set([
   "MPL-2.0",
   "BlueOak-1.0.0",
 ]);
+
 const inventory = read("toolchain/lock-inventory.json");
 const lock = parse(readFileSync("pnpm-lock.yaml", "utf8"));
+
 for (const [key, value] of Object.entries(lock.packages)) {
   const record = inventory.find((r) => `${r.name}@${r.version}` === key);
   if (!record || record.integrity !== value.resolution.integrity)
@@ -37,8 +41,10 @@ for (const [key, value] of Object.entries(lock.packages)) {
   )
     throw new Error(`MPL scope requires review: ${key}`);
 }
+
 const packages = new Map(),
   notices = new Set();
+
 for (const dir of readdirSync("node_modules/.pnpm")) {
   const base = join("node_modules/.pnpm", dir, "node_modules");
   if (!existsSync(base)) continue;
@@ -57,12 +63,14 @@ for (const dir of readdirSync("node_modules/.pnpm")) {
       }
   }
 }
+
 function nativeParent(name) {
   if (name.startsWith("@esbuild/")) return "esbuild";
   if (name.startsWith("@rolldown/binding-")) return "rolldown";
   if (name.startsWith("lightningcss-")) return "lightningcss";
   return name;
 }
+
 for (const original of packages.values()) {
   const pkg = packages.get(
     `${nativeParent(original.name)}@${original.version}`,
@@ -99,7 +107,9 @@ for (const original of packages.values()) {
     `## ${pkg.name}@${pkg.version} (${pkg.license})\n\n${texts.join("\n")}`,
   );
 }
+
 if (!notices.size) throw new Error("Empty notice inventory");
+
 mkdirSync("reports/verification", { recursive: true });
 writeFileSync(
   "reports/verification/licenses.json",
@@ -113,8 +123,10 @@ writeFileSync(
     2,
   ) + "\n",
 );
+
 const header =
   "# Third-party notices\n\nLocked dependencies including development tools. Platform bindings use the same-version parent project license. See toolchain/lock-inventory.json for the complete integrity/license inventory and docs/09_FOUNDATION_TOOLCHAIN.md for reviewed notice sources.\n\n";
+
 if (process.argv.includes("--write"))
   writeFileSync(
     "THIRD_PARTY_NOTICES.txt",
@@ -128,6 +140,7 @@ else {
         "Installed notice missing or changed; regenerate and review",
       );
 }
+
 console.log(
   `License PASS: ${inventory.length} locked records, ${packages.size} installed packages, ${notices.size} notice groups`,
 );
