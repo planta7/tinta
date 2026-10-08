@@ -1,5 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach } from "vitest";
 import {
+  cp,
   mkdtemp,
   readFile,
   writeFile,
@@ -234,9 +235,37 @@ describe("local document commands", () => {
     },
   );
   test("missing production Studio fails explicitly without using the scaffold", async () => {
-    const result = await json(["studio"]);
-    expect(result.exitCode).toBe(3);
-    expect(result.value.artifacts).toEqual([]);
+    const isolated = join(directory, "isolated-cli");
+    await mkdir(isolated);
+    await cp("packages/cli/dist", join(isolated, "dist"), { recursive: true });
+    await writeFile(join(isolated, "package.json"), '{"type":"module"}');
+    await symlink(
+      resolve("packages/cli/node_modules"),
+      join(isolated, "node_modules"),
+      "junction",
+    );
+    const result = spawnSync(
+      process.execPath,
+      [join(isolated, "dist/bin.js"), "studio", "--json"],
+      { encoding: "utf8" },
+    );
+    expect(result.status).toBe(3);
+    expect(JSON.parse(result.stdout).artifacts).toEqual([]);
+  });
+  test("production Studio resolves and copies exact standalone bytes", async () => {
+    const located = await json(["studio"]);
+    expect(located.exitCode).toBe(0);
+    expect(located.value.details.uri).toMatch(/^file:/);
+    const output = join(directory, "studio.html");
+    const copied = await json(["studio", "--output", output]);
+    expect(copied.exitCode).toBe(0);
+    expect(
+      Buffer.compare(
+        await readFile(output),
+        await readFile("build/tinta-studio.html"),
+      ),
+    ).toBe(0);
+    expect(await readFile(output, "utf8")).toContain("Tinta Studio");
   });
   test("aborting an atomic write preserves old content and removes its staging file", async () => {
     const output = join(directory, "keep.html");

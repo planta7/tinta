@@ -63,14 +63,28 @@ test("production helpers load in an offline classic file artifact", async ({
   expect(network).toEqual([]);
 });
 
-test("foundation reader and worker build as standalone classic scripts", async ({
+test("reader and compiler worker build as standalone classic scripts", async ({
   page,
-}) => {
+}, info) => {
   await page.goto(pathToFileURL(resolve("build/tinta-studio.html")).href);
-  await expect(page.locator("p")).toHaveText(
-    "Foundation scaffold. Document editing is not implemented.",
+  await expect(
+    page.getByRole("heading", { name: "Tinta", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "New document", exact: true }),
+  ).toBeVisible();
+  const smoke = info.outputPath("reader-worker.html");
+  await writeFile(
+    smoke,
+    '<!doctype html><html lang="en"><title>Runtime smoke</title><body></body></html>',
   );
+  await page.goto(pathToFileURL(smoke).href);
   await page.addScriptTag({ path: "build/reader.js" });
+  expect(
+    await page.evaluate(
+      () => typeof globalThis.TintaReaderRuntime.TintaReader.mountReader,
+    ),
+  ).toBe("function");
 
   const worker = await readFile("build/worker.js", "utf8");
   expect(
