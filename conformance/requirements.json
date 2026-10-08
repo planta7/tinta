@@ -1,7 +1,7 @@
 {
   "contractRevision": "1.0-draft.2",
   "status": "EXPECTATIONS_ONLY",
-  "granularity": "area-level seed traceability, to expand to every normative rule during implementation",
+  "granularity": "Area navigation with normative block, diagnostic and resource-boundary mappings in rule-coverage.json; execution and manual acceptance are separate.",
   "requirements": [
     {
       "id": "REQ-01",
@@ -379,5 +379,6 @@
       "coverageStatus": "SEED_ONLY",
       "implementationEvidence": []
     }
-  ]
+  ],
+  "ruleCoverage": "conformance/rule-coverage.json"
 }

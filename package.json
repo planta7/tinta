@@ -20,7 +20,10 @@
     "check:licenses": "node scripts/licenses.mjs",
     "verify": "node scripts/verify.mjs",
     "test:browser:infrastructure": "playwright test",
-    "check:dependencies": "node scripts/dependencies.mjs"
+    "check:dependencies": "node scripts/dependencies.mjs",
+    "test:hardening": "node scripts/hardening.mjs",
+    "benchmark": "node scripts/benchmark.mjs",
+    "qualify": "node scripts/qualification.mjs"
   },
   "devDependencies": {
     "typescript": "6.0.3",

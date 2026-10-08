@@ -1,3 +1,4 @@
+import { propertyRuns } from "../support/properties.mjs";
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -543,7 +544,7 @@ describe("deterministic adversarial properties", () => {
         const r = parse(input(text));
         expect(typeof r.ok).toBe("boolean");
       }),
-      { seed: 184731, numRuns: 1000 },
+      { seed: 184731, numRuns: propertyRuns },
     ));
   it("preserves unedited Markdown bytes through explicit enrichment", () =>
     fc.assert(
@@ -569,7 +570,7 @@ describe("deterministic adversarial properties", () => {
           );
         },
       ),
-      { seed: 184732, numRuns: 1000 },
+      { seed: 184732, numRuns: propertyRuns },
     ));
 });
 
@@ -818,7 +819,7 @@ describe("generated expression and container properties", () => {
           expect(parse(input(`{{ ${source} }}`)).ok).toBe(true);
         },
       ),
-      { seed: 184733, numRuns: 1000 },
+      { seed: 184733, numRuns: propertyRuns },
     ));
   it("recovers from malformed expression/directive streams without throwing", () =>
     fc.assert(
@@ -828,7 +829,7 @@ describe("generated expression and container properties", () => {
         );
         expect(typeof r.ok).toBe("boolean");
       }),
-      { seed: 184734, numRuns: 1000 },
+      { seed: 184734, numRuns: propertyRuns },
     ));
 });
 

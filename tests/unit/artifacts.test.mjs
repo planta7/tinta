@@ -1,3 +1,4 @@
+import { propertyRuns } from "../support/properties.mjs";
 import { describe, test, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { compile, createSession } from "../../packages/engine/dist/index.js";
@@ -235,7 +236,7 @@ describe("source bundles", () => {
       fc.asyncProperty(fc.uint8Array({ maxLength: 500 }), async (bytes) => {
         expect((await openBundle(bytes)).ok).toBe(false);
       }),
-      { seed: 32019, numRuns: 1000 },
+      { seed: 32019, numRuns: propertyRuns },
     );
   });
 });

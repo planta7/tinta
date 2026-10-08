@@ -1,3 +1,4 @@
+import { propertyRuns } from "../support/properties.mjs";
 import { test, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
@@ -242,7 +243,7 @@ test("strict JSON agrees with native parsing on bounded generated data", () => {
       const text = JSON.stringify(value);
       expect(JSON.stringify(strictJson(text))).toBe(text);
     }),
-    { numRuns: 1000, seed: 90345 },
+    { numRuns: propertyRuns, seed: 90345 },
   );
   expect(() => object([], [])).toThrow();
   expect(() => strictJson('"\\q"')).toThrow();

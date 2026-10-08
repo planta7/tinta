@@ -1,6 +1,10 @@
 # Requirements-to-expectations traceability
 
-This is a navigation map, **not exhaustive rule-level coverage or implementation evidence**. The seed corpus contains 98 expected semantic cases and 46 integrated/manual scenarios. Each normative clause, error code and boundary needs its own expanded test coverage as the owning milestone is implemented. A complete area row does not mean every rule inside the linked document has been tested.
+The area table below preserves the navigation through 98 semantic seed cases and 46 integrated/manual scenarios. [rule-coverage.json](rule-coverage.json) expands that map into normative prose blocks, exact diagnostic codes and registered resource values. Each entry describes its expected assertion and identifies concrete test declarations or a manual procedure. A paragraph may contain multiple obligations; mapping integrity alone cannot establish semantic completeness.
+
+Run `node scripts/traceability.mjs` to detect missing clauses, changed assertions or test context, unknown references, omitted diagnostics and changed limit values. Test and supporting-input hashes require deliberate review when those files change. The report distinguishes `MAPPED` from execution: source expectations always remain `NOT_RUN`, and manual procedures still require recorded acceptance.
+
+Boundary entries distinguish integrated behaviour, internal counters, container parsing, defaults, deadlines and eviction policies. A counter-level test does not claim that an entire document or archive at that size is valid.
 
 | ID | Normative area | Seed cases | Scenarios | Full area gate |
 |---|---|---:|---:|---|

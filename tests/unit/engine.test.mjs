@@ -1,3 +1,4 @@
+import { propertyRuns } from "../support/properties.mjs";
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
 import fc from "fast-check";
@@ -453,7 +454,7 @@ describe("deterministic properties", () => {
           expect(chart.bins).toHaveLength(bins);
         },
       ),
-      { seed: 123456, numRuns: 1000 },
+      { seed: 123456, numRuns: propertyRuns },
     ));
   it("retains stable order for equal sort keys in either direction", () =>
     fc.assert(
@@ -472,7 +473,7 @@ describe("deterministic properties", () => {
           );
         },
       ),
-      { seed: 654321, numRuns: 1000 },
+      { seed: 654321, numRuns: propertyRuns },
     ));
 });
 describe("static validation boundaries", () => {
@@ -975,7 +976,7 @@ describe("bounded malformed-input properties", () => {
           else expect(result.diagnostics.length).toBeGreaterThan(0);
         }
       }),
-      { seed: 357911, numRuns: 1000 },
+      { seed: 357911, numRuns: propertyRuns },
     );
   });
   it("rejects arbitrary JSON values as programs without coercion or mutation", () => {
@@ -986,7 +987,7 @@ describe("bounded malformed-input properties", () => {
         expect(result.ok).toBe(false);
         expect(JSON.stringify(payload)).toBe(before);
       }),
-      { seed: 246810, numRuns: 1000 },
+      { seed: 246810, numRuns: propertyRuns },
     );
   });
 });

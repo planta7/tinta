@@ -1,3 +1,4 @@
+import { propertyRuns } from "../support/properties.mjs";
 import { describe, test, expect } from "vitest";
 import fc from "fast-check";
 import {
@@ -203,7 +204,7 @@ test("histogram conservation over exact boundaries and seeded finite observation
           ).toHaveLength(1);
       },
     ),
-    { seed: 42017, numRuns: 1000 },
+    { seed: 42017, numRuns: propertyRuns },
   );
   expect(
     prepared(

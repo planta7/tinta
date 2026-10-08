@@ -1,0 +1,132 @@
+{
+  "executionStatus": "NOT_RUN",
+  "purpose": "Candidate test navigation only. Section and clause mappings require assertion-level review; these references never establish conformance by themselves.",
+  "authorities": [
+    {
+      "path": "spec/00_OVERVIEW.md",
+      "testFiles": [
+        "tests/unit/foundation.test.mjs",
+        "tests/unit/engine.test.mjs",
+        "tests/unit/cli.test.mjs"
+      ]
+    },
+    {
+      "path": "spec/01_MARKDOWN_AND_LEXING.md",
+      "testFiles": [
+        "tests/unit/syntax.test.mjs",
+        "tests/browser/syntax.test.mjs",
+        "tests/browser/reader.test.mjs"
+      ]
+    },
+    {
+      "path": "spec/02_EXPRESSIONS_AND_STATE.md",
+      "testFiles": [
+        "tests/unit/engine.test.mjs",
+        "tests/browser/engine.test.mjs",
+        "tests/browser/reader.test.mjs"
+      ]
+    },
+    {
+      "path": "spec/03_DIRECTIVES.md",
+      "testFiles": [
+        "tests/unit/syntax.test.mjs",
+        "tests/unit/engine.test.mjs",
+        "tests/browser/reader.test.mjs"
+      ]
+    },
+    {
+      "path": "spec/04_DATA.md",
+      "testFiles": [
+        "tests/unit/engine.test.mjs",
+        "tests/browser/studio.test.mjs"
+      ]
+    },
+    {
+      "path": "spec/05_CHARTS.md",
+      "testFiles": [
+        "tests/unit/engine.test.mjs",
+        "tests/unit/charts.test.mjs",
+        "tests/browser/reader.test.mjs"
+      ]
+    },
+    {
+      "path": "spec/06_LIMITS_AND_DIAGNOSTICS.md",
+      "testFiles": [
+        "tests/unit/syntax.test.mjs",
+        "tests/unit/engine.test.mjs",
+        "tests/unit/artifact-security.test.mjs",
+        "tests/unit/qualification.test.mjs"
+      ]
+    },
+    {
+      "path": "docs/01_PRODUCT.md",
+      "testFiles": [
+        "tests/browser/studio.test.mjs",
+        "tests/browser/artifacts.test.mjs",
+        "tests/unit/cli.test.mjs"
+      ]
+    },
+    {
+      "path": "docs/02_FILES_AND_EXPORTS.md",
+      "testFiles": [
+        "tests/unit/artifacts.test.mjs",
+        "tests/unit/artifact-security.test.mjs",
+        "tests/unit/cli-failures.test.mjs",
+        "tests/browser/artifacts.test.mjs"
+      ]
+    },
+    {
+      "path": "docs/03_EDITOR_AND_READER.md",
+      "testFiles": [
+        "tests/unit/studio.test.mjs",
+        "tests/unit/studio-worker.test.mjs",
+        "tests/browser/studio.test.mjs"
+      ]
+    },
+    {
+      "path": "docs/04_SECURITY.md",
+      "testFiles": [
+        "tests/unit/artifact-security.test.mjs",
+        "tests/unit/qualification.test.mjs",
+        "tests/browser/artifacts.test.mjs",
+        "tests/browser/studio.test.mjs"
+      ]
+    },
+    {
+      "path": "docs/05_ACCESSIBILITY_AND_DESIGN.md",
+      "testFiles": [
+        "tests/browser/reader.test.mjs",
+        "tests/browser/studio.test.mjs"
+      ]
+    },
+    {
+      "path": "docs/06_CLI.md",
+      "testFiles": [
+        "tests/unit/cli.test.mjs",
+        "tests/unit/cli-failures.test.mjs"
+      ]
+    },
+    {
+      "path": "docs/07_VERIFICATION.md",
+      "testFiles": [
+        "tests/unit/foundation.test.mjs",
+        "tests/unit/qualification.test.mjs"
+      ]
+    },
+    {
+      "path": "docs/08_CHANGE_CONTROL.md",
+      "testFiles": [
+        "tests/unit/foundation.test.mjs",
+        "tests/unit/qualification.test.mjs"
+      ]
+    },
+    {
+      "path": "contracts/CONTRACT_RULES.md",
+      "testFiles": [
+        "tests/unit/engine.test.mjs",
+        "tests/browser/reader.test.mjs",
+        "tests/unit/studio-worker.test.mjs"
+      ]
+    }
+  ]
+}

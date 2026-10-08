@@ -19,7 +19,7 @@ jobs:
       - run: npm install --global pnpm@10.34.6
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
-      - run: pnpm verify --suite artifacts
+      - run: pnpm verify --suite editing
 
   cli-portability:
     if: github.event_name == 'pull_request' || github.ref_name == github.event.repository.default_branch
