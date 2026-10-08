@@ -1067,6 +1067,7 @@ x:number | y:number
   const range = figure.getByLabel("Inspect data point");
   await range.focus();
   await range.press("End");
+  await settledFigures(page);
   const before = await page
     .locator("svg")
     .evaluateAll((nodes) => nodes.map((node) => node.outerHTML));
@@ -1281,7 +1282,16 @@ test("seed conformance fixtures project successful revisions and preserve reject
   ).cases;
   const results = [];
   for (const fixture of fixtures) {
-    if (["csv", "json", "enrich"].includes(fixture.phase)) {
+    if (fixture.phase === "enrich") {
+      results.push({
+        id: fixture.id,
+        readerEffect: "NOT_APPLICABLE",
+        reason:
+          "Pure source enrichment has no session or reader effect; source edits are checked by semantic and browser portability suites.",
+      });
+      continue;
+    }
+    if (["csv", "json"].includes(fixture.phase)) {
       results.push({
         id: fixture.id,
         readerEffect: "NOT_RUN",
@@ -1463,6 +1473,7 @@ x:number | y:number
 @chart pie values (x: "x", y: 1 - chosen)
 `,
   );
+  await settledFigures(page);
   const before = await page
     .locator("svg")
     .evaluateAll((nodes) => nodes.map((node) => node.outerHTML));
@@ -1524,3 +1535,22 @@ test("pointer pins, escape and explorer focus keep inspection local", async ({
   ).toBe(0);
   await expect(figure.locator("output")).not.toContainText("minutes: 12");
 });
+
+async function settledFigures(page) {
+  await expect
+    .poll(() =>
+      page
+        .locator("figure")
+        .evaluateAll((figures) =>
+          figures.every(
+            (figure) =>
+              Number(figure.querySelector("svg").getAttribute("width")) ===
+              Math.max(
+                280,
+                Math.min(800, Math.round(figure.getBoundingClientRect().width)),
+              ),
+          ),
+        ),
+    )
+    .toBe(true);
+}
