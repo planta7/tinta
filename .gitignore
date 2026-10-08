@@ -13,3 +13,5 @@ __pycache__/
 test-results/
 playwright-report/
 *.tsbuildinfo
+
+packages/cli/assets/tinta-studio.html

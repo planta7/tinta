@@ -5,7 +5,7 @@ export function requireCapability(suite, capability) {
   if (["parsing", "semantics"].includes(capability) && suite === "conformance")
     return;
   if (
-    ["infrastructure", "reading", "charting", "artifacts"].includes(
+    ["infrastructure", "reading", "charting", "artifacts", "editing"].includes(
       capability,
     ) &&
     suite === "browser"
@@ -57,7 +57,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)
             ? ["reader.test.mjs"]
             : process.argv[3] === "artifacts"
               ? ["artifacts.test.mjs"]
-              : []),
+              : process.argv[3] === "editing"
+                ? ["studio.test.mjs"]
+                : []),
         ],
         { stdio: "inherit" },
       ).status ?? 1;

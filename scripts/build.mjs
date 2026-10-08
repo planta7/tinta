@@ -1,3 +1,4 @@
+import { buildStudio } from "./studio.mjs";
 import {
   mkdir,
   writeFile,
@@ -7,7 +8,7 @@ import {
 } from "node:fs/promises";
 import { resolve, dirname, join } from "node:path";
 import { build as viteBuild } from "vite";
-import { classicBundle, inlineScript } from "./packaging.mjs";
+import { classicBundle } from "./packaging.mjs";
 
 await mkdir("build", { recursive: true });
 
@@ -46,8 +47,7 @@ await writeFile(
   "build/export-runtime.json",
   JSON.stringify(exportRuntime, null, 2),
 );
-const worker = await classicBundle("apps/studio/src/worker.ts");
-const studio = await classicBundle("apps/studio/src/index.ts");
+const { worker, studio } = await buildStudio();
 
 await writeFile("build/reader.js", reader.code);
 await copyFile("packages/reader/src/reader.css", "build/reader.css");
@@ -66,14 +66,6 @@ for (const name of [
   await mkdir(dirname(target), { recursive: true });
   await copyFile("LICENSE", target);
 }
-
-await writeFile(
-  "build/tinta-studio.html",
-  `<!doctype html><html lang="en"><meta charset="UTF-8">` +
-    `<title>Tinta foundation</title>` +
-    `<p>Foundation scaffold. Document editing is not implemented.</p>` +
-    `${inlineScript(studio.code)}</html>`,
-);
 
 await writeFile(
   "build/composition.json",

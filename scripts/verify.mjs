@@ -12,11 +12,12 @@ if (
     "--suite reading",
     "--suite charting",
     "--suite artifacts",
+    "--suite editing",
   ].includes(suite)
 ) {
   console.error(
     "NOT_IMPLEMENTED: supported aggregate suites are infrastructure, " +
-      "parsing, semantics, reading, charting and artifacts",
+      "parsing, semantics, reading, charting, artifacts and editing",
   );
   process.exit(1);
 }
@@ -29,6 +30,7 @@ const commands = [
     "--suite reading",
     "--suite charting",
     "--suite artifacts",
+    "--suite editing",
   ].includes(suite)
     ? [["node", "scripts/program-schema.mjs", "--check"]]
     : []),
@@ -43,7 +45,21 @@ const commands = [
     "test:browser:infrastructure",
     "check:licenses",
   ].map((s) => ["pnpm", s]),
-  ...(suite === "--suite artifacts"
+  ...(suite === "--suite editing"
+    ? [
+        [
+          "pnpm",
+          "exec",
+          "vitest",
+          "run",
+          "--coverage",
+          "--config",
+          "scripts/studio-vitest.config.js",
+        ],
+        ["node", "scripts/studio-coverage.mjs"],
+      ]
+    : []),
+  ...(["--suite artifacts", "--suite editing"].includes(suite)
     ? [
         ["node", "scripts/artifact-size.mjs"],
         [
@@ -58,6 +74,7 @@ const commands = [
     "--suite reading",
     "--suite charting",
     "--suite artifacts",
+    "--suite editing",
   ].includes(suite)
     ? [
         ["pnpm", "test:conformance", "parsing"],
@@ -67,6 +84,7 @@ const commands = [
           "--suite reading",
           "--suite charting",
           "--suite artifacts",
+          "--suite editing",
         ].includes(suite)
           ? [
               ["node", "scripts/reader-coverage.mjs"],

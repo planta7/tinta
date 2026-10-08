@@ -12,6 +12,7 @@ const { createCoverageMap } = await import(
 );
 
 export async function readerCoverage(entries, mapPath, options = {}) {
+  const sourceRoot = options.sourceRoot ?? "packages/reader/src";
   const expected = options.sources ?? [
     "index.ts",
     "policy.ts",
@@ -34,19 +35,13 @@ export async function readerCoverage(entries, mapPath, options = {}) {
       sourceMap,
     });
     for (const path of Object.keys(converted)) {
-      if (
-        !expected.some((name) => path === resolve("packages/reader/src", name))
-      )
+      if (!expected.some((name) => path === resolve(sourceRoot, name)))
         delete converted[path];
     }
     merged.merge(converted);
   }
   const paths = merged.files();
-  if (
-    expected.some(
-      (name) => !paths.includes(resolve("packages/reader/src", name)),
-    )
-  ) {
+  if (expected.some((name) => !paths.includes(resolve(sourceRoot, name)))) {
     throw new Error("Missing reader source coverage.");
   }
   const summary = merged.getCoverageSummary().toJSON();
