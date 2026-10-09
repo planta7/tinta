@@ -12,7 +12,7 @@ test("chunked Studio preserves module initialization and embedded runtimes", asy
     preview: { host: "127.0.0.1", port: 0, strictPort: true },
   });
   try {
-    const directory = "build/dev-studio/assets";
+    const directory = "build/studio/assets";
     const chunks = (await readdir(directory)).filter((name) =>
       name.endsWith(".js"),
     );

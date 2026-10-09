@@ -4,6 +4,7 @@ import {
   readFile,
   writeFile,
   copyFile,
+  cp,
   rm,
 } from "node:fs/promises";
 import { createHash } from "node:crypto";
@@ -36,6 +37,9 @@ for (const name of ["LICENSE", "THIRD_PARTY_NOTICES.txt", "pnpm-lock.yaml"]) {
 for (const name of ["tinta-studio.html", "reader.js", "reader.css"]) {
   await save(name, await readFile(join("build", name)));
 }
+await rm(join(destination, "studio"), { recursive: true, force: true });
+await cp("build/studio", join(destination, "studio"), { recursive: true });
+await inventory(join(destination, "studio"));
 const assets = new Map();
 for (const name of await readdir("examples/assets")) {
   const asset = unwrap(

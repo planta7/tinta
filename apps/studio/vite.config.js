@@ -1,9 +1,45 @@
+import { readFileSync } from "node:fs";
 import { URL } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    {
+      name: "studio-host-policy",
+      apply: "build",
+      transformIndexHtml: {
+        order: "post",
+        handler() {
+          const generated = readFileSync(
+            new URL("./dist/runtime/previewHtml.js", import.meta.url),
+            "utf8",
+          );
+          const preview = JSON.parse(
+            generated
+              .slice(generated.indexOf("=") + 1)
+              .trim()
+              .replace(/;$/, ""),
+          );
+          const previewHash = preview.match(/script-src ('sha256-[^']+')/)?.[1];
+          if (!previewHash)
+            throw new Error("Missing trusted preview script hash.");
+          return [
+            {
+              tag: "meta",
+              attrs: {
+                "http-equiv": "Content-Security-Policy",
+                content: `default-src 'none'; script-src 'self' ${previewHash}; style-src 'self' 'unsafe-inline'; img-src data: blob:; worker-src blob:; frame-src 'self' blob:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'`,
+              },
+              injectTo: "head-prepend",
+            },
+          ];
+        },
+      },
+    },
+  ],
+  base: "./",
   resolve: {
     alias: {
       "./studio-runtime.js": new URL(
@@ -15,8 +51,7 @@ export default defineConfig({
   server: { host: "127.0.0.1" },
   preview: { host: "127.0.0.1" },
   build: {
-    // Only the loopback development build uses chunks. The production
-    // file-origin artifact is assembled separately by scripts/studio.mjs.
+    // The portable file-origin artifact is assembled separately.
     rolldownOptions: {
       output: {
         strictExecutionOrder: true,
@@ -45,7 +80,7 @@ export default defineConfig({
       },
     },
     sourcemap: false,
-    outDir: "../../build/dev-studio",
+    outDir: "../../build/studio",
     emptyOutDir: true,
   },
 });

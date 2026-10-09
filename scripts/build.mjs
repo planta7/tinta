@@ -78,3 +78,9 @@ await viteBuild({
   root: resolve("apps/studio"),
   configFile: resolve("apps/studio/vite.config.js"),
 });
+
+await copyFile(
+  "THIRD_PARTY_NOTICES.txt",
+  "build/studio/THIRD_PARTY_NOTICES.txt",
+);
+await copyFile("LICENSE", "build/studio/LICENSE");

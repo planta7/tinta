@@ -43,7 +43,9 @@ pnpm install --frozen-lockfile
 pnpm build
 ```
 
-Open `build/tinta-studio.html` in your browser. It is a standalone local file: no server or account is needed. Choose **Explore examples**, or open an existing `.md`, `.tinta` or `.tinta.zip` file. Documents open in Reading mode; switch to Edit to work on the source and preview.
+Run `pnpm dev` and open the loopback URL printed by Vite. For the production app, run `pnpm build` followed by `pnpm preview`. The `build/studio/` directory is a complete static app suitable for a static host such as S3; no account service or backend is needed. Hash URLs support refresh without server rewrites.
+
+Alternatively, open `build/tinta-studio.html` in your browser. It is a standalone local file: no server or account is needed. Choose **Explore examples**, or open an existing `.md`, `.tinta` or `.tinta.zip` file. Documents open in Reading mode; switch to Edit to work on the source and preview.
 
 To validate and export one of the included examples from the repository root:
 
@@ -173,7 +175,7 @@ Figures provide pointer inspection, keyboard exploration and a complete data tab
 
 **Interactive HTML includes hidden branches and all source data.** Hiding a section or filtering a table does not remove information from that file. Static HTML includes only the resolved visible presentation, though anything visible remains in the output. See [files, resources and exports](docs/02_FILES_AND_EXPORTS.md) for the precise boundaries.
 
-Studio includes CodeMirror editing, diagnostics, a sandboxed preview, local data/image imports, undo and export dialogs. Optional local recovery copies are **off by default** and distinct from saved source files. Reader answers are not automatically persisted. See the [editor and reader guide](docs/03_EDITOR_AND_READER.md).
+Studio includes CodeMirror editing, diagnostics, a sandboxed preview, local data/image imports, undo and export dialogs. Local drafts are automatic and restore the open document and mode after refresh. They are distinct from saved source files: use **Save source** to keep a file. Recovery preferences allow disabling drafts or deleting copies; storage is limited to 10 copies and 30 MiB, with oldest copies replaced first. Reader answers are not automatically persisted. See the [editor and reader guide](docs/03_EDITOR_AND_READER.md).
 
 ## Example documents
 
