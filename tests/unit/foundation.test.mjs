@@ -23,7 +23,7 @@ import { requireCapability } from "../../scripts/capabilities.mjs";
 const json = (p) => JSON.parse(readFileSync(p, "utf8"));
 
 describe("workspace capability boundaries", () => {
-  it("checks the actual workspace", () => expect(checkWorkspace()).toBe(62));
+  it("checks the actual workspace", () => expect(checkWorkspace()).toBe(71));
 
   for (const [owner, dependency] of [
     ["engine", "node:fs"],

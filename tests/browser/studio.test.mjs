@@ -2,7 +2,7 @@ import { build } from "esbuild";
 import AxeBuilder from "@axe-core/playwright";
 import { readerCoverage } from "../../scripts/reader-coverage.mjs";
 import { readFile } from "node:fs/promises";
-import { test, expect } from "./fixtures.mjs";
+import { test, expect, studioAction } from "./fixtures.mjs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -65,6 +65,15 @@ test.afterAll(async ({ browserName }) => {
                 "protocol.js",
                 "recovery.js",
                 "source-buffer.js",
+                "studio.js",
+                "controls.js",
+                "dialogs.js",
+                "workspace.js",
+                "welcome.js",
+                "workspace-header.js",
+                "catalog.js",
+                "navigation.js",
+                "drafts.js",
               ]
             : ["preview.js"],
         report:
@@ -125,13 +134,13 @@ test("standalone reading, sandbox, answers, edit and invalid recovery", async ({
   expect(errors).toEqual([]);
 });
 
-test("opt-in recovery saves no answers and is offered after reload", async ({
+test("automatic local drafts restore source and mode after reload", async ({
   page,
 }) => {
   await example(page);
-  await page.getByRole("button", { name: "Recovery", exact: true }).click();
+  await studioAction(page, "Recovery");
   const enabled = page.getByLabel("Keep local recovery copies on this device");
-  await expect(enabled).not.toBeChecked();
+  await expect(enabled).toBeChecked();
   await enabled.check();
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
@@ -169,20 +178,12 @@ test("opt-in recovery saves no answers and is offered after reload", async ({
     )
     .toBe(true);
   page.on("dialog", (dialog) => dialog.accept());
+  const documentUrl = page.url();
   await page.reload();
+  await expect(page).toHaveURL(documentUrl);
   await expect(
-    page.getByRole("button", { name: "New document", exact: true }),
-  ).toBeVisible();
-  await page
-    .getByRole("button", { name: "Local recovery copies", exact: true })
-    .click();
-  await page
-    .getByRole("button", { name: "Show recovery copies", exact: true })
-    .click();
-  await page
-    .getByRole("button", { name: "Recover guide.tinta", exact: true })
-    .click();
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
+    page.getByRole("button", { name: "Edit", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
   await page
     .getByRole("textbox", { name: "Document source" })
     .press("ControlOrMeta+End");
@@ -243,7 +244,7 @@ test("unsaved Cancel preserves source, file actions and focus", async ({
   await page
     .getByRole("textbox", { name: "Document source" })
     .fill("# My unsaved draft");
-  await page.getByRole("button", { name: "New", exact: true }).click();
+  await studioAction(page, "New");
   await expect(
     page.getByRole("button", { name: "Cancel", exact: true }),
   ).toBeFocused();
@@ -252,7 +253,7 @@ test("unsaved Cancel preserves source, file actions and focus", async ({
     page.getByRole("textbox", { name: "Document source" }),
   ).toHaveText("# My unsaved draft");
   await expect(
-    page.getByRole("button", { name: "New", exact: true }),
+    page.locator("summary").filter({ hasText: /^File$/ }),
   ).toBeFocused();
 });
 
@@ -345,9 +346,7 @@ test("reconciles prose edits and resets a changed initial without changing saved
     "1 answers reset after source changes",
   );
   await preview.getByLabel("Your platform").selectOption("Linux");
-  await page
-    .getByRole("button", { name: "Reset reading", exact: true })
-    .click();
+  await studioAction(page, "Reset reading");
   await expect(preview.getByLabel("Your platform")).toHaveValue("Windows");
   await expect(page.locator("header")).toContainText("Changed");
 });
@@ -395,7 +394,7 @@ test("image import is one source and asset undo transaction", async ({
     page.getByRole("button", { name: "Export", exact: true }),
   ).toBeEnabled();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
-  await page.getByRole("button", { name: "Import", exact: true }).click();
+  await studioAction(page, "Import");
   const chooser = page.waitForEvent("filechooser");
   await page.getByRole("button", { name: "Local image", exact: true }).click();
   await (
@@ -414,7 +413,7 @@ test("image import is one source and asset undo transaction", async ({
       .frameLocator("iframe")
       .getByRole("img", { name: "Imported local raster" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Recovery", exact: true }).click();
+  await studioAction(page, "Recovery");
   await page.getByLabel("Keep local recovery copies on this device").check();
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
   const storedAssets = () =>
@@ -453,7 +452,7 @@ test("image import is one source and asset undo transaction", async ({
   await expect.poll(storedAssets).toBe(1);
   await editor.press("ControlOrMeta+End");
   await editor.press("End");
-  await page.getByRole("button", { name: "Import", exact: true }).click();
+  await studioAction(page, "Import");
   const repeated = page.waitForEvent("filechooser");
   await page.getByRole("button", { name: "Local image", exact: true }).click();
   await (
@@ -495,7 +494,7 @@ test("data import previews mappings and inserts after a complete root block", as
   ).toBeEnabled();
   await editor.press("ControlOrMeta+Home");
   await editor.press("ArrowDown");
-  await page.getByRole("button", { name: "Import", exact: true }).click();
+  await studioAction(page, "Import");
   const chooser = page.waitForEvent("filechooser");
   await page.getByRole("button", { name: "CSV data", exact: true }).click();
   await (
@@ -585,7 +584,7 @@ test("denied recovery storage leaves source saving available", async ({
     });
   });
   await example(page);
-  await page.getByRole("button", { name: "Recovery", exact: true }).click();
+  await studioAction(page, "Recovery");
   await page.getByLabel("Keep local recovery copies on this device").check();
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
   await expect(page.getByRole("status")).toContainText(
@@ -644,11 +643,11 @@ test("bundle and snapshot downloads preserve authored defaults and chosen answer
   );
   expect(snapshot.controls.platform).toBe("Linux");
   download = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Save bundle", exact: true }).click();
+  await studioAction(page, "Save bundle");
   const bundle = await download;
   expect(bundle.suggestedFilename()).toBe("guide.tinta.zip");
   const chooser = page.waitForEvent("filechooser");
-  await page.getByRole("button", { name: "Open", exact: true }).click();
+  await studioAction(page, "Open");
   await (
     await chooser
   ).setFiles({
@@ -679,9 +678,7 @@ test("source save-as, keyboard commands and unsaved Save or Discard", async ({
   await page
     .getByRole("textbox", { name: "Document source" })
     .fill("# Changed");
-  await page
-    .getByRole("button", { name: "Save source as", exact: true })
-    .click();
+  await studioAction(page, "Save source as");
   await page.getByLabel("Filename", { exact: true }).fill("renamed.tinta");
   await page.evaluate(() => {
     Object.defineProperty(window, "showSaveFilePicker", { value: undefined });
@@ -693,7 +690,7 @@ test("source save-as, keyboard commands and unsaved Save or Discard", async ({
   await page
     .getByRole("textbox", { name: "Document source" })
     .fill("# Another change");
-  await page.getByRole("button", { name: "New", exact: true }).click();
+  await studioAction(page, "New");
   download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Save", exact: true }).click();
   expect((await download).suggestedFilename()).toBe("renamed.tinta");
@@ -711,7 +708,7 @@ test("recovery deletion and disabling are explicit and preserve the active buffe
   page,
 }) => {
   await example(page);
-  await page.getByRole("button", { name: "Recovery", exact: true }).click();
+  await studioAction(page, "Recovery");
   await page.getByLabel("Keep local recovery copies on this device").check();
   await page
     .getByRole("button", { name: "Show recovery copies", exact: true })
@@ -743,7 +740,7 @@ test("recovery deletion and disabling are explicit and preserve the active buffe
       }),
     )
     .toBe(1);
-  await page.getByRole("button", { name: "Recovery", exact: true }).click();
+  await studioAction(page, "Recovery");
   await page.getByLabel("Keep local recovery copies on this device").uncheck();
   await page
     .getByRole("button", { name: "Show recovery copies", exact: true })
@@ -787,7 +784,7 @@ test("JSON mappings, invalid imports and diagnostics preserve existing source", 
   await expect(
     page.frameLocator("iframe").getByRole("heading", { name: "Data" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Import", exact: true }).click();
+  await studioAction(page, "Import");
   const chooser = page.waitForEvent("filechooser");
   await page.getByRole("button", { name: "JSON data", exact: true }).click();
   await (
@@ -804,7 +801,7 @@ test("JSON mappings, invalid imports and diagnostics preserve existing source", 
   await expect(page.getByRole("dialog").locator("pre")).toContainText("00123");
   await page.getByRole("button", { name: "Cancel", exact: true }).click();
   await expect(editor).toHaveText("# Data");
-  await page.getByRole("button", { name: "Snippets", exact: true }).click();
+  await studioAction(page, "Snippets");
   await page.getByRole("button", { name: "@toggle", exact: true }).click();
   await expect(editor).toContainText("@toggle visible");
 });
@@ -998,7 +995,7 @@ test("missing image resolution preserves distinct source paths with shared basen
     ["pictures/photo.png", "First", 1],
     ["other/photo.png", "Second", 2],
   ]) {
-    await page.getByRole("button", { name: "Import", exact: true }).click();
+    await studioAction(page, "Import");
     const chooser = page.waitForEvent("filechooser");
     await page
       .getByRole("button", { name: "Add missing image files", exact: true })
@@ -1030,10 +1027,10 @@ test("missing image resolution preserves distinct source paths with shared basen
   await editor.press("ControlOrMeta+Shift+z");
   await expect(preview.getByRole("img")).toHaveCount(2);
   const download = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Save bundle", exact: true }).click();
+  await studioAction(page, "Save bundle");
   const bundle = await download;
   const chooser = page.waitForEvent("filechooser");
-  await page.getByRole("button", { name: "Open", exact: true }).click();
+  await studioAction(page, "Open");
   await page.getByRole("button", { name: "Discard", exact: true }).click();
   await (
     await chooser
@@ -1100,4 +1097,365 @@ test("preview rejects unsafe, missing and indirect asset alias targets", async (
       0,
     );
   }
+});
+
+test("document menus support keyboard dismissal, outside clicks and dialog focus return", async ({
+  page,
+}) => {
+  await example(page, "article");
+  const file = page
+    .locator(".action-menu summary")
+    .getByText("File", { exact: true });
+  const tools = page
+    .locator(".action-menu summary")
+    .getByText("Tools", { exact: true });
+  await file.press("Enter");
+  await expect(
+    page.getByRole("button", { name: "New", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "New", exact: true }).press("Escape");
+  await expect(
+    page.locator("summary").filter({ hasText: /^File$/ }),
+  ).toBeFocused();
+  await expect(
+    page.getByRole("button", { name: "New", exact: true }),
+  ).not.toBeVisible();
+  await file.click();
+  await tools.click();
+  await expect(
+    page.getByRole("button", { name: "New", exact: true }),
+  ).not.toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Check", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("heading", { name: "article.tinta", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Check", exact: true }),
+  ).not.toBeVisible();
+  await studioAction(page, "Examples");
+  await page.getByRole("dialog").press("Escape");
+  await expect(
+    page.locator("summary").filter({ hasText: /^Tools$/ }),
+  ).toBeFocused();
+  await page
+    .locator("summary")
+    .filter({ hasText: /^Tools$/ })
+    .press("Escape");
+  await expect(
+    page.locator("summary").filter({ hasText: /^Tools$/ }),
+  ).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(
+    page.locator("summary").filter({ hasText: /^Tools$/ }),
+  ).toBeFocused();
+  await page.getByRole("button", { name: "Read", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Read", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+});
+
+test("workspace reflows, retains the source cursor and exposes insertion from the narrow preview", async ({
+  page,
+}) => {
+  await example(page, "article");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const editor = page.getByRole("textbox", { name: "Document source" });
+  await editor.press("ControlOrMeta+End");
+  const before = await page
+    .locator(".cm-scroller")
+    .evaluate((element) => element.scrollTop);
+  expect(before).toBeGreaterThan(0);
+  await page.getByRole("button", { name: "Read", exact: true }).click();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect
+    .poll(() =>
+      page.locator(".cm-scroller").evaluate((element) => element.scrollTop),
+    )
+    .toBe(before);
+  await editor.pressSequentially("\nCursor retained");
+  await expect(editor).toContainText("Cursor retained");
+  for (const width of [1440, 1100, 1024, 768, 390, 320]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await expect(editor).toBeVisible();
+    if (width >= 1100) {
+      const source = await page.locator(".source-pane").boundingBox();
+      const preview = await page.locator(".preview-pane").boundingBox();
+      expect(source.width).toBeGreaterThanOrEqual(400);
+      expect(preview.width).toBeGreaterThanOrEqual(400);
+      expect(source.width / (source.width + preview.width)).toBeCloseTo(
+        0.48,
+        2,
+      );
+    } else {
+      await page.getByRole("button", { name: "Preview", exact: true }).click();
+      await expect(editor).not.toBeVisible();
+      await expect(page.locator("iframe")).toBeVisible();
+      await page.getByRole("button", { name: "Source", exact: true }).click();
+    }
+  }
+  await page.getByRole("button", { name: "Preview", exact: true }).click();
+  await studioAction(page, "Snippets");
+  await page.getByRole("button", { name: "@toggle", exact: true }).click();
+  await expect(editor).toBeVisible();
+  await expect(
+    page.locator("summary").filter({ hasText: /^Insert$/ }),
+  ).toBeFocused();
+  await expect(editor).toContainText("@toggle visible");
+});
+
+test("design review captures welcome, reading, editing, export and mobile surfaces", async ({
+  page,
+}, info) => {
+  const capture = (name) =>
+    page.screenshot({
+      path: `reports/verification/studio-design-${info.project.name}-${name}.png`,
+      fullPage: true,
+    });
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(url);
+  await capture("welcome");
+  await page
+    .getByRole("button", { name: /02 An article you can explore/ })
+    .click();
+  await expect(
+    page
+      .frameLocator("iframe")
+      .getByRole("heading", { name: "A hypothesis you can move", exact: true }),
+  ).toBeVisible();
+  await capture("reading");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await capture("editing");
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await capture("export");
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page
+    .getByRole("textbox", { name: "Document source" })
+    .fill("@slider invalid = broken\n");
+  await expect(page.getByRole("status")).toContainText("last valid source");
+  await capture("diagnostics");
+  await expect(
+    page.getByRole("button", { name: "Export", exact: true }),
+  ).toBeDisabled();
+  await studioAction(page, "Examples");
+  await page.getByRole("button", { name: "article", exact: true }).click();
+  await page.getByRole("button", { name: "Discard", exact: true }).click();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(
+    page
+      .frameLocator("iframe")
+      .getByRole("heading", { name: "A hypothesis you can move", exact: true }),
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
+  await capture("mobile");
+  await page.setViewportSize({ width: 320, height: 800 });
+  await studioAction(page, "Examples");
+  expect(
+    (await new AxeBuilder({ page }).exclude("iframe").analyze()).violations,
+  ).toEqual([]);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
+  await capture("forced-colors");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Edit", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+});
+
+test("new documents explain the empty state and clearing diagnostics does not leak across documents", async ({
+  page,
+}) => {
+  await page.goto(url);
+  await page.getByRole("button", { name: "New document", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Your next idea starts here." }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page
+    .getByRole("textbox", { name: "Document source" })
+    .fill("{{ 1 / 0 }}");
+  await expect(page.locator(".diagnostics button")).not.toHaveCount(0);
+  await studioAction(page, "New");
+  await page.getByRole("button", { name: "Discard", exact: true }).click();
+  await expect(page.locator(".diagnostics button")).toHaveCount(0);
+  await expect(
+    page.getByRole("heading", { name: "Your next idea starts here." }),
+  ).toBeVisible();
+});
+
+test("catalogs describe their contents, filter without editing and close action menus", async ({
+  page,
+}, info) => {
+  await example(page, "article");
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await studioAction(page, "Examples");
+  await expect(page.locator(".action-menu[open]")).toHaveCount(0);
+  await expect(page).toHaveURL(/#\/examples$/);
+  await expect(
+    page.getByRole("heading", { name: "Seven ways to see your data" }),
+  ).toBeVisible();
+  await expect(
+    page
+      .frameLocator('iframe[title="Rendered thumbnail: article"]')
+      .getByRole("heading", { name: "A hypothesis you can move" }),
+  ).toBeVisible();
+  await page.screenshot({
+    path: `reports/verification/studio-application-${info.project.name}-examples.png`,
+    fullPage: true,
+  });
+  await page.getByRole("searchbox", { name: "Search examples" }).fill("seven");
+  await expect(page.locator(".catalog-card")).toHaveCount(1);
+  await page.getByRole("searchbox").fill("not-a-document");
+  await expect(
+    page.getByText("No matches. Try another word or category."),
+  ).toBeVisible();
+  await page.getByRole("dialog").press("Escape");
+  await expect(page).toHaveURL(/#\/document\/.+\/read$/);
+  await studioAction(page, "Snippets");
+  await expect(page.locator(".action-menu[open]")).toHaveCount(0);
+  await page.getByLabel("Category", { exact: true }).selectOption("Controls");
+  await expect(page.locator(".catalog-card")).toHaveCount(3);
+  await expect(
+    page
+      .frameLocator('iframe[title="Rendered thumbnail: @slider"]')
+      .getByLabel("Amount"),
+  ).toHaveValue("5");
+  await expect(
+    page
+      .frameLocator('iframe[title="Rendered thumbnail: @toggle"]')
+      .getByLabel("Show more"),
+  ).not.toBeChecked();
+  await expect(
+    page
+      .frameLocator('iframe[title="Rendered thumbnail: @choice"]')
+      .getByLabel("Option"),
+  ).toHaveValue("First");
+  await expect(page.locator(".catalog-sample pre")).toHaveCount(0);
+  expect(
+    (await page.getByRole("searchbox").boundingBox()).width,
+  ).toBeGreaterThan(200);
+  const cards = await page.locator(".catalog-card").all();
+  expect((await cards[0].boundingBox()).y).toBe(
+    (await cards[2].boundingBox()).y,
+  );
+  await page.screenshot({
+    path: `reports/verification/studio-application-${info.project.name}-snippets.png`,
+    fullPage: true,
+  });
+  expect(
+    (await new AxeBuilder({ page }).exclude("iframe").analyze()).violations,
+  ).toEqual([]);
+  await page.getByRole("button", { name: "@toggle", exact: true }).click();
+  await expect(
+    page.getByRole("textbox", { name: "Document source" }),
+  ).toContainText("@toggle visible");
+  await expect(page).toHaveURL(/#\/document\/.+\/edit$/);
+});
+
+test("draft restoration resets answers and persistent opt-out prevents automatic reopening", async ({
+  page,
+}) => {
+  await example(page);
+  await page
+    .frameLocator("iframe")
+    .getByLabel("Your platform")
+    .selectOption("Linux");
+  await expect(page.locator(".local-note")).toContainText("up to date");
+  await page.reload();
+  await expect(
+    page.frameLocator("iframe").getByLabel("Your platform"),
+  ).not.toHaveValue("Linux");
+  await studioAction(page, "Recovery");
+  await page.getByLabel("Keep local recovery copies on this device").uncheck();
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  page.on("dialog", (dialog) => dialog.accept());
+  await page.reload();
+  await expect(
+    page.getByRole("button", { name: "New document", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByRole("button", { name: "Local recovery copies", exact: true })
+    .click();
+  await expect(
+    page.getByLabel("Keep local recovery copies on this device"),
+  ).not.toBeChecked();
+});
+
+test("direct section URLs and missing draft routes have usable recovery paths", async ({
+  page,
+}) => {
+  await page.goto(url + "#/examples");
+  await expect(
+    page.getByRole("dialog", { name: "Explore examples" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await expect(page).toHaveURL(/#\/home$/);
+  await page.goto(url + "#/document/absent/read");
+  await expect(page.getByRole("status")).toContainText("no longer available");
+  await page.getByRole("button", { name: "New document", exact: true }).click();
+  await studioAction(page, "Home");
+  await expect(
+    page.getByRole("button", { name: "New document", exact: true }),
+  ).toBeVisible();
+});
+
+test("declaration thumbnails demonstrate results without inserting their demonstration", async ({
+  page,
+}) => {
+  await page.goto(url);
+  await page.getByRole("button", { name: "New document", exact: true }).click();
+  await studioAction(page, "Snippets");
+  await page
+    .getByLabel("Category", { exact: true })
+    .selectOption("Calculations");
+  await expect(
+    page
+      .frameLocator('iframe[title="Rendered thumbnail: @let"]')
+      .getByRole("article"),
+  ).toContainText("A reusable value: 1");
+  await expect(
+    page
+      .frameLocator('iframe[title="Rendered thumbnail: @calc"]')
+      .getByRole("article"),
+  ).toContainText("The calculated total is 3");
+  await page.getByLabel("Category", { exact: true }).selectOption("Data");
+  await expect(
+    page
+      .frameLocator('iframe[title="Rendered thumbnail: @data"]')
+      .getByRole("table"),
+  ).toContainText("2");
+  await expect(
+    page
+      .frameLocator('iframe[title="Rendered thumbnail: @view"]')
+      .getByRole("table"),
+  ).toContainText("1");
+  await page.getByLabel("Category", { exact: true }).selectOption("Structure");
+  await expect(
+    page
+      .frameLocator('iframe[title="Rendered thumbnail: @meta"]')
+      .getByRole("heading", { name: "Your document" }),
+  ).toBeVisible();
+  await page.getByRole("searchbox").fill("named value");
+  await expect(page.locator(".catalog-card")).toHaveCount(0);
+  await page.getByLabel("Category", { exact: true }).selectOption("All");
+  await page.getByRole("button", { name: "@let", exact: true }).click();
+  await expect(
+    page.getByRole("textbox", { name: "Document source" }),
+  ).toContainText("@let value = 1");
+  await expect(
+    page.getByRole("textbox", { name: "Document source" }),
+  ).not.toContainText("A reusable value");
 });

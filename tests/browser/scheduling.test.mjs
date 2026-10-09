@@ -1,6 +1,6 @@
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
-import { test, expect } from "./fixtures.mjs";
+import { test, expect, studioAction } from "./fixtures.mjs";
 
 test("editor and recovery debounce at their exact idle boundaries and cancel older work", async ({
   page,
@@ -31,9 +31,7 @@ test("editor and recovery debounce at their exact idle boundaries and cancel old
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   const now = await page.evaluate(() => Date.now());
   await page.clock.pauseAt(now + 1000);
-  await page
-    .getByRole("button", { name: "Recovery", exact: true })
-    .click({ force: true });
+  await studioAction(page, "Recovery", { force: true });
   await page
     .getByLabel("Keep local recovery copies on this device")
     .check({ force: true });

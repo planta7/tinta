@@ -35,3 +35,26 @@ export const test = base.extend({
     }
   },
 });
+
+export async function studioAction(page, name, options = {}) {
+  const groups = {
+    Home: "File",
+    New: "File",
+    Open: "File",
+    "Save source as": "File",
+    "Save bundle": "File",
+    Import: "Insert",
+    Snippets: "Insert",
+    Check: "Tools",
+    "Reset reading": "Tools",
+    Examples: "Tools",
+    Recovery: "Tools",
+  };
+  const menu = page.locator(".action-menu").filter({
+    has: page.locator("summary").getByText(groups[name], { exact: true }),
+  });
+  if (!(await menu.evaluate((element) => element.open))) {
+    await menu.locator("summary").click(options);
+  }
+  await page.getByRole("button", { name, exact: true }).click(options);
+}

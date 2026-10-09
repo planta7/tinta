@@ -82,7 +82,7 @@
   font-weight: 600;
 }
 .tinta-control input[type="range"] {
-  width: min(100%, 20em);
+  width: min(calc(100% - 4em), 20em);
   vertical-align: middle;
 }
 .tinta-control input[type="checkbox"] {
@@ -265,4 +265,86 @@
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+.tinta-reader-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+.tinta-reader-actions button {
+  color: var(--tinta-muted);
+  background: var(--tinta-surface);
+  font-size: 12px;
+  border-radius: 6px;
+}
+.tinta-reader h1 {
+  letter-spacing: -0.035em;
+  margin-top: 0;
+  margin-bottom: 0.8em;
+}
+.tinta-reader h2,
+.tinta-reader h3 {
+  letter-spacing: -0.02em;
+  margin-top: 1.6em;
+}
+.tinta-control {
+  padding-block: 6px;
+}
+.tinta-control label {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+.tinta-control output {
+  display: inline-block;
+  min-width: 2.5em;
+  padding: 1px 8px;
+  border: 1px solid var(--tinta-border);
+  border-radius: 5px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.tinta-control select {
+  padding: 6px 10px;
+  border: 1px solid var(--tinta-border);
+  border-radius: 6px;
+  background: var(--tinta-surface);
+  color: var(--tinta-text);
+  min-height: 36px;
+}
+.tinta-reader figure {
+  margin-block: 1.75em;
+  padding-block: 18px;
+  border-block: 1px solid var(--tinta-border);
+}
+.tinta-reader figcaption {
+  font-weight: 600;
+  line-height: 1.5;
+}
+.tinta-reader figcaption + p {
+  font-size: 13px;
+  color: var(--tinta-muted);
+  margin-top: 6px;
+}
+.tinta-reader figure label,
+.tinta-reader figure button,
+.tinta-reader figure summary {
+  font-size: 14px;
+}
+.tinta-reader summary {
+  padding-block: 5px;
+  font-weight: 500;
+}
+.tinta-reader pre {
+  border: 1px solid var(--tinta-border);
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.tinta-reader th {
+  background: var(--tinta-secondary);
+  font-weight: 600;
+}
+.tinta-reader caption {
+  margin-bottom: 10px;
 }

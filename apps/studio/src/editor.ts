@@ -24,7 +24,11 @@ import {
   insertNewlineAndIndent,
   invertedEffects,
 } from "@codemirror/commands";
-import { bracketMatching } from "@codemirror/language";
+import {
+  bracketMatching,
+  defaultHighlightStyle,
+  syntaxHighlighting,
+} from "@codemirror/language";
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search";
 import { autocompletion, snippetCompletion } from "@codemirror/autocomplete";
 import { markdown } from "@codemirror/lang-markdown";
@@ -136,6 +140,7 @@ export class SourceEditor {
           lineNumbers(),
           history(),
           markdown(),
+          syntaxHighlighting(defaultHighlightStyle),
           bracketMatching(),
           EditorView.lineWrapping,
           highlightSelectionMatches(),
