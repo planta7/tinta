@@ -1,4 +1,4 @@
-# Tinta syntax quick reference — 1.0-draft.2
+# tinta syntax quick reference — 1.0-draft.2
 
 **Write a document. Add exploration only where it helps the reader.** `.tinta` is UTF-8 text. The examples below are target syntax, not runtime conformance results. Normative details live in spec/; this reference does not override them.
 
@@ -21,7 +21,7 @@ Consider dividing the reading into two sessions.
 The explanation continues as ordinary Markdown.
 ```
 
-## 2. Existing Markdown remains the starting point
+## 2. Markdown-compatible text formatting
 
 Headings, paragraphs, emphasis, strong text, links, local images, block quotes, nested/ordered lists, code spans/fences, reference links and thematic breaks follow CommonMark 0.31.2. Pipe tables, task lists and `~~strikethrough~~` are additionally supported. Task-list checkboxes are static, not answer controls. Raw HTML is shown inert, not executed. HTML comments are hidden but remain in source/interactive exports.
 
@@ -45,7 +45,7 @@ Headings, paragraphs, emphasis, strong text, links, local images, block quotes, 
 ```
 ````
 
-A `.md` file opens in Markdown mode: no Tinta directives or interpolation activate. **Enrich as Tinta** creates a new `.tinta` buffer and escapes existing Tinta-looking text only where necessary. It does not overwrite the `.md` file or turn its template examples into running expressions.
+A `.md` file opens in Markdown mode: no tinta directives or interpolation activate. **Enrich as tinta** creates a new `.tinta` buffer and escapes existing tinta-looking text only where necessary. It does not overwrite the `.md` file or turn its template examples into running expressions.
 
 ## 3. Constants, answers and calculations
 
@@ -74,7 +74,7 @@ Control initial values and properties are **literals**, not formulas. `@choice` 
 )
 ```
 
-An open parenthesis or bracket permits a newline; strings and `{{ ... }}` cannot cross physical lines. Options use commas. There are no semicolons, author CSS, JSX or callbacks. Directives begin in physical column 1 outside Markdown code, lists, quotes and raw-HTML regions. Their content can contain normal Markdown indentation; indentation does not close Tinta blocks.
+An open parenthesis or bracket permits a newline; strings and `{{ ... }}` cannot cross physical lines. Options use commas. There are no semicolons, author CSS, JSX or callbacks. Directives begin in physical column 1 outside Markdown code, lists, quotes and raw-HTML regions. Their content can contain normal Markdown indentation; indentation does not close tinta blocks.
 
 ## 5. Expressions in the text
 
@@ -148,7 +148,7 @@ This example uses synthetic data.
 @end
 ```
 
-`@when` requires boolean condition and a nonempty body. `@details` has an optional static summary and starts closed. There is no else: use another complementary `@when`, or inline `if`. Hidden conditional bodies are not evaluated, but all code is parsed/type-checked. Collapsed details are evaluated. Hiding does not protect source/data. `@end` closes the innermost Tinta block, except inside Markdown literal-code regions where it is text.
+`@when` requires boolean condition and a nonempty body. `@details` has an optional static summary and starts closed. There is no else: use another complementary `@when`, or inline `if`. Hidden conditional bodies are not evaluated, but all code is parsed/type-checked. Collapsed details are evaluated. Hiding does not protect source/data. `@end` closes the innermost tinta block, except inside Markdown literal-code regions where it is text.
 
 ## 9. Typed data, shared views and tables
 

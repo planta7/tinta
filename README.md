@@ -1,10 +1,42 @@
-# Tinta
+<p align="center">
+  <img src="docs/assets/tinta-header.svg" alt="tinta — A document. With more to say." width="1280">
+</p>
 
-**Write a document. Let the reader explore it.**
+<p align="center">
+  <strong>A language for documents you can explore.</strong>
+</p>
 
-Tinta is a Markdown-first language for interactive documents. Start with familiar prose, headings and lists, then add a slider, a calculation, a conditional explanation or a chart where it helps the reader understand an idea. The text, tables and figures respond together to the reader's choices.
+<p align="center">
+  <a href="#try-it-locally">Try the studio</a> ·
+  <a href="examples/README.md">Explore examples</a> ·
+  <a href="docs/CHEATSHEET.md">Syntax cheatsheet</a> ·
+  <a href="spec/00_OVERVIEW.md">Read the specification</a>
+</p>
 
-Use it for an explorable article, a report with shared filters, a guide that adapts to its reader, or a small model whose assumptions can be changed directly in the explanation. Source stays readable UTF-8 text in a `.tinta` file; the reference tools work with local files and produce HTML that can be opened offline.
+---
+
+**tinta is a language for interactive documents.** It brings writing, data and interaction into a single document. Readers can explore a question, compare scenarios and see how their choices change the explanation.
+
+An article that invites questions. A report where readers can test their assumptions. A guide that gives each reader the explanation they need.
+
+## Meet tinta studio
+
+Write on the left. Read and interact on the right.
+
+![tinta studio editing the included article: Markdown source alongside a live document with sliders and a chart.](docs/assets/studio.png)
+
+_The included [explorable article](examples/article.tinta), open in tinta studio._
+
+- **See your ideas take shape.** Write and see the document update beside you. Search, undo and clear error messages help you keep going.
+- **A starting point when you need one.** Browse rendered examples and reusable snippets. Bring an existing Markdown file or import local CSV, JSON and raster images.
+- **A reader that participates.** Move a slider, choose a scenario or inspect a chart. The explanation stays connected to the same underlying data.
+- **Pick up where you left off.** Recovery copies help you return to a draft. Save your work, then export the finished document for your readers.
+
+New documents open ready to type. Existing documents open in Reading mode. Studio runs as a static web app or as a single local HTML file, without an account or backend.
+
+## A small document, a real interaction
+
+This is a complete document:
 
 ```tinta
 @meta (title: "Plan a reading session", locale: "en-US")
@@ -22,32 +54,43 @@ with these choices.
 @when minutes > 45
 Consider dividing the reading into two sessions.
 @end
-
-@details "About this estimate"
-The estimate assumes two minutes per page and fifteen minutes for discussion.
-@end
 ```
 
-Move the slider or enable the discussion: the total and the advice update in the same document. There is no JavaScript to write.
+Move the slider. Include a discussion. The total changes, and the advice appears when it becomes relevant. **No author JavaScript, event handlers or build setup inside the document.**
 
-## Status
-
-The repository contains the language specification, reusable packages, a command-line tool and **Tinta Studio**, the reference reader/editor. These are draft tools; contract revision **1.0-draft.2** targets source-format version **1.0**. Full release qualification, supported-platform checks and manual accessibility acceptance remain separate from passing local automated tests.
+tinta uses Markdown for text formatting and adds its own syntax for values, calculations, controls, data and conditional content. It supports CommonMark 0.31.2, with pipe tables, task lists and double-tilde strikethrough. A `.md` file stays in Markdown mode until you explicitly choose **Enrich as tinta**; the original file is preserved.
 
 ## Try it locally
 
-From a checkout, use **Node 24.21.0** and **pnpm 10.34.6**:
+Use **Node 24.21.0** and **pnpm 10.34.6**. From a checkout:
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm build
+pnpm dev
 ```
 
-Run `pnpm dev` and open the loopback URL printed by Vite. For the production app, run `pnpm build` followed by `pnpm preview`. The `build/studio/` directory is a complete static app suitable for a static host such as S3; no account service or backend is needed. Hash URLs support refresh without server rewrites.
+Open the loopback URL printed by Vite, then choose **Explore examples** or **New document**. You can also open `.md`, `.tinta` and `.tinta.zip` files.
 
-Alternatively, open `build/tinta-studio.html` in your browser. It is a standalone local file: no server or account is needed. Choose **Explore examples**, or open an existing `.md`, `.tinta` or `.tinta.zip` file. Documents open in Reading mode; switch to Edit to work on the source and preview.
+<details>
+<summary><strong>Prefer the production build or a standalone file?</strong></summary>
 
-To validate and export one of the included examples from the repository root:
+```sh
+pnpm build
+pnpm preview
+```
+
+The static application lives in `build/studio/`. Hash URLs support refresh without server rewrites.
+
+For a server-free workspace, open **`build/tinta-studio.html`** directly in a browser. It contains the editor and its runtimes in one local file. Browser storage and file permissions still depend on the environment; local recovery copies are not a substitute for saving your source.
+
+See the [setup and toolchain guide](docs/09_FOUNDATION_TOOLCHAIN.md) for prerequisites and troubleshooting.
+
+</details>
+
+<details>
+<summary><strong>Prefer the command line?</strong></summary>
+
+After `pnpm build`, validate and export an included example:
 
 ```sh
 pnpm --filter @tinta/cli exec tinta check examples/article.tinta
@@ -57,180 +100,105 @@ pnpm --filter @tinta/cli exec tinta build examples/article.tinta \
   --format static --output build/article.static.html
 ```
 
-Open either output in a browser. Interactive HTML keeps the controls; static HTML captures the visible document with its initial answers. Existing output files require an explicit `--force` to replace them. See the [setup and toolchain guide](docs/09_FOUNDATION_TOOLCHAIN.md) for development prerequisites and the [CLI reference](docs/06_CLI.md) for commands, options, snapshots and exit codes.
+Open either output in a browser. Interactive HTML keeps the controls; static HTML captures the visible document with its initial answers. Replacing an existing output requires an explicit `--force`.
 
-## Keep Markdown at the centre
+The [CLI reference](docs/06_CLI.md) covers validation, enrichment, imports, exports, answer snapshots and exit codes.
 
-Tinta uses **CommonMark 0.31.2**, with pipe tables, task lists and double-tilde strikethrough. Headings, paragraphs, emphasis, links, lists, quotes, local images and code blocks remain the structure of the document. Code fences are literal examples; they never execute.
+</details>
 
-A `.md` file opens in Markdown mode, where Tinta directives and `{{ expressions }}` remain ordinary text. Studio's **Enrich as Tinta** action creates a separate Tinta buffer and escapes existing directive-looking text where necessary. The original Markdown file is preserved. You can also perform that conversion explicitly with `tinta enrich`.
+## More than a slider
 
-Raw author HTML is displayed as inert text. HTML comments stay hidden in the presentation but remain in the source. Unsupported Markdown dialects such as MDX, footnotes and math are not enabled implicitly. Read the [Markdown and lexical rules](spec/01_MARKDOWN_AND_LEXING.md) for exact compatibility and escaping behaviour.
+| In your document                      | What it does                                                               |
+| ------------------------------------- | -------------------------------------------------------------------------- |
+| `@slider` · `@toggle` · `@choice`     | Let the reader adjust a number, switch an option or choose a scenario.     |
+| `@let` · `@calc` · `{{ expression }}` | Connect constants and calculated values to the prose.                      |
+| `@when` · `@details`                  | Adapt an explanation or let the reader open more context.                  |
+| `@data` · `@view` · `@table`          | Embed typed data and reuse filtered views across text, tables and figures. |
+| `@chart`                              | Explore line, area, bar, scatter, pie, donut and histogram figures.        |
 
-## Add controls and reactive calculations
+Charts include keyboard exploration and a complete data table. Compatible charts can bind selection to an existing control; histograms support inspection. Invalid answer updates leave the previous valid document intact.
 
-Three native controls cover numeric, boolean and text choices:
+Start with the [cheatsheet](docs/CHEATSHEET.md), then explore the [expression rules](spec/02_EXPRESSIONS_AND_STATE.md), [directives](spec/03_DIRECTIVES.md), [data model](spec/04_DATA.md) and [chart specification](spec/05_CHARTS.md).
 
-| Directive | Reader input | Example use |
-|---|---|---|
-| `@slider` | A number on a bounded step grid | Quantity, rate, period or threshold |
-| `@toggle` | `true` or `false` | Include an option or reveal context |
-| `@choice` | One of a fixed list of text values | Platform, category or scenario |
+## Open an example. Change one thing.
 
-Use `@let` for constants, `@calc` for derived values and `{{ expression }}` to place results in prose. This is a complete example:
+| Document                                                 | Try this                                                  |
+| -------------------------------------------------------- | --------------------------------------------------------- |
+| [An article you can explore](examples/article.tinta)     | Change the growth assumption and inspect a period.        |
+| [A report with shared filters](examples/report.tinta)    | Watch totals, tables and charts respond to the same view. |
+| [A guide that adapts](examples/guide.tinta)              | Choose a platform and follow the relevant instructions.   |
+| [Seven ways to see the data](examples/chart-atlas.tinta) | Compare all seven chart types in one document.            |
 
-```tinta
-@meta (title: "Explore a team budget", locale: "en-US", currency: "USD")
-@let monthly_price = 19
-@slider people = 5 (min: 1, max: 40, label: "People")
-@choice period = "monthly" (
-  options: ["monthly", "annual"],
-  label: "Billing period",
-)
-@calc total = people * monthly_price * if(period == "annual", 12, 1)
+The [example collection](examples/README.md) also includes a minimal starting point, function examples, Markdown enrichment and a [portable image bundle](examples/local-image.tinta.zip).
 
-# A budget with visible assumptions
+## Save and share your document
 
-For **{{ people }} people**, the **{{ period }}** amount is **{{ money(total) }}**.
-```
+| Format               | What you keep                                                        |
+| -------------------- | -------------------------------------------------------------------- |
+| `.tinta`             | Editable UTF-8 source and embedded table data.                       |
+| `.tinta.zip`         | Source together with validated local raster images.                  |
+| **Interactive HTML** | A complete offline document with controls and its embedded runtime.  |
+| **Static HTML**      | The resolved visible presentation, without an executable program.    |
+| `.tinta.state.json`  | Explicitly saved reader answers tied to an exact source fingerprint. |
 
-Expressions support strict arithmetic, comparisons and boolean operations. The eleven built-in functions are `if`, `min`, `max`, `round`, `pow`, `count`, `sum`, `mean`, `fixed`, `percent` and `money`. Formatting follows explicit document metadata, defaulting to `en-US` and `USD`.
+**Interactive HTML includes the complete source, hidden branches and all embedded data.** Hidden does not mean private. Static export contains the resolved visible presentation and its referenced images. See the [file and export contract](docs/02_FILES_AND_EXPORTS.md) for the exact boundaries.
 
-Names and types are checked before use; cycles, implicit conversions and non-finite numeric results are rejected. Updates are transactional: if a candidate answer causes an invalid result, the previous valid document remains intact. See [expressions and state](spec/02_EXPRESSIONS_AND_STATE.md), [directive syntax](spec/03_DIRECTIVES.md) and the [all-functions example](examples/all-functions.tinta).
+Local recovery stores up to 10 copies and 30 MiB, replacing the oldest copies first. It can be disabled, and copies can be deleted. Reader answers are not automatically persisted. [How recovery works →](docs/03_EDITOR_AND_READER.md)
 
-## Adapt the explanation
+## A small language. Clear boundaries.
 
-`@when condition` shows a section when its boolean condition holds. `@details "Summary"` adds a collapsible explanation. Their bodies contain ordinary Markdown and close with `@end`, so a guide can adapt without leaving the article flow.
+Documents cannot execute author JavaScript, CSS, HTML, plug-ins or code fences, fetch remote data, or submit forms. Raw author HTML is inert; code fences remain literal examples. Local files and images pass through explicit capability boundaries.
 
-The opening example combines both. For a longer walkthrough, the [platform guide](examples/guide.tinta) shows different instructions for macOS, Windows and Linux, plus optional context. Hidden sections are a presentation feature: their source is still included in interactive files.
+tinta focuses on interactive documents. There is no cloud storage, account system, telemetry, AI feature, website generator or publication service. PDF and flattened Markdown exports are outside the current scope. See the [product scope](docs/01_PRODUCT.md) and [security model](docs/04_SECURITY.md).
 
-## Give prose, tables and charts the same data
+## Build with the engine
 
-`@data` embeds a typed table with text, number and boolean columns. `@view` derives a filtered, optionally sorted view. Use that same view in aggregates, tables and charts so every part of the explanation refers to the same rows.
+The parser and semantic engine are portable TypeScript. The reader and export runtime are independent of React and CodeMirror; those belong to the studio.
 
-```tinta
-# A fictional reading report
+| Layer                                               | Documentation                                                                           |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Parse and enrich Markdown                           | [Syntax API](docs/10_SYNTAX_API.md)                                                     |
+| Compile, evaluate and manage transactional sessions | [Engine API](docs/11_ENGINE_API.md)                                                     |
+| Render safe documents, controls and charts          | [Reader API](docs/12_READER_API.md)                                                     |
+| Understand package boundaries                       | [Architecture](architecture/MODULES.md) · [Stack](architecture/STACK.md)                |
+| Work with public contracts                          | [Interfaces](contracts/public-api.d.ts) · [Contract rules](contracts/CONTRACT_RULES.md) |
 
-@slider minimum = 100 (min: 0, max: 200, step: 10, label: "Minimum readings")
-@choice selected_day = "Mon" (
-  options: ["Mon", "Tue", "Wed"],
-  label: "Day to inspect",
-)
+## Status
 
-@data activity
-day:text | readings:number
-Mon | 120
-Tue | 160
-Wed | 90
-@end
+**Draft language. Working local tools. Release acceptance still in progress.**
 
-@view visible = activity (where: row.readings >= minimum)
-@view selected = activity (where: row.day == selected_day)
+Contract revision **1.0-draft.2** targets source-format version **1.0**. The repository contains the specification, reusable packages, CLI and studio. Passing automated checks does not establish full release qualification, supported-platform acceptance or manual accessibility acceptance.
 
-**{{ count(visible) }} days** meet the threshold, accounting for
-**{{ sum(visible, "readings") }} readings**.
+## Contribute
 
-@chart bar visible (
-  x: "day",
-  y: "readings",
-  select: selected_day,
-  title: "Days meeting the threshold",
-)
+Read [CONTRIBUTING.md](CONTRIBUTING.md), the [roadmap](docs/ROADMAP.md) and [change control](docs/08_CHANGE_CONTROL.md) before proposing language or contract changes. Report security issues through [SECURITY.md](SECURITY.md).
 
-The selected day is **{{ selected_day }}**, with
-**{{ sum(selected, "readings") }} readings** in the original data.
-
-@table visible (title: "The rows shown in the chart")
-```
-
-Changing the threshold updates the count, total, figure and table. Selecting a bar updates the existing day control and the following sentence. A filter that hides the selected day does not silently reset the selection.
-
-CSV and JSON can be imported through Studio or `tinta import-data`; their values become embedded `@data` source. There are no remote queries or live data connections. See the [data and import contract](spec/04_DATA.md) and the [complete report](examples/report.tinta).
-
-## Explore seven chart types
-
-| Type | Typical use |
-|---|---|
-| Line | Follow values across an ordered axis |
-| Area | Show a series as a filled shape |
-| Bar | Compare categories, including grouped series |
-| Scatter | Inspect pairs of numeric values |
-| Pie | Show nonnegative parts of a whole |
-| Donut | Show the same relationship with a central opening |
-| Histogram | Count numeric observations in bins |
-
-Charts can use named numeric columns or a computed series involving reader controls. Compatible charts bind selection to an existing slider or choice with `select`; histograms provide inspection without selection binding. Legends change local figure visibility without changing the underlying data or totals.
-
-Figures provide pointer inspection, keyboard exploration and a complete data table. The reader controls presentation; authors describe data and meaning rather than CSS, dimensions or event handlers. Explore the [chart atlas](examples/chart-atlas.tinta), the [chart specification](spec/05_CHARTS.md) and the [accessibility and design contract](docs/05_ACCESSIBILITY_AND_DESIGN.md).
-
-## Choose what to save or export
-
-| Format | Contains | Use it for |
-|---|---|---|
-| `.tinta` | Editable UTF-8 source and embedded table data | Authoring, reviewing changes and version control |
-| `.tinta.zip` | Source plus validated local raster images | Moving a complete editable document between devices |
-| Interactive HTML | Complete source, data and embedded runtime | Offline exploration with an explicit initial/current answer baseline |
-| Static HTML | Resolved visible content and its referenced images | An offline reading with no executable program |
-| `.tinta.state.json` | Reader answers tied to an exact source fingerprint | Explicitly saving and restoring answers |
-
-**Interactive HTML includes hidden branches and all source data.** Hiding a section or filtering a table does not remove information from that file. Static HTML includes only the resolved visible presentation, though anything visible remains in the output. See [files, resources and exports](docs/02_FILES_AND_EXPORTS.md) for the precise boundaries.
-
-Studio includes CodeMirror editing, diagnostics, a sandboxed preview, local data/image imports, undo and export dialogs. Local drafts are automatic and restore the open document and mode after refresh. They are distinct from saved source files: use **Save source** to keep a file. Recovery preferences allow disabling drafts or deleting copies; storage is limited to 10 copies and 30 MiB, with oldest copies replaced first. Reader answers are not automatically persisted. See the [editor and reader guide](docs/03_EDITOR_AND_READER.md).
-
-## Example documents
-
-Each example is readable source you can open in Studio or validate with the CLI:
-
-- [Minimal document](examples/minimal.tinta): the smallest starting point.
-- [Explorable article](examples/article.tinta): prose, assumptions and a linked figure.
-- [Filtered report](examples/report.tinta): shared views, totals, tables and charts.
-- [Adaptive guide](examples/guide.tinta): conditional instructions and optional context.
-- [Chart atlas](examples/chart-atlas.tinta): all seven figure types in one document.
-- [Local image](examples/local-image.tinta): a local raster resource, also available as a [source bundle](examples/local-image.tinta.zip).
-
-The [example index](examples/README.md) also covers Markdown enrichment and function examples. Keep the [syntax cheatsheet](docs/CHEATSHEET.md) nearby while writing.
-
-## Build on the reusable packages
-
-The parser and semantic engine are portable TypeScript, independent of browser UI and Node filesystem APIs. The reader and exported runtime do not depend on React or CodeMirror; those belong to the reference editor.
-
-| Area | Read more |
-|---|---|
-| Parsing and explicit Markdown enrichment | [Syntax API](docs/10_SYNTAX_API.md) |
-| Compilation, evaluation, sessions and imports | [Engine API](docs/11_ENGINE_API.md) |
-| Safe rendering, controls, charts and lifecycle | [Reader API](docs/12_READER_API.md) |
-| Package responsibilities and dependency boundaries | [Module architecture](architecture/MODULES.md) and [selected stack](architecture/STACK.md) |
-| Public interfaces and serialized envelopes | [Contract rules](contracts/CONTRACT_RULES.md), [public types](contracts/public-api.d.ts) and [bundle schema](schemas/bundle.schema.json) |
-| Semantics, defaults, limits and diagnostics | [Language overview](spec/00_OVERVIEW.md), [registry](spec/registry.json) and [diagnostic rules](spec/06_LIMITS_AND_DIAGNOSTICS.md) |
-
-## Safety and project scope
-
-Tinta evaluates a bounded expression language and renders typed safe content. Documents cannot execute author JavaScript, CSS, HTML, plug-ins or code fences, fetch remote resources, or submit forms. Local image and file access pass through explicit capability boundaries.
-
-The project focuses on interactive documents. It does not include page-layout primitives, website generation, hosting, publication, accounts, cloud storage, collaboration, telemetry or AI features. PDF and flattened Markdown exports are outside the current scope. The [product scope](docs/01_PRODUCT.md), [decision register](DECISIONS.md) and [security model](docs/04_SECURITY.md) explain these choices; [SECURITY.md](SECURITY.md) covers reporting security issues.
-
-## Contribute and verify
-
-Read [CONTRIBUTING.md](CONTRIBUTING.md), the [roadmap](docs/ROADMAP.md) and the [change-control policy](docs/08_CHANGE_CONTROL.md) before proposing changes to the language or its contracts.
-
-For automated workspace verification, install the pinned browser builds and run:
+<details>
+<summary><strong>Run the existing checks</strong></summary>
 
 ```sh
 pnpm exec playwright install chromium firefox webkit
 pnpm verify
 ```
 
-`pnpm verify` runs the infrastructure aggregate, including formatting, lint, types, builds, unit tests, infrastructure browser checks and dependency checks. The broader `pnpm verify --suite editing` gate adds document-tooling and editor checks. Neither command alone establishes release qualification or manual accessibility acceptance. Dependency auditing needs access to the npm advisory service.
+`pnpm verify` runs the infrastructure aggregate. `pnpm verify --suite editing` adds the implemented document-tooling and editor checks. Neither replaces release qualification or manual acceptance. Dependency auditing needs access to the npm advisory service.
 
-The specification consistency checks can also run with Python's standard library:
+Specification consistency checks use Python's standard library:
 
 ```sh
 python3 scripts/check_spec.py
 python3 -m unittest discover -s scripts/tests -v
 ```
 
-See [verification and acceptance](docs/07_VERIFICATION.md), [conformance fixtures](conformance/README.md) and [checker prerequisites](scripts/README.md) for coverage and limitations.
+See [verification and acceptance](docs/07_VERIFICATION.md), [conformance fixtures](conformance/README.md) and [checker prerequisites](scripts/README.md).
 
-## License
+</details>
 
-[MIT](LICENSE). Third-party material retains its own notices and licenses. `Tinta`, `tinta` and `@tinta/*` are internal identifiers; no registered name or public namespace ownership is claimed.
+---
+
+<p align="center">
+  <img src="docs/assets/logo.svg" alt="tinta" width="40"><br>
+  <a href="LICENSE">MIT licensed</a>
+</p>
+
+Third-party material retains its own notices and licenses. `tinta` and `@tinta/*` are internal identifiers; no registered name or public namespace ownership is claimed.

@@ -1,0 +1,21 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="128"
+  height="128"
+  viewBox="0 0 128 128"
+  role="img"
+  aria-labelledby="title"
+>
+  <title id="title">tinta monogram</title>
+  <rect width="128" height="128" rx="20" fill="#e8edf8" />
+  <text
+    x="44"
+    y="101"
+    fill="#384e99"
+    font-family="Georgia, serif"
+    font-size="112"
+    font-style="italic"
+  >
+    t
+  </text>
+</svg>
