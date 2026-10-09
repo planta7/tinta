@@ -446,7 +446,7 @@
       "line": 201,
       "title": "\"raw Markdown opens inert, preserves bytes, enriches and reports download handoff\"",
       "sha256": "0702a7136bd1e6281e22d0067548d998c7015c86b9e91de3efcfacfe8e72d0d8",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "syntax-fc8ec2cd89a4",
@@ -959,7 +959,7 @@
       "line": 487,
       "title": "\"data import previews mappings and inserts after a complete root block\"",
       "sha256": "475f293523163e43fba48a761811dbe81f186382dcec67cdc4284c84aa12bc22",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "engine-8c6e1c327e2f",
@@ -986,7 +986,7 @@
       "line": 779,
       "title": "\"JSON mappings, invalid imports and diagnostics preserve existing source\"",
       "sha256": "6d40a161d308ab469b90a0a5a4fa2fe139598ff21fb40688d27502be652d37e6",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-1290d7aeb8e7",
@@ -994,8 +994,8 @@
       "path": "tests/browser/studio.test.mjs",
       "line": 394,
       "title": "\"image import is one source and asset undo transaction\"",
-      "sha256": "312dafacbde13cc8f1513521aab19ea8557645d3078638b9471d8c2d4d0e1268",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "sha256": "f6f6171800c8fe8c82d5a5281ff40c6d199a19127fbae41cbeeab1dc3d1ee4f3",
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "charts-ae9f14801022",
@@ -1229,7 +1229,7 @@
       "line": 604,
       "title": "\"mixed line endings and BOM survive edit, undo and raw source saving\"",
       "sha256": "103da584ef4a0d4e2aa702da84157153c904f6f0393b9107a039650e4300cad7",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-32476bf4f35e",
@@ -1238,7 +1238,7 @@
       "line": 633,
       "title": "\"bundle and snapshot downloads preserve authored defaults and chosen answers\"",
       "sha256": "2d89fcf3200a1b4123f6393d4ec5cfdacfc41ea096c207ce5550faf5a1629ef6",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "cli-c6f240d1f939",
@@ -1309,8 +1309,8 @@
       "path": "tests/browser/studio.test.mjs",
       "line": 992,
       "title": "\"missing image resolution preserves distinct source paths with shared basenames\"",
-      "sha256": "fac320f7a806ae90d7d2b0e17a42f095b36376fd99f0cde50bea3756cfc62c10",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "sha256": "f5c8f7360522dfb387d82c6b8a3b126a3104abfbaabb541011383947e4c884e7",
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-f0e993552911",
@@ -1319,7 +1319,7 @@
       "line": 1062,
       "title": "\"preview rejects unsafe, missing and indirect asset alias targets\"",
       "sha256": "e7d82ae10524f97602871a432f5427f9dcd35453f912d796ad20668be9d5d9e9",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "artifacts-0677b35d2bf5",
@@ -1472,7 +1472,7 @@
       "line": 360,
       "title": "\"exports selected current answers and validates the downloaded offline reader\"",
       "sha256": "aaccb42937dbe5992e77321c22ff407fd33432fdc96e6ecf6b292a532b08cbcb",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "artifacts-f8fa34769e2f",
@@ -1526,7 +1526,7 @@
       "line": 531,
       "title": "\"sandbox denies parent authority and ignores unauthenticated messages\"",
       "sha256": "281c549256c32054cf946f25ba6e2fca247d0b344201b0eb33c71c8c062e5aac",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "cli-32cfeaafc245",
@@ -1571,7 +1571,7 @@
       "line": 933,
       "title": "\"a source revision change cancels an export before download handoff\"",
       "sha256": "aa2be8982223a7460852d0ba7f4235d3db823a5b3db9d9626546b2dc29c21079",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-a42d8ae0bd82",
@@ -1580,7 +1580,7 @@
       "line": 106,
       "title": "\"standalone reading, sandbox, answers, edit and invalid recovery\"",
       "sha256": "72ee3f5136cdd9625476a6eb0307d5ccad24603e8d11c216d95df3b29415b530",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-bd9840b8f95b",
@@ -1589,7 +1589,7 @@
       "line": 296,
       "title": "`offline example ${name} and responsive reading`",
       "sha256": "1e241ad9f20eb2128c941e7b9cdd639f227c82c7f53b31351ae7d8afe950f033",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-44792eecfe01",
@@ -1598,7 +1598,7 @@
       "line": 976,
       "title": "\"editor surfaces expose labelled controls and accessible dialogs\"",
       "sha256": "5b6d050da87415ff92615dc39eb7db917004a79fbd9eb501c20e6840cee1226d",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "studio-1476aaec0765",
@@ -1661,7 +1661,7 @@
       "line": 333,
       "title": "\"reconciles prose edits and resets a changed initial without changing saved source\"",
       "sha256": "caef432f17e7f237ad9bb90e54f0ea4593515c471d0c2d42b63c9c230ed92496",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-ac92108d5700",
@@ -1670,7 +1670,7 @@
       "line": 244,
       "title": "\"unsaved dialog close preserves source, file actions and focus\"",
       "sha256": "7c65c1f8deb872a1381df18f31b9782fc94d3e647ee2fdf1d827366f24c28402",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-ec6d370e0eb2",
@@ -1679,7 +1679,7 @@
       "line": 266,
       "title": "\"unknown extensions require a profile and multiple files require a single choice\"",
       "sha256": "efae0b1743b615b64ccb46d349bef68525fec16793e7e114ccf0cef3903fc2a8",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-9ca658f6c6b4",
@@ -1688,7 +1688,7 @@
       "line": 678,
       "title": "\"source save-as, keyboard commands and unsaved Save or Discard\"",
       "sha256": "b0bdff9d44a6c96f8ff482af2b9a7fe2aaecffea9893bbf98fdbea9450ee6fd9",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "studio-a42bdeff1f22",
@@ -1715,7 +1715,7 @@
       "line": 143,
       "title": "\"automatic local drafts restore source and mode after reload\"",
       "sha256": "f11520d401d510526d17bf8c58325510daee5b9ebdc076bf7dba9bd45c02b96b",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-2ba717ce789b",
@@ -1724,7 +1724,7 @@
       "line": 581,
       "title": "\"denied recovery storage leaves source saving available\"",
       "sha256": "125de038beeac096b52691a5c452425598029205b07d6b63dcf391b90855ddb3",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-aeed8b8095de",
@@ -1733,7 +1733,7 @@
       "line": 713,
       "title": "\"recovery deletion and disabling are explicit and preserve the active buffer\"",
       "sha256": "3cecb1136bf7b33e8f264674afee73c060a906822efc09bef1c949e5e275c8c0",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "cli-b03287662ac7",
@@ -1886,7 +1886,7 @@
       "line": 864,
       "title": "\"preview capability handles only valid monotonic commands and closes on excess fields\"",
       "sha256": "1e1da1221d25da26277c25e33b8f54fbe5ebe2f6c579b2b279388d8fa4b2aafc",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-573fa5c1142f",
@@ -1895,7 +1895,7 @@
       "line": 914,
       "title": "\"preview rejects untrusted IR and explicit destroy tears down the reader\"",
       "sha256": "ada984608e553846ad9980f1b0c0a07507ed2353c2f73009f30202b80c9ec95a",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "qualification-b03e2dcd9c7d",
@@ -1928,7 +1928,7 @@
       "id": "check-scripts-verify.mjs",
       "kind": "check",
       "path": "scripts/verify.mjs",
-      "sha256": "e81448b0e9be59ea020bcedcd4b6ec4cb5a5a126a4a93d33281882caa9772d21"
+      "sha256": "8c84050a5f4f2d7c5e891c129095eacc6b6666ea47ca3a4f79b074e0dad85be9"
     },
     {
       "id": "check-scripts-hardening.mjs",
@@ -2003,7 +2003,7 @@
       "id": "check-scripts-check_spec.py",
       "kind": "check",
       "path": "scripts/check_spec.py",
-      "sha256": "b9eb5ef421254d4efe3db0dcc89b09bbe6cd071824cab33c1cbf6b0925397d97"
+      "sha256": "a3aa26a3cdf43938b79d4d9946c0040039cd9b066f74e0ac44e21fec30bd988d"
     },
     {
       "id": "check-scripts-licenses.mjs",
@@ -2492,7 +2492,7 @@
       "line": 1119,
       "title": "\"document menus support keyboard dismissal, outside clicks and dialog focus return\"",
       "sha256": "382d9908eee9d9ca8c12e06d7fa019be4f14594f3ed3fa66b7c42dd481a75dd6",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-9c2f24aa5f93",
@@ -2501,7 +2501,7 @@
       "line": 1174,
       "title": "\"workspace reflows, retains the source cursor and exposes insertion from the narrow preview\"",
       "sha256": "86bc0741d535339a1e436881b6a40eb50a387e42158f6398598efa961ae5454d",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-bd34140adc88",
@@ -2510,7 +2510,7 @@
       "line": 1244,
       "title": "\"design review captures welcome, reading, editing, export and mobile surfaces\"",
       "sha256": "6e7645bc11ff0363c83e68e61aa4c54ab110f5e0feb3b4334a7bebc0404f0458",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-76ae8637c541",
@@ -2519,7 +2519,7 @@
       "line": 1308,
       "title": "\"new documents explain the empty state and clearing diagnostics does not leak across documents\"",
       "sha256": "d74f6a441e1ee92bb280ca84c284dd5c726a5cb0882354734b486e3e8c094e3d",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-c6bfe4ae9ec4",
@@ -2528,7 +2528,7 @@
       "line": 1329,
       "title": "\"catalogs describe their contents, filter without editing and close action menus\"",
       "sha256": "e41e186396dd18276d0d65e7de5bcd3983ed7c5a3c47343e5bec6cd48c14d3bc",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-de4a0d45458e",
@@ -2537,7 +2537,7 @@
       "line": 1398,
       "title": "\"draft restoration resets answers and persistent opt-out prevents automatic reopening\"",
       "sha256": "7bc7bcfbaf7092b181e90dbc48dba870bf8d6e0b085e9edbfdbe4df779398517",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-ffa998e27004",
@@ -2546,7 +2546,7 @@
       "line": 1427,
       "title": "\"direct section URLs and missing draft routes have usable recovery paths\"",
       "sha256": "bc889d04304211009b4d797571951b9288f00980ecfca23de2be10d42b62fe59",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-35944d5636e8",
@@ -2554,8 +2554,8 @@
       "path": "tests/browser/studio.test.mjs",
       "line": 1445,
       "title": "\"declaration thumbnails demonstrate results without inserting their demonstration\"",
-      "sha256": "6a55a94910da05ce792c6cdc7b7c6268db42700b20b196238a5b3985a30b0a88",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "sha256": "d9e709501ca130fa41f052fb5c31630f03b39ebe250903c465253c4b3984f4ce",
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-0e43e8bc5c51",
@@ -2564,7 +2564,7 @@
       "line": 1493,
       "title": "\"new documents retain a clean checkpoint and home navigation respects the requested destination\"",
       "sha256": "5d45fa5392303d7eef41aa546c4e2aed4b02049b58d87fa0eb8f666e78110f03",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-d654cfd0a0d6",
@@ -2573,7 +2573,7 @@
       "line": 1552,
       "title": "\"dialog actions share one footer and reader actions remain outside the document\"",
       "sha256": "9739d321361a23390f6ebf52530336094363031c06b963bba13ff9789e0a4693",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-d76845f7227e",
@@ -2582,7 +2582,7 @@
       "line": 1590,
       "title": "\"parser decorations cover every directive and exclude literal fenced source\"",
       "sha256": "3e59a5db7872e8d6cb034babed38dfc4e374b0eef09cef613fc3338316ab067b",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "editor-7cb9ca4ad62e",
@@ -2591,7 +2591,7 @@
       "line": 1659,
       "title": "\"renaming preserves source and profile and persists the next save filename\"",
       "sha256": "250efd4d5e600be1272b7f28ca72c8fe911253e85ee32e3e12a15c343b39902a",
-      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
       "id": "performance-preview-content",

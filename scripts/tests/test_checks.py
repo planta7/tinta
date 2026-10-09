@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -62,6 +63,16 @@ class PublicChecks(unittest.TestCase):
         }
         self.assertEqual(before, after)
         self.assertFalse((self.root / '.git').exists())
+
+    def test_heading_anchors_use_utf8_on_non_utf8_hosts(self):
+        document = self.root / 'docs/utf8-anchors.md'
+        document.write_bytes('# Heading “café”\n'.encode('utf-8'))
+
+        def host_read(path, encoding=None, errors=None):
+            return path.read_bytes().decode(encoding or 'cp1252', errors or 'strict')
+
+        with patch.object(Path, 'read_text', host_read):
+            self.assertEqual(checker.anchors(document), {'heading-café'})
 
     def test_unrelated_invalid_json_is_ignored(self):
         for folder in ('.local', 'reports', 'node_modules', 'scratch'):

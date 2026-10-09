@@ -44,7 +44,13 @@ const commands = [
     "test:unit",
     "test:browser:infrastructure",
     "check:licenses",
-  ].map((s) => ["pnpm", s]),
+  ].map((s) => [
+    "pnpm",
+    s,
+    ...(s === "test:unit" && process.env.TINTA_PROPERTY_RUNS === "10000"
+      ? ["--testTimeout=120000"]
+      : []),
+  ]),
   ...(suite === "--suite editing"
     ? [
         [

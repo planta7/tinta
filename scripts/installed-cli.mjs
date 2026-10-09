@@ -12,6 +12,7 @@ import {
 import { tmpdir } from "node:os";
 import { join, relative, resolve, sep } from "node:path";
 import { createHash } from "node:crypto";
+import { parse } from "yaml";
 import { runCommandSync } from "./commands.mjs";
 
 const root = process.cwd();
@@ -100,12 +101,28 @@ try {
     "pnpm",
     "--filter",
     "@tinta/cli",
+    "--config.inject-workspace-packages=true",
     "deploy",
-    "--legacy",
     "--prod",
     "--offline",
     deployed,
   ]);
+  const workspaceLock = parse(readFileSync("pnpm-lock.yaml", "utf8"));
+  const deploymentLock = parse(
+    readFileSync(join(deployed, "pnpm-lock.yaml"), "utf8"),
+  );
+  const registryPackages = Object.entries(deploymentLock.packages).filter(
+    ([name]) => !name.includes("@file:"),
+  );
+  check(
+    "Deployment preserves frozen registry versions and integrity",
+    registryPackages.length > 0 &&
+      registryPackages.every(
+        ([name, entry]) =>
+          JSON.stringify(entry.resolution) ===
+          JSON.stringify(workspaceLock.packages[name]?.resolution),
+      ),
+  );
   run(["pnpm", "--dir", consumer, "link", deployed]);
   cli(["--help"], { json: false });
   const version = cli(["--version"], { json: false });

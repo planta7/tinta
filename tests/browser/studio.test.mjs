@@ -449,7 +449,9 @@ test("image import is one source and asset undo transaction", async ({
   await expect(editor).toHaveText("");
   await expect(page.frameLocator("iframe").getByRole("img")).toHaveCount(0);
   await expect.poll(storedAssets).toBe(0);
-  await editor.press("ControlOrMeta+Shift+Z");
+  await editor.press(
+    process.platform === "darwin" ? "Meta+Shift+z" : "Control+y",
+  );
   await expect(
     page
       .frameLocator("iframe")
@@ -479,7 +481,9 @@ test("image import is one source and asset undo transaction", async ({
     }),
   ).toBeVisible();
   await expect.poll(storedAssets).toBe(1);
-  await editor.press("ControlOrMeta+Shift+Z");
+  await editor.press(
+    process.platform === "darwin" ? "Meta+Shift+z" : "Control+y",
+  );
   await expect(page.frameLocator("iframe").getByRole("img")).toHaveCount(2);
   await expect.poll(storedAssets).toBe(1);
 });
@@ -1041,7 +1045,9 @@ test("missing image resolution preserves distinct source paths with shared basen
   await expect(
     preview.getByRole("img", { name: "Second", exact: true }),
   ).toHaveCount(0);
-  await editor.press("ControlOrMeta+Shift+Z");
+  await editor.press(
+    process.platform === "darwin" ? "Meta+Shift+z" : "Control+y",
+  );
   await expect(preview.getByRole("img")).toHaveCount(2);
   const download = page.waitForEvent("download");
   await studioAction(page, "Save bundle");
@@ -1462,11 +1468,17 @@ test("declaration thumbnails demonstrate results without inserting their demonst
       .getByRole("article"),
   ).toContainText("The calculated total is 3");
   await page.getByLabel("Category", { exact: true }).selectOption("Data");
+  await page
+    .getByRole("button", { name: "@data", exact: true })
+    .scrollIntoViewIfNeeded();
   await expect(
     page
       .frameLocator('iframe[title="Rendered thumbnail: @data"]')
       .getByRole("table"),
   ).toContainText("2");
+  await page
+    .getByRole("button", { name: "@view", exact: true })
+    .scrollIntoViewIfNeeded();
   await expect(
     page
       .frameLocator('iframe[title="Rendered thumbnail: @view"]')

@@ -1,3 +1,4 @@
+import { pathToFileURL } from "node:url";
 import { createRequire } from "node:module";
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -5,7 +6,7 @@ import { fragmentDirectory } from "./browser-coverage-setup.mjs";
 
 const provider = createRequire(import.meta.resolve("@vitest/coverage-v8"));
 const { createCoverageMap } = await import(
-  provider.resolve("@vitest/istanbul-lib-coverage")
+  pathToFileURL(provider.resolve("@vitest/istanbul-lib-coverage")).href
 );
 
 export async function mergeBrowserCoverage(directory, outputDirectory) {

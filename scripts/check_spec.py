@@ -95,7 +95,7 @@ def anchors(path: Path) -> set[str]:
     found = set()
     counts = {}
     for title in re.findall(
-        r'^#{1,6} +(.+?)(?: +#+)?$', stripped_code(path.read_text()), re.M
+        r'^#{1,6} +(.+?)(?: +#+)?$', stripped_code(path.read_text(encoding='utf-8')), re.M
     ):
         slug = re.sub(r'[^\w\- ]', '', title.lower()).replace(' ', '-')
         count = counts.get(slug, 0)
@@ -285,7 +285,7 @@ def main() -> int:
                 for k, v in registry[key].items()
             ),
         )
-    grammar = (ROOT / 'spec/grammar.ebnf').read_text()
+    grammar = (ROOT / 'spec/grammar.ebnf').read_text(encoding='utf-8')
     for name in registry['directives']:
         record('grammar-directive:' + name, '"@' + name + '"' in grammar)
     for name in registry['chartTypes']:

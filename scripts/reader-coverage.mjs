@@ -6,11 +6,15 @@ import { parseAstAsync } from "vite";
 
 // Reuse the exact converter and coverage map shipped with the locked provider.
 const provider = createRequire(import.meta.resolve("@vitest/coverage-v8"));
-const { convert } = await import(provider.resolve("ast-v8-to-istanbul"));
-const { createCoverageMap } = await import(
-  provider.resolve("@vitest/istanbul-lib-coverage")
+const { convert } = await import(
+  pathToFileURL(provider.resolve("ast-v8-to-istanbul")).href
 );
-const { mergeScriptCovs } = await import(provider.resolve("@bcoe/v8-coverage"));
+const { createCoverageMap } = await import(
+  pathToFileURL(provider.resolve("@vitest/istanbul-lib-coverage")).href
+);
+const { mergeScriptCovs } = await import(
+  pathToFileURL(provider.resolve("@bcoe/v8-coverage")).href
+);
 
 export async function readerCoverage(entries, mapPath, options = {}) {
   const sourceRoot = options.sourceRoot ?? "packages/reader/src";

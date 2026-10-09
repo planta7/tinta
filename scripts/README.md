@@ -52,7 +52,9 @@ may identify the Python executable for local verification.
 editing aggregate, 10000 inputs per mandatory property, advisory audit,
 traceability integrity, draft packaging, installed CLI matrix and full performance
 measurements. The installed CLI is deployed with production dependencies into a
-temporary directory and linked into an independent consumer. Its checks cover
+temporary directory using a dedicated frozen deployment lockfile and linked into
+an independent consumer. Deployment uses the cached package contents from the
+frozen workspace install and needs no cached registry metadata. Its checks cover
 all subcommands, stdin, Unicode paths, snapshots, asset validation, expected
 failure codes, output preservation and dependency isolation.
 

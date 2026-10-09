@@ -19,9 +19,11 @@ import { readerCoverage } from "../../scripts/reader-coverage.mjs";
 import { mergeBrowserCoverage } from "../../scripts/browser-coverage.mjs";
 
 const provider = createRequire(import.meta.resolve("@vitest/coverage-v8"));
-const { convert } = await import(provider.resolve("ast-v8-to-istanbul"));
+const { convert } = await import(
+  pathToFileURL(provider.resolve("ast-v8-to-istanbul")).href
+);
 const { createCoverageMap } = await import(
-  provider.resolve("@vitest/istanbul-lib-coverage")
+  pathToFileURL(provider.resolve("@vitest/istanbul-lib-coverage")).href
 );
 
 async function execution(source, url, flag) {

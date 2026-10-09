@@ -1,3 +1,4 @@
+import { pathToFileURL } from "node:url";
 import { createRequire } from "node:module";
 import { readFile, writeFile, readdir } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -5,7 +6,7 @@ import { gzipSync } from "node:zlib";
 
 const provider = createRequire(import.meta.resolve("@vitest/coverage-v8"));
 const { createCoverageMap } = await import(
-  provider.resolve("@vitest/istanbul-lib-coverage")
+  pathToFileURL(provider.resolve("@vitest/istanbul-lib-coverage")).href
 );
 const merged = createCoverageMap({});
 const workerPath = resolve("apps/studio/dist/worker.js");

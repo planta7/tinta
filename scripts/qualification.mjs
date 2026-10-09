@@ -54,6 +54,11 @@ for (const command of commands) {
     log,
   });
   console.log(`${result.status === 0 ? "PASS" : "FAIL"}: ${command.join(" ")}`);
+  if (result.status !== 0) {
+    process.stdout.write(result.stdout ?? "");
+    process.stderr.write(result.stderr ?? "");
+    if (result.error) console.error(result.error.message);
+  }
 }
 const candidate = captureCandidate();
 try {
