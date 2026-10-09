@@ -10,6 +10,7 @@ const { convert } = await import(provider.resolve("ast-v8-to-istanbul"));
 const { createCoverageMap } = await import(
   provider.resolve("@vitest/istanbul-lib-coverage")
 );
+const { mergeScriptCovs } = await import(provider.resolve("@bcoe/v8-coverage"));
 
 export async function readerCoverage(entries, mapPath, options = {}) {
   const sourceRoot = options.sourceRoot ?? "packages/reader/src";
@@ -26,7 +27,21 @@ export async function readerCoverage(entries, mapPath, options = {}) {
     resolve(dirname(mapPath), sourceMap.sourceRoot ?? "", source),
   );
   delete sourceMap.sourceRoot;
+
+  // Merge repeated executions before parsing and mapping the same bundle,
+  // as the locked Vitest coverage provider does for each script.
+  const scripts = new Map();
   for (const entry of entries) {
+    const script = {
+      ...entry,
+      functions: structuredClone(entry.functions),
+    };
+    const previous = scripts.get(entry.source);
+    const coverage = mergeScriptCovs(previous ? [previous, script] : [script]);
+    scripts.set(entry.source, { ...coverage, source: entry.source });
+  }
+
+  for (const entry of scripts.values()) {
     const converted = await convert({
       ast: parseAstAsync(entry.source),
       code: entry.source,

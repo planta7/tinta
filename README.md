@@ -193,12 +193,3 @@ python3 -m unittest discover -s scripts/tests -v
 See [verification and acceptance](docs/07_VERIFICATION.md), [conformance fixtures](conformance/README.md) and [checker prerequisites](scripts/README.md).
 
 </details>
-
----
-
-<p align="center">
-  <img src="docs/assets/logo.svg" alt="tinta" width="40"><br>
-  <a href="LICENSE">MIT licensed</a>
-</p>
-
-Third-party material retains its own notices and licenses. `tinta` and `@tinta/*` are internal identifiers; no registered name or public namespace ownership is claimed.

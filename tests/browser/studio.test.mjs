@@ -443,7 +443,7 @@ test("image import is one source and asset undo transaction", async ({
   await expect(editor).toHaveText("");
   await expect(page.frameLocator("iframe").getByRole("img")).toHaveCount(0);
   await expect.poll(storedAssets).toBe(0);
-  await editor.press("ControlOrMeta+Shift+z");
+  await editor.press("ControlOrMeta+Shift+Z");
   await expect(
     page
       .frameLocator("iframe")
@@ -473,7 +473,7 @@ test("image import is one source and asset undo transaction", async ({
     }),
   ).toBeVisible();
   await expect.poll(storedAssets).toBe(1);
-  await editor.press("ControlOrMeta+Shift+z");
+  await editor.press("ControlOrMeta+Shift+Z");
   await expect(page.frameLocator("iframe").getByRole("img")).toHaveCount(2);
   await expect.poll(storedAssets).toBe(1);
 });
@@ -1024,7 +1024,7 @@ test("missing image resolution preserves distinct source paths with shared basen
   await expect(
     preview.getByRole("img", { name: "Second", exact: true }),
   ).toHaveCount(0);
-  await editor.press("ControlOrMeta+Shift+z");
+  await editor.press("ControlOrMeta+Shift+Z");
   await expect(preview.getByRole("img")).toHaveCount(2);
   const download = page.waitForEvent("download");
   await studioAction(page, "Save bundle");
@@ -1128,9 +1128,7 @@ test("document menus support keyboard dismissal, outside clicks and dialog focus
   await expect(
     page.getByRole("button", { name: "Check", exact: true }),
   ).toBeVisible();
-  await page
-    .getByRole("heading", { name: "article.tinta", exact: true })
-    .click();
+  await page.getByText("Source unchanged", { exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Check", exact: true }),
   ).not.toBeVisible();
@@ -1180,8 +1178,18 @@ test("workspace reflows, retains the source cursor and exposes insertion from th
       page.locator(".cm-scroller").evaluate((element) => element.scrollTop),
     )
     .toBe(before);
-  await editor.pressSequentially("\nCursor retained");
+  await editor.press("Enter");
+  await editor.pressSequentially("Cursor retained");
   await expect(editor).toContainText("Cursor retained");
+  await expect
+    .poll(() =>
+      editor.evaluate((element) =>
+        element.cmTile.root.view.state.doc.toString(),
+      ),
+    )
+    .toBe(
+      (await readFile("examples/article.tinta", "utf8")) + "\nCursor retained",
+    );
   for (const width of [1440, 1100, 1024, 768, 390, 320]) {
     await page.setViewportSize({ width, height: 900 });
     expect(
@@ -1633,6 +1641,7 @@ test("parser decorations cover every directive and exclude literal fenced source
 
 test("renaming preserves source and profile and persists the next save filename", async ({
   page,
+  browserName,
 }) => {
   await page.goto(url);
   await page.getByRole("button", { name: "New document", exact: true }).click();
@@ -1665,9 +1674,25 @@ test("renaming preserves source and profile and persists the next save filename"
   await expect(
     page.getByRole("button", { name: "Rename My research.tinta", exact: true }),
   ).toBeVisible();
+  await page.evaluate(() => {
+    const click = HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click = function () {
+      window.requestedDownloadFilename = this.download;
+      return click.call(this);
+    };
+  });
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Save source", exact: true }).click();
-  expect((await download).suggestedFilename()).toBe("My research.tinta");
+  const file = await download;
+  expect(await page.evaluate(() => window.requestedDownloadFilename)).toBe(
+    "My research.tinta",
+  );
+  expect(file.suggestedFilename()).toBe(
+    browserName === "webkit" && process.platform === "linux"
+      ? "My_research.tinta"
+      : "My research.tinta",
+  );
+  expect(await readFile(await file.path(), "utf8")).toBe("# A local draft");
   await expect(page.locator(".document-checkpoint")).toHaveText(
     "Source unchanged",
   );
