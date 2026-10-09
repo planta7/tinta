@@ -32,14 +32,18 @@ export function icon(name: string) {
 
 export function brand() {
   return h(
-    "div",
-    { className: "brand", "aria-label": "Tinta Studio" },
+    "a",
+    {
+      className: "brand",
+      href: "#/home",
+      "aria-label": "tinta studio home",
+    },
     h("span", { className: "brand-mark", "aria-hidden": true }, "t"),
     h(
       "span",
       null,
       "tinta",
-      h("span", { className: "brand-studio" }, " / studio"),
+      h("span", { className: "brand-studio" }, "studio"),
     ),
     h("span", { className: "draft-label" }, "Draft"),
   );

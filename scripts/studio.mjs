@@ -19,7 +19,10 @@ export async function buildStudio() {
     "browser",
     { minify: true },
   );
-  const readerStyle = await readFile("packages/reader/src/reader.css", "utf8");
+  const readerStyle =
+    (await readFile("packages/reader/src/reader.css", "utf8")) +
+    "\n" +
+    (await readFile("apps/studio/src/preview.css", "utf8"));
   const previewCode = script(preview.code);
   const previewPolicy =
     `default-src 'none'; script-src 'sha256-${digest(previewCode)}'; ` +
@@ -65,6 +68,9 @@ export async function buildStudio() {
     percent: "percent(0.5)",
     money: "money(10)",
   };
+  const studioVersion = JSON.parse(
+    await readFile("apps/studio/package.json", "utf8"),
+  ).version;
   const snippets = Object.fromEntries(
     registry.directives.map((name) => ["@" + name, templates[name]]),
   );
@@ -76,6 +82,15 @@ export async function buildStudio() {
       "{{ " +
       functions[name] +
       " }}";
+  const buildFingerprint = createHash("sha256")
+    .update(worker.code)
+    .update(previewHtml)
+    .update(JSON.stringify({ studioVersion, examples, snippets }));
+  for (const filename of (await readdir("apps/studio/src")).sort()) {
+    buildFingerprint.update(filename);
+    buildFingerprint.update(await readFile(`apps/studio/src/${filename}`));
+  }
+  const studioBuild = buildFingerprint.digest("hex").slice(0, 8);
   // Separate generated data modules let Vite split the development build.
   // The standalone IIFE still embeds every runtime in one offline HTML file.
   await mkdir("apps/studio/dist/runtime", { recursive: true });
@@ -92,7 +107,7 @@ export async function buildStudio() {
     "apps/studio/dist/studio-runtime.js",
     'export { workerCode } from "./runtime/workerCode.js";\n' +
       'export { previewHtml } from "./runtime/previewHtml.js";\n' +
-      Object.entries({ examples, snippets })
+      Object.entries({ examples, snippets, studioVersion, studioBuild })
         .map(
           ([key, value]) => `export const ${key} = ${JSON.stringify(value)};`,
         )
@@ -128,7 +143,7 @@ export async function buildStudio() {
     '<!doctype html><html lang="en"><head><meta charset="UTF-8">' +
     '<meta name="viewport" content="width=device-width,initial-scale=1">' +
     `<meta http-equiv="Content-Security-Policy" content="${policy}">` +
-    `<title>Tinta Studio</title><style>${style}</style></head><body>` +
+    `<title>tinta studio</title><style>${style}</style></head><body>` +
     `<script>${code}</script></body></html>`;
   await writeFile("build/tinta-studio.html", html);
   await mkdir("packages/cli/assets", { recursive: true });

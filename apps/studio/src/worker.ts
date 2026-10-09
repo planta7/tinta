@@ -1,3 +1,4 @@
+import { parseRecovering } from "@tinta/syntax";
 import { compile, createSession, encodeProgram } from "@tinta/engine";
 import { limits } from "@tinta/artifacts";
 import { base, baseKeys, exact, integer } from "./protocol.js";
@@ -40,15 +41,28 @@ self.addEventListener("message", (event: MessageEvent<unknown>) => {
     return;
   revision = data.sourceRevision;
   request = data.requestId;
-  const result = compile({
+  const input = {
     text: data.source,
     uri: data.uri,
     profile: data.profile as "markdown" | "tinta",
-  });
+  };
+  const parsed = parseRecovering(input);
+  const highlights = parsed.ok
+    ? parsed.value.tokens
+        .filter(
+          (item) => item.kind === "directive" || item.kind === "interpolation",
+        )
+        .map((item) => ({
+          from: item.span.start.offset,
+          to: item.span.end.offset,
+        }))
+    : [];
+  const result = compile(input);
   if (!result.ok) {
     self.postMessage({
       ...header,
       kind: "rejected",
+      highlights,
       diagnostics: result.diagnostics,
     });
     return;
@@ -59,6 +73,7 @@ self.addEventListener("message", (event: MessageEvent<unknown>) => {
     self.postMessage({
       ...header,
       kind: "rejected",
+      highlights,
       diagnostics: session.diagnostics,
     });
     return;
@@ -67,6 +82,7 @@ self.addEventListener("message", (event: MessageEvent<unknown>) => {
   self.postMessage({
     ...header,
     kind: "compiled",
+    highlights,
     program: encodeProgram(result.value),
     diagnostics: result.diagnostics,
   });

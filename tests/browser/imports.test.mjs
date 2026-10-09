@@ -69,7 +69,7 @@ test("reader and compiler worker build as standalone classic scripts", async ({
   await page.goto(pathToFileURL(resolve("build/tinta-studio.html")).href);
   await expect(
     page.getByRole("heading", {
-      name: "Make room for your ideas.",
+      name: "A document. With more to say.",
       exact: true,
     }),
   ).toBeVisible();

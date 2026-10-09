@@ -1,7 +1,7 @@
 import { parseArgs, type ParseArgsConfig } from "node:util";
 import { HostFailure } from "./files.js";
 export const help =
-  "Tinta local document tools\n" +
+  "tinta — tools for the interactive document language\n" +
   "Usage:\n" +
   "  tinta check INPUT [--profile markdown|tinta] [--with-assets] " +
   "[--asset-root DIR] [--json] [--warnings-as-errors]\n" +

@@ -197,3 +197,38 @@ describe("file write acknowledgements", () => {
     }
   });
 });
+
+test("source highlight ranges reject malformed worker presentation data", async () => {
+  const { highlights } =
+    await import("../../apps/studio/dist/compiler-host.js");
+  expect(highlights([{ from: 0, to: 5 }], 5)).toBe(true);
+  for (const value of [
+    null,
+    [{ from: -1, to: 5 }],
+    [{ from: 0, to: 6 }],
+    [{ from: 3, to: 3 }],
+    [{ from: 0.5, to: 5 }],
+    [{ from: 0, to: NaN }],
+    [{ from: 0, to: 5, html: "unsafe" }],
+    Array.from({ length: 100001 }, () => ({ from: 0, to: 1 })),
+  ])
+    expect(highlights(value, 5)).toBe(false);
+});
+
+test("recovery retains clean and changed state without accepting unknown metadata", async () => {
+  const { validateRecovery } =
+    await import("../../apps/studio/dist/recovery.js");
+  const copy = {
+    id: "new",
+    edited: 1,
+    source: "",
+    filename: "untitled.tinta",
+    profile: "tinta",
+    assets: [],
+  };
+  expect(validateRecovery({ ...copy, changed: false }).changed).toBe(false);
+  expect(validateRecovery({ ...copy, changed: true }).changed).toBe(true);
+  expect(validateRecovery(copy).changed).toBeUndefined();
+  expect(() => validateRecovery({ ...copy, changed: "false" })).toThrow();
+  expect(() => validateRecovery({ ...copy, checkpoint: "hidden" })).toThrow();
+});

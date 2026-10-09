@@ -165,6 +165,7 @@ window.addEventListener("message", (event: MessageEvent<unknown>) => {
       const mounted = mountReader(session, { nativeElement: host }, { assets });
       if (!mounted.ok) return reject();
       reader = mounted.value;
+      host.querySelector(".tinta-reader-actions")?.remove();
       requestAnimationFrame(() => window.scrollTo(0, scroll));
       session.subscribe(state);
       state();

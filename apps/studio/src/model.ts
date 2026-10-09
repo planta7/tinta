@@ -98,3 +98,14 @@ export function insertionBoundary(program: Program, offset: number): number {
   }
   return offset;
 }
+
+export function filenameParts(filename: string): {
+  name: string;
+  extension: string;
+} {
+  const extension = filename.match(/(?:\.tinta\.zip|\.[^.]+)$/i)?.[0] ?? "";
+  return {
+    name: filename.slice(0, filename.length - extension.length),
+    extension,
+  };
+}

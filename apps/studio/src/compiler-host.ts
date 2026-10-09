@@ -7,6 +7,7 @@ import {
   exact,
   identity,
   record,
+  integer,
   token,
   type Base,
 } from "./protocol.js";
@@ -15,6 +16,10 @@ export interface Compilation {
   revision: number;
   program?: Program;
   diagnostics: readonly Diagnostic[];
+  highlights?: readonly {
+    from: number;
+    to: number;
+  }[];
 }
 
 export class CompilerHost {
@@ -78,9 +83,11 @@ export class CompilerHost {
         return;
       }
       if (
-        !exact(data, [...baseKeys, "program", "diagnostics"]) ||
+        !exact(data, [...baseKeys, "program", "diagnostics", "highlights"]) ||
         !["compiled", "rejected"].includes(String(data.kind)) ||
-        !diagnostics(data.diagnostics)
+        !diagnostics(data.diagnostics) ||
+        (data.highlights !== undefined &&
+          !highlights(data.highlights, source.length))
       ) {
         return this.fail("E_PROTOCOL", "Invalid compiler response.");
       }
@@ -97,10 +104,15 @@ export class CompilerHost {
           revision,
           program: decoded.value,
           diagnostics: data.diagnostics,
+          highlights: data.highlights ?? [],
         });
       } else {
         this.stop();
-        this.receive({ revision, diagnostics: data.diagnostics });
+        this.receive({
+          revision,
+          diagnostics: data.diagnostics,
+          highlights: data.highlights ?? [],
+        });
       }
     };
     worker.onerror = () =>
@@ -174,6 +186,28 @@ export function diagnostics(value: unknown): value is Diagnostic[] {
             Number.isSafeInteger(p.line) &&
             Number.isSafeInteger(p.column),
         ),
+    )
+  );
+}
+
+export function highlights(
+  value: unknown,
+  sourceLength: number,
+): value is {
+  from: number;
+  to: number;
+}[] {
+  return (
+    Array.isArray(value) &&
+    value.length <= 100000 &&
+    value.every(
+      (range) =>
+        record(range) &&
+        exact(range, ["from", "to"]) &&
+        integer(range.from) &&
+        integer(range.to) &&
+        range.from < range.to &&
+        range.to <= sourceLength,
     )
   );
 }

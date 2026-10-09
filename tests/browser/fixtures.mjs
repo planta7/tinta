@@ -37,6 +37,10 @@ export const test = base.extend({
 });
 
 export async function studioAction(page, name, options = {}) {
+  if (name === "Reset reading") {
+    await page.getByRole("button", { name, exact: true }).click(options);
+    return;
+  }
   const groups = {
     Home: "File",
     New: "File",
@@ -46,7 +50,6 @@ export async function studioAction(page, name, options = {}) {
     Import: "Insert",
     Snippets: "Insert",
     Check: "Tools",
-    "Reset reading": "Tools",
     Examples: "Tools",
     Recovery: "Tools",
   };

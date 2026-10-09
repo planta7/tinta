@@ -66,7 +66,7 @@ const snippets: Record<string, [string, string, string]> = {
   ],
   "@when": [
     "A conditional passage",
-    "Show the enclosed Markdown only when the expression is true.",
+    "Show the enclosed content only when the expression is true.",
     "Structure",
   ],
   "@details": [
@@ -351,7 +351,7 @@ export function catalogDialog(
     };
   });
   dialog(
-    kind === "examples" ? "Explore examples" : "Insert Tinta snippet",
+    kind === "examples" ? "Explore examples" : "Insert tinta snippet",
     (body, close) => {
       body.classList.add("catalog-dialog");
       body.append(

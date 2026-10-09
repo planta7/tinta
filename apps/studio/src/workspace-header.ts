@@ -1,4 +1,5 @@
-import { createElement as h } from "react";
+import { createElement as h, type MouseEvent } from "react";
+import { filenameParts } from "./model.js";
 import { brand, button, menu } from "./controls.js";
 import type { SourceProfile } from "@tinta/types";
 
@@ -14,6 +15,7 @@ export interface WorkspaceActions {
   exportDialog: () => void;
   pickOpen: () => void;
   saveAs: () => void;
+  rename: () => void;
   bundle: () => void;
   importDialog: () => void;
   snippetDialog: () => void;
@@ -26,6 +28,7 @@ export interface WorkspaceActions {
 }
 
 export function WorkspaceHeader(studio: WorkspaceActions) {
+  const filename = filenameParts(studio.filename);
   return h(
     "header",
     { className: "workspace-header" },
@@ -36,7 +39,25 @@ export function WorkspaceHeader(studio: WorkspaceActions) {
       h(
         "div",
         { className: "document-identity" },
-        h("h1", { title: studio.filename }, studio.filename),
+        h(
+          "h1",
+          null,
+          h(
+            "button",
+            {
+              type: "button",
+              className: "filename-button",
+              title: "Rename document",
+              "aria-label": `Rename ${studio.filename}`,
+              onClick: (event: MouseEvent<HTMLButtonElement>) => {
+                event.currentTarget.focus();
+                studio.rename();
+              },
+            },
+            h("span", { className: "filename-stem" }, filename.name),
+            h("span", { className: "filename-extension" }, filename.extension),
+          ),
+        ),
         h(
           "span",
           { className: "document-checkpoint" },
@@ -46,7 +67,7 @@ export function WorkspaceHeader(studio: WorkspaceActions) {
       h(
         "span",
         { className: "profile-badge" },
-        studio.profile === "markdown" ? "Markdown" : "Tinta 1.0 draft",
+        studio.profile === "markdown" ? "Markdown" : "1.0 draft",
       ),
       h(
         "div",
@@ -84,17 +105,19 @@ export function WorkspaceHeader(studio: WorkspaceActions) {
         ]),
         menu("Tools", [
           button("Check", () => studio.check()),
-          button("Reset reading", studio.resetReading),
           h("hr", { key: "separator" }),
           button("Examples", () => studio.examples()),
           button("Recovery", () => studio.preferences()),
         ]),
       ),
       studio.profile === "markdown"
-        ? button("Enrich as Tinta", () => studio.enrich(), false, {
+        ? button("Enrich as tinta", () => studio.enrich(), false, {
             className: "text-button enrich-action",
           })
         : null,
+      button("Reset reading", studio.resetReading, false, {
+        className: "text-button reset-reading",
+      }),
       h(
         "div",
         { className: "mode-switch", "aria-label": "Document mode" },

@@ -35,6 +35,7 @@ import { CompilerHost, type Compilation } from "./compiler-host.js";
 import { SourceEditor, tokenEffect } from "./editor.js";
 import { PreviewHost } from "./preview-host.js";
 import {
+  filenameParts,
   insertionBoundary,
   profileFor,
   reconcile,
@@ -117,7 +118,7 @@ export class Studio {
       }
       if (key === "n") {
         event.preventDefault();
-        this.unsaved(() => this.open("", "untitled.tinta", "tinta"));
+        this.newDocument();
       }
       if (key === "e" && event.shiftKey) {
         event.preventDefault();
@@ -176,11 +177,11 @@ export class Studio {
       "dialog[open]",
     ))
       opened.close();
-    if (route?.section === "home") {
+    if (!route || route.section === "home") {
       this.home();
       return;
     }
-    const id = route?.section === "document" ? route.id : this.drafts.lastId();
+    const id = route.section === "document" ? route.id : undefined;
     if (
       route?.section === "document" &&
       this.active &&
@@ -215,7 +216,7 @@ export class Studio {
             copy.filename,
             copy.profile,
             new Map(copy.assets),
-            true,
+            copy.changed !== false,
             copy.id,
           );
           if (route?.section === "document") this.setEditing(route.editing);
@@ -240,25 +241,32 @@ export class Studio {
   }
 
   home(): void {
-    if (this.active && this.dirty) this.documentRoute(true);
-    this.unsaved(() => {
-      this.navigationRevision++;
-      this.active = false;
-      this.compiler.stop();
-      this.preview?.destroy();
-      this.session?.destroy();
-      this.editor?.destroy();
-      this.preview = undefined;
-      this.session = undefined;
-      this.editor = undefined;
-      diagnostics.replaceChildren();
-      writeRoute({ section: "home" });
-      this.render();
-    });
+    writeRoute({ section: "home" }, true);
+    this.unsaved(
+      () => {
+        this.navigationRevision++;
+        this.active = false;
+        clearTimeout(this.debounce);
+        this.revision++;
+        this.pending = false;
+        this.compiler.stop();
+        this.preview?.destroy();
+        this.session?.destroy();
+        this.editor?.destroy();
+        this.preview = undefined;
+        this.session = undefined;
+        this.editor = undefined;
+        diagnostics.replaceChildren();
+        writeRoute({ section: "home" });
+        this.message("");
+        this.render();
+      },
+      () => this.documentRoute(true),
+    );
   }
 
   get dirty(): boolean {
-    return this.source !== this.checkpoint;
+    return this.active && this.source !== this.checkpoint;
   }
 
   get valid(): boolean {
@@ -308,7 +316,7 @@ export class Studio {
     document.body.dataset.active = String(this.active);
     emptyPreview.hidden = this.source.length > 0;
     sourceHeading.lastElementChild!.textContent =
-      this.profile === "markdown" ? "Markdown" : "Markdown + Tinta";
+      this.profile === "markdown" ? "Markdown" : "tinta";
     for (const tab of tabs.querySelectorAll("button")) {
       tab.setAttribute(
         "aria-pressed",
@@ -318,7 +326,7 @@ export class Studio {
     if (!this.active) {
       root.render(
         h(Welcome, {
-          newDocument: () => this.open("", "untitled.tinta", "tinta"),
+          newDocument: () => this.newDocument(),
           openFile: () => this.pickOpen(),
           exploreExamples: () => this.examples(),
           openExample: (name) =>
@@ -336,14 +344,14 @@ export class Studio {
         valid: this.valid,
         editing: this.editing,
         home: () => this.home(),
-        newDocument: () =>
-          this.unsaved(() => this.open("", "untitled.tinta", "tinta")),
+        newDocument: () => this.newDocument(),
         saveSource: () => {
           void this.saveSource();
         },
         exportDialog: () => this.exportDialog(),
         pickOpen: () => this.pickOpen(),
         saveAs: () => this.saveAs(),
+        rename: () => this.rename(),
         bundle: () => {
           void this.bundle();
         },
@@ -370,6 +378,14 @@ export class Studio {
     this.render();
   }
 
+  newDocument(): void {
+    this.unsaved(() => {
+      this.tab = "source";
+      this.open("", "untitled.tinta", "tinta", new Map(), false, token(), true);
+      this.editor?.view.focus();
+    });
+  }
+
   open(
     source: string,
     filename: string,
@@ -377,6 +393,7 @@ export class Studio {
     assets = new Map<string, Asset>(),
     recovered = false,
     documentId = token(),
+    editing = false,
   ): void {
     clearTimeout(this.debounce);
     this.drafts.cancel();
@@ -396,7 +413,7 @@ export class Studio {
     this.revision++;
     this.validRevision = -1;
     this.active = true;
-    this.editing = false;
+    this.editing = editing;
     this.requestAfterCheck = undefined;
     diagnostics.replaceChildren();
     this.editor = new SourceEditor(
@@ -441,20 +458,20 @@ export class Studio {
     if (result.revision !== this.revision) return;
     this.pending = false;
     this.diagnosticList = result.diagnostics;
+    this.editor?.view.dispatch({
+      effects: tokenEffect.of(
+        (result.highlights ?? []).map((range) => ({
+          from: editorOffset(this.source, range.from),
+          to: editorOffset(this.source, range.to),
+        })),
+      ),
+    });
     if (result.program) {
       const candidate = reconcile(result.program, this.session);
       if (candidate.result.ok) {
         this.session?.destroy();
         this.session = candidate.result.value;
         this.validRevision = this.revision;
-        this.editor?.view.dispatch({
-          effects: tokenEffect.of(
-            result.program.declarations.map((item) => ({
-              from: editorOffset(this.source, item.span.start.offset),
-              to: editorOffset(this.source, item.span.end.offset),
-            })),
-          ),
-        });
         if (this.preview) {
           this.preview.update(
             result.program,
@@ -479,7 +496,7 @@ export class Studio {
         this.message(
           candidate.reset.length
             ? `${candidate.reset.length} answers reset after source changes`
-            : "Source checked.",
+            : "",
         );
         if (candidate.reset.length) {
           const note = node("details");
@@ -516,25 +533,59 @@ export class Studio {
     if (this.valid) after?.();
   }
 
-  unsaved(next: () => void): void {
+  unsaved(next: () => void, cancelled?: () => void): void {
     if (!this.dirty) return next();
-    dialog("Unsaved source changes", (body, close) => {
-      body.append(node("p", "Save your source before continuing?"));
-      action(
-        body,
-        "Save",
-        () =>
-          void this.saveSource().then((saved) => {
-            if (saved) {
-              close();
-              next();
-            }
-          }),
+    dialog(
+      "Unsaved source changes",
+      (body, close) => {
+        body.append(
+          node(
+            "p",
+            "You have unsaved changes. Save your source before leaving, or discard the changes to continue.",
+          ),
+        );
+        action(
+          body,
+          "Save",
+          () =>
+            void this.saveSource().then((saved) => {
+              if (saved) {
+                close();
+                next();
+              }
+            }),
+        );
+        action(body, "Discard", () => {
+          close();
+          next();
+        });
+      },
+      cancelled,
+    );
+  }
+
+  rename(): void {
+    if (!this.active) return;
+    const original = filenameParts(this.filename);
+    dialog("Rename document", (body, close) => {
+      const name = field(body, "Document name", original.name);
+      name.maxLength = 255 - original.extension.length;
+      body.append(
+        node(
+          "p",
+          `File extension: ${original.extension || "none"}. This name will be used when you save.`,
+        ),
       );
-      action(body, "Discard", () => {
+      const rename = action(body, "Rename", () => {
+        if (!name.value.trim()) return;
+        this.filename = safeFilename(name.value.trim() + original.extension);
+        this.scheduleRecovery();
         close();
-        next();
+        this.render();
       });
+      name.oninput = () => {
+        rename.disabled = !name.value.trim();
+      };
     });
   }
 
@@ -572,10 +623,8 @@ export class Studio {
         as,
       );
       this.checkpoint = source;
-      if (as) {
-        this.filename = safeFilename(filename);
-        this.scheduleRecovery();
-      }
+      if (as) this.filename = safeFilename(filename);
+      this.scheduleRecovery();
       this.message(
         message +
           (this.assets.size
@@ -618,7 +667,7 @@ export class Studio {
     if (!profile)
       return dialog("Choose source profile", (body, close) => {
         for (const selected of ["markdown", "tinta"] as const)
-          action(body, selected === "markdown" ? "Markdown" : "Tinta", () => {
+          action(body, selected === "markdown" ? "Markdown" : "tinta", () => {
             close();
             void this.loadFile(file, selected);
           });
@@ -676,7 +725,7 @@ export class Studio {
         }),
       );
       const revision = this.revision;
-      dialog("Enrich as Tinta", (body, close) => {
+      dialog("Enrich as tinta", (body, close) => {
         body.append(
           node(
             "p",
@@ -684,7 +733,7 @@ export class Studio {
           ),
           node("pre", enriched.source),
         );
-        action(body, "Create Tinta source", () => {
+        action(body, "Create tinta source", () => {
           if (revision !== this.revision)
             return this.message("Source changed. Start enrichment again.");
           this.filename = stem(this.filename) + ".tinta";
@@ -850,7 +899,7 @@ export class Studio {
       );
       if (kind.includes("data")) {
         if (this.profile !== "tinta")
-          throw new Error("Enrich as Tinta before importing data.");
+          throw new Error("Enrich as tinta before importing data.");
 
         const importer = kind === "CSV data" ? importCsv : importJson;
         dialog("Preview data import", (body, close) => {
@@ -1048,7 +1097,10 @@ export class Studio {
           void this.attempt(async () => {
             const copies = await this.recovery.list();
             const list = node("div");
-            body.append(list);
+            body.insertBefore(
+              list,
+              body.querySelector(":scope > .dialog-actions"),
+            );
             if (!copies.length)
               list.append(node("p", "No local recovery copies."));
             for (const copy of copies) {
@@ -1062,7 +1114,7 @@ export class Studio {
                     copy.filename,
                     copy.profile,
                     new Map(copy.assets),
-                    true,
+                    copy.changed !== false,
                     copy.id,
                   ),
                 );
@@ -1110,6 +1162,7 @@ export class Studio {
       profile: this.profile,
       filename: this.filename,
       edited: Date.now(),
+      changed: this.dirty,
       assets: [...this.assets],
     });
   }

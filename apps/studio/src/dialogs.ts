@@ -12,6 +12,7 @@ export function node<K extends keyof HTMLElementTagNameMap>(
 export function dialog(
   title: string,
   build: (body: HTMLDialogElement, close: () => void) => void,
+  cancelled?: () => void,
 ): void {
   const trigger =
     document.activeElement instanceof HTMLElement
@@ -35,11 +36,23 @@ export function dialog(
     dispose();
   };
   build(element, close);
-  const cancel = node("button", "Cancel");
-  cancel.autofocus = true;
-  cancel.onclick = close;
-  cancel.className = "dialog-cancel";
-  element.append(cancel);
+  const cancel = node("button", "×");
+  cancel.setAttribute("aria-label", "Close dialog");
+  cancel.title = "Close dialog";
+  const dismiss = () => {
+    close();
+    cancelled?.();
+  };
+  cancel.onclick = dismiss;
+  cancel.className = "dialog-close";
+  const footer = dialogActions(element);
+  element.insertBefore(cancel, heading);
+  element.append(footer);
+  const initialFocus =
+    footer.querySelector<HTMLButtonElement>("button.primary:not(:disabled)") ??
+    footer.querySelector<HTMLButtonElement>("button:not(:disabled)") ??
+    cancel;
+  initialFocus.autofocus = true;
   let disposed = false;
   const dispose = () => {
     if (disposed) return;
@@ -55,11 +68,21 @@ export function dialog(
   element.onclose = dispose;
   element.oncancel = (event) => {
     event.preventDefault();
-    close();
+    dismiss();
   };
   document.body.append(element);
   element.showModal();
-  cancel.focus();
+  initialFocus.focus();
+}
+
+function dialogActions(parent: HTMLDialogElement): HTMLElement {
+  let footer = parent.querySelector<HTMLElement>(":scope > .dialog-actions");
+  if (!footer) {
+    footer = node("div");
+    footer.className = "dialog-actions";
+    parent.append(footer);
+  }
+  return footer;
 }
 
 export function action(
@@ -71,10 +94,11 @@ export function action(
   if (
     [
       "Save",
+      "Rename",
       "Export file",
       "Insert data",
       "Insert image",
-      "Create Tinta source",
+      "Create tinta source",
     ].includes(label)
   )
     element.classList.add("primary");
@@ -82,7 +106,9 @@ export function action(
     element.focus();
     run();
   };
-  parent.append(element);
+  if (parent instanceof HTMLDialogElement)
+    dialogActions(parent).append(element);
+  else parent.append(element);
   return element;
 }
 

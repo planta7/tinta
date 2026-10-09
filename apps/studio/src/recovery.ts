@@ -13,6 +13,7 @@ export interface Recovery {
   profile: SourceProfile;
   filename: string;
   edited: number;
+  changed?: boolean;
   assets: [string, Asset][];
 }
 
@@ -32,10 +33,12 @@ export function validateRecovery(value: unknown): Recovery {
       "profile",
       "filename",
       "edited",
+      "changed",
       "assets",
     ]) ||
     typeof value.id !== "string" ||
     value.id.length > 128 ||
+    (value.changed !== undefined && typeof value.changed !== "boolean") ||
     typeof value.source !== "string" ||
     typeof value.filename !== "string" ||
     value.filename.length > 255 ||

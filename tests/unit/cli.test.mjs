@@ -265,7 +265,7 @@ describe("local document commands", () => {
         await readFile("build/tinta-studio.html"),
       ),
     ).toBe(0);
-    expect(await readFile(output, "utf8")).toContain("Tinta Studio");
+    expect(await readFile(output, "utf8")).toContain("tinta studio");
   });
   test("aborting an atomic write preserves old content and removes its staging file", async () => {
     const output = join(directory, "keep.html");

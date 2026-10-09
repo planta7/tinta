@@ -1,0 +1,9 @@
+.tinta-reader {
+  padding-top: 56px;
+}
+
+@media (max-width: 600px) {
+  .tinta-reader {
+    padding-top: 32px;
+  }
+}

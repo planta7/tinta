@@ -16,33 +16,47 @@ export function Welcome(actions: WelcomeActions) {
       "header",
       { className: "welcome-header" },
       brand(),
-      h("span", { className: "quiet" }, "A space for living documents"),
+      h(
+        "span",
+        { className: "quiet" },
+        "A language for interactive documents.",
+      ),
     ),
     h(
       "main",
       { className: "welcome" },
-      h("div", { className: "eyebrow" }, "YOUR LOCAL WORKSPACE"),
-      h("h1", null, "Make room for your ideas."),
       h(
-        "p",
-        { className: "welcome-intro" },
-        "Start with Markdown. Bring your words to life with interactive explanations, data, and charts.",
-      ),
-      h(
-        "div",
-        { className: "welcome-actions" },
-        button("New document", actions.newDocument, false, {
-          icon: "new",
-          className: "primary",
-        }),
-        button("Open file", actions.openFile, false, {
-          icon: "open",
-        }),
-      ),
-      h(
-        "p",
-        { className: "file-hint" },
-        "Open or drop a .md, .tinta, or .tinta.zip file. Everything stays on your device.",
+        "section",
+        { className: "welcome-start", "aria-labelledby": "welcome-title" },
+        h("div", { className: "eyebrow" }, "WRITE. QUESTION. EXPLORE."),
+        h(
+          "h1",
+          { id: "welcome-title" },
+          "A document.",
+          h("br"),
+          h("em", null, "With more to say."),
+        ),
+        h(
+          "p",
+          { className: "welcome-intro" },
+          "Create articles, reports and guides that invite exploration. Bring writing, data and interaction together with tinta.",
+        ),
+        h(
+          "div",
+          { className: "welcome-actions" },
+          button("New document", actions.newDocument, false, {
+            icon: "new",
+            className: "primary",
+          }),
+          button("Open file", actions.openFile, false, {
+            icon: "open",
+          }),
+        ),
+        h(
+          "p",
+          { className: "file-hint" },
+          "Open or drop a .md, .tinta, or .tinta.zip file. Everything stays on your device.",
+        ),
       ),
       h(
         "section",
@@ -53,7 +67,7 @@ export function Welcome(actions: WelcomeActions) {
         h(
           "div",
           { className: "section-heading" },
-          h("h2", { id: "examples-heading" }, "A few places to begin"),
+          h("h2", { id: "examples-heading" }, "The starting collection"),
           button("Explore examples", actions.exploreExamples, false, {
             className: "text-button",
           }),
@@ -63,7 +77,7 @@ export function Welcome(actions: WelcomeActions) {
             "guide",
             "01",
             "Learn by doing",
-            "A hands-on introduction to interactive Markdown.",
+            "Get to know tinta, one interaction at a time.",
           ],
           [
             "article",
@@ -86,7 +100,18 @@ export function Welcome(actions: WelcomeActions) {
               className: "example-row",
               onClick: () => actions.openExample(name!),
             },
-            h("span", { className: "example-number" }, number),
+            h(
+              "span",
+              {
+                className: `example-specimen specimen-${name}`,
+              },
+              h(
+                "span",
+                { className: "specimen-glyph", "aria-hidden": true },
+                name === "guide" ? "Aa" : name === "article" ? "ƒ" : "▂ ▅ ▃ ▇",
+              ),
+              h("span", { className: "example-number" }, number),
+            ),
             h(
               "span",
               { className: "example-copy" },

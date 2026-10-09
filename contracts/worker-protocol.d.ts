@@ -31,16 +31,27 @@ export type WorkerRequest = MessageBase &
       }>
   );
 
+/** Optional parser-derived source decorations. Original UTF-16 offsets satisfy
+ * 0 <= from < to <= source.length; at most the registry astNodes limit.
+ * These ranges grant presentation only, never executable source capability.
+ */
+export interface SourceHighlight {
+  readonly from: number;
+  readonly to: number;
+}
+
 export type WorkerResponse = MessageBase &
   (
     | Readonly<{
         kind: "compiled";
         program: ProgramIR;
         diagnostics: readonly Diagnostic[];
+        highlights?: readonly SourceHighlight[];
       }>
     | Readonly<{
         kind: "rejected";
         diagnostics: readonly Diagnostic[];
+        highlights?: readonly SourceHighlight[];
       }>
     | Readonly<{
         kind: "cancelled";

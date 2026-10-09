@@ -142,7 +142,7 @@ test("automatic local drafts restore source and mode after reload", async ({
   const enabled = page.getByLabel("Keep local recovery copies on this device");
   await expect(enabled).toBeChecked();
   await enabled.check();
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   const editor = page.getByRole("textbox", { name: "Document source" });
   await editor.press("ControlOrMeta+End");
@@ -223,10 +223,10 @@ test("raw Markdown opens inert, preserves bytes, enriches and reports download h
     "Source download started — check your browser's Downloads.",
   );
   await page
-    .getByRole("button", { name: "Enrich as Tinta", exact: true })
+    .getByRole("button", { name: "Enrich as tinta", exact: true })
     .click();
   await page
-    .getByRole("button", { name: "Create Tinta source", exact: true })
+    .getByRole("button", { name: "Create tinta source", exact: true })
     .click();
   await expect(page.locator("header")).toContainText("notes.tinta");
   await expect(page.locator("header")).toContainText("Changed");
@@ -235,7 +235,7 @@ test("raw Markdown opens inert, preserves bytes, enriches and reports download h
   expect((await download).suggestedFilename()).toBe("notes.tinta");
 });
 
-test("unsaved Cancel preserves source, file actions and focus", async ({
+test("unsaved dialog close preserves source, file actions and focus", async ({
   page,
 }) => {
   await page.goto(url);
@@ -246,9 +246,9 @@ test("unsaved Cancel preserves source, file actions and focus", async ({
     .fill("# My unsaved draft");
   await studioAction(page, "New");
   await expect(
-    page.getByRole("button", { name: "Cancel", exact: true }),
+    page.getByRole("button", { name: "Save", exact: true }),
   ).toBeFocused();
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await expect(
     page.getByRole("textbox", { name: "Document source" }),
   ).toHaveText("# My unsaved draft");
@@ -415,7 +415,7 @@ test("image import is one source and asset undo transaction", async ({
   ).toBeVisible();
   await studioAction(page, "Recovery");
   await page.getByLabel("Keep local recovery copies on this device").check();
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   const storedAssets = () =>
     page.evaluate(async () => {
       const databases = await indexedDB.databases();
@@ -586,7 +586,7 @@ test("denied recovery storage leaves source saving available", async ({
   await example(page);
   await studioAction(page, "Recovery");
   await page.getByLabel("Keep local recovery copies on this device").check();
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await expect(page.getByRole("status")).toContainText(
     "W_RECOVERY_UNAVAILABLE",
   );
@@ -713,7 +713,7 @@ test("recovery deletion and disabling are explicit and preserve the active buffe
   await page
     .getByRole("button", { name: "Show recovery copies", exact: true })
     .click();
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await expect
     .poll(async () =>
       page.evaluate(async () => {
@@ -758,13 +758,13 @@ test("recovery deletion and disabling are explicit and preserve the active buffe
     })
     .click();
   await expect(
-    page.getByRole("button", { name: "Cancel", exact: true }),
+    page.getByRole("button", { name: "Delete all", exact: true }),
   ).toBeFocused();
   await page.getByRole("button", { name: "Delete all", exact: true }).click();
   await expect(page.getByRole("status")).toContainText(
     "Local recovery copies deleted.",
   );
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await expect(
     page.frameLocator("iframe").getByLabel("Your platform"),
   ).toHaveValue("macOS");
@@ -799,7 +799,7 @@ test("JSON mappings, invalid imports and diagnostics preserve existing source", 
   await page.getByLabel("Label → name", { exact: true }).fill("label");
   await page.getByLabel("Value type", { exact: true }).selectOption("text");
   await expect(page.getByRole("dialog").locator("pre")).toContainText("00123");
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await expect(editor).toHaveText("# Data");
   await studioAction(page, "Snippets");
   await page.getByRole("button", { name: "@toggle", exact: true }).click();
@@ -952,7 +952,7 @@ test("a source revision change cancels an export before download handoff", async
     "Source changed during export. Export cancelled.",
   );
   expect(downloads).toEqual([]);
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await expect(page.locator("header")).toContainText("Changed");
 });
 
@@ -1164,6 +1164,11 @@ test("workspace reflows, retains the source cursor and exposes insertion from th
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   const editor = page.getByRole("textbox", { name: "Document source" });
   await editor.press("ControlOrMeta+End");
+  await expect
+    .poll(() =>
+      page.locator(".cm-scroller").evaluate((element) => element.scrollTop),
+    )
+    .toBeGreaterThan(0);
   const before = await page
     .locator(".cm-scroller")
     .evaluate((element) => element.scrollTop);
@@ -1236,7 +1241,7 @@ test("design review captures welcome, reading, editing, export and mobile surfac
   await page.getByRole("button", { name: "Export", exact: true }).click();
   await expect(page.getByRole("dialog")).toBeVisible();
   await capture("export");
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page
     .getByRole("textbox", { name: "Document source" })
     .fill("@slider invalid = broken\n");
@@ -1266,7 +1271,7 @@ test("design review captures welcome, reading, editing, export and mobile surfac
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await page.emulateMedia({ forcedColors: "active", reducedMotion: "reduce" });
   await capture("forced-colors");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
@@ -1380,7 +1385,7 @@ test("draft restoration resets answers and persistent opt-out prevents automatic
   ).not.toHaveValue("Linux");
   await studioAction(page, "Recovery");
   await page.getByLabel("Keep local recovery copies on this device").uncheck();
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   page.on("dialog", (dialog) => dialog.accept());
   await page.reload();
   await expect(
@@ -1401,7 +1406,7 @@ test("direct section URLs and missing draft routes have usable recovery paths", 
   await expect(
     page.getByRole("dialog", { name: "Explore examples" }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await expect(page).toHaveURL(/#\/home$/);
   await page.goto(url + "#/document/absent/read");
   await expect(page.getByRole("status")).toContainText("no longer available");
@@ -1458,4 +1463,225 @@ test("declaration thumbnails demonstrate results without inserting their demonst
   await expect(
     page.getByRole("textbox", { name: "Document source" }),
   ).not.toContainText("A reusable value");
+});
+
+test("new documents retain a clean checkpoint and home navigation respects the requested destination", async ({
+  page,
+}) => {
+  await page.goto(url);
+  await page.getByRole("button", { name: "New document", exact: true }).click();
+  await expect(page).toHaveURL(/\/edit$/);
+  await expect(
+    page.getByRole("textbox", { name: "Document source" }),
+  ).toBeFocused();
+  await expect(
+    page.getByRole("textbox", { name: "Document source" }),
+  ).toBeVisible();
+  await expect(page.locator(".preview-pane")).toBeVisible();
+  await expect(page.locator(".document-checkpoint")).toHaveText(
+    "Source unchanged",
+  );
+  await expect(page.locator(".local-note")).toContainText("up to date");
+  await page.reload();
+  await expect(page.locator(".document-checkpoint")).toHaveText(
+    "Source unchanged",
+  );
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const editor = page.getByRole("textbox", { name: "Document source" });
+  await editor.fill("# A draft to keep");
+  await expect(page.locator(".document-checkpoint")).toHaveText("Changed");
+  const documentUrl = page.url();
+  await page.getByRole("link", { name: "tinta studio home" }).click();
+  await expect(page).toHaveURL(/#\/home$/);
+  await expect(
+    page.getByRole("dialog", { name: "Unsaved source changes" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
+  await expect(page).toHaveURL(documentUrl);
+  await expect(editor).toHaveText("# A draft to keep");
+  await page.evaluate(() => {
+    location.hash = "#/home";
+  });
+  await expect(page).toHaveURL(/#\/home$/);
+  await page.getByRole("button", { name: "Discard", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "New document", exact: true }),
+  ).toBeVisible();
+  await page.goto(url);
+  await expect(page).toHaveURL(/#\/home$/);
+  await expect(
+    page.getByRole("button", { name: "New document", exact: true }),
+  ).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "New document", exact: true }).click();
+  await page.getByRole("button", { name: "Preview", exact: true }).click();
+  await studioAction(page, "New");
+  await expect(
+    page.getByRole("button", { name: "Source", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(editor).toBeFocused();
+  await page.keyboard.type("# Ready to write");
+  await expect(editor).toHaveText("# Ready to write");
+});
+
+test("dialog actions share one footer and reader actions remain outside the document", async ({
+  page,
+}) => {
+  await example(page, "article");
+  await expect(page.locator(".profile-badge")).toHaveText("1.0 draft");
+  await expect(page.getByRole("status", { includeHidden: true })).toBeEmpty();
+  await expect(page.locator(".studio-version")).toHaveText(
+    /^v0\.0\.0 · [a-f0-9]{8}$/,
+  );
+  await expect(
+    page.getByRole("button", { name: "Reset reading", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.frameLocator("iframe").getByRole("button", { name: "Reset reading" }),
+  ).toHaveCount(0);
+  await page
+    .frameLocator("iframe")
+    .getByLabel("Growth per period (%)")
+    .fill("10");
+  await page
+    .getByRole("button", { name: "Reset reading", exact: true })
+    .click();
+  await expect(
+    page.frameLocator("iframe").getByLabel("Growth per period (%)"),
+  ).toHaveValue("5");
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  const footer = page.getByRole("dialog").locator(".dialog-actions");
+  await expect(
+    footer.getByRole("button", { name: "Export file", exact: true }),
+  ).toBeVisible();
+  await expect(
+    footer.getByRole("button", { name: "Export file", exact: true }),
+  ).toBeFocused();
+  await expect(
+    page.getByRole("dialog").locator(":scope > button:not(.dialog-close)"),
+  ).toHaveCount(0);
+});
+
+test("parser decorations cover every directive and exclude literal fenced source", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1400 });
+  await page.goto(url);
+  await page.getByRole("button", { name: "New document", exact: true }).click();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const source = [
+    '@meta (version: "1.0", title: "Highlights")',
+    "@let base = 1",
+    "@slider amount = 2 (min: 0, max: 10)",
+    "@calc total = base + amount",
+    "@toggle visible = true",
+    '@choice option = "A" (options: ["A", "B"])',
+    "@data points",
+    "x:number | y:number",
+    "1 | 2",
+    "@end",
+    "@view filtered = points (where: row.x > 0)",
+    '@table filtered (title: "Values")',
+    '@chart line points (x: "x", y: "y")',
+    "@when visible",
+    "Total: {{ total }}.",
+    "@end",
+    '@details "More"',
+    "An explanation.",
+    "@end",
+    "",
+    "```text",
+    "@meta literal",
+    "{{ literal }}",
+    "```",
+  ].join("\n");
+  await page.getByRole("textbox", { name: "Document source" }).fill(source);
+  await expect(
+    page.getByRole("button", { name: "Export", exact: true }),
+  ).toBeEnabled();
+  const marks = page.locator(".tinta-token");
+  for (const name of [
+    "meta",
+    "let",
+    "slider",
+    "calc",
+    "toggle",
+    "choice",
+    "data",
+    "view",
+    "table",
+    "chart",
+    "when",
+    "details",
+    "end",
+  ]) {
+    await expect(
+      marks.filter({ hasText: new RegExp(`^@${name}\\b`) }).first(),
+    ).toBeVisible();
+  }
+  await expect(marks.filter({ hasText: "{{ total }}" })).toBeVisible();
+  await expect(marks.filter({ hasText: "literal" })).toHaveCount(0);
+  expect(
+    await marks
+      .first()
+      .evaluate((element) => getComputedStyle(element).backgroundColor),
+  ).toBe("rgb(238, 237, 245)");
+  expect(
+    await marks.first().evaluate((element) => getComputedStyle(element).color),
+  ).toBe("rgb(40, 43, 50)");
+});
+
+test("renaming preserves source and profile and persists the next save filename", async ({
+  page,
+}) => {
+  await page.goto(url);
+  await page.getByRole("button", { name: "New document", exact: true }).click();
+  const editor = page.getByRole("textbox", { name: "Document source" });
+  await editor.fill("# A local draft");
+  const documentUrl = page.url();
+  await page
+    .getByRole("button", { name: "Rename untitled.tinta", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Rename", exact: true }),
+  ).toBeFocused();
+  await page
+    .getByRole("textbox", { name: "Document name", exact: true })
+    .fill("");
+  await expect(
+    page.getByRole("button", { name: "Rename", exact: true }),
+  ).toBeDisabled();
+  await page
+    .getByRole("textbox", { name: "Document name", exact: true })
+    .fill("My research");
+  await page.getByRole("button", { name: "Rename", exact: true }).click();
+  await expect(page.locator(".filename-stem")).toHaveText("My research");
+  await expect(page.locator(".filename-extension")).toHaveText(".tinta");
+  await expect(page.locator(".document-checkpoint")).toHaveText("Changed");
+  await expect(editor).toHaveText("# A local draft");
+  await expect(page).toHaveURL(documentUrl);
+  await expect(page.locator(".local-note")).toContainText("up to date");
+  await page.reload();
+  await expect(
+    page.getByRole("button", { name: "Rename My research.tinta", exact: true }),
+  ).toBeVisible();
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Save source", exact: true }).click();
+  expect((await download).suggestedFilename()).toBe("My research.tinta");
+  await expect(page.locator(".document-checkpoint")).toHaveText(
+    "Source unchanged",
+  );
+  await page
+    .getByRole("button", { name: "Rename My research.tinta", exact: true })
+    .click();
+  await page
+    .getByRole("textbox", { name: "Document name", exact: true })
+    .fill("Cancelled name");
+  await page.getByRole("button", { name: "Close dialog", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Rename My research.tinta", exact: true }),
+  ).toBeFocused();
+  await expect(page.locator(".document-checkpoint")).toHaveText(
+    "Source unchanged",
+  );
 });

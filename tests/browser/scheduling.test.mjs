@@ -36,7 +36,7 @@ test("editor and recovery debounce at their exact idle boundaries and cancel old
     .getByLabel("Keep local recovery copies on this device")
     .check({ force: true });
   await page
-    .getByRole("button", { name: "Cancel", exact: true })
+    .getByRole("button", { name: "Close dialog", exact: true })
     .click({ force: true });
   const editor = page.getByRole("textbox", { name: "Document source" });
   await editor.press("ControlOrMeta+End");

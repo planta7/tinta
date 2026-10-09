@@ -223,7 +223,7 @@ export async function run(
     if (command === "unpack" && !bundle)
       usage("Unpack requires a source bundle.");
     if (command === "pack" && !input.toLowerCase().endsWith(".tinta"))
-      usage("Pack requires Tinta source.");
+      usage("Pack requires tinta source.");
     if (
       command === "enrich" &&
       input !== "-" &&

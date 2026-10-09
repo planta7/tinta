@@ -1,10 +1,10 @@
 .tinta-reader {
-  --tinta-text: #1f2328;
+  --tinta-text: #282b32;
   --tinta-surface: #ffffff;
-  --tinta-secondary: #f6f8fa;
-  --tinta-muted: #59636e;
-  --tinta-border: #d0d7de;
-  --tinta-accent: #0969da;
+  --tinta-secondary: #f4f4f6;
+  --tinta-muted: #646975;
+  --tinta-border: #dcdfe5;
+  --tinta-accent: #384e99;
   --tinta-error: #b42318;
   box-sizing: border-box;
   max-width: min(800px, 72ch);
@@ -29,7 +29,7 @@
   margin: 1em 0;
 }
 .tinta-reader h1 {
-  font-size: 2em;
+  font-size: 2.5em;
 }
 .tinta-reader h2 {
   font-size: 1.5em;
@@ -43,7 +43,11 @@
 .tinta-reader h4,
 .tinta-reader h5,
 .tinta-reader h6 {
-  line-height: 1.25;
+  font-family:
+    "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia,
+    serif;
+  font-weight: 400;
+  line-height: 1.2;
 }
 .tinta-reader a {
   color: var(--tinta-accent);
@@ -63,7 +67,7 @@
 }
 .tinta-reader button {
   min-height: 32px;
-  padding: 4px 12px;
+  padding: 5px 12px;
   color: var(--tinta-text);
   background: var(--tinta-secondary);
   border: 1px solid var(--tinta-border);
@@ -270,13 +274,13 @@
 .tinta-reader-actions {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 .tinta-reader-actions button {
   color: var(--tinta-muted);
   background: var(--tinta-surface);
   font-size: 12px;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 .tinta-reader h1 {
   letter-spacing: -0.035em;
@@ -289,7 +293,7 @@
   margin-top: 1.6em;
 }
 .tinta-control {
-  padding-block: 6px;
+  padding-block: 10px;
 }
 .tinta-control label {
   margin-bottom: 6px;
@@ -307,7 +311,7 @@
 .tinta-control select {
   padding: 6px 10px;
   border: 1px solid var(--tinta-border);
-  border-radius: 6px;
+  border-radius: 4px;
   background: var(--tinta-surface);
   color: var(--tinta-text);
   min-height: 36px;
@@ -337,7 +341,7 @@
 }
 .tinta-reader pre {
   border: 1px solid var(--tinta-border);
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: 14px;
   line-height: 1.6;
 }
