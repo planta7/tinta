@@ -16,7 +16,7 @@ The release gate requires every accepted V1 normative rule to have an identifiab
 
 **Artifacts/IO:** source fidelity, bundle canonicalization, duplicate-key/path/CRC/hash/decompression rejection, all raster types and malicious images, image capability boundaries, state fingerprints, selected-answer exports, static hidden-data omission, source/payload escaping, actual file:// opening, output existence/atomicity/cancellation and cross-platform CLI argument handling.
 
-**Editor/reader:** worker revisions/timeouts, dirty buffer flow, recovery opt-in/quota errors, reference editor standalone opening, file API fallbacks, semantic diagnostics source selection, state reconciliation, imported data/image undo, valid/invalid/stale preview states, focus and no unexpected network.
+**Editor/reader:** worker revisions/timeouts, dirty buffer flow, automatic draft restoration, recovery opt-out/quota errors, reference editor standalone opening, file API fallbacks, semantic diagnostics source selection, state reconciliation, imported data/image undo, valid/invalid/stale preview states, focus and no unexpected network.
 
 **Security/accessibility:** all scenarios in security/design contracts, fixed exploit regressions, operation/resource limits, no author execution, no surprise remote requests, safe SVG and opaque preview tests, axe checks and named manual assistive-technology/device runs.
 

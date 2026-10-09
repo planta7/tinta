@@ -201,7 +201,7 @@ class PublicChecks(unittest.TestCase):
             hashlib.sha256(
                 json.dumps(records, sort_keys=True, ensure_ascii=False).encode()
             ).hexdigest(),
-            'a24ae965818d1065e4ab7a3975f40f0a8ff094e8c9ff115ae236f2bcb724cfb8',
+            'afb28a1b615cf5ca878d5fc431e3191c39332b5eab14591badde104b5c85a594',
         )
         self.edit_json('conformance/cases.json', lambda d: d['cases'].pop())
         self.run_check(False)

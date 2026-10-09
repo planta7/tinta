@@ -256,9 +256,9 @@
       "id": "SC-026",
       "area": "editor",
       "milestone": "M6",
-      "title": "Local recovery opt-in",
-      "procedure": "Start with recovery disabled, then enable, edit, reload, restore, delete and deny/quota-limit storage.",
-      "expected": "No recovery bytes before consent; entries offered not auto-opened; deletion works; unavailable storage warns without disabling source save.",
+      "title": "Automatic local drafts",
+      "procedure": "Edit with automatic drafts, reload a document URL, verify source and mode restoration, then disable, delete and deny/quota-limit storage.",
+      "expected": "Automatic source restoration never persists reader answers; opt-out survives reload; deletion works; unavailable storage warns without disabling source save.",
       "status": "NOT_RUN",
       "manualRequired": false
     },

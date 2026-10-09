@@ -31,7 +31,7 @@ Status: normative scope and implementation baseline, 8 October 2026.
 | DES-08 | MIT for this original specification, engine, reference tools, fixtures and examples. Future proprietary product lives separately. | Open infrastructure and an uncomplicated downstream boundary. |
 | DES-09 | Raw author HTML is displayed inert, except HTML comments, which remain non-rendered notes. | Markdown compatibility does not authorize HTML execution. |
 | DES-10 | No remote resource fetching. Local raster images only; imported CSV/JSON become embedded typed tables. | Local, reproducible documents with explicit resources. |
-| DES-11 | No automatic persistence of reader answers. A reference editor keeps explicit local recovery copies; these are not saved source files. | Separate recovery from saving and interpretation state. |
+| DES-11 | No automatic persistence of reader answers. The reference editor automatically keeps local drafts and restores the open document on refresh; these are not saved source files. | Separate recovery from saving and interpretation state. |
 | DES-12 | An interactive export includes source, all data and hidden branches. A static export includes only the resolved visible presentation and referenced visible images. | Make the confidentiality boundary explicit. |
 | DES-13 | Formatting defaults `en-US` and `USD`, with explicit supported locale/currency overrides. | Make formatting defaults explicit. |
 | DES-14 | An interactive state update is transactional; an invalid candidate rolls back entirely. | Text, charts, selections and totals must not disagree. |

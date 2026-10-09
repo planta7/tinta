@@ -20,7 +20,7 @@ The first delivery is a language/toolchain, not a validated commercial propositi
 
 ## Required deliverables
 
-A normative language specification; a conformance corpus; a parser/validator/evaluator SDK; a safe renderer; all seven chart types; a CLI; a standalone local reference editor; editable `.tinta`/`.tinta.zip`; interactive/static HTML; documentation; license notices; repeatable CI and manual qualification evidence.
+A normative language specification; a conformance corpus; a parser/validator/evaluator SDK; a safe renderer; all seven chart types; a CLI; a local reference editor with static application and portable standalone builds; editable `.tinta`/`.tinta.zip`; interactive/static HTML; documentation; license notices; repeatable CI and manual qualification evidence.
 
 The reference editor is intentionally small. It is not the future proprietary product. Its source belongs to the open reference toolchain. A future premium application may consume the public SDK from another repository without changing the file format or requiring its account for reading.
 

@@ -218,7 +218,7 @@ Milestones M0–M7 build on their listed prerequisites. Acceptance requires actu
 
 3. Implement state reconciliation, invalid-preview banner/disabled controls/exports, reset and source dirty semantics. File-save fallback messages must not claim an unobservable disk write succeeded.
 
-4. Implement local CSV/JSON schema preview, image import/resolution and undo; opt-in IndexedDB recovery with limits/deletion/quota warnings, off by default. No account, automatic persistence of answers or network API.
+4. Implement local CSV/JSON schema preview, image import/resolution and undo; automatic IndexedDB drafts with limits/deletion/quota warnings and persistent opt-out. No account, automatic persistence of answers or network API.
 
 5. Produce one `tinta-studio.html` that opens via file:// without external chunks, with trusted embedded worker/preview runtimes. Verify `tinta studio` resolves/copies it successfully; close M5’s single deferred success subgate.
 
@@ -230,7 +230,7 @@ Milestones M0–M7 build on their listed prerequisites. Acceptance requires actu
 - The standalone editor opens local files, enriches/saves/exports and works offline in the three browser engines without requiring File System Access.
 - All four examples remain documents-first, reading is default, no layout-builder controls appear.
 - Worker/sandbox messages fail closed; unsaved data is preserved through invalid source/timeouts/quota failures.
-- Recovery is off by default and visibly distinct from saving; generated English UI and documentation agree.
+- Recovery is automatic by default and visibly distinct from saving; generated English UI and documentation agree.
 
 **Scope boundary:** No AI assistant, publishing/sharing, native installer, sync, account, collaboration or commercial feature work.
 
