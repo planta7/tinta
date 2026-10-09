@@ -275,7 +275,7 @@
       "line": 107,
       "title": "\"SC-001 and CT-007: author HTML, comments and interpolated payloads stay inert without requests\"",
       "sha256": "4cff2e704e71dccaa72746d3647c84cc59a1ad74413ea225df8889544dafb697",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "syntax-3bd29bfde85f",
@@ -338,7 +338,7 @@
       "line": 159,
       "title": "\"CT-009: unsafe links are inert and allowed links carry explicit navigation protections\"",
       "sha256": "1092693211e010576dc3a95b8c9d555d37035fe9b1a52dc6694a2cb37e5e54ea",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "syntax-cdd10c4a6de3",
@@ -374,7 +374,7 @@
       "line": 329,
       "title": "\"same-document anchors remain local across instances and do not reveal false branches\"",
       "sha256": "b21ecd2cd680210e7553da50a42fbbb02b98e39bfdae81621564b8b7ee779ca7",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "reader-105a9ba2ba98",
@@ -383,7 +383,7 @@
       "line": 788,
       "title": "\"shared sessions reserve hidden headings and never steal focus from another mounted reader\"",
       "sha256": "8d7724529c81a757856ba3f4ed1c63b5848aae503aed5757ea6d449e7e170479",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "syntax-fd10bc6d60eb",
@@ -443,10 +443,10 @@
       "id": "editor-9234d15abffc",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 195,
+      "line": 201,
       "title": "\"raw Markdown opens inert, preserves bytes, enriches and reports download handoff\"",
       "sha256": "0702a7136bd1e6281e22d0067548d998c7015c86b9e91de3efcfacfe8e72d0d8",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "syntax-fc8ec2cd89a4",
@@ -689,7 +689,7 @@
       "line": 247,
       "title": "\"rejected actions roll back DOM value, prose and focus, and recover on the next valid input\"",
       "sha256": "40f15f39d7d807abfde6e9d3d9e8826a0b45d64a6031e6c3c2a4dc9bac494af3",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "reader-14a83dafb140",
@@ -698,7 +698,7 @@
       "line": 356,
       "title": "\"resetPresentation preserves answers while reading reset restores the session baseline\"",
       "sha256": "1d41a96f78643ca124029010baabc090b6ff832b74a45ba052a4e4e01afb6858",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "exports-18463aefe612",
@@ -752,7 +752,7 @@
       "line": 185,
       "title": "\"native controls update one immutable revision and preserve field identity, focus and details\"",
       "sha256": "e0ca48fdeb40adefe3402c6a6cd02f227680b5ce525dcef51b30090642377571",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "reader-c273215916a5",
@@ -761,7 +761,7 @@
       "line": 530,
       "title": "\"pointer dragging retains the native slider throughout successive updates and debounces announcements\"",
       "sha256": "f129fd5f699276a2c6204e7594aaaa2028cd08bbc49918ea642f6ff5369b7a4f",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "syntax-cd6f299d8c2a",
@@ -788,7 +788,7 @@
       "line": 556,
       "title": "\"nested controls work, hidden details retain presentation, and source remount resets it\"",
       "sha256": "0acdfa7f209b683d8b159031b725f047a6964541615c468f9fa056cc5ac76538",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "exports-7d3f1920ff51",
@@ -842,7 +842,7 @@
       "line": 275,
       "title": "\"tables, captions, counts, empty views, Markdown alignment and local placeholders\"",
       "sha256": "c9b0edab4a01e0ec5b9080a9ed3cf9878a8127dd0f31169c93e77735d41afe93",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "syntax-811d30c7fe8b",
@@ -893,10 +893,10 @@
       "id": "reader-293206c0d493",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 898,
+      "line": 904,
       "title": "\"SC-028: all seven native explorers provide keyboard actions and matching data\"",
       "sha256": "47e90b8bf50e1e9f80cc56080128a9b21ab618dd3b49e2f134d81dbf3c9c08e3",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "syntax-4bc4f394b435",
@@ -956,10 +956,10 @@
       "id": "editor-545243b7f075",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 481,
+      "line": 487,
       "title": "\"data import previews mappings and inserts after a complete root block\"",
       "sha256": "475f293523163e43fba48a761811dbe81f186382dcec67cdc4284c84aa12bc22",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "engine-8c6e1c327e2f",
@@ -983,19 +983,19 @@
       "id": "editor-6bc821e2163a",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 773,
+      "line": 779,
       "title": "\"JSON mappings, invalid imports and diagnostics preserve existing source\"",
       "sha256": "6d40a161d308ab469b90a0a5a4fa2fe139598ff21fb40688d27502be652d37e6",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-1290d7aeb8e7",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 388,
+      "line": 394,
       "title": "\"image import is one source and asset undo transaction\"",
-      "sha256": "a1be99d7f6a864c214ad7d306cbb947839e516d4162d9268177016bf143925f6",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "sha256": "312dafacbde13cc8f1513521aab19ea8557645d3078638b9471d8c2d4d0e1268",
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "charts-ae9f14801022",
@@ -1100,10 +1100,10 @@
       "id": "reader-95808e1c04f7",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1118,
+      "line": 1124,
       "title": "\"SC-034: responsive scenes retain explorer focus and provide review artifacts\"",
       "sha256": "0ce8c5ab07fb52d10a55b1f5e48e13fffc9cfb81e6ea2769d1b4878fbff6bc36",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "engine-579357d4a6ad",
@@ -1136,10 +1136,10 @@
       "id": "reader-0abf0c906fc0",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1039,
+      "line": 1045,
       "title": "\"SC-032: zero, single, empty inspectors and histogram reset\"",
       "sha256": "cbe125e36b4083ea3707c17143e1254ca350e77c2a14ae8b4b4f2dd42aca5df2",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "charts-000162e27e2a",
@@ -1154,91 +1154,91 @@
       "id": "reader-6ed0b92cd59b",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 984,
+      "line": 990,
       "title": "\"SC-031: legend visibility is local, persistent across filtering and resettable\"",
       "sha256": "a96be4d534e2d40928ced8acc3b08411a8af793a9375f4361f82e62b3b44bce8",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "reader-a299f4d4e59f",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 938,
+      "line": 944,
       "title": "\"SC-029 and SC-030: shared selection, pointer inspection, outside filters and no-op revisions\"",
       "sha256": "5f55f48d0978dfe42f769ba6172567e3def1b85a97054606136a0b6104199a4b",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "reader-a29a543ddc03",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1072,
+      "line": 1078,
       "title": "\"linked chart failure rolls back narrative and every figure\"",
       "sha256": "cd4d946a2b1ecca621df4785eea06e075c2f06e055d8a4a0494b126b28761b72",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "reader-548e6169b5ab",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1183,
+      "line": 1189,
       "title": "\"SC-033: overlapping scatter points select x across rows and series\"",
       "sha256": "8deedc327510659287c95880ac96ce4ad2f8d4828dbadff2ee561ee63f326ce8",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "reader-ef240d8dbc67",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1487,
+      "line": 1493,
       "title": "\"a failing chart domain rejects a linked selection atomically\"",
       "sha256": "a536ffcd68f0a5375d1b71b52d8eaf6a0ee8b92d3a74bd3f8dc3901ddbcd2c0e",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "reader-85bf4d0b7234",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1526,
+      "line": 1532,
       "title": "\"pointer pins, escape and explorer focus keep inspection local\"",
       "sha256": "e945b375cb87be7981d9d83bb516f93e7f25363b3f7d718b45dda4ec2c4f3319",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "reader-3aa7f782abe0",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1413,
+      "line": 1419,
       "title": "\"focused chart controls retain focus when an external update empties their data\"",
       "sha256": "be72cb5c414720052f08b16f09cc821f6512ebc0935283fe146ad1c802181eea",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "reader-d246900bf8a9",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1454,
+      "line": 1460,
       "title": "\"a self-hiding figure action recovers focus to the preceding native control\"",
       "sha256": "94ba85a7f501a9807c163c81b61118a3c4c89e1be6403f601d6794b95c79be70",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "editor-1f25bc62f3b3",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 598,
+      "line": 604,
       "title": "\"mixed line endings and BOM survive edit, undo and raw source saving\"",
       "sha256": "103da584ef4a0d4e2aa702da84157153c904f6f0393b9107a039650e4300cad7",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-32476bf4f35e",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 627,
+      "line": 633,
       "title": "\"bundle and snapshot downloads preserve authored defaults and chosen answers\"",
       "sha256": "2d89fcf3200a1b4123f6393d4ec5cfdacfc41ea096c207ce5550faf5a1629ef6",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "cli-c6f240d1f939",
@@ -1307,46 +1307,46 @@
       "id": "editor-d8d6c102c660",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 975,
+      "line": 992,
       "title": "\"missing image resolution preserves distinct source paths with shared basenames\"",
-      "sha256": "2ce4ed59cc772e99a3f2f4846208e90f68a40576569f17840e70f79820c32125",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "sha256": "fac320f7a806ae90d7d2b0e17a42f095b36376fd99f0cde50bea3756cfc62c10",
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-f0e993552911",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1045,
+      "line": 1062,
       "title": "\"preview rejects unsafe, missing and indirect asset alias targets\"",
       "sha256": "e7d82ae10524f97602871a432f5427f9dcd35453f912d796ad20668be9d5d9e9",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "artifacts-0677b35d2bf5",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 164,
+      "line": 178,
       "title": "\"canonical packing changes only image destinations and preserves BOM/CRLF\"",
       "sha256": "83a316e9a414e6d0348533058e83ab50ca770a43e7020fae336b4f975e654041",
-      "fileSha256": "6447acadaab4157fcbf940d8e00c8926ea24691f9a10953bd4bec3a596f0a9c1"
+      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
     },
     {
       "id": "artifacts-13e3ec5ef5e5",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 207,
+      "line": 221,
       "title": "\"rejects unknown paths, CRC corruption, trailing bytes, duplicate JSON and hash lies\"",
       "sha256": "7b04397de90a4ba533373e4eb1e52d48d2220c81a2fce11ab73561618512e72b",
-      "fileSha256": "6447acadaab4157fcbf940d8e00c8926ea24691f9a10953bd4bec3a596f0a9c1"
+      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
     },
     {
       "id": "artifacts-d36a6e3148f7",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 320,
+      "line": 334,
       "title": "\"shared image references preserve ordinary links and original label/title syntax\"",
       "sha256": "b3402fa9381f52adefe86071ccae73fb4cb05bcc9fef317b6246765c5e9e777c",
-      "fileSha256": "6447acadaab4157fcbf940d8e00c8926ea24691f9a10953bd4bec3a596f0a9c1"
+      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
     },
     {
       "id": "security-7f60b3524507",
@@ -1397,19 +1397,19 @@
       "id": "artifacts-1d15b6b947b9",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 109,
+      "line": 123,
       "title": "\"round trips a complete selected baseline and resets there\"",
       "sha256": "3f6422f99744f3a1b78aa9b6ed2bbe7b2f8bf7df2c24bde55e1bb428a1a6fb8b",
-      "fileSha256": "6447acadaab4157fcbf940d8e00c8926ea24691f9a10953bd4bec3a596f0a9c1"
+      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
     },
     {
       "id": "artifacts-799ada687672",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 142,
+      "line": 156,
       "title": "\"rejects hash, extra metadata and duplicate keys\"",
       "sha256": "a4996eafe3f4c9a0e94a677a555082c06a1cba7d942c1ef5f6a9ee610d7d8783",
-      "fileSha256": "6447acadaab4157fcbf940d8e00c8926ea24691f9a10953bd4bec3a596f0a9c1"
+      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
     },
     {
       "id": "cli-c587102843e0",
@@ -1424,10 +1424,10 @@
       "id": "artifacts-d417d1808b41",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 278,
+      "line": 292,
       "title": "\"interactive escapes payload terminators, rebases private paths \" +\n      \"and includes complete content\"",
       "sha256": "fb2ed3b53ee6bc6e34cfeae163d22ec1586202a43884f9550e2a0756ef03dc06",
-      "fileSha256": "6447acadaab4157fcbf940d8e00c8926ea24691f9a10953bd4bec3a596f0a9c1"
+      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
     },
     {
       "id": "exports-93846569f6eb",
@@ -1469,19 +1469,19 @@
       "id": "editor-6315c32185d9",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 354,
+      "line": 360,
       "title": "\"exports selected current answers and validates the downloaded offline reader\"",
       "sha256": "aaccb42937dbe5992e77321c22ff407fd33432fdc96e6ecf6b292a532b08cbcb",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "artifacts-f8fa34769e2f",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 244,
+      "line": 258,
       "title": "\"static omits hidden data/source/assets and does not need hidden images\"",
       "sha256": "0758b8ef1327960f0b0d881603779e9722a929ea1cb3e7bfec29540b8b28a8ab",
-      "fileSha256": "6447acadaab4157fcbf940d8e00c8926ea24691f9a10953bd4bec3a596f0a9c1"
+      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
     },
     {
       "id": "exports-c3b484549f48",
@@ -1523,10 +1523,10 @@
       "id": "editor-7f2904325f37",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 525,
+      "line": 531,
       "title": "\"sandbox denies parent authority and ignores unauthenticated messages\"",
       "sha256": "281c549256c32054cf946f25ba6e2fca247d0b344201b0eb33c71c8c062e5aac",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "cli-32cfeaafc245",
@@ -1568,37 +1568,37 @@
       "id": "editor-f3fda819175c",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 927,
+      "line": 933,
       "title": "\"a source revision change cancels an export before download handoff\"",
-      "sha256": "4215d24407a2d3602fa466091c51f5783327d7e088a9aa590b8a2b9d430fd981",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "sha256": "aa2be8982223a7460852d0ba7f4235d3db823a5b3db9d9626546b2dc29c21079",
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-a42d8ae0bd82",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 100,
+      "line": 106,
       "title": "\"standalone reading, sandbox, answers, edit and invalid recovery\"",
       "sha256": "72ee3f5136cdd9625476a6eb0307d5ccad24603e8d11c216d95df3b29415b530",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-bd9840b8f95b",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 290,
+      "line": 296,
       "title": "`offline example ${name} and responsive reading`",
       "sha256": "1e241ad9f20eb2128c941e7b9cdd639f227c82c7f53b31351ae7d8afe950f033",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-44792eecfe01",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 959,
+      "line": 976,
       "title": "\"editor surfaces expose labelled controls and accessible dialogs\"",
       "sha256": "5b6d050da87415ff92615dc39eb7db917004a79fbd9eb501c20e6840cee1226d",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "studio-1476aaec0765",
@@ -1658,37 +1658,37 @@
       "id": "editor-f71dc5af42a4",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 327,
+      "line": 333,
       "title": "\"reconciles prose edits and resets a changed initial without changing saved source\"",
       "sha256": "caef432f17e7f237ad9bb90e54f0ea4593515c471d0c2d42b63c9c230ed92496",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-ac92108d5700",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 238,
+      "line": 244,
       "title": "\"unsaved dialog close preserves source, file actions and focus\"",
       "sha256": "7c65c1f8deb872a1381df18f31b9782fc94d3e647ee2fdf1d827366f24c28402",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-ec6d370e0eb2",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 260,
+      "line": 266,
       "title": "\"unknown extensions require a profile and multiple files require a single choice\"",
       "sha256": "efae0b1743b615b64ccb46d349bef68525fec16793e7e114ccf0cef3903fc2a8",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-9ca658f6c6b4",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 672,
+      "line": 678,
       "title": "\"source save-as, keyboard commands and unsaved Save or Discard\"",
       "sha256": "b0bdff9d44a6c96f8ff482af2b9a7fe2aaecffea9893bbf98fdbea9450ee6fd9",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "studio-a42bdeff1f22",
@@ -1712,28 +1712,28 @@
       "id": "editor-6fcbe5038110",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 137,
+      "line": 143,
       "title": "\"automatic local drafts restore source and mode after reload\"",
       "sha256": "f11520d401d510526d17bf8c58325510daee5b9ebdc076bf7dba9bd45c02b96b",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-2ba717ce789b",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 575,
+      "line": 581,
       "title": "\"denied recovery storage leaves source saving available\"",
       "sha256": "125de038beeac096b52691a5c452425598029205b07d6b63dcf391b90855ddb3",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-aeed8b8095de",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 707,
+      "line": 713,
       "title": "\"recovery deletion and disabling are explicit and preserve the active buffer\"",
       "sha256": "3cecb1136bf7b33e8f264674afee73c060a906822efc09bef1c949e5e275c8c0",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "cli-b03287662ac7",
@@ -1841,7 +1841,7 @@
       "line": 484,
       "title": "\"accessible document reflows, supports keyboard and records screenshot baselines\"",
       "sha256": "8b22ec47ad858fc327cf1bbe1146a4c2baa8310e06aaaf88d37f5e82b4b4d417",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "reader-bf5f36113ffe",
@@ -1850,7 +1850,7 @@
       "line": 583,
       "title": "\"untrusted render plans fail before host mutation and subscriber failures are contained\"",
       "sha256": "b54ca216d6de8f6da680c567c7156117183b457d6e2ea5c6dcc6ffb163ff14e1",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "engine-b8ef2c0fbf9d",
@@ -1883,19 +1883,19 @@
       "id": "editor-0e4af1059705",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 858,
+      "line": 864,
       "title": "\"preview capability handles only valid monotonic commands and closes on excess fields\"",
       "sha256": "1e1da1221d25da26277c25e33b8f54fbe5ebe2f6c579b2b279388d8fa4b2aafc",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-573fa5c1142f",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 908,
+      "line": 914,
       "title": "\"preview rejects untrusted IR and explicit destroy tears down the reader\"",
       "sha256": "ada984608e553846ad9980f1b0c0a07507ed2353c2f73009f30202b80c9ec95a",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "qualification-b03e2dcd9c7d",
@@ -1991,7 +1991,7 @@
       "id": "check-scripts-performance-browser.mjs",
       "kind": "check",
       "path": "scripts/performance-browser.mjs",
-      "sha256": "9dc5cee7ddbbe5f7eae4ff71d3f7a0f30ac747edd4413e43bbbfcfd3996bea10"
+      "sha256": "87871db6a2181cf9e3a21ac2722dafe109dbbe0ece56e933abba3ac8f33b37ed"
     },
     {
       "id": "check-scripts-performance-policy.mjs",
@@ -2051,7 +2051,7 @@
       "line": 376,
       "title": "\"mount rejects foreign, forged and duplicate hosts, preserves host siblings and isolates destruction\"",
       "sha256": "0496a59d308f94a1b9d36cc7f3f027d79f80a1d90b2b6176985ba8725fa25400",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "reader-e8ad57cde28d",
@@ -2060,7 +2060,7 @@
       "line": 722,
       "title": "\"one subscription per instance and no retained listeners or timer after repeated destroy\"",
       "sha256": "34bbb525f1db5098b8741052058756c8e246cecc6f067d64405ff2e56cc011d6",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "worker-58d99badb1fc",
@@ -2384,7 +2384,7 @@
       "line": 823,
       "title": "\"unavailable host callbacks and destroyed sessions yield local errors with usable reset\"",
       "sha256": "16f5a1dbeb07b14e8a366cae9612760bf5611ecad7e26848635f92bc7996c35b",
-      "fileSha256": "b0caf5de7f1fd13556521bd373728ead03d3e53617efdff08634d0803119d6a6"
+      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
     },
     {
       "id": "diagnostics-880817e887f3",
@@ -2489,109 +2489,118 @@
       "id": "editor-2b44ae101452",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1102,
+      "line": 1119,
       "title": "\"document menus support keyboard dismissal, outside clicks and dialog focus return\"",
-      "sha256": "0c32d7429e045051ae0cb70546ff77c1662c4142bc6fc237edc7207137443da1",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "sha256": "382d9908eee9d9ca8c12e06d7fa019be4f14594f3ed3fa66b7c42dd481a75dd6",
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-9c2f24aa5f93",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1159,
+      "line": 1174,
       "title": "\"workspace reflows, retains the source cursor and exposes insertion from the narrow preview\"",
-      "sha256": "b41dc51d7c7425f3cd9b783455e8936cf5ae48c6ffddb6ebf0bbb12f902a014d",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "sha256": "86bc0741d535339a1e436881b6a40eb50a387e42158f6398598efa961ae5454d",
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-bd34140adc88",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1219,
+      "line": 1244,
       "title": "\"design review captures welcome, reading, editing, export and mobile surfaces\"",
       "sha256": "6e7645bc11ff0363c83e68e61aa4c54ab110f5e0feb3b4334a7bebc0404f0458",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-76ae8637c541",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1283,
+      "line": 1308,
       "title": "\"new documents explain the empty state and clearing diagnostics does not leak across documents\"",
       "sha256": "d74f6a441e1ee92bb280ca84c284dd5c726a5cb0882354734b486e3e8c094e3d",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-c6bfe4ae9ec4",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1304,
+      "line": 1329,
       "title": "\"catalogs describe their contents, filter without editing and close action menus\"",
       "sha256": "e41e186396dd18276d0d65e7de5bcd3983ed7c5a3c47343e5bec6cd48c14d3bc",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-de4a0d45458e",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1373,
+      "line": 1398,
       "title": "\"draft restoration resets answers and persistent opt-out prevents automatic reopening\"",
       "sha256": "7bc7bcfbaf7092b181e90dbc48dba870bf8d6e0b085e9edbfdbe4df779398517",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-ffa998e27004",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1402,
+      "line": 1427,
       "title": "\"direct section URLs and missing draft routes have usable recovery paths\"",
       "sha256": "bc889d04304211009b4d797571951b9288f00980ecfca23de2be10d42b62fe59",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-35944d5636e8",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1420,
+      "line": 1445,
       "title": "\"declaration thumbnails demonstrate results without inserting their demonstration\"",
       "sha256": "6a55a94910da05ce792c6cdc7b7c6268db42700b20b196238a5b3985a30b0a88",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-0e43e8bc5c51",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1468,
+      "line": 1493,
       "title": "\"new documents retain a clean checkpoint and home navigation respects the requested destination\"",
       "sha256": "5d45fa5392303d7eef41aa546c4e2aed4b02049b58d87fa0eb8f666e78110f03",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-d654cfd0a0d6",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1527,
+      "line": 1552,
       "title": "\"dialog actions share one footer and reader actions remain outside the document\"",
       "sha256": "9739d321361a23390f6ebf52530336094363031c06b963bba13ff9789e0a4693",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-d76845f7227e",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1565,
+      "line": 1590,
       "title": "\"parser decorations cover every directive and exclude literal fenced source\"",
       "sha256": "3e59a5db7872e8d6cb034babed38dfc4e374b0eef09cef613fc3338316ab067b",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
     },
     {
       "id": "editor-7cb9ca4ad62e",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1634,
+      "line": 1659,
       "title": "\"renaming preserves source and profile and persists the next save filename\"",
-      "sha256": "072f048410ed4180126c794f1d8c79c523c88a104177f9202de33ec85c054504",
-      "fileSha256": "f25d743ba8370d184e1e2749b03007a8b139af12f8711b3d997072f4254d249f"
+      "sha256": "250efd4d5e600be1272b7f28ca72c8fe911253e85ee32e3e12a15c343b39902a",
+      "fileSha256": "dc332eacc770461f1b06e49c4073e76dea68196041ce099b49f41d6a5a52df34"
+    },
+    {
+      "id": "performance-preview-content",
+      "kind": "test",
+      "path": "tests/browser/performance.test.mjs",
+      "line": 4,
+      "title": "\"preview measurement observes document content after toolbar removal\"",
+      "sha256": "9a0627514e4a6e34a7946327ce88fa82ba2a4df82e39ea0269a8ed82d38da533",
+      "fileSha256": "e4ec95aeed33897640eba57b21b062dc8d0a64af566d60ea46aeaec7f0361db9"
     }
   ],
   "rules": [
@@ -5264,7 +5273,8 @@
         "performance-0713957d4fdd",
         "performance-5628cb473bd5",
         "check-scripts-performance-browser.mjs",
-        "check-scripts-performance-policy.mjs"
+        "check-scripts-performance-policy.mjs",
+        "performance-preview-content"
       ],
       "manual": {
         "review": "performance-reference",
@@ -5284,7 +5294,8 @@
         "performance-0713957d4fdd",
         "performance-5628cb473bd5",
         "check-scripts-performance-browser.mjs",
-        "check-scripts-performance-policy.mjs"
+        "check-scripts-performance-policy.mjs",
+        "performance-preview-content"
       ],
       "manual": {
         "review": "performance-reference",
@@ -5304,7 +5315,8 @@
         "performance-0713957d4fdd",
         "performance-5628cb473bd5",
         "check-scripts-performance-browser.mjs",
-        "check-scripts-performance-policy.mjs"
+        "check-scripts-performance-policy.mjs",
+        "performance-preview-content"
       ],
       "manual": {
         "review": "performance-reference",
@@ -5324,7 +5336,8 @@
         "performance-0713957d4fdd",
         "performance-5628cb473bd5",
         "check-scripts-performance-browser.mjs",
-        "check-scripts-performance-policy.mjs"
+        "check-scripts-performance-policy.mjs",
+        "performance-preview-content"
       ],
       "manual": {
         "review": "performance-reference",
@@ -5344,7 +5357,8 @@
         "performance-0713957d4fdd",
         "performance-5628cb473bd5",
         "check-scripts-performance-browser.mjs",
-        "check-scripts-performance-policy.mjs"
+        "check-scripts-performance-policy.mjs",
+        "performance-preview-content"
       ],
       "manual": {
         "review": "performance-reference",
@@ -5364,7 +5378,8 @@
         "performance-0713957d4fdd",
         "performance-5628cb473bd5",
         "check-scripts-performance-browser.mjs",
-        "check-scripts-performance-policy.mjs"
+        "check-scripts-performance-policy.mjs",
+        "performance-preview-content"
       ],
       "manual": {
         "review": "performance-reference",

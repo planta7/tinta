@@ -46,7 +46,7 @@ export async function measureWorker(page, source) {
 
 // This runs in the browser. Completion promises avoid locator polling while
 // the browser is processing an interaction or replacing the preview document.
-function installProbe() {
+export function installProbe() {
   const afterPaintOpportunity = () =>
     new Promise((resolve) => {
       requestAnimationFrame(() => requestAnimationFrame(resolve));
@@ -79,8 +79,11 @@ function installProbe() {
         const host = document.querySelector("main");
         const changes = new MutationObserver(async () => {
           const article = host.querySelector("article");
-          // The reader places document content between its toolbar and status.
-          const content = article?.children.item(1);
+          // Studio removes the reader toolbar; select content independently
+          // of its position and exclude the accessible status region.
+          const content = article?.querySelector(
+            ":scope > div:not(.tinta-reader-actions):not(.tinta-reader-status)",
+          );
           if (content?.lastElementChild?.textContent !== expectedText) return;
           changes.disconnect();
           await afterPaintOpportunity();
