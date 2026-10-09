@@ -14,11 +14,19 @@ import { join, relative, resolve, sep } from "node:path";
 import { createHash } from "node:crypto";
 import { parse } from "yaml";
 import { runCommandSync } from "./commands.mjs";
+import { deploymentTemporaryRoot } from "./installed-cli-directory.mjs";
 
 const root = process.cwd();
 const directory = resolve("reports/verification/installed-cli");
 mkdirSync(directory, { recursive: true });
-const temporary = realpathSync(mkdtempSync(join(tmpdir(), "tinta-installed-")));
+const temporary = realpathSync(
+  mkdtempSync(
+    join(
+      deploymentTemporaryRoot(process.platform, root, tmpdir()),
+      "tinta-installed-",
+    ),
+  ),
+);
 const deployed = join(temporary, "package");
 const consumer = join(temporary, "consumer");
 const output = join(temporary, "checks á with spaces");
