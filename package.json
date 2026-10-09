@@ -25,7 +25,8 @@
     "benchmark": "node scripts/benchmark.mjs",
     "qualify": "node scripts/qualification.mjs",
     "dev": "pnpm build && vite apps/studio --config apps/studio/vite.config.js",
-    "preview": "vite preview apps/studio --config apps/studio/vite.config.js"
+    "preview": "vite preview apps/studio --config apps/studio/vite.config.js",
+    "qualify:environment": "node scripts/qualification-ci.mjs"
   },
   "devDependencies": {
     "typescript": "6.0.3",

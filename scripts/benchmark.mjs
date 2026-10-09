@@ -7,6 +7,12 @@ import { build } from "esbuild";
 import { chromium } from "@playwright/test";
 import { measureWorker, measureStudio } from "./performance-browser.mjs";
 import { performanceCorpus } from "./performance-corpus.mjs";
+import { performanceExitCode } from "./qualification-policy.mjs";
+
+const supplementary =
+  process.argv.length === 3 && process.argv[2] === "--supplementary";
+if (process.argv.length !== 2 && !supplementary)
+  throw new Error("Usage: node scripts/benchmark.mjs [--supplementary]");
 
 const directory = resolve("build/performance");
 await mkdir(directory, { recursive: true });
@@ -184,11 +190,29 @@ try {
     studio.pass &&
     results.every((result) => result.checks.every((check) => check.pass)) &&
     memory.retained <= memory.maximum;
+  const complete =
+    results.length === corpus.length &&
+    results.every(({ metrics }) =>
+      Object.values(metrics).every(
+        ({ samples }) =>
+          samples.length === 50 && samples.every(Number.isFinite),
+      ),
+    ) &&
+    cold.length === 10 &&
+    Number.isFinite(memory.retained) &&
+    Number.isFinite(worker.elapsed) &&
+    worker.status === "RESPONSE" &&
+    worker.response.kind === "rejected" &&
+    worker.response.diagnostics?.[0]?.code === "E_LIMIT" &&
+    studio.runs.length === 3 &&
+    studio.summaries.every((summary) => !summary.reason);
   await writeFile(
     "reports/verification/performance.json",
     JSON.stringify(
       {
         status: pass ? "MEASURED_TARGETS_PASS" : "FAIL",
+        measurementStatus: complete ? "COMPLETE" : "FAIL",
+        role: supplementary ? "SUPPLEMENTARY" : "REFERENCE",
         environment,
         warmup: 10,
         measured: 50,
@@ -206,7 +230,7 @@ try {
       2,
     ) + "\n",
   );
-  if (!pass) process.exitCode = 1;
+  process.exitCode = performanceExitCode({ pass, complete, supplementary });
 } catch (error) {
   await writeFile(
     "reports/verification/performance-failure.json",

@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { runCommandSync } from "./commands.mjs";
 import { mkdirSync, writeFileSync } from "node:fs";
 
 const requested = process.argv.slice(2);
@@ -100,7 +100,7 @@ const commands = [
 const results = [];
 
 for (const command of commands) {
-  const result = spawnSync(command[0], command.slice(1), { encoding: "utf8" });
+  const result = runCommandSync(command);
 
   process.stdout.write(result.stdout ?? "");
   process.stderr.write(result.stderr ?? "");

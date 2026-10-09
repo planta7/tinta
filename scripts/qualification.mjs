@@ -1,9 +1,15 @@
 import { reviewBlockers } from "./qualification-evidence.mjs";
 import { captureCandidate } from "./candidate.mjs";
-import { spawnSync } from "node:child_process";
+import { runCommandSync } from "./commands.mjs";
+import {
+  automatedBlockers,
+  qualificationOptions,
+  qualificationExitCode,
+} from "./qualification-policy.mjs";
 import { createHash } from "node:crypto";
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 
+const options = qualificationOptions(process.argv.slice(2));
 const initialCandidate = captureCandidate();
 const directory = "reports/verification/qualification";
 mkdirSync(directory, { recursive: true });
@@ -14,51 +20,67 @@ const commands = [
   ["pnpm", "audit", "--json"],
   ["node", "scripts/traceability.mjs"],
   ["node", "scripts/qualification-package.mjs"],
-  ["node", "scripts/benchmark.mjs"],
+  ["node", "scripts/installed-cli.mjs"],
+  [
+    "node",
+    "scripts/benchmark.mjs",
+    ...(options.supplementary ? ["--supplementary"] : []),
+  ],
 ];
 const results = [];
 for (const command of commands) {
   const start = new Date().toISOString();
-  const result = spawnSync(command[0], command.slice(1), {
-    encoding: "utf8",
-    maxBuffer: 32 * 1024 * 1024,
-    env: { ...process.env, TINTA_PROPERTY_RUNS: "10000" },
-  });
+  let result;
+  try {
+    result = runCommandSync(command, {
+      env: { ...process.env, TINTA_PROPERTY_RUNS: "10000" },
+    });
+  } catch (error) {
+    result = { status: null, error };
+  }
   const log = `${directory}/command-${results.length + 1}.log`;
-  writeFileSync(log, (result.stdout ?? "") + (result.stderr ?? ""));
+  writeFileSync(
+    log,
+    (result.stdout ?? "") +
+      (result.stderr ?? "") +
+      (result.error?.message ?? ""),
+  );
   results.push({
     command,
     start,
+    end: new Date().toISOString(),
     exitCode: result.status,
     error: result.error?.message,
     log,
   });
   console.log(`${result.status === 0 ? "PASS" : "FAIL"}: ${command.join(" ")}`);
 }
-const manifest = readFileSync("build/qualification/manifest.json");
-const candidate = {
-  ...captureCandidate(),
-  manifestSha256: createHash("sha256").update(manifest).digest("hex"),
-};
+const candidate = captureCandidate();
+try {
+  const manifest = readFileSync("build/qualification/manifest.json");
+  candidate.manifestSha256 = createHash("sha256")
+    .update(manifest)
+    .digest("hex");
+} catch (error) {
+  candidate.manifestError = error.message;
+}
 let evidence;
-if (process.argv.length === 4 && process.argv[2] === "--evidence") {
-  evidence = JSON.parse(readFileSync(process.argv[3], "utf8"));
-} else if (process.argv.length !== 2) {
-  throw new Error(
-    "Usage: node scripts/qualification.mjs [--evidence review.json]",
-  );
-}
-const blockers = reviewBlockers(evidence, candidate);
-if (candidate.sourceSha256 !== initialCandidate.sourceSha256) {
-  blockers.push("Candidate source changed during verification.");
-}
-if (results.some((result) => result.exitCode !== 0)) {
-  blockers.push("One or more automated commands failed.");
-}
+if (options.evidencePath)
+  evidence = JSON.parse(readFileSync(options.evidencePath, "utf8"));
+const automatic = automatedBlockers(initialCandidate, candidate, results);
+const acceptance = reviewBlockers(evidence, candidate);
+if (options.supplementary)
+  acceptance.push("Reference-machine performance acceptance remains required.");
+const blockers = [...new Set([...automatic, ...acceptance])];
 const report = {
   status: blockers.length ? "BLOCKED" : "PASS",
+  automatedStatus: automatic.length ? "FAIL" : "PASS",
+  automatedOnly: options.automatedOnly,
+  performanceRole: options.supplementary ? "SUPPLEMENTARY" : "REFERENCE",
   automatedCommands: results,
   candidate,
+  automatedBlockers: automatic,
+  acceptanceBlockers: acceptance,
   blockers,
   publicationAuthorized: false,
 };
@@ -67,6 +89,7 @@ writeFileSync(
   JSON.stringify(report, null, 2) + "\n",
 );
 console.log(
-  `${report.status}: review reports/verification/qualification/readiness.json`,
+  `Automated checks: ${report.automatedStatus}; qualification: ${report.status}. ` +
+    `Review ${directory}/readiness.json`,
 );
-process.exitCode = blockers.length ? 1 : 0;
+process.exitCode = qualificationExitCode(report, options.automatedOnly);

@@ -8,7 +8,7 @@ import {
   rm,
 } from "node:fs/promises";
 import { createHash } from "node:crypto";
-import { execFileSync } from "node:child_process";
+import { requireCommandSync } from "./commands.mjs";
 import { captureCandidate } from "./candidate.mjs";
 import { join, relative, dirname, resolve } from "node:path";
 import { compile, createSession } from "../packages/engine/dist/index.js";
@@ -100,13 +100,14 @@ for (const name of [
   "artifacts",
   "cli",
 ]) {
-  execFileSync(
+  requireCommandSync([
     "pnpm",
-    ["--dir", `packages/${name}`, "pack", "--pack-destination", distributions],
-    {
-      stdio: "pipe",
-    },
-  );
+    "--dir",
+    `packages/${name}`,
+    "pack",
+    "--pack-destination",
+    distributions,
+  ]);
 }
 await inventory(distributions);
 await inventory(join(destination, "source"));
