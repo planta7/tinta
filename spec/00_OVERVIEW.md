@@ -6,13 +6,13 @@ Contract revision: **1.0-draft.2**. Target source-format version: **1.0**. This 
 
 ## Document model
 
-A document has Markdown content, immutable author constants, reader-controlled scalar values, derived values, immutable typed tables, reactive views and figures. All declared names are global to that document. The language does not define screens, routes, web components, network actions or author styling.
+tinta is a language for interactive documents with Markdown-compatible text formatting. A document has prose, immutable author constants, reader-controlled scalar values, derived values, immutable typed tables, reactive views and figures. All declared names are global to that document. The language does not define screens, routes, web components, network actions or author styling.
 
 There are twelve named directives: `meta`, `let`, `calc`, `slider`, `toggle`, `choice`, `when`, `details`, `data`, `view`, `table`, `chart`. `@end` is a block delimiter, not a thirteenth functional directive. The function registry contains eleven functions: `if`, `min`, `max`, `round`, `pow`, `count`, `sum`, `mean`, `fixed`, `percent`, `money`.
 
 ## Source modes
 
-A `.md` file is opened in `markdown` profile: CommonMark plus the three documented extensions, with Tinta recognition entirely disabled. A `.tinta` file is opened in `tinta` profile, unless the caller explicitly selects another profile. Profile is an API parameter; the pure engine never guesses a filename from global state. Unknown file extensions require an explicit profile or a UI choice.
+A `.md` file is opened in `markdown` profile: CommonMark plus the three documented extensions, with tinta recognition entirely disabled. A `.tinta` file is opened in `tinta` profile, unless the caller explicitly selects another profile. Profile is an API parameter; the pure engine never guesses a filename from global state. Unknown file extensions require an explicit profile or a UI choice.
 
 An author may omit `@meta`; the default version is `1.0`, locale `en-US`, currency `USD`. New-file templates insert no mandatory scaffolding. If present, metadata is a single root directive before any non-comment, nonblank content, with these supported keys only:
 
