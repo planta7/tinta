@@ -1,466 +1,327 @@
 {
   "contractRevision": "1.0-draft.2",
-  "executionStatus": "NOT_RUN",
   "scenarios": [
     {
       "id": "SC-001",
       "area": "security",
-      "milestone": "M3",
       "title": "Inert author HTML",
       "procedure": "Render script, iframe, style and event-handler HTML nodes.",
-      "expected": "No author code executes; raw nodes are escaped; W_HTML_INERT appears; no automatic request occurs.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "No author code executes; raw nodes are escaped; W_HTML_INERT appears; no automatic request occurs."
     },
     {
       "id": "SC-002",
       "area": "security",
-      "milestone": "M5",
       "title": "Payload terminator escaping",
       "procedure": "Export source text containing </script>, quotes, ampersands and U+2028/U+2029, then open file://.",
-      "expected": "The payload is intact; no extra executable node appears; the intended control still works.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "The payload is intact; no extra executable node appears; the intended control still works."
     },
     {
       "id": "SC-003",
       "area": "security",
-      "milestone": "M6",
       "title": "Opaque preview isolation",
       "procedure": "From an adversarial frame/test payload, attempt parent storage, filesystem and unregistered message commands.",
-      "expected": "Access is blocked; invalid messages close their port; only allowlisted validated DTOs are processed.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Access is blocked; invalid messages close their port; only allowlisted validated DTOs are processed."
     },
     {
       "id": "SC-004",
       "area": "security",
-      "milestone": "M5",
       "title": "Zero automatic network requests",
       "procedure": "Intercept HTTP(S)/WebSocket/EventSource requests on load, all controls, legend toggles, selection and export.",
-      "expected": "Zero application-initiated external requests. Deliberately clicking an external link is tested separately.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Zero application-initiated external requests. Deliberately clicking an external link is tested separately."
     },
     {
       "id": "SC-005",
       "area": "security",
-      "milestone": "M5",
       "title": "ZIP traversal and duplicate paths",
       "procedure": "Open bundles with ../, percent-encoded traversal, absolute paths, symlinks, duplicate/case-colliding entries.",
-      "expected": "E_ASSET_PATH or E_BUNDLE before extraction; no user file is created/modified.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "E_ASSET_PATH or E_BUNDLE before extraction; no user file is created/modified."
     },
     {
       "id": "SC-006",
       "area": "security",
-      "milestone": "M5",
       "title": "ZIP expansion, CRC and hash failures",
       "procedure": "Use a compressed bomb, forged sizes, bad CRC and mismatched manifest SHA-256.",
-      "expected": "Stream stops at the limit or integrity error; E_LIMIT/E_BUNDLE/E_HASH_MISMATCH; no partial artifact survives.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Stream stops at the limit or integrity error; E_LIMIT/E_BUNDLE/E_HASH_MISMATCH; no partial artifact survives."
     },
     {
       "id": "SC-007",
       "area": "security",
-      "milestone": "M5",
       "title": "Raster rejection",
       "procedure": "Import SVG, GIF, APNG, animated WebP, malformed PNG and an over-pixel-limit raster.",
-      "expected": "E_ASSET_TYPE or E_LIMIT; no browser markup injection or source change.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "E_ASSET_TYPE or E_LIMIT; no browser markup injection or source change."
     },
     {
       "id": "SC-008",
       "area": "security",
-      "milestone": "M7",
       "title": "Resource and fuzz limits",
       "procedure": "Run seeded malformed inputs and every named bound at limit and limit+1.",
-      "expected": "No unhandled crash/hang; oversized inputs produce E_LIMIT; exact-limit valid inputs remain eligible.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "No unhandled crash/hang; oversized inputs produce E_LIMIT; exact-limit valid inputs remain eligible."
     },
     {
       "id": "SC-009",
       "area": "security",
-      "milestone": "M7",
       "title": "Dependency boundaries",
       "procedure": "Inspect compiled dependency graphs and bundles.",
-      "expected": "Core has no Node fs/DOM/network/storage; reader exports have no React/CodeMirror; no eval/Function or remote loader.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Core has no Node fs/DOM/network/storage; reader exports have no React/CodeMirror; no eval/Function or remote loader."
     },
     {
       "id": "SC-010",
       "area": "files",
-      "milestone": "M5",
       "title": "Plain source fidelity",
       "procedure": "Open and save untouched UTF-8 source with BOM, CRLF, tabs and non-BMP Unicode.",
-      "expected": "Identical source bytes; diagnostics offsets match original UTF-16 coordinates.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Identical source bytes; diagnostics offsets match original UTF-16 coordinates."
     },
     {
       "id": "SC-011",
       "area": "files",
-      "milestone": "M5",
       "title": "Source bundle round trip",
       "procedure": "Pack local-image.tinta with its asset and unpack into a new directory.",
-      "expected": "Manifest/schema/hash valid; canonical source and original raster bytes survive; original input remains unchanged.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Manifest/schema/hash valid; canonical source and original raster bytes survive; original input remains unchanged."
     },
     {
       "id": "SC-012",
       "area": "files",
-      "milestone": "M5",
       "title": "Atomic overwrite rejection",
       "procedure": "Build into an existing file without --force, then inject an IO failure during authorized replacement.",
-      "expected": "E_OUTPUT_EXISTS or E_IO; pre-existing bytes remain recoverable/intact; no truncated success artifact.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "E_OUTPUT_EXISTS or E_IO; pre-existing bytes remain recoverable/intact; no truncated success artifact."
     },
     {
       "id": "SC-013",
       "area": "files",
-      "milestone": "M5",
       "title": "Snapshot identity",
       "procedure": "Apply a valid answers snapshot, then change one source byte and reuse it.",
-      "expected": "First snapshot works; second produces E_HASH_MISMATCH/E_SNAPSHOT and leaves state unchanged.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "First snapshot works; second produces E_HASH_MISMATCH/E_SNAPSHOT and leaves state unchanged."
     },
     {
       "id": "SC-014",
       "area": "exports",
-      "milestone": "M5",
       "title": "Interactive initial/current answers",
       "procedure": "Export article.tinta once with defaults and once with growth=10/period=2.",
-      "expected": "Defaults show 110; current answers show 121; Reset returns to each artifact baseline; source defaults remain 5/2.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Defaults show 110; current answers show 121; Reset returns to each artifact baseline; source defaults remain 5/2."
     },
     {
       "id": "SC-015",
       "area": "exports",
-      "milestone": "M5",
       "title": "Static content minimization",
       "procedure": "Export guide.tinta with platform=macOS and more_detail=false.",
-      "expected": "No script/program/source/Windows/Linux hidden branch text; visible macOS content remains; controls become labelled static values.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "No script/program/source/Windows/Linux hidden branch text; visible macOS content remains; controls become labelled static values."
     },
     {
       "id": "SC-016",
       "area": "exports",
-      "milestone": "M5",
       "title": "Static and interactive hidden assets",
       "procedure": "Place an unresolved image in a false branch and export both formats.",
-      "expected": "Static succeeds without the unused asset; interactive is blocked until it is supplied.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Static succeeds without the unused asset; interactive is blocked until it is supplied."
     },
     {
       "id": "SC-017",
       "area": "exports",
-      "milestone": "M5",
       "title": "Presentation is not an answer snapshot",
       "procedure": "Hide a legend series, pin a datum and open details before exporting current answers.",
-      "expected": "Both artifacts include all series; interactive details start closed; static details are expanded; answer values are retained.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Both artifacts include all series; interactive details start closed; static details are expanded; answer values are retained."
     },
     {
       "id": "SC-018",
       "area": "exports",
-      "milestone": "M5",
       "title": "No-script fallback",
       "procedure": "Open an interactive export with JavaScript disabled.",
-      "expected": "One static selected-answer document is readable with the explicit no-script sentence; no duplicated document when JS is enabled.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "One static selected-answer document is readable with the explicit no-script sentence; no duplicated document when JS is enabled."
     },
     {
       "id": "SC-019",
       "area": "exports",
-      "milestone": "M7",
       "title": "Actual local-file browser opening",
       "procedure": "Open generated artifacts with file:// in automated Chromium/Firefox/WebKit and manual Safari.",
-      "expected": "No server/module-CORS workaround; controls, charts and reset work in the actual local-file context.",
-      "status": "NOT_RUN",
-      "manualRequired": true
+      "expected": "No server/module-CORS workaround; controls, charts and reset work in the actual local-file context."
     },
     {
       "id": "SC-020",
       "area": "editor",
-      "milestone": "M6",
       "title": "Markdown enrichment preserves original",
       "procedure": "Open import-before.md, Enrich as Tinta, inspect the proposed two escapes and save separately.",
-      "expected": "Source Markdown file untouched; resulting content matches import-after.tinta; mode changes to Tinta.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Source Markdown file untouched; resulting content matches import-after.tinta; mode changes to Tinta."
     },
     {
       "id": "SC-021",
       "area": "editor",
-      "milestone": "M6",
       "title": "Invalid edit retains labelled preview",
       "procedure": "Break an expression, interact with the stale preview, then fix it.",
-      "expected": "Stale banner visible; preview controls and exports disabled while invalid; source save stays available; fix resumes a current valid preview.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Stale banner visible; preview controls and exports disabled while invalid; source save stays available; fix resumes a current valid preview."
     },
     {
       "id": "SC-022",
       "area": "editor",
-      "milestone": "M6",
       "title": "Worker stale response and timeout",
       "procedure": "Delay old compile response, send newer source, then simulate watchdog timeout.",
-      "expected": "Old result ignored; newer revision alone can render; timeout gives E_WORKER_TIMEOUT and preserves buffer/recovery.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Old result ignored; newer revision alone can render; timeout gives E_WORKER_TIMEOUT and preserves buffer/recovery."
     },
     {
       "id": "SC-023",
       "area": "editor",
-      "milestone": "M6",
       "title": "Answer reconciliation",
       "procedure": "Edit prose, then change one slider initial/domain and remove another control.",
-      "expected": "Prose-only change retains compatible answers; changed/new controls reset as specified; removed control disappears; one reset notice.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Prose-only change retains compatible answers; changed/new controls reset as specified; removed control disappears; one reset notice."
     },
     {
       "id": "SC-024",
       "area": "editor",
-      "milestone": "M6",
       "title": "Cancelled file action",
       "procedure": "With dirty source, choose Open/New, then Cancel; cancel an import and an export dialog.",
-      "expected": "Current source, assets, answers and focus stay unchanged; no write occurs.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Current source, assets, answers and focus stay unchanged; no write occurs."
     },
     {
       "id": "SC-025",
       "area": "editor",
-      "milestone": "M6",
       "title": "Cross-browser save fallback",
       "procedure": "Test writable-file-handle close and input/download-only browsers.",
-      "expected": "Correct Saved vs Download started status; revoked permissions do not lose source; no requirement for showSaveFilePicker support.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Correct Saved vs Download started status; revoked permissions do not lose source; no requirement for showSaveFilePicker support."
     },
     {
       "id": "SC-026",
       "area": "editor",
-      "milestone": "M6",
       "title": "Automatic local drafts",
       "procedure": "Edit with automatic drafts, reload a document URL, verify source and mode restoration, then disable, delete and deny/quota-limit storage.",
-      "expected": "Automatic source restoration never persists reader answers; opt-out survives reload; deletion works; unavailable storage warns without disabling source save.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Automatic source restoration never persists reader answers; opt-out survives reload; deletion works; unavailable storage warns without disabling source save."
     },
     {
       "id": "SC-027",
       "area": "editor",
-      "milestone": "M6",
       "title": "Source plus asset undo",
       "procedure": "Insert a raster image, undo and redo with another reference to the same hash.",
-      "expected": "One undo step covers source/import; shared referenced bytes are not deleted; original disk image is untouched.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "One undo step covers source/import; shared referenced bytes are not deleted; original disk image is untouched."
     },
     {
       "id": "SC-028",
       "area": "charts",
-      "milestone": "M4",
       "title": "Keyboard figure exploration",
       "procedure": "For each type, use the range with arrows, Home/End/Page keys, then action buttons.",
-      "expected": "Point order matches prepared rows/series; values announced; same datum can be selected without a pointer.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Point order matches prepared rows/series; values announced; same datum can be selected without a pointer."
     },
     {
       "id": "SC-029",
       "area": "charts",
-      "milestone": "M4",
       "title": "Shared selection",
       "procedure": "Select a bar in report.tinta and a numeric point in article.tinta; change their explicit controls too.",
-      "expected": "One revision updates control, linked marks and narrative; no hover writes state; rejected selection rolls back all outputs.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "One revision updates control, linked marks and narrative; no hover writes state; rejected selection rolls back all outputs."
     },
     {
       "id": "SC-030",
       "area": "charts",
-      "milestone": "M4",
       "title": "Selection outside filter",
       "procedure": "Select Mon, then set minimum=150 in report.tinta.",
-      "expected": "Control remains Mon; chart has no Mon highlight and states selection is outside current figure; no automatic replacement.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Control remains Mon; chart has no Mon highlight and states selection is outside current figure; no automatic replacement."
     },
     {
       "id": "SC-031",
       "area": "charts",
-      "milestone": "M4",
       "title": "Legend-only visibility",
       "procedure": "Toggle named series and pie categories, including all hidden and all-zero visible data.",
-      "expected": "Global totals/views unchanged; chart messages/totals follow visible entries; restoring legend restores geometry.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Global totals/views unchanged; chart messages/totals follow visible entries; restoring legend restores geometry."
     },
     {
       "id": "SC-032",
       "area": "charts",
-      "milestone": "M4",
       "title": "Histogram conservation",
       "procedure": "Run empty, constant, boundary and generated finite observations with 2..30 bins.",
-      "expected": "Sum of counts equals row count; last edge is inclusive; no duplicated/lost observation; no selection control is created.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Sum of counts equals row count; last edge is inclusive; no duplicated/lost observation; no selection control is created."
     },
     {
       "id": "SC-033",
       "area": "charts",
-      "milestone": "M4",
       "title": "Scatter duplicates",
       "procedure": "Use duplicate x and overlapping points with multiple series and a valid select slider.",
-      "expected": "No duplicate-x error; explorer/table reaches every point; selected state is x, not row object or y.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "No duplicate-x error; explorer/table reaches every point; selected state is x, not row object or y."
     },
     {
       "id": "SC-034",
       "area": "charts",
-      "milestone": "M4",
       "title": "Responsive layout and lifecycle",
       "procedure": "Resize figures, change rows, unmount/remount 100 times.",
-      "expected": "No page-wide overflow; observers/listeners disposed; focus retained on active reader controls; no growing retained instance count.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "No page-wide overflow; observers/listeners disposed; focus retained on active reader controls; no growing retained instance count."
     },
     {
       "id": "SC-035",
       "area": "accessibility",
-      "milestone": "M3",
       "title": "Document keyboard and focus",
       "procedure": "Read all headings/lists, change controls, hide the focused control via a condition, reset.",
-      "expected": "Native behaviour; predictable fallback focus; one polite update, not a flood; hidden content absent from tab order.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Native behaviour; predictable fallback focus; one polite update, not a flood; hidden content absent from tab order."
     },
     {
       "id": "SC-036",
       "area": "accessibility",
-      "milestone": "M7",
-      "title": "Assistive technology review",
-      "procedure": "Perform named VoiceOver/Safari and NVDA/Firefox scripts plus actual iOS reading.",
-      "expected": "Reviewer evidence covers names, roles, values, chart alternatives and errors; unavailable environments remain BLOCKED.",
-      "status": "NOT_RUN",
-      "manualRequired": true
+      "title": "Assistive technology behavior",
+      "procedure": "Read the examples using VoiceOver with Safari, NVDA with Firefox and Safari on iOS.",
+      "expected": "Accessible names, roles, values, chart alternatives and errors describe the same document; keyboard exploration and announcements remain usable."
     },
     {
       "id": "SC-037",
       "area": "accessibility",
-      "milestone": "M7",
       "title": "Zoom, reflow and forced colours",
       "procedure": "Review 320/390/768/1024/1440 widths, 200% text and 400% page zoom, forced colours.",
-      "expected": "Prose usable without horizontal scrolling; 2D exceptions contained; contrast/focus/selected-state visible without colour alone.",
-      "status": "NOT_RUN",
-      "manualRequired": true
+      "expected": "Prose usable without horizontal scrolling; 2D exceptions contained; contrast/focus/selected-state visible without colour alone."
     },
     {
       "id": "SC-038",
       "area": "cli",
-      "milestone": "M5",
       "title": "Command usage matrix",
       "procedure": "For each command test required/unknown/duplicate flags, Unicode paths, spaces, stdin and JSON mode.",
-      "expected": "Specified usage exit codes, no shell interpretation, one JSON envelope, no unexpected output writes.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Specified usage exit codes, no shell interpretation, one JSON envelope, no unexpected output writes."
     },
     {
       "id": "SC-039",
       "area": "cli",
-      "milestone": "M5",
       "title": "No publication surface",
       "procedure": "Inspect command help, editor menus and network code.",
-      "expected": "No publish/upload/account/billing/AI/server-service command exists; studio prints/copies a local artifact only.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "No publish/upload/account/billing/AI/server-service command exists; studio prints/copies a local artifact only."
     },
     {
       "id": "SC-040",
       "area": "performance",
-      "milestone": "M7",
       "title": "Locked performance corpus",
       "procedure": "Run the benchmark protocol on the required reference machine, warm and cold.",
-      "expected": "Timing/memory/bundle budgets met with environment and distributions recorded; no measurements borrowed from 0.2.",
-      "status": "NOT_RUN",
-      "manualRequired": true
+      "expected": "Timing, memory and bundle measurements meet the documented budgets on the reference machine; reports identify the environment and complete sample distributions."
     },
     {
       "id": "SC-041",
       "area": "performance",
-      "milestone": "M7",
       "title": "Budget covers the whole revision",
       "procedure": "Create many individually valid views/charts whose combined work exceeds the global counter.",
-      "expected": "One E_LIMIT; transaction rejected; no per-chart counter reset permits bypass.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "One E_LIMIT; transaction rejected; no per-chart counter reset permits bypass."
     },
     {
       "id": "SC-042",
-      "area": "release",
-      "milestone": "M0",
+      "area": "toolchain",
       "title": "Toolchain provenance and exact pins",
-      "procedure": "Resolve permitted dependencies, freeze lock, typecheck contracts and smoke import Node/browser packages.",
-      "expected": "Exact versions/engines/peers/license inventory recorded; no floating committed install commands; no fake test pass.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "procedure": "Inspect the locked dependencies, compile contracts and import Node/browser packages.",
+      "expected": "Exact versions, engines, peers and license inventory match the frozen lock; committed install commands use exact pins."
     },
     {
       "id": "SC-043",
-      "area": "release",
-      "milestone": "M7",
-      "title": "Release evidence honesty",
-      "procedure": "Review status/evidence, screenshots and browser reports before tagging.",
-      "expected": "No NOT_RUN/BLOCKED mandatory gate is presented as PASS; owner approves manual gates; no automatic publish/tag push.",
-      "status": "NOT_RUN",
-      "manualRequired": true
+      "area": "distribution",
+      "title": "Distribution contents and provenance",
+      "procedure": "Inspect generated package archives, notices and source/artifact inventories.",
+      "expected": "Archives contain the documented tools, examples and license notices, identify exact source/artifact revisions and hashes, and exclude private local files. Building does not publish packages or create remote releases."
     },
     {
       "id": "SC-044",
       "area": "imports",
-      "milestone": "M6",
       "title": "Schema preview and insertion",
       "procedure": "Import CSV with commas/newlines/leading zeros and JSON with reordered keys; cancel and then accept.",
-      "expected": "Deterministic full-column types/mapping; exact preview; one root @data insertion; cancel has no effect; no live data link.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Deterministic full-column types/mapping; exact preview; one root @data insertion; cancel has no effect; no live data link."
     },
     {
       "id": "SC-045",
       "area": "markdown",
-      "milestone": "M1",
       "title": "CommonMark and dialect corpus",
       "procedure": "Run every pinned CommonMark 0.31.2 example and supported extension fixtures. Include conventional #heading links, duplicate slugs, prefixed-ID collisions and a target hidden by a condition.",
-      "expected": "Parse equivalence for all; safe-render deviations documented only for deliberate HTML/URL policy, no skipped parsing examples. Heading fragments resolve through the specified alias map without source rewrites or changing answers.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Parse equivalence for all; safe-render deviations documented only for deliberate HTML/URL policy, no skipped parsing examples. Heading fragments resolve through the specified alias map without source rewrites or changing answers."
     },
     {
       "id": "SC-046",
       "area": "syntax",
-      "milestone": "M1",
       "title": "Lossless source spans and contexts",
       "procedure": "Use CRLF, BOM, astral text, escaped braces, code fences with @end and nested Markdown inside conditions.",
-      "expected": "Correct original UTF-16 spans and boundaries; source import/edit does not reformat unaffected prose.",
-      "status": "NOT_RUN",
-      "manualRequired": false
+      "expected": "Correct original UTF-16 spans and boundaries; source import/edit does not reformat unaffected prose."
     }
   ]
 }

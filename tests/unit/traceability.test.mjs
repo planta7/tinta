@@ -23,7 +23,6 @@ function fixture() {
   };
   return {
     catalog: {
-      executionStatus: "NOT_RUN",
       references: [reference],
       rules: [{ id: "RULE-001", ...clause, ...mapping }],
       diagnostics: [{ name: "E_LIMIT", ...mapping }],
@@ -113,10 +112,37 @@ test("missing diagnostic, changed limit and dangling references cannot hide cove
   );
 });
 
-test("manual obligations require a concrete procedure and expected observation", () => {
+test("behavior inspections require a concrete procedure and expected observation", () => {
   const value = fixture();
   value.catalog.rules[0].references = [];
   expect(check(value)).toContain("Unmapped obligation: RULE-001");
-  value.catalog.rules[0].manual = { review: "keyboard-visual" };
-  expect(check(value)).toContain("Incomplete manual procedure: RULE-001");
+  value.catalog.rules[0].inspection = { kind: "accessibility" };
+  expect(check(value)).toContain("Incomplete behavior inspection: RULE-001");
+});
+
+test("complete behavior inspections preserve obligations without execution state", () => {
+  const value = fixture();
+  value.catalog.rules[0].references = [];
+  value.catalog.rules[0].inspection = {
+    kind: "accessibility",
+    procedure: "Change the control using its native keyboard commands.",
+    expected: "Focus remains on the control and its value is announced.",
+  };
+  expect(check(value)).toEqual([]);
+  value.catalog.rules[0].inspection.kind = "unknown";
+  expect(check(value)).toContain("Unknown inspection kind: RULE-001");
+  value.catalog.rules[0].inspection.expected = " ";
+  expect(check(value)).toContain("Incomplete behavior inspection: RULE-001");
+});
+
+test("process assignments cannot substitute for a behavior inspection", () => {
+  const value = fixture();
+  value.catalog.rules[0].references = [];
+  value.catalog.rules[0].manual = { review: "assigned" };
+  expect(check(value)).toEqual(
+    expect.arrayContaining([
+      "Unmapped obligation: RULE-001",
+      "Unexpected process metadata: RULE-001",
+    ]),
+  );
 });

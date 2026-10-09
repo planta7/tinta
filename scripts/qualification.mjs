@@ -19,7 +19,7 @@ const commands = [
   ["pnpm", "exec", "vitest", "run", "--testTimeout=120000"],
   ["pnpm", "audit", "--json"],
   ["node", "scripts/traceability.mjs"],
-  ["node", "scripts/qualification-package.mjs"],
+  ["node", "scripts/distribution-package.mjs"],
   ["node", "scripts/installed-cli.mjs"],
   [
     "node",

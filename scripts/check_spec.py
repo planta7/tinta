@@ -140,7 +140,6 @@ def main() -> int:
         'contracts/CONTRACT_RULES.md',
         'docs/CHEATSHEET.md',
         'docs/SOURCES.md',
-        'docs/ROADMAP.md',
         'conformance/cases.json',
         'conformance/scenarios.json',
         'conformance/requirements.json',
@@ -311,9 +310,16 @@ def main() -> int:
     record('case-ids-unique', len(ids) == len(set(ids)))
     record(
         'source-expectations-not-execution',
-        case_data['executionStatus'] == 'NOT_RUN'
-        and scenario_data['executionStatus'] == 'NOT_RUN'
-        and all(x['status'] == 'NOT_RUN' for x in cases + scenarios),
+        'executionStatus' not in case_data
+        and 'executionStatus' not in scenario_data
+        and all(
+            not {'status', 'milestone', 'manualRequired'}.intersection(x)
+            for x in cases + scenarios
+        )
+        and all(
+            not {'completeBy', 'implementationEvidence', 'coverageStatus'}.intersection(r)
+            for r in reqs
+        ),
     )
     record('seed-counts', len(cases) >= 98 and len(scenarios) >= 46)
     record(
@@ -341,9 +347,7 @@ def main() -> int:
     for scenario in scenarios:
         record(
             'scenario-shape:' + scenario['id'],
-            scenario['milestone'] in {'M' + str(i) for i in range(8)}
-            and isinstance(scenario['manualRequired'], bool)
-            and all(
+            all(
                 isinstance(scenario[k], str) and bool(scenario[k])
                 for k in ('procedure', 'expected', 'title')
             ),

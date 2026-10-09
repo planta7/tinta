@@ -24,7 +24,7 @@ TypeScript avoids a second implementation and a Rust/WASM build/serialization br
 
 ## Approved release lines
 
-The following are major-line constraints, **not a fabricated lockfile**. M0 resolves and records exact patches. Exact installation and compatibility must be verified during M0.
+These release lines constrain dependency updates. Exact installed versions, integrity hashes and transitive dependencies are recorded in the package manifests and `pnpm-lock.yaml`. See [toolchain setup](../docs/09_FOUNDATION_TOOLCHAIN.md) for the current pinned environment.
 
 | Dependencies | Approved line |
 |---|---|
@@ -48,14 +48,13 @@ The following are major-line constraints, **not a fabricated lockfile**. M0 reso
 | esbuild | 0.x latest stable satisfying Node 24 |
 | @types/node | 24.x |
 
-## M0 resolution algorithm — no discretionary substitutions
+## Dependency updates
 
-1. Query the official npm registry and Node release index from the development environment. Record UTC time and responses' selected fields in `reports/verification`.
-2. For each approved line, collect releases matching the line; reject prereleases and versions marked deprecated. Pick the highest semantic version satisfying declared engines and already-selected peers. Process runtime, workspace manager, TypeScript, React, Vite/plugin, parser, editor, charts, IO and test packages in that order. For unconstrained helpers, choose the highest compatible stable version. Do not downgrade a selected major to mask a conflict.
-3. Pin exact versions in every manifest and `packageManager`; pin exact Node in `.node-version`, `.nvmrc` and CI. Use `save-exact=true`, `engine-strict=true`, strict peer checks. Set the root package private; all package publication is disabled in V1.
-4. Install, commit `pnpm-lock.yaml`, record integrity hashes and licenses, and run typecheck, Node/browser import smoke tests, dependency audit and the M0 gate. If resolution, installation or compatibility fails, M0 is BLOCKED with evidence; do not claim this document proved installation.
-5. After M0, all commands use `pnpm install --frozen-lockfile`. No floating `latest` commands, wildcard versions, Git branch dependencies or unpinned CI actions. Pin GitHub actions to full commit SHAs resolved from their official repositories during M0.
-6. A security fix may move a patch/minor within the approved line, with an impact report and relevant gates. A major change or unavailable approved line requires a documented deviation. Do not silently switch stacks.
+Dependency updates use stable, non-deprecated releases within the approved lines, with compatible engines and peer requirements. Resolve runtime, workspace manager, TypeScript, React, Vite/plugin, parser, editor, charts, IO and test dependencies in that order. An unavailable approved line is a compatibility issue; changing the selected architecture requires a technical decision.
+
+Pin exact versions in manifests and `packageManager`, the exact Node version in `.node-version`, `.nvmrc` and CI, and CI actions to full reviewed commit SHAs. Keep `save-exact=true`, `engine-strict=true` and strict peer checks. Installation uses `pnpm install --frozen-lockfile`; floating versions, wildcard ranges, Git branch dependencies and unpinned actions are not supported. Workspace packages remain private.
+
+A dependency update includes its lockfile, official provenance, integrity records and license notices. Check engine/peer compatibility, Node/browser imports, types, dependency boundaries and applicable vulnerability advisories. Security fixes may move a patch/minor within the approved line; a major-line change needs a compatibility decision. Do not switch stacks to mask a failed compatibility check.
 
 
 ## Compiler configuration

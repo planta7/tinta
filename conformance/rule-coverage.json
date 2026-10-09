@@ -1,6 +1,5 @@
 {
-  "executionStatus": "NOT_RUN",
-  "purpose": "Reviewed requirement-to-assertion mappings. Source expectations do not claim execution or manual acceptance. Counter/container tests explicitly state their layer and are supplemented by integration tests.",
+  "purpose": "Normative clauses, diagnostics and resource bounds mapped to concrete assertions and behavior inspections. Counter/container assertions identify their technical layer.",
   "scope": [
     "contracts/CONTRACT_RULES.md",
     "docs/01_PRODUCT.md",
@@ -22,7 +21,7 @@
   "supportingInputs": [
     {
       "path": "conformance/cases.json",
-      "sha256": "9645d84aab1e20db841c2c6e751cb1bfa334f1339a05fecd7e1bcffe2b96d261"
+      "sha256": "bb1b034b77f776acc9f33dba461c2c2b59b2fffd4b93efd660c3de88d2d7bbf3"
     },
     {
       "path": "conformance/runner/semantic.mjs",
@@ -956,7 +955,7 @@
       "id": "editor-545243b7f075",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 487,
+      "line": 491,
       "title": "\"data import previews mappings and inserts after a complete root block\"",
       "sha256": "475f293523163e43fba48a761811dbe81f186382dcec67cdc4284c84aa12bc22",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -983,7 +982,7 @@
       "id": "editor-6bc821e2163a",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 779,
+      "line": 783,
       "title": "\"JSON mappings, invalid imports and diagnostics preserve existing source\"",
       "sha256": "6d40a161d308ab469b90a0a5a4fa2fe139598ff21fb40688d27502be652d37e6",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -1043,9 +1042,9 @@
       "fileSha256": "324fe95d1c825ec85f9ce30f5812659ce74acb03f2d2ac4539ba2a7b917dc022"
     },
     {
-      "id": "qualification-b7c9b7b1c12a",
+      "id": "integrity-b7c9b7b1c12a",
       "kind": "test",
-      "path": "tests/unit/qualification.test.mjs",
+      "path": "tests/unit/document-integrity.test.mjs",
       "line": 56,
       "title": "\"whole-revision mark limit accepts 32000 and rejects an additional figure atomically\"",
       "sha256": "4e54663dc1c5e3b0f8a2151cc54742b8df6b97e5857b800181f44c6ffd1e310b",
@@ -1226,7 +1225,7 @@
       "id": "editor-1f25bc62f3b3",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 604,
+      "line": 608,
       "title": "\"mixed line endings and BOM survive edit, undo and raw source saving\"",
       "sha256": "103da584ef4a0d4e2aa702da84157153c904f6f0393b9107a039650e4300cad7",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -1235,7 +1234,7 @@
       "id": "editor-32476bf4f35e",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 633,
+      "line": 637,
       "title": "\"bundle and snapshot downloads preserve authored defaults and chosen answers\"",
       "sha256": "2d89fcf3200a1b4123f6393d4ec5cfdacfc41ea096c207ce5550faf5a1629ef6",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -1307,7 +1306,7 @@
       "id": "editor-d8d6c102c660",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 992,
+      "line": 996,
       "title": "\"missing image resolution preserves distinct source paths with shared basenames\"",
       "sha256": "f5c8f7360522dfb387d82c6b8a3b126a3104abfbaabb541011383947e4c884e7",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -1316,7 +1315,7 @@
       "id": "editor-f0e993552911",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1062,
+      "line": 1068,
       "title": "\"preview rejects unsafe, missing and indirect asset alias targets\"",
       "sha256": "e7d82ae10524f97602871a432f5427f9dcd35453f912d796ad20668be9d5d9e9",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -1523,7 +1522,7 @@
       "id": "editor-7f2904325f37",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 531,
+      "line": 535,
       "title": "\"sandbox denies parent authority and ignores unauthenticated messages\"",
       "sha256": "281c549256c32054cf946f25ba6e2fca247d0b344201b0eb33c71c8c062e5aac",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -1568,7 +1567,7 @@
       "id": "editor-f3fda819175c",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 933,
+      "line": 937,
       "title": "\"a source revision change cancels an export before download handoff\"",
       "sha256": "aa2be8982223a7460852d0ba7f4235d3db823a5b3db9d9626546b2dc29c21079",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -1595,7 +1594,7 @@
       "id": "editor-44792eecfe01",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 976,
+      "line": 980,
       "title": "\"editor surfaces expose labelled controls and accessible dialogs\"",
       "sha256": "5b6d050da87415ff92615dc39eb7db917004a79fbd9eb501c20e6840cee1226d",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -1685,7 +1684,7 @@
       "id": "editor-9ca658f6c6b4",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 678,
+      "line": 682,
       "title": "\"source save-as, keyboard commands and unsaved Save or Discard\"",
       "sha256": "b0bdff9d44a6c96f8ff482af2b9a7fe2aaecffea9893bbf98fdbea9450ee6fd9",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -1721,7 +1720,7 @@
       "id": "editor-2ba717ce789b",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 581,
+      "line": 585,
       "title": "\"denied recovery storage leaves source saving available\"",
       "sha256": "125de038beeac096b52691a5c452425598029205b07d6b63dcf391b90855ddb3",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -1730,7 +1729,7 @@
       "id": "editor-aeed8b8095de",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 713,
+      "line": 717,
       "title": "\"recovery deletion and disabling are explicit and preserve the active buffer\"",
       "sha256": "3cecb1136bf7b33e8f264674afee73c060a906822efc09bef1c949e5e275c8c0",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -1883,7 +1882,7 @@
       "id": "editor-0e4af1059705",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 864,
+      "line": 868,
       "title": "\"preview capability handles only valid monotonic commands and closes on excess fields\"",
       "sha256": "1e1da1221d25da26277c25e33b8f54fbe5ebe2f6c579b2b279388d8fa4b2aafc",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -1892,33 +1891,33 @@
       "id": "editor-573fa5c1142f",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 914,
+      "line": 918,
       "title": "\"preview rejects untrusted IR and explicit destroy tears down the reader\"",
       "sha256": "ada984608e553846ad9980f1b0c0a07507ed2353c2f73009f30202b80c9ec95a",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
     },
     {
-      "id": "qualification-b03e2dcd9c7d",
+      "id": "integrity-b03e2dcd9c7d",
       "kind": "test",
-      "path": "tests/unit/qualification.test.mjs",
+      "path": "tests/unit/document-integrity.test.mjs",
       "line": 80,
       "title": "\"seeded snapshot maps never mutate answers or source on rejection\"",
       "sha256": "c933e92842a926a0acf3eb12266f3a6d829c6aeb0f63112e83b7fbfd1388715f",
       "fileSha256": "22646640d67f4a8ae44c74333f6d57547518d262581fe4fcc629f03f6760fc02"
     },
     {
-      "id": "qualification-aac9754f7be4",
+      "id": "integrity-aac9754f7be4",
       "kind": "test",
-      "path": "tests/unit/qualification.test.mjs",
+      "path": "tests/unit/document-integrity.test.mjs",
       "line": 99,
       "title": "\"seeded bundle mutations fail closed or preserve validated source\"",
       "sha256": "23aab4f3b9162bb6973b9868d62f4c14fdf843a477e2c0df625ecffd9464e046",
       "fileSha256": "22646640d67f4a8ae44c74333f6d57547518d262581fe4fcc629f03f6760fc02"
     },
     {
-      "id": "qualification-3bcac3110faf",
+      "id": "integrity-3bcac3110faf",
       "kind": "test",
-      "path": "tests/unit/qualification.test.mjs",
+      "path": "tests/unit/document-integrity.test.mjs",
       "line": 122,
       "title": "\"seeded host messages cannot acquire a capability through arbitrary JSON\"",
       "sha256": "9fc2e2f42a66409bc8b4801ad7a4afaa0b9a0b731cad49d2dc5d1060389ff240",
@@ -1937,18 +1936,9 @@
       "sha256": "aba04b9444eaf160e0097d88df4aaaa4f5a644efdb24337cecc2e97a3d04ce83"
     },
     {
-      "id": "qualification-b443b2b84eb4",
+      "id": "integrity-3138f786872a",
       "kind": "test",
-      "path": "tests/unit/qualification.test.mjs",
-      "line": 134,
-      "title": "\"release evidence cannot hide missing, duplicated or stale manual reviews\"",
-      "sha256": "8ced80d5a7502a7117518725627f346daa8e4edff7ca4642124904aea0d84598",
-      "fileSha256": "22646640d67f4a8ae44c74333f6d57547518d262581fe4fcc629f03f6760fc02"
-    },
-    {
-      "id": "qualification-3138f786872a",
-      "kind": "test",
-      "path": "tests/unit/qualification.test.mjs",
+      "path": "tests/unit/document-integrity.test.mjs",
       "line": 22,
       "title": "\"locked performance sources preserve declared size and complete within resource limits\"",
       "sha256": "efb8e558ba171baf0d57fe04526fd44b8b9f3a090eea3a66abd66d23e71ceebf",
@@ -1967,16 +1957,16 @@
       "line": 22,
       "title": "\"interaction budgets accept exact boundaries and retain long-task diagnostics\"",
       "sha256": "bc335f242824fb6dfc129320e10300da81e0a6057dd665ca32585f7f6c6471d1",
-      "fileSha256": "549cdf9ece3f5656affcb5699c4fef4aef65aad2513ecf228ab19eadf2d9b99c"
+      "fileSha256": "ed69fbd5e3474b0ac922cd63f408b2083c6e7a70020bdf128620e1042ff79d0a"
     },
     {
       "id": "performance-0713957d4fdd",
       "kind": "test",
       "path": "tests/unit/performance-policy.test.mjs",
       "line": 47,
-      "title": "\"one extreme task blocks acceptance even when interaction percentiles pass\"",
-      "sha256": "27a856d5129fdf95b37eefae967cc3fc6a4f5837d4478b2eb656f4d06a6d6a36",
-      "fileSha256": "549cdf9ece3f5656affcb5699c4fef4aef65aad2513ecf228ab19eadf2d9b99c"
+      "title": "\"one extreme task exceeds the budget even when interaction percentiles pass\"",
+      "sha256": "096d3c25f10c885a16961bb812ab7e95fd5c7bd7731fbc6087cdc0c2b617d54a",
+      "fileSha256": "ed69fbd5e3474b0ac922cd63f408b2083c6e7a70020bdf128620e1042ff79d0a"
     },
     {
       "id": "performance-5628cb473bd5",
@@ -1985,7 +1975,7 @@
       "line": 53,
       "title": "\"missing runs, missing samples and invalid timestamps cannot pass\"",
       "sha256": "416c0177f149d4a3b62479abe8896e26bebbb172456346762a150bb07cb809c6",
-      "fileSha256": "549cdf9ece3f5656affcb5699c4fef4aef65aad2513ecf228ab19eadf2d9b99c"
+      "fileSha256": "ed69fbd5e3474b0ac922cd63f408b2083c6e7a70020bdf128620e1042ff79d0a"
     },
     {
       "id": "check-scripts-performance-browser.mjs",
@@ -2003,7 +1993,7 @@
       "id": "check-scripts-check_spec.py",
       "kind": "check",
       "path": "scripts/check_spec.py",
-      "sha256": "a3aa26a3cdf43938b79d4d9946c0040039cd9b066f74e0ac44e21fec30bd988d"
+      "sha256": "bc9b7b62457af219a2aa1d380cf54e4d59e9e12edc1cbbd4015f95a020b02696"
     },
     {
       "id": "check-scripts-licenses.mjs",
@@ -2012,10 +2002,10 @@
       "sha256": "044d14dfe597b4a7a09411e6032c7a82507fb516364c1d1ee97aa909fe2a99d4"
     },
     {
-      "id": "check-scripts-qualification-package.mjs",
+      "id": "check-scripts-distribution-package.mjs",
       "kind": "check",
-      "path": "scripts/qualification-package.mjs",
-      "sha256": "36c9a8d45a702db4bf1260300779b6e9ab248ac3da62e4edf025a965e836bfdc"
+      "path": "scripts/distribution-package.mjs",
+      "sha256": "d9e4413537ace407230cea07f0d4099ecf41c5f0af7ad5988f7bc071f1f81269"
     },
     {
       "id": "engine-dc4a86eb00cc",
@@ -2489,7 +2479,7 @@
       "id": "editor-2b44ae101452",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1119,
+      "line": 1125,
       "title": "\"document menus support keyboard dismissal, outside clicks and dialog focus return\"",
       "sha256": "382d9908eee9d9ca8c12e06d7fa019be4f14594f3ed3fa66b7c42dd481a75dd6",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -2498,7 +2488,7 @@
       "id": "editor-9c2f24aa5f93",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1174,
+      "line": 1180,
       "title": "\"workspace reflows, retains the source cursor and exposes insertion from the narrow preview\"",
       "sha256": "86bc0741d535339a1e436881b6a40eb50a387e42158f6398598efa961ae5454d",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -2507,7 +2497,7 @@
       "id": "editor-bd34140adc88",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1244,
+      "line": 1250,
       "title": "\"design review captures welcome, reading, editing, export and mobile surfaces\"",
       "sha256": "6e7645bc11ff0363c83e68e61aa4c54ab110f5e0feb3b4334a7bebc0404f0458",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -2516,7 +2506,7 @@
       "id": "editor-76ae8637c541",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1308,
+      "line": 1314,
       "title": "\"new documents explain the empty state and clearing diagnostics does not leak across documents\"",
       "sha256": "d74f6a441e1ee92bb280ca84c284dd5c726a5cb0882354734b486e3e8c094e3d",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -2525,7 +2515,7 @@
       "id": "editor-c6bfe4ae9ec4",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1329,
+      "line": 1335,
       "title": "\"catalogs describe their contents, filter without editing and close action menus\"",
       "sha256": "e41e186396dd18276d0d65e7de5bcd3983ed7c5a3c47343e5bec6cd48c14d3bc",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -2534,7 +2524,7 @@
       "id": "editor-de4a0d45458e",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1398,
+      "line": 1404,
       "title": "\"draft restoration resets answers and persistent opt-out prevents automatic reopening\"",
       "sha256": "7bc7bcfbaf7092b181e90dbc48dba870bf8d6e0b085e9edbfdbe4df779398517",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -2543,7 +2533,7 @@
       "id": "editor-ffa998e27004",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1427,
+      "line": 1433,
       "title": "\"direct section URLs and missing draft routes have usable recovery paths\"",
       "sha256": "bc889d04304211009b4d797571951b9288f00980ecfca23de2be10d42b62fe59",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -2552,7 +2542,7 @@
       "id": "editor-35944d5636e8",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1445,
+      "line": 1451,
       "title": "\"declaration thumbnails demonstrate results without inserting their demonstration\"",
       "sha256": "d9e709501ca130fa41f052fb5c31630f03b39ebe250903c465253c4b3984f4ce",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -2561,7 +2551,7 @@
       "id": "editor-0e43e8bc5c51",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1493,
+      "line": 1505,
       "title": "\"new documents retain a clean checkpoint and home navigation respects the requested destination\"",
       "sha256": "5d45fa5392303d7eef41aa546c4e2aed4b02049b58d87fa0eb8f666e78110f03",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -2570,7 +2560,7 @@
       "id": "editor-d654cfd0a0d6",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1552,
+      "line": 1564,
       "title": "\"dialog actions share one footer and reader actions remain outside the document\"",
       "sha256": "9739d321361a23390f6ebf52530336094363031c06b963bba13ff9789e0a4693",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -2579,7 +2569,7 @@
       "id": "editor-d76845f7227e",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1590,
+      "line": 1602,
       "title": "\"parser decorations cover every directive and exclude literal fenced source\"",
       "sha256": "3e59a5db7872e8d6cb034babed38dfc4e374b0eef09cef613fc3338316ab067b",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -2588,7 +2578,7 @@
       "id": "editor-7cb9ca4ad62e",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1659,
+      "line": 1671,
       "title": "\"renaming preserves source and profile and persists the next save filename\"",
       "sha256": "250efd4d5e600be1272b7f28ca72c8fe911253e85ee32e3e12a15c343b39902a",
       "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
@@ -2609,7 +2599,7 @@
       "authority": "contracts/CONTRACT_RULES.md",
       "section": "Contract implementation notes",
       "line": 3,
-      "sha256": "dce66b71351e32135d0fd75427f8b1649e9dfb411e3f40724a4f2b6bd5bff382",
+      "sha256": "343b7d0edd49fc56cea3e97db4063c2011d1db2564aaec252274f828f1815679",
       "assertion": "Assert validated IR branding, closed shapes, source identity, immutable lifecycle, authentic hosts and capability/revision handling.",
       "references": [
         "engine-d7e781652616",
@@ -2817,7 +2807,7 @@
       "authority": "contracts/CONTRACT_RULES.md",
       "section": "Contract implementation notes",
       "line": 19,
-      "sha256": "b3e91360e1ff616c1584cae00b00a548320bcbf0788f738904a124b737390ca8",
+      "sha256": "46967eb2dd8ef14dc34f2d1ab1a9de4240de59c54f4b094b14e70b5a1203c5b9",
       "assertion": "Assert validated IR branding, closed shapes, source identity, immutable lifecycle, authentic hosts and capability/revision handling.",
       "references": [
         "engine-d7e781652616",
@@ -2908,8 +2898,8 @@
         "reader-03843a0b43b3",
         "exports-93846569f6eb"
       ],
-      "manual": {
-        "review": "owner-acceptance",
+      "inspection": {
+        "kind": "contract",
         "procedure": "Review the delivered local document tools against 'Purpose' and the explicit product non-goals.",
         "expected": "Required document journeys exist without introducing unauthorized product capabilities."
       }
@@ -2919,7 +2909,7 @@
       "authority": "docs/01_PRODUCT.md",
       "section": "Purpose",
       "line": 7,
-      "sha256": "c98d53ea9ba19484b95dae7e7bcdd3450c24b2560422f64558a24937203569b6",
+      "sha256": "eaebfd3e85e6190a174b17c4ebfb65b884f49e3f01aa52e058b6b9a15a6083ab",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
       "references": [
         "editor-a42d8ae0bd82",
@@ -2932,8 +2922,8 @@
         "reader-03843a0b43b3",
         "exports-93846569f6eb"
       ],
-      "manual": {
-        "review": "owner-acceptance",
+      "inspection": {
+        "kind": "contract",
         "procedure": "Review the delivered local document tools against 'Purpose' and the explicit product non-goals.",
         "expected": "Required document journeys exist without introducing unauthorized product capabilities."
       }
@@ -2956,8 +2946,8 @@
         "reader-03843a0b43b3",
         "exports-93846569f6eb"
       ],
-      "manual": {
-        "review": "owner-acceptance",
+      "inspection": {
+        "kind": "contract",
         "procedure": "Review the delivered local document tools against 'Required author journeys' and the explicit product non-goals.",
         "expected": "Required document journeys exist without introducing unauthorized product capabilities."
       }
@@ -2980,8 +2970,8 @@
         "reader-03843a0b43b3",
         "exports-93846569f6eb"
       ],
-      "manual": {
-        "review": "owner-acceptance",
+      "inspection": {
+        "kind": "contract",
         "procedure": "Review the delivered local document tools against 'Required author journeys' and the explicit product non-goals.",
         "expected": "Required document journeys exist without introducing unauthorized product capabilities."
       }
@@ -3004,8 +2994,8 @@
         "reader-03843a0b43b3",
         "exports-93846569f6eb"
       ],
-      "manual": {
-        "review": "owner-acceptance",
+      "inspection": {
+        "kind": "contract",
         "procedure": "Review the delivered local document tools against 'Required author journeys' and the explicit product non-goals.",
         "expected": "Required document journeys exist without introducing unauthorized product capabilities."
       }
@@ -3028,8 +3018,8 @@
         "reader-03843a0b43b3",
         "exports-93846569f6eb"
       ],
-      "manual": {
-        "review": "owner-acceptance",
+      "inspection": {
+        "kind": "contract",
         "procedure": "Review the delivered local document tools against 'Required author journeys' and the explicit product non-goals.",
         "expected": "Required document journeys exist without introducing unauthorized product capabilities."
       }
@@ -3052,8 +3042,8 @@
         "reader-03843a0b43b3",
         "exports-93846569f6eb"
       ],
-      "manual": {
-        "review": "owner-acceptance",
+      "inspection": {
+        "kind": "contract",
         "procedure": "Review the delivered local document tools against 'Required author journeys' and the explicit product non-goals.",
         "expected": "Required document journeys exist without introducing unauthorized product capabilities."
       }
@@ -3061,9 +3051,9 @@
     {
       "id": "RULE-019",
       "authority": "docs/01_PRODUCT.md",
-      "section": "Required deliverables",
+      "section": "Language and tools",
       "line": 23,
-      "sha256": "feba5511451f0ab2b8228fa275506015178c3430fece4f05d54aa99994607aa7",
+      "sha256": "aece822287e42a9159e95e7e890d882bd1222e9789f9892d4daa884ac0c65137",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
       "references": [
         "editor-a42d8ae0bd82",
@@ -3076,8 +3066,8 @@
         "reader-03843a0b43b3",
         "exports-93846569f6eb"
       ],
-      "manual": {
-        "review": "owner-acceptance",
+      "inspection": {
+        "kind": "contract",
         "procedure": "Review the delivered local document tools against 'Required deliverables' and the explicit product non-goals.",
         "expected": "Required document journeys exist without introducing unauthorized product capabilities."
       }
@@ -3085,7 +3075,7 @@
     {
       "id": "RULE-020",
       "authority": "docs/01_PRODUCT.md",
-      "section": "Required deliverables",
+      "section": "Language and tools",
       "line": 25,
       "sha256": "f1baf19328491924501fee071d0d35d558f86ca45d85882e57740e525ab123a1",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
@@ -3100,8 +3090,8 @@
         "reader-03843a0b43b3",
         "exports-93846569f6eb"
       ],
-      "manual": {
-        "review": "owner-acceptance",
+      "inspection": {
+        "kind": "contract",
         "procedure": "Review the delivered local document tools against 'Required deliverables' and the explicit product non-goals.",
         "expected": "Required document journeys exist without introducing unauthorized product capabilities."
       }
@@ -3109,7 +3099,7 @@
     {
       "id": "RULE-021",
       "authority": "docs/01_PRODUCT.md",
-      "section": "Quality gates",
+      "section": "Document guarantees",
       "line": 29,
       "sha256": "9049e174cebadae748c10436f5886b7cfc0ed753dec14a125b648c8c42390ab4",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
@@ -3124,8 +3114,8 @@
         "reader-03843a0b43b3",
         "exports-93846569f6eb"
       ],
-      "manual": {
-        "review": "owner-acceptance",
+      "inspection": {
+        "kind": "contract",
         "procedure": "Review the delivered local document tools against 'Quality gates' and the explicit product non-goals.",
         "expected": "Required document journeys exist without introducing unauthorized product capabilities."
       }
@@ -3148,8 +3138,8 @@
         "reader-03843a0b43b3",
         "exports-93846569f6eb"
       ],
-      "manual": {
-        "review": "owner-acceptance",
+      "inspection": {
+        "kind": "contract",
         "procedure": "Review the delivered local document tools against 'Content expectations' and the explicit product non-goals.",
         "expected": "Required document journeys exist without introducing unauthorized product capabilities."
       }
@@ -3159,16 +3149,16 @@
       "authority": "docs/01_PRODUCT.md",
       "section": "Supported usage environments",
       "line": 37,
-      "sha256": "9ad714dbe2f224556bf6d2b2f77084903c921eb9f0b9a081837a1904f5d19052",
-      "assertion": "Browser automation and CLI tests are distinct from named physical/operating-system qualification.",
+      "sha256": "0fa1424f0d2798dbb4188046b5d8f6dad9b873ac3c3b6573f2770313834c5eaf",
+      "assertion": "Browser automation and CLI tests are distinct from physical-device and operating-system behavior.",
       "references": [
         "editor-a42d8ae0bd82",
         "cli-b03287662ac7"
       ],
-      "manual": {
-        "review": "owner-acceptance",
+      "inspection": {
+        "kind": "contract",
         "procedure": "Review browser/device and CLI operating-system matrix records, including all claimed architectures.",
-        "expected": "Only actually qualified environments are claimed; missing platforms remain explicitly blocked."
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -3575,7 +3565,7 @@
       "authority": "docs/02_FILES_AND_EXPORTS.md",
       "section": "CSP and network behaviour",
       "line": 71,
-      "sha256": "1c9aa498144c70dc99119bb037dbc4c16cea8f3f270ca258229fc5cf9a1bac62",
+      "sha256": "7d479b15ef0bdf5bfb1718e6a2ea11929e35e46ea98a40eaca93af6fc7167d10",
       "assertion": "Assert no automatic network requests and no author execution; explicit external navigation only.",
       "references": [
         "exports-4b9412231cfd",
@@ -3664,8 +3654,8 @@
         "editor-44792eecfe01",
         "editor-ffa998e27004"
       ],
-      "manual": {
-        "review": "keyboard-visual",
+      "inspection": {
+        "kind": "accessibility",
         "procedure": "Open the production artifact at each prescribed viewport and inspect mode changes, source position and scroll retention.",
         "expected": "Document-oriented layout and accessible narrow source/preview controls match the editor contract."
       }
@@ -3690,8 +3680,8 @@
         "editor-d654cfd0a0d6",
         "editor-7cb9ca4ad62e"
       ],
-      "manual": {
-        "review": "keyboard-visual",
+      "inspection": {
+        "kind": "accessibility",
         "procedure": "Open the production artifact at each prescribed viewport and inspect mode changes, source position and scroll retention.",
         "expected": "Document-oriented layout and accessible narrow source/preview controls match the editor contract."
       }
@@ -3710,8 +3700,8 @@
         "editor-9c2f24aa5f93",
         "editor-bd34140adc88"
       ],
-      "manual": {
-        "review": "keyboard-visual",
+      "inspection": {
+        "kind": "accessibility",
         "procedure": "Open the production artifact at each prescribed viewport and inspect mode changes, source position and scroll retention.",
         "expected": "Document-oriented layout and accessible narrow source/preview controls match the editor contract."
       }
@@ -3734,8 +3724,8 @@
         "editor-35944d5636e8",
         "editor-d76845f7227e"
       ],
-      "manual": {
-        "review": "keyboard-visual",
+      "inspection": {
+        "kind": "accessibility",
         "procedure": "Exercise CodeMirror find/replace, completion, bracket matching, indentation and source selection with the keyboard.",
         "expected": "All advertised editor functions work and preserve authored text except explicit edits."
       }
@@ -3755,8 +3745,8 @@
         "editor-a42d8ae0bd82",
         "scheduling-cb1a684c2a1a"
       ],
-      "manual": {
-        "review": "keyboard-visual",
+      "inspection": {
+        "kind": "accessibility",
         "procedure": "Exercise CodeMirror find/replace, completion, bracket matching, indentation and source selection with the keyboard.",
         "expected": "All advertised editor functions work and preserve authored text except explicit edits."
       }
@@ -3776,8 +3766,8 @@
         "editor-a42d8ae0bd82",
         "scheduling-cb1a684c2a1a"
       ],
-      "manual": {
-        "review": "keyboard-visual",
+      "inspection": {
+        "kind": "accessibility",
         "procedure": "Exercise CodeMirror find/replace, completion, bracket matching, indentation and source selection with the keyboard.",
         "expected": "All advertised editor functions work and preserve authored text except explicit edits."
       }
@@ -4002,8 +3992,8 @@
         "editor-9ca658f6c6b4",
         "editor-44792eecfe01"
       ],
-      "manual": {
-        "review": "keyboard-visual",
+      "inspection": {
+        "kind": "accessibility",
         "procedure": "Use each listed shortcut and dialog with keyboard only; inspect focus before and after pending compilation and modal close.",
         "expected": "No browser/accessibility shortcut is hijacked; focus remains meaningful and Cancel is the destructive default."
       }
@@ -4023,8 +4013,8 @@
         "editor-c6bfe4ae9ec4",
         "editor-d654cfd0a0d6"
       ],
-      "manual": {
-        "review": "keyboard-visual",
+      "inspection": {
+        "kind": "accessibility",
         "procedure": "Use each listed shortcut and dialog with keyboard only; inspect focus before and after pending compilation and modal close.",
         "expected": "No browser/accessibility shortcut is hijacked; focus remains meaningful and Cancel is the destructive default."
       }
@@ -4049,14 +4039,14 @@
         "editor-0e4af1059705",
         "editor-573fa5c1142f",
         "editor-f0e993552911",
-        "qualification-b03e2dcd9c7d",
-        "qualification-aac9754f7be4",
-        "qualification-3bcac3110faf"
+        "integrity-b03e2dcd9c7d",
+        "integrity-aac9754f7be4",
+        "integrity-3bcac3110faf"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Review the implementation and attack surface against each obligation in 'Assets to protect', including trusted host/worker/preview boundaries and preservation of local content.",
-        "expected": "No unauthorized execution, resource access, disclosure or unbounded work; document findings and disposition with a named reviewer."
+        "expected": "No author execution, unauthorized resource access, private-content disclosure or unbounded work occurs; failures preserve local source."
       }
     },
     {
@@ -4079,14 +4069,14 @@
         "editor-0e4af1059705",
         "editor-573fa5c1142f",
         "editor-f0e993552911",
-        "qualification-b03e2dcd9c7d",
-        "qualification-aac9754f7be4",
-        "qualification-3bcac3110faf"
+        "integrity-b03e2dcd9c7d",
+        "integrity-aac9754f7be4",
+        "integrity-3bcac3110faf"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Review the implementation and attack surface against each obligation in 'Untrusted inputs', including trusted host/worker/preview boundaries and preservation of local content.",
-        "expected": "No unauthorized execution, resource access, disclosure or unbounded work; document findings and disposition with a named reviewer."
+        "expected": "No author execution, unauthorized resource access, private-content disclosure or unbounded work occurs; failures preserve local source."
       }
     },
     {
@@ -4094,7 +4084,7 @@
       "authority": "docs/04_SECURITY.md",
       "section": "Enforced boundaries",
       "line": 13,
-      "sha256": "f51ea781653989c9cc4f063ae714b35a627f3f040657606752cc3c06d5f0180a",
+      "sha256": "ebd303c7d588381f6563658103ff0a634e4196c7f7ab0772563a06b8339091dd",
       "assertion": "Assert bounded untrusted input handling, inert rendering, isolated capabilities, no automatic requests and fail-closed protocol/artifact validation.",
       "references": [
         "reader-2f5f596d2b81",
@@ -4109,14 +4099,14 @@
         "editor-0e4af1059705",
         "editor-573fa5c1142f",
         "editor-f0e993552911",
-        "qualification-b03e2dcd9c7d",
-        "qualification-aac9754f7be4",
-        "qualification-3bcac3110faf"
+        "integrity-b03e2dcd9c7d",
+        "integrity-aac9754f7be4",
+        "integrity-3bcac3110faf"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Review the implementation and attack surface against each obligation in 'Enforced boundaries', including trusted host/worker/preview boundaries and preservation of local content.",
-        "expected": "No unauthorized execution, resource access, disclosure or unbounded work; document findings and disposition with a named reviewer."
+        "expected": "No author execution, unauthorized resource access, private-content disclosure or unbounded work occurs; failures preserve local source."
       }
     },
     {
@@ -4139,14 +4129,14 @@
         "editor-0e4af1059705",
         "editor-573fa5c1142f",
         "editor-f0e993552911",
-        "qualification-b03e2dcd9c7d",
-        "qualification-aac9754f7be4",
-        "qualification-3bcac3110faf"
+        "integrity-b03e2dcd9c7d",
+        "integrity-aac9754f7be4",
+        "integrity-3bcac3110faf"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Review the implementation and attack surface against each obligation in 'Renderer rules', including trusted host/worker/preview boundaries and preservation of local content.",
-        "expected": "No unauthorized execution, resource access, disclosure or unbounded work; document findings and disposition with a named reviewer."
+        "expected": "No author execution, unauthorized resource access, private-content disclosure or unbounded work occurs; failures preserve local source."
       }
     },
     {
@@ -4169,14 +4159,14 @@
         "editor-0e4af1059705",
         "editor-573fa5c1142f",
         "editor-f0e993552911",
-        "qualification-b03e2dcd9c7d",
-        "qualification-aac9754f7be4",
-        "qualification-3bcac3110faf"
+        "integrity-b03e2dcd9c7d",
+        "integrity-aac9754f7be4",
+        "integrity-3bcac3110faf"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Review the implementation and attack surface against each obligation in 'Renderer rules', including trusted host/worker/preview boundaries and preservation of local content.",
-        "expected": "No unauthorized execution, resource access, disclosure or unbounded work; document findings and disposition with a named reviewer."
+        "expected": "No author execution, unauthorized resource access, private-content disclosure or unbounded work occurs; failures preserve local source."
       }
     },
     {
@@ -4199,14 +4189,14 @@
         "editor-0e4af1059705",
         "editor-573fa5c1142f",
         "editor-f0e993552911",
-        "qualification-b03e2dcd9c7d",
-        "qualification-aac9754f7be4",
-        "qualification-3bcac3110faf"
+        "integrity-b03e2dcd9c7d",
+        "integrity-aac9754f7be4",
+        "integrity-3bcac3110faf"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Review the implementation and attack surface against each obligation in 'Preview sandbox', including trusted host/worker/preview boundaries and preservation of local content.",
-        "expected": "No unauthorized execution, resource access, disclosure or unbounded work; document findings and disposition with a named reviewer."
+        "expected": "No author execution, unauthorized resource access, private-content disclosure or unbounded work occurs; failures preserve local source."
       }
     },
     {
@@ -4229,14 +4219,14 @@
         "editor-0e4af1059705",
         "editor-573fa5c1142f",
         "editor-f0e993552911",
-        "qualification-b03e2dcd9c7d",
-        "qualification-aac9754f7be4",
-        "qualification-3bcac3110faf"
+        "integrity-b03e2dcd9c7d",
+        "integrity-aac9754f7be4",
+        "integrity-3bcac3110faf"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Review the implementation and attack surface against each obligation in 'Preview sandbox', including trusted host/worker/preview boundaries and preservation of local content.",
-        "expected": "No unauthorized execution, resource access, disclosure or unbounded work; document findings and disposition with a named reviewer."
+        "expected": "No author execution, unauthorized resource access, private-content disclosure or unbounded work occurs; failures preserve local source."
       }
     },
     {
@@ -4259,14 +4249,14 @@
         "editor-0e4af1059705",
         "editor-573fa5c1142f",
         "editor-f0e993552911",
-        "qualification-b03e2dcd9c7d",
-        "qualification-aac9754f7be4",
-        "qualification-3bcac3110faf"
+        "integrity-b03e2dcd9c7d",
+        "integrity-aac9754f7be4",
+        "integrity-3bcac3110faf"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Review the implementation and attack surface against each obligation in 'Studio-specific CSP', including trusted host/worker/preview boundaries and preservation of local content.",
-        "expected": "No unauthorized execution, resource access, disclosure or unbounded work; document findings and disposition with a named reviewer."
+        "expected": "No author execution, unauthorized resource access, private-content disclosure or unbounded work occurs; failures preserve local source."
       }
     },
     {
@@ -4289,14 +4279,14 @@
         "editor-0e4af1059705",
         "editor-573fa5c1142f",
         "editor-f0e993552911",
-        "qualification-b03e2dcd9c7d",
-        "qualification-aac9754f7be4",
-        "qualification-3bcac3110faf"
+        "integrity-b03e2dcd9c7d",
+        "integrity-aac9754f7be4",
+        "integrity-3bcac3110faf"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Review the implementation and attack surface against each obligation in 'File grants and recovery', including trusted host/worker/preview boundaries and preservation of local content.",
-        "expected": "No unauthorized execution, resource access, disclosure or unbounded work; document findings and disposition with a named reviewer."
+        "expected": "No author execution, unauthorized resource access, private-content disclosure or unbounded work occurs; failures preserve local source."
       }
     },
     {
@@ -4319,14 +4309,14 @@
         "editor-0e4af1059705",
         "editor-573fa5c1142f",
         "editor-f0e993552911",
-        "qualification-b03e2dcd9c7d",
-        "qualification-aac9754f7be4",
-        "qualification-3bcac3110faf"
+        "integrity-b03e2dcd9c7d",
+        "integrity-aac9754f7be4",
+        "integrity-3bcac3110faf"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Review the implementation and attack surface against each obligation in 'Adversarial verification', including trusted host/worker/preview boundaries and preservation of local content.",
-        "expected": "No unauthorized execution, resource access, disclosure or unbounded work; document findings and disposition with a named reviewer."
+        "expected": "No author execution, unauthorized resource access, private-content disclosure or unbounded work occurs; failures preserve local source."
       }
     },
     {
@@ -4334,7 +4324,7 @@
       "authority": "docs/04_SECURITY.md",
       "section": "Adversarial verification",
       "line": 48,
-      "sha256": "b4311d040a5b4612b577d7ab5af2f4827f5da0608b3d14f6be0b0522c5313469",
+      "sha256": "da07632a292dc634c435381b0285f688d768047fee47ce676feb0fa009ac7c57",
       "assertion": "Assert bounded untrusted input handling, inert rendering, isolated capabilities, no automatic requests and fail-closed protocol/artifact validation.",
       "references": [
         "reader-2f5f596d2b81",
@@ -4349,14 +4339,14 @@
         "editor-0e4af1059705",
         "editor-573fa5c1142f",
         "editor-f0e993552911",
-        "qualification-b03e2dcd9c7d",
-        "qualification-aac9754f7be4",
-        "qualification-3bcac3110faf"
+        "integrity-b03e2dcd9c7d",
+        "integrity-aac9754f7be4",
+        "integrity-3bcac3110faf"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Review the implementation and attack surface against each obligation in 'Adversarial verification', including trusted host/worker/preview boundaries and preservation of local content.",
-        "expected": "No unauthorized execution, resource access, disclosure or unbounded work; document findings and disposition with a named reviewer."
+        "expected": "No author execution, unauthorized resource access, private-content disclosure or unbounded work occurs; failures preserve local source."
       }
     },
     {
@@ -4365,11 +4355,11 @@
       "section": "Vulnerability handling",
       "line": 52,
       "sha256": "1b47d96dac5cc443dc8ebf4fb7f5d633721980300e0320a824afbc96b3c8f393",
-      "assertion": "Private disclosure procedure and audit claims require owner/project review rather than simulated runtime evidence.",
+      "assertion": "Private disclosure procedure and audit claims require the configured project contact and actual audit scope.",
       "references": [],
-      "manual": {
-        "review": "security-review",
-        "procedure": "Inspect configured disclosure channels and public security claims before release.",
+      "inspection": {
+        "kind": "security",
+        "procedure": "Inspect the input and capability boundaries described by this clause, including malformed input and failure handling.",
         "expected": "No invented contact, automatic transmission, unsupported audit claim or disclosure of private exploit material."
       }
     },
@@ -4379,7 +4369,7 @@
       "section": "Product character",
       "line": 5,
       "sha256": "06eb9b4853ab88be4bb020c752bf3f0fe2abc936465a1a957c3dbd965daf4be0",
-      "assertion": "Automated checks assert semantics, native keyboard behaviour, safe reflow and accessible names; visual/assistive-technology acceptance is separate.",
+      "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
         "reader-c273215916a5",
@@ -4387,10 +4377,10 @@
         "reader-95808e1c04f7",
         "editor-44792eecfe01"
       ],
-      "manual": {
-        "review": "keyboard-visual",
-        "procedure": "Inspect every assertion in 'Product character' at the prescribed widths, zoom levels, forced colours and with the named assistive-technology/device matrix. Record measured contrast and observed focus/announcements.",
-        "expected": "All applicable visual and assistive-technology requirements are satisfied, with reviewer, versions, fixture and observed results recorded; automation alone is insufficient."
+      "inspection": {
+        "kind": "accessibility",
+        "procedure": "Exercise the clause with keyboard and assistive technology at the specified widths, zoom levels and forced colors; inspect labels, focus and announcements.",
+        "expected": "Names, roles, values, focus transitions, data alternatives and non-color cues describe the same document and remain usable."
       }
     },
     {
@@ -4399,7 +4389,7 @@
       "section": "Product character",
       "line": 7,
       "sha256": "c93c2f1851b2ea81434364e915ceeb557fcd9091d14ac6fd41e97b82a2c0cb61",
-      "assertion": "Automated checks assert semantics, native keyboard behaviour, safe reflow and accessible names; visual/assistive-technology acceptance is separate.",
+      "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
         "reader-c273215916a5",
@@ -4407,10 +4397,10 @@
         "reader-95808e1c04f7",
         "editor-44792eecfe01"
       ],
-      "manual": {
-        "review": "keyboard-visual",
-        "procedure": "Inspect every assertion in 'Product character' at the prescribed widths, zoom levels, forced colours and with the named assistive-technology/device matrix. Record measured contrast and observed focus/announcements.",
-        "expected": "All applicable visual and assistive-technology requirements are satisfied, with reviewer, versions, fixture and observed results recorded; automation alone is insufficient."
+      "inspection": {
+        "kind": "accessibility",
+        "procedure": "Exercise the clause with keyboard and assistive technology at the specified widths, zoom levels and forced colors; inspect labels, focus and announcements.",
+        "expected": "Names, roles, values, focus transitions, data alternatives and non-color cues describe the same document and remain usable."
       }
     },
     {
@@ -4419,7 +4409,7 @@
       "section": "Product character",
       "line": 9,
       "sha256": "657a109de02b46a873b947549b4e816c12392ce2bf686a97bae59c1d8aba683c",
-      "assertion": "Automated checks assert semantics, native keyboard behaviour, safe reflow and accessible names; visual/assistive-technology acceptance is separate.",
+      "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
         "reader-c273215916a5",
@@ -4427,10 +4417,10 @@
         "reader-95808e1c04f7",
         "editor-44792eecfe01"
       ],
-      "manual": {
-        "review": "keyboard-visual",
-        "procedure": "Inspect every assertion in 'Product character' at the prescribed widths, zoom levels, forced colours and with the named assistive-technology/device matrix. Record measured contrast and observed focus/announcements.",
-        "expected": "All applicable visual and assistive-technology requirements are satisfied, with reviewer, versions, fixture and observed results recorded; automation alone is insufficient."
+      "inspection": {
+        "kind": "accessibility",
+        "procedure": "Exercise the clause with keyboard and assistive technology at the specified widths, zoom levels and forced colors; inspect labels, focus and announcements.",
+        "expected": "Names, roles, values, focus transitions, data alternatives and non-color cues describe the same document and remain usable."
       }
     },
     {
@@ -4439,7 +4429,7 @@
       "section": "Tokens and geometry",
       "line": 13,
       "sha256": "5c7903818f967455caa14d2d54b666be7f6ac8d0bc635efa2face05438809421",
-      "assertion": "Automated checks assert semantics, native keyboard behaviour, safe reflow and accessible names; visual/assistive-technology acceptance is separate.",
+      "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
         "reader-c273215916a5",
@@ -4447,10 +4437,10 @@
         "reader-95808e1c04f7",
         "editor-44792eecfe01"
       ],
-      "manual": {
-        "review": "keyboard-visual",
-        "procedure": "Inspect every assertion in 'Tokens and geometry' at the prescribed widths, zoom levels, forced colours and with the named assistive-technology/device matrix. Record measured contrast and observed focus/announcements.",
-        "expected": "All applicable visual and assistive-technology requirements are satisfied, with reviewer, versions, fixture and observed results recorded; automation alone is insufficient."
+      "inspection": {
+        "kind": "accessibility",
+        "procedure": "Exercise the clause with keyboard and assistive technology at the specified widths, zoom levels and forced colors; inspect labels, focus and announcements.",
+        "expected": "Names, roles, values, focus transitions, data alternatives and non-color cues describe the same document and remain usable."
       }
     },
     {
@@ -4459,7 +4449,7 @@
       "section": "Tokens and geometry",
       "line": 15,
       "sha256": "5e4d9635ee5db0e5a978a308b8d5d57ceb7610d2c31e7e2adea0292f545ecd7f",
-      "assertion": "Automated checks assert semantics, native keyboard behaviour, safe reflow and accessible names; visual/assistive-technology acceptance is separate.",
+      "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
         "reader-c273215916a5",
@@ -4467,19 +4457,19 @@
         "reader-95808e1c04f7",
         "editor-44792eecfe01"
       ],
-      "manual": {
-        "review": "keyboard-visual",
-        "procedure": "Inspect every assertion in 'Tokens and geometry' at the prescribed widths, zoom levels, forced colours and with the named assistive-technology/device matrix. Record measured contrast and observed focus/announcements.",
-        "expected": "All applicable visual and assistive-technology requirements are satisfied, with reviewer, versions, fixture and observed results recorded; automation alone is insufficient."
+      "inspection": {
+        "kind": "accessibility",
+        "procedure": "Exercise the clause with keyboard and assistive technology at the specified widths, zoom levels and forced colors; inspect labels, focus and announcements.",
+        "expected": "Names, roles, values, focus transitions, data alternatives and non-color cues describe the same document and remain usable."
       }
     },
     {
       "id": "RULE-092",
       "authority": "docs/05_ACCESSIBILITY_AND_DESIGN.md",
-      "section": "Accessibility target and evidence",
+      "section": "Accessibility requirements",
       "line": 19,
-      "sha256": "de7568770ea3869b84dd365d1a0e50e89bc6a42f55642387dfe1dd2f4f1c4c4a",
-      "assertion": "Automated checks assert semantics, native keyboard behaviour, safe reflow and accessible names; visual/assistive-technology acceptance is separate.",
+      "sha256": "d42b7570a8d5b7b7945fac72a3310110d7636fe077cc529ac0252f961a662434",
+      "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
         "reader-c273215916a5",
@@ -4487,19 +4477,19 @@
         "reader-95808e1c04f7",
         "editor-44792eecfe01"
       ],
-      "manual": {
-        "review": "keyboard-visual",
-        "procedure": "Inspect every assertion in 'Accessibility target and evidence' at the prescribed widths, zoom levels, forced colours and with the named assistive-technology/device matrix. Record measured contrast and observed focus/announcements.",
-        "expected": "All applicable visual and assistive-technology requirements are satisfied, with reviewer, versions, fixture and observed results recorded; automation alone is insufficient."
+      "inspection": {
+        "kind": "accessibility",
+        "procedure": "Exercise the clause with keyboard and assistive technology at the specified widths, zoom levels and forced colors; inspect labels, focus and announcements.",
+        "expected": "Names, roles, values, focus transitions, data alternatives and non-color cues describe the same document and remain usable."
       }
     },
     {
       "id": "RULE-093",
       "authority": "docs/05_ACCESSIBILITY_AND_DESIGN.md",
-      "section": "Accessibility target and evidence",
+      "section": "Accessibility requirements",
       "line": 21,
       "sha256": "fa7590b3d24dfcf1a048d1ceeeac8da88751641c815bda50c2fd953a39a1b68b",
-      "assertion": "Automated checks assert semantics, native keyboard behaviour, safe reflow and accessible names; visual/assistive-technology acceptance is separate.",
+      "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
         "reader-c273215916a5",
@@ -4507,19 +4497,19 @@
         "reader-95808e1c04f7",
         "editor-44792eecfe01"
       ],
-      "manual": {
-        "review": "keyboard-visual",
-        "procedure": "Inspect every assertion in 'Accessibility target and evidence' at the prescribed widths, zoom levels, forced colours and with the named assistive-technology/device matrix. Record measured contrast and observed focus/announcements.",
-        "expected": "All applicable visual and assistive-technology requirements are satisfied, with reviewer, versions, fixture and observed results recorded; automation alone is insufficient."
+      "inspection": {
+        "kind": "accessibility",
+        "procedure": "Exercise the clause with keyboard and assistive technology at the specified widths, zoom levels and forced colors; inspect labels, focus and announcements.",
+        "expected": "Names, roles, values, focus transitions, data alternatives and non-color cues describe the same document and remain usable."
       }
     },
     {
       "id": "RULE-094",
       "authority": "docs/05_ACCESSIBILITY_AND_DESIGN.md",
-      "section": "Accessibility target and evidence",
+      "section": "Accessibility requirements",
       "line": 23,
       "sha256": "23254ac61c08dac33990255c8e5810efe418a9c217445c0a72e4ce9a741aaf2a",
-      "assertion": "Automated checks assert semantics, native keyboard behaviour, safe reflow and accessible names; visual/assistive-technology acceptance is separate.",
+      "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
         "reader-c273215916a5",
@@ -4527,19 +4517,19 @@
         "reader-95808e1c04f7",
         "editor-44792eecfe01"
       ],
-      "manual": {
-        "review": "keyboard-visual",
-        "procedure": "Inspect every assertion in 'Accessibility target and evidence' at the prescribed widths, zoom levels, forced colours and with the named assistive-technology/device matrix. Record measured contrast and observed focus/announcements.",
-        "expected": "All applicable visual and assistive-technology requirements are satisfied, with reviewer, versions, fixture and observed results recorded; automation alone is insufficient."
+      "inspection": {
+        "kind": "accessibility",
+        "procedure": "Exercise the clause with keyboard and assistive technology at the specified widths, zoom levels and forced colors; inspect labels, focus and announcements.",
+        "expected": "Names, roles, values, focus transitions, data alternatives and non-color cues describe the same document and remain usable."
       }
     },
     {
       "id": "RULE-095",
       "authority": "docs/05_ACCESSIBILITY_AND_DESIGN.md",
-      "section": "Accessibility target and evidence",
+      "section": "Accessibility requirements",
       "line": 25,
       "sha256": "c746a9548686d4785286efad3a7495c2b6ebfea89cde745bdac584f170e36a59",
-      "assertion": "Automated checks assert semantics, native keyboard behaviour, safe reflow and accessible names; visual/assistive-technology acceptance is separate.",
+      "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
         "reader-c273215916a5",
@@ -4547,19 +4537,19 @@
         "reader-95808e1c04f7",
         "editor-44792eecfe01"
       ],
-      "manual": {
-        "review": "keyboard-visual",
-        "procedure": "Inspect every assertion in 'Accessibility target and evidence' at the prescribed widths, zoom levels, forced colours and with the named assistive-technology/device matrix. Record measured contrast and observed focus/announcements.",
-        "expected": "All applicable visual and assistive-technology requirements are satisfied, with reviewer, versions, fixture and observed results recorded; automation alone is insufficient."
+      "inspection": {
+        "kind": "accessibility",
+        "procedure": "Exercise the clause with keyboard and assistive technology at the specified widths, zoom levels and forced colors; inspect labels, focus and announcements.",
+        "expected": "Names, roles, values, focus transitions, data alternatives and non-color cues describe the same document and remain usable."
       }
     },
     {
       "id": "RULE-096",
       "authority": "docs/05_ACCESSIBILITY_AND_DESIGN.md",
-      "section": "Accessibility target and evidence",
+      "section": "Accessibility requirements",
       "line": 27,
       "sha256": "8bc43fffb1f67c910d4d48e7ed847318c722d5526989890073def8ffab0f0139",
-      "assertion": "Automated checks assert semantics, native keyboard behaviour, safe reflow and accessible names; visual/assistive-technology acceptance is separate.",
+      "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
         "reader-c273215916a5",
@@ -4568,19 +4558,19 @@
         "editor-44792eecfe01",
         "editor-d654cfd0a0d6"
       ],
-      "manual": {
-        "review": "keyboard-visual",
-        "procedure": "Inspect every assertion in 'Accessibility target and evidence' at the prescribed widths, zoom levels, forced colours and with the named assistive-technology/device matrix. Record measured contrast and observed focus/announcements.",
-        "expected": "All applicable visual and assistive-technology requirements are satisfied, with reviewer, versions, fixture and observed results recorded; automation alone is insufficient."
+      "inspection": {
+        "kind": "accessibility",
+        "procedure": "Exercise the clause with keyboard and assistive technology at the specified widths, zoom levels and forced colors; inspect labels, focus and announcements.",
+        "expected": "Names, roles, values, focus transitions, data alternatives and non-color cues describe the same document and remain usable."
       }
     },
     {
       "id": "RULE-097",
       "authority": "docs/05_ACCESSIBILITY_AND_DESIGN.md",
-      "section": "Manual acceptance protocol",
+      "section": "Reading across environments",
       "line": 31,
-      "sha256": "ebff2cfd58f2ded985af3658e08917242fc73592f93495469e849f80e6232f33",
-      "assertion": "Automated checks assert semantics, native keyboard behaviour, safe reflow and accessible names; visual/assistive-technology acceptance is separate.",
+      "sha256": "e10e60431e913beed85e62991a85371017c49ab8cfabda869a6da3182061f8cf",
+      "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
         "reader-c273215916a5",
@@ -4588,19 +4578,19 @@
         "reader-95808e1c04f7",
         "editor-44792eecfe01"
       ],
-      "manual": {
-        "review": "keyboard-visual",
-        "procedure": "Inspect every assertion in 'Manual acceptance protocol' at the prescribed widths, zoom levels, forced colours and with the named assistive-technology/device matrix. Record measured contrast and observed focus/announcements.",
-        "expected": "All applicable visual and assistive-technology requirements are satisfied, with reviewer, versions, fixture and observed results recorded; automation alone is insufficient."
+      "inspection": {
+        "kind": "accessibility",
+        "procedure": "Exercise the clause with keyboard and assistive technology at the specified widths, zoom levels and forced colors; inspect labels, focus and announcements.",
+        "expected": "Names, roles, values, focus transitions, data alternatives and non-color cues describe the same document and remain usable."
       }
     },
     {
       "id": "RULE-098",
       "authority": "docs/05_ACCESSIBILITY_AND_DESIGN.md",
-      "section": "Manual acceptance protocol",
+      "section": "Reading across environments",
       "line": 33,
-      "sha256": "ab9d2837d695a22627fe9fda87dff217d0a50ce10d59165d8100f82236655a0c",
-      "assertion": "Automated checks assert semantics, native keyboard behaviour, safe reflow and accessible names; visual/assistive-technology acceptance is separate.",
+      "sha256": "98a8b621a39a9886834e29baeaae175d8dffcb6742c2c2b2eb8beb3aa65065d7",
+      "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
         "reader-c273215916a5",
@@ -4608,10 +4598,10 @@
         "reader-95808e1c04f7",
         "editor-44792eecfe01"
       ],
-      "manual": {
-        "review": "keyboard-visual",
-        "procedure": "Inspect every assertion in 'Manual acceptance protocol' at the prescribed widths, zoom levels, forced colours and with the named assistive-technology/device matrix. Record measured contrast and observed focus/announcements.",
-        "expected": "All applicable visual and assistive-technology requirements are satisfied, with reviewer, versions, fixture and observed results recorded; automation alone is insufficient."
+      "inspection": {
+        "kind": "accessibility",
+        "procedure": "Exercise the clause with keyboard and assistive technology at the specified widths, zoom levels and forced colors; inspect labels, focus and announcements.",
+        "expected": "Names, roles, values, focus transitions, data alternatives and non-color cues describe the same document and remain usable."
       }
     },
     {
@@ -4994,37 +4984,35 @@
     {
       "id": "RULE-112",
       "authority": "docs/07_VERIFICATION.md",
-      "section": "Evidence hierarchy",
+      "section": "Check scopes",
       "line": 5,
-      "sha256": "bcc7e40240ea8dfaf73361db0dd2f866a1701e5e9495ca40dc87981c7b8c1e8e",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "sha256": "6d2ec9b0c353117e03650f9aaf8c7f629b5c740ed8e1f38fee48b7c2528bc848",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Evidence hierarchy' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
       "id": "RULE-113",
       "authority": "docs/07_VERIFICATION.md",
-      "section": "Evidence hierarchy",
+      "section": "Check scopes",
       "line": 7,
-      "sha256": "9b0bdfeece4c640af337a7a77a9dca3307d9363536fffcaee25b3ceb7343ee26",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "sha256": "50d3ef11e9ee6c21ca91136b777f5f2a099eb833fcfdfa350ff95d895f360458",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Evidence hierarchy' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -5033,16 +5021,15 @@
       "section": "Required suite groups",
       "line": 11,
       "sha256": "532507a15880cbd4f6060e560b2a7ee23cf01899b7a884b6ff3bdbc3c8b4c6e9",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Required suite groups' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -5051,16 +5038,15 @@
       "section": "Required suite groups",
       "line": 13,
       "sha256": "07f72155c3b9b643b833d965eab92d20e361e7a73088a108c67082b3f84e5e45",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Required suite groups' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -5069,16 +5055,15 @@
       "section": "Required suite groups",
       "line": 15,
       "sha256": "ad95da01dab5dbb020ddc8613af685bb932eb5b68954bbbec54066c6b8140386",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Required suite groups' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -5087,16 +5072,15 @@
       "section": "Required suite groups",
       "line": 17,
       "sha256": "66e9ea35834af0b44873ff82f84d3d345bf1e96e29f675ee252d40fbabd7fe0c",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Required suite groups' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -5105,16 +5089,15 @@
       "section": "Required suite groups",
       "line": 19,
       "sha256": "fef73713fb73ea7c54fb266a016494be5bb259f31bf1ca3e507fa28fed0b745b",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Required suite groups' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -5122,17 +5105,16 @@
       "authority": "docs/07_VERIFICATION.md",
       "section": "Required suite groups",
       "line": 21,
-      "sha256": "3263ac7a44163738ba1cd0c8987570040b49a1cda309b03d5bbfa34f84045236",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "sha256": "92b3da648309fb404b7875a35e0e167cd94a9ce9a8adb334e12d2e301c758cf0",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Required suite groups' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -5141,16 +5123,15 @@
       "section": "Coverage and property-test policy",
       "line": 25,
       "sha256": "7898a571aac6718c944efdd0e200244ea95e80045555cc3f29edb01bb9168151",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Coverage and property-test policy' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -5158,17 +5139,16 @@
       "authority": "docs/07_VERIFICATION.md",
       "section": "Coverage and property-test policy",
       "line": 27,
-      "sha256": "3ace978938dcb2bb679c9ee1bca47aaa1e070f4e892d8aab20c5c981a49b99a8",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "sha256": "6f9d81bac8c761c4ea32f9531f44515862288fdda28e58b0ea7152f9469202a6",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Coverage and property-test policy' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -5176,17 +5156,16 @@
       "authority": "docs/07_VERIFICATION.md",
       "section": "Browser and platform matrix",
       "line": 31,
-      "sha256": "f3d29ec28203baecb1be959561d7e03e7af58ead0cd8c8437af1444c1b83538c",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "sha256": "635dcede108db44cbfce8ee7e782c74c08561a7d33901c7e6c74b7b85e7ba4dc",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Browser and platform matrix' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -5194,17 +5173,16 @@
       "authority": "docs/07_VERIFICATION.md",
       "section": "Browser and platform matrix",
       "line": 33,
-      "sha256": "037e0fb9e214b50d588738e19b0ef3f69db5a583ab8a4ab3072639a072e54910",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "sha256": "7d152ebfdbc9dfced3ba7e9b272c9a914c9904033e44707a6919b023a4076e14",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Browser and platform matrix' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -5215,13 +5193,13 @@
       "sha256": "38a80ea9f1a7dd968c9f219f3f6eb45603fed36853533e76f97a8927c6876736",
       "assertion": "Assert locked corpus hashes and run the production benchmark's unchanged timing, resource and size budgets.",
       "references": [
-        "qualification-3138f786872a",
-        "qualification-b7c9b7b1c12a",
+        "integrity-3138f786872a",
+        "integrity-b7c9b7b1c12a",
         "check-scripts-benchmark.mjs"
       ],
-      "manual": {
-        "review": "performance-reference",
-        "procedure": "Confirm the recorded reference machine, power mode, candidate identity and complete measurement protocol.",
+      "inspection": {
+        "kind": "performance",
+        "procedure": "Measure the documented corpus on the reference machine with all warm-ups, samples and independent contexts; inspect distributions and resource use.",
         "expected": "Reference conditions and all required measurements are backed by recorded actual execution."
       }
     },
@@ -5230,16 +5208,16 @@
       "authority": "docs/07_VERIFICATION.md",
       "section": "Performance corpus and budgets",
       "line": 39,
-      "sha256": "3daf84e2e3ede8e0d5fb7827795af2f431750f1eac1b87f8557cce51ed5249cb",
+      "sha256": "d68ba93c689ee26ac6a38a9a020503693b9cd954d109b3b37331c610d69ea895",
       "assertion": "Assert locked corpus hashes and run the production benchmark's unchanged timing, resource and size budgets.",
       "references": [
-        "qualification-3138f786872a",
-        "qualification-b7c9b7b1c12a",
+        "integrity-3138f786872a",
+        "integrity-b7c9b7b1c12a",
         "check-scripts-benchmark.mjs"
       ],
-      "manual": {
-        "review": "performance-reference",
-        "procedure": "Confirm the recorded reference machine, power mode, candidate identity and complete measurement protocol.",
+      "inspection": {
+        "kind": "performance",
+        "procedure": "Measure the documented corpus on the reference machine with all warm-ups, samples and independent contexts; inspect distributions and resource use.",
         "expected": "Reference conditions and all required measurements are backed by recorded actual execution."
       }
     },
@@ -5251,13 +5229,13 @@
       "sha256": "fabe78b5bdaa49f0d7e49ff35561b3cd51981a0f7b5a82d5741a1b2373f3389b",
       "assertion": "Assert locked corpus hashes and run the production benchmark's unchanged timing, resource and size budgets.",
       "references": [
-        "qualification-3138f786872a",
-        "qualification-b7c9b7b1c12a",
+        "integrity-3138f786872a",
+        "integrity-b7c9b7b1c12a",
         "check-scripts-benchmark.mjs"
       ],
-      "manual": {
-        "review": "performance-reference",
-        "procedure": "Confirm the recorded reference machine, power mode, candidate identity and complete measurement protocol.",
+      "inspection": {
+        "kind": "performance",
+        "procedure": "Measure the documented corpus on the reference machine with all warm-ups, samples and independent contexts; inspect distributions and resource use.",
         "expected": "Reference conditions and all required measurements are backed by recorded actual execution."
       }
     },
@@ -5267,7 +5245,7 @@
       "section": "Studio interaction protocol",
       "line": 45,
       "sha256": "8dc8b0dc43b43cefd87201267594f042190fea5cdb33636e59e7eae7465f9d0d",
-      "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run acceptance with trusted browser interactions.",
+      "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run budget checks with trusted browser interactions.",
       "references": [
         "performance-8e943fd71cb3",
         "performance-0713957d4fdd",
@@ -5276,10 +5254,10 @@
         "check-scripts-performance-policy.mjs",
         "performance-preview-content"
       ],
-      "manual": {
-        "review": "performance-reference",
+      "inspection": {
+        "kind": "performance",
         "procedure": "Review all three runs and their raw samples, attribution limits and paint-opportunity proxy.",
-        "expected": "No outlier deletion, unsupported presentation claim, missing scenario or retry-until-green acceptance."
+        "expected": "Measurements satisfy the stated timing, memory and size budgets and retain all samples and instrumentation limitations."
       }
     },
     {
@@ -5287,8 +5265,8 @@
       "authority": "docs/07_VERIFICATION.md",
       "section": "Studio interaction protocol",
       "line": 50,
-      "sha256": "aab32f09d6a14a25757929fdf3c63488d9566242a0fe7cb9bb0e7d3726285408",
-      "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run acceptance with trusted browser interactions.",
+      "sha256": "b7106f4ffea51596c3b0617c7a10b8b196205b985db57ca4ab07898a97a849ed",
+      "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run budget checks with trusted browser interactions.",
       "references": [
         "performance-8e943fd71cb3",
         "performance-0713957d4fdd",
@@ -5297,10 +5275,10 @@
         "check-scripts-performance-policy.mjs",
         "performance-preview-content"
       ],
-      "manual": {
-        "review": "performance-reference",
+      "inspection": {
+        "kind": "performance",
         "procedure": "Review all three runs and their raw samples, attribution limits and paint-opportunity proxy.",
-        "expected": "No outlier deletion, unsupported presentation claim, missing scenario or retry-until-green acceptance."
+        "expected": "Measurements satisfy the stated timing, memory and size budgets and retain all samples and instrumentation limitations."
       }
     },
     {
@@ -5309,7 +5287,7 @@
       "section": "Studio interaction protocol",
       "line": 57,
       "sha256": "87126c903d8708006e3b16494b2054df0e0e1e75064ee267de56022a4c79294e",
-      "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run acceptance with trusted browser interactions.",
+      "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run budget checks with trusted browser interactions.",
       "references": [
         "performance-8e943fd71cb3",
         "performance-0713957d4fdd",
@@ -5318,10 +5296,10 @@
         "check-scripts-performance-policy.mjs",
         "performance-preview-content"
       ],
-      "manual": {
-        "review": "performance-reference",
+      "inspection": {
+        "kind": "performance",
         "procedure": "Review all three runs and their raw samples, attribution limits and paint-opportunity proxy.",
-        "expected": "No outlier deletion, unsupported presentation claim, missing scenario or retry-until-green acceptance."
+        "expected": "Measurements satisfy the stated timing, memory and size budgets and retain all samples and instrumentation limitations."
       }
     },
     {
@@ -5329,8 +5307,8 @@
       "authority": "docs/07_VERIFICATION.md",
       "section": "Studio interaction protocol",
       "line": 65,
-      "sha256": "35b4d4873906b1a114a9994ba0549e51702020ff6c4d1cad05fdcee2dfc4cb02",
-      "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run acceptance with trusted browser interactions.",
+      "sha256": "903dd5220a5ebc6755b128b96b09dd40f0a2a240b4987def997baa0c7f6fb555",
+      "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run budget checks with trusted browser interactions.",
       "references": [
         "performance-8e943fd71cb3",
         "performance-0713957d4fdd",
@@ -5339,10 +5317,10 @@
         "check-scripts-performance-policy.mjs",
         "performance-preview-content"
       ],
-      "manual": {
-        "review": "performance-reference",
+      "inspection": {
+        "kind": "performance",
         "procedure": "Review all three runs and their raw samples, attribution limits and paint-opportunity proxy.",
-        "expected": "No outlier deletion, unsupported presentation claim, missing scenario or retry-until-green acceptance."
+        "expected": "Measurements satisfy the stated timing, memory and size budgets and retain all samples and instrumentation limitations."
       }
     },
     {
@@ -5351,7 +5329,7 @@
       "section": "Studio interaction protocol",
       "line": 72,
       "sha256": "5ddfe87baf80c442d04b7b2f1b74fae741ed97167d515bf211cf2aa81a893989",
-      "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run acceptance with trusted browser interactions.",
+      "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run budget checks with trusted browser interactions.",
       "references": [
         "performance-8e943fd71cb3",
         "performance-0713957d4fdd",
@@ -5360,10 +5338,10 @@
         "check-scripts-performance-policy.mjs",
         "performance-preview-content"
       ],
-      "manual": {
-        "review": "performance-reference",
+      "inspection": {
+        "kind": "performance",
         "procedure": "Review all three runs and their raw samples, attribution limits and paint-opportunity proxy.",
-        "expected": "No outlier deletion, unsupported presentation claim, missing scenario or retry-until-green acceptance."
+        "expected": "Measurements satisfy the stated timing, memory and size budgets and retain all samples and instrumentation limitations."
       }
     },
     {
@@ -5371,8 +5349,8 @@
       "authority": "docs/07_VERIFICATION.md",
       "section": "Studio interaction protocol",
       "line": 78,
-      "sha256": "8021834c73a911c575f146b9c7654e2f25d4d5b6a39d52298ff9d535a0a3ba09",
-      "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run acceptance with trusted browser interactions.",
+      "sha256": "ba69217f01cd2aff53af41379f1aed94e1824b61efa070349a1e0238320990fe",
+      "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run budget checks with trusted browser interactions.",
       "references": [
         "performance-8e943fd71cb3",
         "performance-0713957d4fdd",
@@ -5381,82 +5359,78 @@
         "check-scripts-performance-policy.mjs",
         "performance-preview-content"
       ],
-      "manual": {
-        "review": "performance-reference",
+      "inspection": {
+        "kind": "performance",
         "procedure": "Review all three runs and their raw samples, attribution limits and paint-opportunity proxy.",
-        "expected": "No outlier deletion, unsupported presentation claim, missing scenario or retry-until-green acceptance."
+        "expected": "Measurements satisfy the stated timing, memory and size budgets and retain all samples and instrumentation limitations."
       }
     },
     {
       "id": "RULE-133",
       "authority": "docs/07_VERIFICATION.md",
-      "section": "CI sequence",
+      "section": "Test commands",
       "line": 82,
-      "sha256": "b032f4d48dd6544e4f7f62d0a98c5ddc8a266d187dec8787f04f35f97da54d22",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "sha256": "70cf0272cc8a657cfbba5a279c1723ce436b6e7dc9fe44dbdfa72d91d3e5c037",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'CI sequence' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
       "id": "RULE-134",
       "authority": "docs/07_VERIFICATION.md",
-      "section": "CI sequence",
+      "section": "Test commands",
       "line": 84,
-      "sha256": "3c8697647b19b18ba6f2aa501f1549b664b19f4960e69ac7e7b778e129693294",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "sha256": "3ba3b49f1aeee788912c4176f585fcefc58621be176634378e556b7e861f34b4",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'CI sequence' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
       "id": "RULE-135",
       "authority": "docs/07_VERIFICATION.md",
-      "section": "Evidence records",
+      "section": "Test reports",
       "line": 88,
-      "sha256": "debff3da0e491f4be73d7e117b23a896e2196cd8896788ace793dc4323aef2ae",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "sha256": "734360af703fae99034f7f64eb888bc5a3804ae1839f359318b003254c7750f7",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Evidence records' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
       "id": "RULE-136",
       "authority": "docs/07_VERIFICATION.md",
-      "section": "Evidence records",
+      "section": "Test reports",
       "line": 90,
-      "sha256": "b9f7f00736d8efd8ac611d72f19aa8c8d5520d49fc91c39f8849a6513ffdaaa9",
-      "assertion": "Verification commands and evidence validation enforce their declared checks; actual external execution and owner acceptance remain separate.",
+      "sha256": "b894ef6e6dc36e39095df8e3c8b44aa31166b06f75491c1897361892685071bc",
+      "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
-        "check-scripts-hardening.mjs",
-        "qualification-b443b2b84eb4"
+        "check-scripts-hardening.mjs"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Review exact command logs, counts, versions and external acceptance records for 'Evidence records' against one candidate.",
-        "expected": "Every required check has genuine execution evidence; missing environments, skipped checks and stale evidence cannot be called PASS."
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
+        "expected": "Declared semantics, file formats, package boundaries and version behavior agree without implicit fallbacks."
       }
     },
     {
@@ -5464,16 +5438,16 @@
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Authority",
       "line": 5,
-      "sha256": "c1f674aeb10d79ef8bc4cd624c7903acff73c6dac4d38ee18276c4303b3ae7d3",
+      "sha256": "ce92e3e3ea270919799d5d147c2076e1a9780ab05ab65789bde35478c416c7c6",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
         "check-scripts-licenses.mjs",
-        "check-scripts-qualification-package.mjs"
+        "check-scripts-distribution-package.mjs"
       ],
-      "manual": {
-        "review": "owner-acceptance",
-        "procedure": "Review 'Authority' against accepted decisions, shipped versions, licenses and the candidate artifact inventory.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unapproved semantic/scope change, publication, version claim, license removal or private artifact inclusion."
       }
     },
@@ -5482,16 +5456,16 @@
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Authority",
       "line": 7,
-      "sha256": "f16eaa505bef7faa23bcfcd5b57370eee87a1dbf2ab37e657316e7092ba5c86d",
+      "sha256": "fd16d46c988cf321e4698f374206ae6e748931955c4664e35d5bac6dbc03a588",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
         "check-scripts-licenses.mjs",
-        "check-scripts-qualification-package.mjs"
+        "check-scripts-distribution-package.mjs"
       ],
-      "manual": {
-        "review": "owner-acceptance",
-        "procedure": "Review 'Authority' against accepted decisions, shipped versions, licenses and the candidate artifact inventory.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unapproved semantic/scope change, publication, version claim, license removal or private artifact inclusion."
       }
     },
@@ -5500,16 +5474,16 @@
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Versioning",
       "line": 11,
-      "sha256": "2efd1642e399ed918b5a7d6b5b3803e24f493394d9179956fd876da7af096e84",
+      "sha256": "6071ee4fdfa59769e7f9c4bc2740d7cddb78bf27793677c1a40fee06e07dc84a",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
         "check-scripts-licenses.mjs",
-        "check-scripts-qualification-package.mjs"
+        "check-scripts-distribution-package.mjs"
       ],
-      "manual": {
-        "review": "owner-acceptance",
-        "procedure": "Review 'Versioning' against accepted decisions, shipped versions, licenses and the candidate artifact inventory.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unapproved semantic/scope change, publication, version claim, license removal or private artifact inclusion."
       }
     },
@@ -5523,11 +5497,11 @@
       "references": [
         "check-scripts-check_spec.py",
         "check-scripts-licenses.mjs",
-        "check-scripts-qualification-package.mjs"
+        "check-scripts-distribution-package.mjs"
       ],
-      "manual": {
-        "review": "owner-acceptance",
-        "procedure": "Review 'Versioning' against accepted decisions, shipped versions, licenses and the candidate artifact inventory.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unapproved semantic/scope change, publication, version claim, license removal or private artifact inclusion."
       }
     },
@@ -5541,11 +5515,11 @@
       "references": [
         "check-scripts-check_spec.py",
         "check-scripts-licenses.mjs",
-        "check-scripts-qualification-package.mjs"
+        "check-scripts-distribution-package.mjs"
       ],
-      "manual": {
-        "review": "owner-acceptance",
-        "procedure": "Review 'Versioning' against accepted decisions, shipped versions, licenses and the candidate artifact inventory.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unapproved semantic/scope change, publication, version claim, license removal or private artifact inclusion."
       }
     },
@@ -5559,11 +5533,11 @@
       "references": [
         "check-scripts-check_spec.py",
         "check-scripts-licenses.mjs",
-        "check-scripts-qualification-package.mjs"
+        "check-scripts-distribution-package.mjs"
       ],
-      "manual": {
-        "review": "owner-acceptance",
-        "procedure": "Review 'Draft 2 identifier revision' against accepted decisions, shipped versions, licenses and the candidate artifact inventory.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unapproved semantic/scope change, publication, version claim, license removal or private artifact inclusion."
       }
     },
@@ -5572,16 +5546,16 @@
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "License and commercial separation",
       "line": 23,
-      "sha256": "4a461114e4b61284fadafcca08224f5f6f053ac3ea131630ffa712271d25b33e",
+      "sha256": "79472ea3f55d3282677c44c4054b40e48abaef034427b7cedff3dce7bd8a37b8",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
         "check-scripts-licenses.mjs",
-        "check-scripts-qualification-package.mjs"
+        "check-scripts-distribution-package.mjs"
       ],
-      "manual": {
-        "review": "owner-acceptance",
-        "procedure": "Review 'License and commercial separation' against accepted decisions, shipped versions, licenses and the candidate artifact inventory.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unapproved semantic/scope change, publication, version claim, license removal or private artifact inclusion."
       }
     },
@@ -5595,11 +5569,11 @@
       "references": [
         "check-scripts-check_spec.py",
         "check-scripts-licenses.mjs",
-        "check-scripts-qualification-package.mjs"
+        "check-scripts-distribution-package.mjs"
       ],
-      "manual": {
-        "review": "owner-acceptance",
-        "procedure": "Review 'License and commercial separation' against accepted decisions, shipped versions, licenses and the candidate artifact inventory.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unapproved semantic/scope change, publication, version claim, license removal or private artifact inclusion."
       }
     },
@@ -5613,11 +5587,11 @@
       "references": [
         "check-scripts-check_spec.py",
         "check-scripts-licenses.mjs",
-        "check-scripts-qualification-package.mjs"
+        "check-scripts-distribution-package.mjs"
       ],
-      "manual": {
-        "review": "owner-acceptance",
-        "procedure": "Review 'License and commercial separation' against accepted decisions, shipped versions, licenses and the candidate artifact inventory.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unapproved semantic/scope change, publication, version claim, license removal or private artifact inclusion."
       }
     },
@@ -5633,9 +5607,9 @@
         "engine-bc5a2c51299b",
         "check-scripts-check_spec.py"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Check precedence between registry, grammar, prose, schemas and public interfaces; record any contradiction rather than inferring semantics.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unresolved normative conflict is described as conformant and no prior prototype is treated as authority."
       }
     },
@@ -5651,9 +5625,9 @@
         "engine-bc5a2c51299b",
         "check-scripts-check_spec.py"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Check precedence between registry, grammar, prose, schemas and public interfaces; record any contradiction rather than inferring semantics.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unresolved normative conflict is described as conformant and no prior prototype is treated as authority."
       }
     },
@@ -5759,9 +5733,9 @@
         "engine-bc5a2c51299b",
         "check-scripts-check_spec.py"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Check precedence between registry, grammar, prose, schemas and public interfaces; record any contradiction rather than inferring semantics.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unresolved normative conflict is described as conformant and no prior prototype is treated as authority."
       }
     },
@@ -5777,9 +5751,9 @@
         "engine-bc5a2c51299b",
         "check-scripts-check_spec.py"
       ],
-      "manual": {
-        "review": "normative-traceability",
-        "procedure": "Check precedence between registry, grammar, prose, schemas and public interfaces; record any contradiction rather than inferring semantics.",
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the clause with the public interfaces, examples, fixture expectations and documented compatibility boundaries.",
         "expected": "No unresolved normative conflict is described as conformant and no prior prototype is treated as authority."
       }
     },
@@ -7041,7 +7015,7 @@
         "engine-fa11850b5040",
         "engine-fd650fa5b1e4",
         "engine-5e7b8893fee6",
-        "qualification-b7c9b7b1c12a"
+        "integrity-b7c9b7b1c12a"
       ]
     },
     {
@@ -7056,7 +7030,7 @@
         "engine-fa11850b5040",
         "engine-fd650fa5b1e4",
         "engine-5e7b8893fee6",
-        "qualification-b7c9b7b1c12a"
+        "integrity-b7c9b7b1c12a"
       ]
     },
     {
@@ -7071,7 +7045,7 @@
         "engine-fa11850b5040",
         "engine-fd650fa5b1e4",
         "engine-5e7b8893fee6",
-        "qualification-b7c9b7b1c12a"
+        "integrity-b7c9b7b1c12a"
       ]
     },
     {
@@ -7328,8 +7302,8 @@
         "reader-3aa7f782abe0",
         "reader-d246900bf8a9"
       ],
-      "manual": {
-        "review": "keyboard-visual",
+      "inspection": {
+        "kind": "accessibility",
         "procedure": "Using keyboard and assistive technology, inspect each chart and compare accessible values with its full data table.",
         "expected": "All prescribed names, values, focus transitions and announcements are usable without relying on SVG or colour."
       }
@@ -7347,8 +7321,8 @@
         "reader-3aa7f782abe0",
         "reader-d246900bf8a9"
       ],
-      "manual": {
-        "review": "keyboard-visual",
+      "inspection": {
+        "kind": "accessibility",
         "procedure": "Using keyboard and assistive technology, inspect each chart and compare accessible values with its full data table.",
         "expected": "All prescribed names, values, focus transitions and announcements are usable without relying on SVG or colour."
       }
@@ -7366,8 +7340,8 @@
         "reader-3aa7f782abe0",
         "reader-d246900bf8a9"
       ],
-      "manual": {
-        "review": "keyboard-visual",
+      "inspection": {
+        "kind": "accessibility",
         "procedure": "Using keyboard and assistive technology, inspect each chart and compare accessible values with its full data table.",
         "expected": "All prescribed names, values, focus transitions and announcements are usable without relying on SVG or colour."
       }
@@ -7670,8 +7644,8 @@
         "engine-1fdd04d2dfac",
         "engine-71f5410bbcef"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Inspect diagnostics from all host/artifact paths for bounded messages, correct source location, no private payload leakage and opaque incident identifiers on unexpected faults.",
         "expected": "Diagnostics obey the complete object/location/privacy contract, including non-source host failures."
       }
@@ -7695,8 +7669,8 @@
         "engine-1fdd04d2dfac",
         "engine-71f5410bbcef"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Inspect diagnostics from all host/artifact paths for bounded messages, correct source location, no private payload leakage and opaque incident identifiers on unexpected faults.",
         "expected": "Diagnostics obey the complete object/location/privacy contract, including non-source host failures."
       }
@@ -7720,8 +7694,8 @@
         "engine-1fdd04d2dfac",
         "engine-71f5410bbcef"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Inspect diagnostics from all host/artifact paths for bounded messages, correct source location, no private payload leakage and opaque incident identifiers on unexpected faults.",
         "expected": "Diagnostics obey the complete object/location/privacy contract, including non-source host failures."
       }
@@ -7740,8 +7714,8 @@
         "reader-6c15032349f5",
         "reader-ef240d8dbc67"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Inject an unexpected host exception and inspect incident identification, preservation of local content and absence of remote reporting.",
         "expected": "Unexpected faults are distinguished from ordinary document errors and receive the prescribed opaque host incident ID."
       }
@@ -7760,8 +7734,8 @@
         "reader-6c15032349f5",
         "reader-ef240d8dbc67"
       ],
-      "manual": {
-        "review": "security-review",
+      "inspection": {
+        "kind": "security",
         "procedure": "Inject an unexpected host exception and inspect incident identification, preservation of local content and absence of remote reporting.",
         "expected": "Unexpected faults are distinguished from ordinary document errors and receive the prescribed opaque host incident ID."
       }

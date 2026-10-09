@@ -4,7 +4,7 @@
 
 tinta is a language for interactive documents, combining prose, data, expressions and reader interaction. It uses Markdown-compatible text formatting. A reader should be able to change an assumption, inspect a figure or choose a relevant explanation **without leaving the flow of a document**. The author should start with prose and add behaviour only where it helps understanding. A document remains a file owned by its author and readable as plain text.
 
-The first delivery is a language/toolchain, not a validated commercial proposition. Do not add conversion funnels, templates for web landing pages or premium account logic.
+The project provides a local document language and toolchain. Do not add conversion funnels, templates for web landing pages or premium account logic.
 
 ## Required author journeys
 
@@ -18,13 +18,13 @@ The first delivery is a language/toolchain, not a validated commercial propositi
 
 **Portable delivery:** choose source bundle or HTML export → choose initial/current state when relevant → see the privacy statement → download the artifact. Export does not imply upload, publication or sharing. Opening an exported HTML file by `file://` works offline.
 
-## Required deliverables
+## Language and tools
 
-A normative language specification; a conformance corpus; a parser/validator/evaluator SDK; a safe renderer; all seven chart types; a CLI; a local reference editor with static application and portable standalone builds; editable `.tinta`/`.tinta.zip`; interactive/static HTML; documentation; license notices; repeatable CI and manual qualification evidence.
+A normative language specification; a conformance corpus; a parser/validator/evaluator SDK; a safe renderer; all seven chart types; a CLI; a local reference editor with static application and portable standalone builds; editable `.tinta`/`.tinta.zip`; interactive/static HTML; documentation; license notices; reproducible builds and automated tests.
 
 The reference editor is intentionally small. It is not the future proprietary product. Its source belongs to the open reference toolchain. A future premium application may consume the public SDK from another repository without changing the file format or requiring its account for reading.
 
-## Quality gates
+## Document guarantees
 
 Reading must work with keyboard only and at narrow widths. A valid input state cannot be partially applied. An invalid edit cannot be exported as though valid. A document cannot execute arbitrary code or fetch external content. All accepted files have explicit size/resource limits. File operations never overwrite without authorization. Export files must work without the editor, React, CodeMirror, network connectivity or build-time tooling.
 
@@ -34,4 +34,4 @@ V1 supports Markdown prose, headings, nested lists, quotes, code, links, local i
 
 ## Supported usage environments
 
-The authoring editor targets modern desktop Chromium, Firefox and Safari; the reader and exports also require narrow/mobile reading qualification. The required automated browser engines are pinned Playwright Chromium, Firefox and WebKit. Real Safari on macOS and one real iOS Safari reading run are release gates, not capabilities established by emulation. CLI targets macOS arm64/x64, Linux x64 and Windows x64 on the pinned Node 24 line. Unsupported environments must fail or degrade explicitly; no compatibility claim is inferred from a single Chromium run.
+The authoring editor targets modern desktop Chromium, Firefox and Safari; the reader and exports also provide narrow/mobile reading. CLI targets macOS arm64/x64, Linux x64 and Windows x64 on the pinned Node 24 line. Browser storage, file permissions and assistive-technology behavior depend on the actual environment. Automated Chromium, Firefox and WebKit tests exercise their pinned browser builds; WebKit results do not establish Safari or iOS compatibility. Unsupported features must fail or degrade explicitly rather than lose source or produce a misleading result.

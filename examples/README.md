@@ -1,8 +1,8 @@
-# Reference inputs
+# Example documents
 
-These examples specify expected behaviour for contract revision 1.0-draft.2. Runtime conformance is not yet implemented.
+Open these documents in Studio or use them with the CLI to explore the language. They use contract revision 1.0-draft.2 and fictional data. Each initial result below follows the authored default answers.
 
-| File | Intended check | Initial outcome |
+| File | What it demonstrates | Initial result |
 |---|---|---|
 | minimal.tinta | Control, calculation and guarded prose | people=5; total=95; large-team paragraph absent. |
 | article.tinta | Computed curve and bidirectional numeric selection | growth=5; period=2; selected_readers=110. |
@@ -14,4 +14,4 @@ These examples specify expected behaviour for contract revision 1.0-draft.2. Run
 | local-image.tinta / local-image.tinta.zip | Source/asset portability | One hashed raster asset, exact byte preservation. |
 | article.tinta.state.json | Explicit answer snapshot | growth=10 and period=2 produce selected_readers=121 when applied. |
 
-The one-pixel image is only a binary asset test fixture. The example bundle has been structurally constructed according to the manifest contract; this does not prove that the not-yet-implemented Tinta packer produced it. All example data is fictional.
+The one-pixel image is a small binary fixture for demonstrating source/asset portability. The source bundle contains the editable document and its raster asset; reopen it to see the same resource without a sidecar file.

@@ -68,7 +68,7 @@ Static geometry uses the nominal dimensions in the chart contract. Set the HTML 
 
 Interactive artifact policy: `default-src 'none'; script-src 'sha256-<exact-reader-hash>'; style-src 'sha256-<exact-style-hash>'; img-src data:; connect-src 'none'; font-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; worker-src 'none'`. Include the exact hash of the inert JSON payload script in script-src as well; its type remains application/json. Never add unsafe-inline or unsafe-eval to solve a script problem. Static output substitutes `script-src 'none'` and its own CSS hash. Hash the precise encoded inline bytes, including whitespace; insert CSP before content/resources.
 
-CSS is one trusted stylesheet; dynamic SVG values are safe numeric/presentation attributes, not inline style strings. HTML uses known class names. No runtime injected style tag in exports. No font fetches, telemetry, prefetch, remote error collection, network data lookup or update check. Browser-initiated unrelated traffic is distinguished from application resource requests in tests. Deliberate external-link navigation is allowed and tested separately from the zero-request document-load gate.
+CSS is one trusted stylesheet; dynamic SVG values are safe numeric/presentation attributes, not inline style strings. HTML uses known class names. No runtime injected style tag in exports. No font fetches, telemetry, prefetch, remote error collection, network data lookup or update check. Browser-initiated unrelated traffic is distinguished from application resource requests in tests. Document loading performs no automatic external requests. Deliberate external-link navigation is a separate user action.
 
 ## Atomicity
 

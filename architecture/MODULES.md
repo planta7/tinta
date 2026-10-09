@@ -1,6 +1,6 @@
 # Module and data-flow contract
 
-## Workspace tree to create in M0
+## Workspace packages
 
 ```text
 packages/

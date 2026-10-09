@@ -1,6 +1,6 @@
 # Conformance expectations and adapter contract
 
-These JSON records specify expected results. They are not execution reports. Every case/scenario begins `NOT_RUN`; never change that source expectation to PASS. Implementations write separate evidence reports under reports/verification.
+These JSON records define inputs and expected results for public implementations. They contain no execution status. Test adapters write observed results separately under `reports/verification`.
 
 ## Semantic case phases
 
@@ -18,6 +18,6 @@ Numeric comparisons are exact for integers, controls and the specified decimal-g
 
 ## Coverage obligations
 
-The supplied cases are a seed contract, not an exhaustive test suite. Every normative rule and diagnostic needs positive/negative/boundary coverage as stages land. `scenarios.json` describes additional integrated and manual gates. `requirements.json` maps normative areas to cases/scenarios; it is a trace map, not proof of implementation. M1 must additionally vendor and pin the official CommonMark corpus with its own license/attribution in a third_party directory; do not relabel it MIT.
+The supplied cases define a seed contract. Every normative rule and diagnostic needs positive, negative and boundary coverage. `scenarios.json` describes integrated behavior; `requirements.json` maps normative areas to cases and scenarios. The pinned official CommonMark corpus in `third_party/commonmark` retains its own license and attribution.
 
-Implement an adapter under conformance/runner that imports only the public SDK. A fixture must fail when its expected implementation does not exist. No success stubs, test-count fabrication, automatic expected-output acceptance or passWithNoTests. Record source fixture hash, engine build, environment, command and actual assertions in evidence. Tests that cannot run are NOT_RUN or BLOCKED, never PASS.
+Adapters under `conformance/runner` import only the public SDK and assert the expected outputs. A fixture fails when its expected implementation is absent. Missing prerequisites and unexecuted checks cannot produce successful results. Expected inputs, values and diagnostics remain independent of generated test reports.

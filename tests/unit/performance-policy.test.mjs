@@ -31,7 +31,7 @@ test("interaction budgets accept exact boundaries and retain long-task diagnosti
 });
 
 test.each(["typing", "controls", "preview"])(
-  "a failing %s p95 in any run blocks acceptance",
+  "a failing %s p95 in any run exceeds the interaction budget",
   (metric) => {
     const samples = runs();
     const records =
@@ -44,7 +44,7 @@ test.each(["typing", "controls", "preview"])(
   },
 );
 
-test("one extreme task blocks acceptance even when interaction percentiles pass", () => {
+test("one extreme task exceeds the budget even when interaction percentiles pass", () => {
   const samples = runs();
   samples[2].typing[0].tasks[0].duration = 201;
   expect(assessStudioRuns(samples).pass).toBe(false);

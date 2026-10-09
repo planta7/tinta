@@ -1,6 +1,6 @@
 # tinta syntax quick reference — 1.0-draft.2
 
-**Write a document. Add exploration only where it helps the reader.** `.tinta` is UTF-8 text. The examples below are target syntax, not runtime conformance results. Normative details live in spec/; this reference does not override them.
+**Write a document. Add exploration only where it helps the reader.** `.tinta` is UTF-8 text. The examples below show the supported syntax for this draft contract. Normative details live in spec/; this reference does not override them.
 
 ## 1. A document with one interactive idea
 

@@ -1,6 +1,6 @@
-# Studio responsiveness acceptance
+# Studio responsiveness budgets
 
-Status: accepted owner-authorized qualification correction, 2026-10-08.
+Technical decision, 2026-10-08. Defines the interaction measurements and budgets used by Studio.
 
 ## Affected requirement
 
@@ -37,12 +37,12 @@ Three independent contexts retain all measurements. Keyboard events drive the
 actual editor and native control. Passive DOM observation replaces repeated
 text searches during measurement. Two animation frames provide a conservative
 paint-opportunity proxy; actual display presentation and real-device usability
-still require manual acceptance. Browser scheduling, garbage collection and
+depend on the physical device and browser. Browser scheduling, garbage collection and
 instrumentation can contribute to observed tasks; attribution is contextual,
 not function-level proof. The guard includes all observed tasks overlapping the
 interaction rather than selectively deleting inconvenient samples.
 
-The original maximum is retained in historical evidence. The revised report
+The benchmark report
 continues to show long tasks above 50ms, their frequency and excess duration.
 Affected automated checks cover missing samples, exact boundaries, a single
 extreme stall and failures in any of the three runs. No security validation is

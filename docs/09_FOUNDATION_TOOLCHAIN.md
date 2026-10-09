@@ -1,8 +1,8 @@
 # Foundation toolchain
 
-Use Node 24.21.0 and pnpm 10.34.6. Install with `pnpm install --frozen-lockfile`, then install the pinned browser builds with `pnpm exec playwright install chromium firefox webkit`. Linux CI also uses `--with-deps`. Run `pnpm verify` (or `pnpm verify --suite infrastructure`) from the repository root. The verification command needs npm advisory endpoint access; an unavailable endpoint fails the gate.
+Use Node 24.21.0 and pnpm 10.34.6. Install with `pnpm install --frozen-lockfile`, then install the pinned browser builds with `pnpm exec playwright install chromium firefox webkit`. Linux CI also uses `--with-deps`. Run `pnpm verify` (or `pnpm verify --suite infrastructure`) from the repository root. The verification command needs npm advisory endpoint access; an unavailable endpoint makes the command fail.
 
-The workspace implements parsing, typed evaluation, safe reading, chart geometry, local artifacts, command-line operations and the local editor. `pnpm verify --suite editing` selects the aggregate implemented gate, including unit coverage, conformance, all three browser engines, source bundles, actual file-origin exports and Studio workflows. The `parsing`, `semantics`, `reading`, `charting` and `artifacts` aggregates remain available; unknown capabilities fail explicitly. No command reads private progress records.
+The workspace implements parsing, typed evaluation, safe reading, chart geometry, local artifacts, command-line operations and the local editor. `pnpm verify --suite editing` runs the document-tooling checks, including unit coverage, conformance, all three browser engines, source bundles, actual file-origin exports and Studio workflows. The `parsing`, `semantics`, `reading`, `charting` and `artifacts` aggregates remain available; unknown capabilities fail explicitly. No command reads private progress records.
 
 `pnpm build` emits ESM declarations/modules, a reader IIFE and stylesheet, the compiler worker and a complete standalone `build/tinta-studio.html`. Studio embeds trusted worker and opaque-preview runtimes, four source examples, and dependency notices. It requires no server or external chunks when opened through `file://`. The build also installs the identical HTML under `packages/cli/assets/` for `tinta studio`; a missing artifact still produces an explicit installation error. The primary Vite + React application is emitted under `build/studio/`; serve that directory as static files. `pnpm dev` builds workspace dependencies and starts Vite, while `pnpm preview` serves the production app. Hash navigation also works under a static subdirectory without route rewrites. Vite development/preview binds to loopback. Only esbuild's dependency build script is permitted during installation.
 
@@ -14,7 +14,7 @@ Reviewed notice sources: esbuild and rolldown native packages use the same-versi
 
 Infrastructure coverage applies to the architecture scanner, capability selection and packaging primitives, with 85% statements/lines/functions and 80% branches. Build orchestration, inventory command-line scripts and configuration are exercised by their explicit aggregate commands. Empty product modules and type-only contracts do not count as runtime coverage. Product coverage thresholds remain as specified in the verification contract.
 
-CI performs verification only on pull requests and pushes to the repository's configured default branch. It has read-only repository permissions, does not retain checkout credentials, and performs no deployment, package publication or artifact upload. Hosted CI execution and manual device acceptance are separate from local automated results.
+CI performs verification only on pull requests and pushes to the repository's configured default branch. It has read-only repository permissions, does not retain checkout credentials, and performs no deployment, package publication or artifact upload. CI checks run in their configured environments; results do not imply support for every browser or device.
 
 ## Native browser verification
 
@@ -28,6 +28,6 @@ Activate Node 24.21.0 in the invoking shell before running pnpm. The `.nvmrc` an
 
 ## Editor verification
 
-`pnpm test:browser editing` exercises Studio in Chromium, Firefox and WebKit using actual local-file navigation. The suite covers original source downloads, explicit Markdown enrichment, invalid previews, source reconciliation, imports, undo, sandbox isolation, recovery and offline exports. Screenshots are automated evidence; named assistive-technology and device acceptance require separate review.
+`pnpm test:browser editing` exercises Studio in Chromium, Firefox and WebKit using actual local-file navigation. The suite covers original source downloads, explicit Markdown enrichment, invalid previews, source reconciliation, imports, undo, sandbox isolation, recovery and offline exports. Screenshots capture appearance at a chosen viewport; they do not establish screen-reader behavior or physical-device compatibility.
 
 `pnpm exec vitest run --coverage --config scripts/studio-vitest.config.js` records host-model and worker unit coverage. The editor aggregate uses unit coverage for the compiler worker and Chromium coverage for every other authored host/preview module, then applies the UI thresholds through `scripts/studio-coverage.mjs`. Generated embedded runtime data is excluded; authored error paths are retained. The same check enforces the 3 MiB gzip Studio ceiling. Production artifacts contain no source maps; verification maps are generated separately.

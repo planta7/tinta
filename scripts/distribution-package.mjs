@@ -115,15 +115,15 @@ await writeFile(
   join(destination, "manifest.json"),
   JSON.stringify(
     {
-      status: "DRAFT_NOT_QUALIFIED",
+      buildKind: "development",
       baseRevision: candidate.commit,
       sourceRevision: candidate.dirty ? "UNCOMMITTED" : candidate.commit,
       engineRevision: candidate.dirty ? "UNCOMMITTED" : candidate.commit,
       sourceSha256: candidate.sourceSha256,
       files: files.sort((a, b) => a.path.localeCompare(b.path, "en")),
       limitations: [
-        "Manual acceptance and platform qualification require separate evidence.",
-        "Local review package only; no distribution or publication authorized.",
+        "Development build; source-format version does not establish a stable tool release.",
+        "Browser and filesystem behavior depend on the documented environment requirements.",
       ],
     },
     null,
@@ -131,5 +131,5 @@ await writeFile(
   ) + "\n",
 );
 console.log(
-  `Draft qualification package: ${files.length} hashed files in ${destination}`,
+  `Local distribution package: ${files.length} hashed files in ${destination}`,
 );

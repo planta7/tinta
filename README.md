@@ -165,13 +165,13 @@ The parser and semantic engine are portable TypeScript. The reader and export ru
 
 ## Status
 
-**Draft language. Working local tools. Release acceptance still in progress.**
+**Draft language. Working local tools.**
 
-Contract revision **1.0-draft.2** targets source-format version **1.0**. The repository contains the specification, reusable packages, CLI and studio. Passing automated checks does not establish full release qualification, supported-platform acceptance or manual accessibility acceptance.
+Contract revision **1.0-draft.2** targets source-format version **1.0**. The repository contains the specification, reusable packages, CLI and studio. The language contract is still a draft; format version 1.0 does not identify a stable tool release.
 
 ## Contribute
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md), the [roadmap](docs/ROADMAP.md) and [change control](docs/08_CHANGE_CONTROL.md) before proposing language or contract changes. Report security issues through [SECURITY.md](SECURITY.md).
+Read [CONTRIBUTING.md](CONTRIBUTING.md), the [architecture](architecture/MODULES.md) and [compatibility rules](docs/08_CHANGE_CONTROL.md) before proposing language or contract changes. Report security issues through [SECURITY.md](SECURITY.md).
 
 <details>
 <summary><strong>Run the existing checks</strong></summary>
@@ -181,7 +181,7 @@ pnpm exec playwright install chromium firefox webkit
 pnpm verify
 ```
 
-`pnpm verify` runs the infrastructure aggregate. `pnpm verify --suite editing` adds the implemented document-tooling and editor checks. Neither replaces release qualification or manual acceptance. Dependency auditing needs access to the npm advisory service.
+`pnpm verify` runs the infrastructure aggregate. `pnpm verify --suite editing` adds the implemented document-tooling and editor checks. Dependency auditing needs access to the npm advisory service.
 
 Specification consistency checks use Python's standard library:
 
@@ -190,6 +190,6 @@ python3 scripts/check_spec.py
 python3 -m unittest discover -s scripts/tests -v
 ```
 
-See [verification and acceptance](docs/07_VERIFICATION.md), [conformance fixtures](conformance/README.md) and [checker prerequisites](scripts/README.md).
+See [testing and performance](docs/07_VERIFICATION.md), [conformance fixtures](conformance/README.md) and [checker prerequisites](scripts/README.md).
 
 </details>

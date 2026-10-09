@@ -14,9 +14,9 @@ Use stable implementation tokens: text #282B32, surface #FFFFFF, secondary surfa
 
 Series palette in stable index order: #0072B2, #D55E00, #009E73, #CC79A7, #8C6D00, #6F4E7C. Always pair colour with a series name and, for lines, dash patterns `solid`, `6 3`, `2 3`, `8 3 2 3`, `1 2`, `10 3`. Scatter uses circle/square/triangle/diamond/cross/star by index. Pie legend always lists text values; selected marks receive a contrasting outline and text status. Do not claim all small marks meet a contrast target merely because this palette is selected; measure and adjust renderer outlines without changing semantic colour identity in an unrecorded way.
 
-## Accessibility target and evidence
+## Accessibility requirements
 
-Target applicable WCAG 2.2 AA criteria for the reference editor/reader. This is a qualification target, not a conformance claim before testing. Primary reference S13 is normative external guidance; project-specific acceptance below is mandatory even where an automated tool cannot check it.
+Target applicable WCAG 2.2 AA criteria for the reference editor/reader. These requirements describe intended behavior and do not assert certification. Primary reference S14 provides the external guidance; the document-specific requirements below also apply.
 
 Every interactive control has a persistent visible label and accessible name. All functions are reachable by keyboard; native controls retain their expected behaviour. Focus order follows document order. Visible focus never disappears during a value update. At 200% text zoom, prose and controls remain usable; at 400% page zoom, reading reflows except inherently two-dimensional code/table/figure regions. Targets are at least 24x24 CSS px or have compliant separation; explicit primary buttons are at least 32px high.
 
@@ -26,8 +26,8 @@ Changes made by a control produce one polite status announcement summarizing the
 
 Details use native summary semantics, support nested keyboard access and retain closed/open state on answer updates. Disabled Markdown tasks are not advertised as editable fields. Dialogs use a proper labelled dialog, focus containment and Escape/close-button behaviour. No autoplay, blinking or motion is introduced; reduced-motion preferences are respected by disabling any host transition. Charts have no animation in V1.
 
-## Manual acceptance protocol
+## Reading across environments
 
-Required runs: keyboard-only editor and reader on desktop; VoiceOver + actual Safari on macOS; NVDA + Firefox on Windows; one actual iPhone/iPad Safari reading/selection/export-open journey. Log browser/OS/assistive-tech versions, source fixture, actions, observed issues and reviewer. Emulated mobile or Playwright WebKit cannot substitute for those named manual checks. If an environment is unavailable, record BLOCKED and do not call the final gate PASS.
+Keyboard-only editor and reader use, Safari with VoiceOver on macOS, Firefox with NVDA on Windows, and Safari reader use on iPhone/iPad are the intended interaction environments. Browser and assistive-technology implementations differ; emulated mobile viewports and automated WebKit do not establish behavior on physical devices.
 
-For each principal example: read headings; reach every control; modify answers; inspect a chart with the range; use a selected value; toggle legend; recover all-hidden; open data table; trigger and recover an invalid action; reset reading; open static/interactive export offline. Check names/values/announcements, focus retention and whether the text still explains the figure. Capture representative screenshots at 1440, 1024, 768, 390 and 320 CSS px, plus zoom/forced-colours cases. A screenshot's existence is not evidence of visual review; mark reviewer acceptance separately.
+Headings, controls, chart exploration, linked selection, legends, all-hidden states, data tables, invalid-action recovery, reading reset and offline exports must remain usable with keyboard and assistive technology. Names, roles, values, announcements and focus retention must explain the same content as the visible figure. The layout must support 1440, 1024, 768, 390 and 320 CSS px widths, text/page zoom and forced colors. Screenshots alone do not establish these interaction properties.

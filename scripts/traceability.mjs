@@ -11,29 +11,27 @@ const catalog = JSON.parse(
 const registry = JSON.parse(readFileSync("spec/registry.json", "utf8"));
 const clauses = authorityFiles().flatMap((path) => authorityClauses(path));
 const issues = validateCoverage(catalog, clauses, registry);
-const manual = catalog.rules
-  .filter((rule) => rule.manual)
-  .map(({ id, authority, line, manual }) => ({
+const inspections = catalog.rules
+  .filter((rule) => rule.inspection)
+  .map(({ id, authority, line, inspection }) => ({
     id,
     authority,
     line,
-    ...manual,
-    executionStatus: "NOT_RUN",
+    ...inspection,
   }));
 const report = {
   status: issues.length ? "BLOCKED" : "MAPPED",
-  executionStatus: "NOT_RUN",
   explanation:
-    "Mapping integrity is separate from test execution and manual acceptance. A mapped requirement is not a conformance claim. Named manual records remain required.",
+    "This report checks references and contract mappings. It does not execute tests or perform the described behavior inspections.",
   counts: {
     clauses: clauses.length,
     diagnostics: catalog.diagnostics.length,
     limits: catalog.limits.length,
     references: catalog.references.length,
-    manualObligations: manual.length,
+    behaviorInspections: inspections.length,
   },
   issues,
-  manual,
+  inspections,
   diagnostics: catalog.diagnostics,
   limits: catalog.limits,
 };
@@ -43,7 +41,7 @@ writeFileSync(
   JSON.stringify(report, null, 2) + "\n",
 );
 console.log(
-  `${report.status}: ${clauses.length} clauses, ${catalog.diagnostics.length} diagnostics, ${catalog.limits.length} limits; ${manual.length} manual obligations remain separately recorded.`,
+  `${report.status}: ${clauses.length} clauses, ${catalog.diagnostics.length} diagnostics, ${catalog.limits.length} limits; ${inspections.length} behavior inspections.`,
 );
 for (const issue of issues) console.error(issue);
 process.exitCode = issues.length ? 1 : 0;

@@ -47,4 +47,4 @@ pnpm verify --suite semantics
 pnpm test:conformance semantics
 ```
 
-The semantic aggregate includes specification checks, generated-schema reproducibility, types, formatting/lint, dependency/license/architecture checks, unit/property tests and coverage, builds, offline browser portability, both conformance adapters and the portable bundle-size ceiling. Browser-only effect assertions and later artifact integration remain explicitly unrun by the semantic adapter. Source expectations stay separate from execution reports.
+The semantic aggregate includes specification checks, generated-schema reproducibility, types, formatting/lint, dependency/license/architecture checks, unit/property tests and coverage, builds, offline browser portability, both conformance adapters and the portable bundle-size ceiling. The semantic adapter checks pure compilation and evaluation. DOM effects and file/export behavior are exercised by the separate browser and artifact suites.

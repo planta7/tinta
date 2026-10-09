@@ -19,7 +19,7 @@ Treat `.md`, `.tinta`, imported CSV/JSON, ZIP entries/manifests, image headers/b
 | Denial of service | Source/nesting/AST/row/mark limits, global operation budgets, worker watchdog, bounded output and diagnostic counts. | Fuzzing, adversarial depth, repeated views/charts and oversized images terminate predictably. |
 | Misleading state | Candidate evaluation then atomic commit; immutable rows; export revision guard. | Failed calculations/chart domains never leave updated text with an old figure. |
 | Accidental disclosure | Explicit interactive/static export difference; automatic local drafts with a persistent opt-out; no log content. | Hidden branches/images absent from static output when not visible; full-content warning for interactive. |
-| Supply chain | Exact locks, provenance, license/audit gates, minimal modules, action SHA pins. | Build inventory and no editor dependencies in exports. |
+| Supply chain | Exact locks, provenance, license inventories and advisory checks, minimal modules, action SHA pins. | Build inventory and no editor dependencies in exports. |
 
 ## Renderer rules
 
@@ -45,7 +45,7 @@ No code traverses a disk tree because a document asks for it. CLI root grants co
 
 At least 10000 seeded property-generated inputs in scheduled/local security runs, plus fixed regressions for every discovered crash. Test no-hang boundaries at limit and limit+1. Ensure budget accounting covers nested expression work, sorting and all figures in one transaction. Malicious source must not cause an unhandled host exception or source loss. A rejected image/archive should be garbage-collectable and leave no orphan file/recovery mutation.
 
-The final release requires a manual review of compiler/interpreter, raw-HTML handling, payload serialization, safe SVG, bundle extraction, file writes and the host bridge. Automated tests and CSP are layered protection, not a formal proof or external security certification. Do not label the project “audited” unless an actual audit has occurred and its scope is recorded.
+The security boundary includes the compiler/interpreter, raw-HTML handling, payload serialization, safe SVG, bundle extraction, file writes and the host bridge. Automated tests and CSP are layered protection, not a formal proof or external security certification. Do not label the project “audited” unless an actual audit has occurred and its scope is recorded.
 
 ## Vulnerability handling
 

@@ -8,7 +8,7 @@
 
 `decodeUtf8` and `encodeUtf8` are strict portable scalar-text codecs shared with the engine importers; invalid encodings throw.
 
-`ParsedSource` retains its consumed compile-operation count, original text/bytes, a syntax tree, original UTF-16 spans and parser-derived editor tokens. Node IDs use deterministic preorder numbering. Directive syntax retains explicit operands and options without adding semantic defaults. Data syntax also retains column, row and cell spans for the compiler side table. Raw HTML remains inert syntax data; parsing does not create DOM, run author code or load resources. Reader rendering and document CLI operations are not available yet.
+`ParsedSource` retains its consumed compile-operation count, original text/bytes, a syntax tree, original UTF-16 spans and parser-derived editor tokens. Node IDs use deterministic preorder numbering. Directive syntax retains explicit operands and options without adding semantic defaults. Data syntax also retains column, row and cell spans for the compiler side table. Raw HTML remains inert syntax data; parsing does not create DOM, run author code or load resources. Rendering and filesystem operations belong to the reader and CLI packages, respectively.
 
 The parser uses the locked micromark/mdast stack and only the individual table, task-list and double-tilde extensions. The [tokenizer patch](../patches/README.md) adds resource accounting without changing Markdown grammar. The [official corpus provenance](../third_party/commonmark/README.md) records its separate license.
 
@@ -22,4 +22,4 @@ pnpm test:conformance parsing
 pnpm verify --suite parsing
 ```
 
-The parsing aggregate includes specification checks, strict types, formatting/lint, dependency/license/architecture checks, unit/property/corpus tests, build, offline browser portability and the parse-only adapter. The parsing adapter leaves semantic/import expectations unrun; the separate [engine adapter](11_ENGINE_API.md) executes them. Coverage includes all syntax implementation modules; the generated registry copy and type declarations are excluded, and the registry is compared byte-for-value with its normative source. Execution records are separate from source expectations.
+The parsing aggregate includes specification checks, strict types, formatting/lint, dependency/license/architecture checks, unit/property/corpus tests, build, offline browser portability and the parse-only adapter. The parsing adapter leaves semantic/import expectations unrun; the separate [engine adapter](11_ENGINE_API.md) executes them. Coverage includes all syntax implementation modules; the generated registry copy and type declarations are excluded, and the registry is compared byte-for-value with its normative source. The fixtures define expected parse results; test commands report observed results separately.

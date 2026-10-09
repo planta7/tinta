@@ -44,7 +44,7 @@ pnpm verify --suite charting
 
 The aggregate includes affected semantic/parser checks, real Chromium/Firefox/WebKit assertions, axe accessibility automation, source-mapped Chromium coverage (85% statements/functions/lines, 80% branches), bundle composition and size checks. Coverage conversion uses the exact transitive tools already locked with the Vitest coverage provider; no floating dependency is resolved.
 
-Synthetic screenshot baselines at 1440, 1024, 768, 390 and 320 CSS px, forced colors and doubled text size are written under the ignored verification output directory. They are evidence for visual review, not approved golden snapshots or proof of manual assistive-technology acceptance. Full Safari/VoiceOver, Firefox/NVDA and real iOS acceptance remains part of release qualification.
+Synthetic screenshots at 1440, 1024, 768, 390 and 320 CSS px, forced colors and doubled text size are written under the ignored test output directory. They capture rendering at those settings; keyboard, screen-reader and physical-device behavior require direct interaction with the corresponding environment.
 
 ## Figures
 
@@ -58,4 +58,4 @@ Legend buttons change only local series/category visibility. Hidden preferences 
 
 The charts TypeScript project includes DOM declarations because the locked D3 declarations reference `ImageData` in an unused image-blur API. This is a declaration dependency only: charts source has no DOM access; syntax and engine retain their ES-only compiler libraries. The standalone reader includes only the engine's pure chart-presentation helper, never compilation, evaluation, program decoding or a framework.
 
-Chart unit coverage requires 90% statements/lines and 85% branches. Chart tests include finite geometry, ordering, exact numeric boundaries, histogram conservation with 1,000 seeded inputs, keyboard/pointer selection, rollback, hidden preferences, native-browser resize and 100-cycle observer cleanup. Reader-effect results for the seed corpus are written separately from pure semantic results, with artifact/import UI deferrals explicitly identified.
+Chart unit coverage requires 90% statements/lines and 85% branches. Chart tests include finite geometry, ordering, exact numeric boundaries, histogram conservation with 1,000 seeded inputs, keyboard/pointer selection, rollback, hidden preferences, native-browser resize and 100-cycle observer cleanup. Reader-effect results for the seed corpus are written separately from pure semantic results, with file/import behavior checked by the artifact and editor suites.

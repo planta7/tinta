@@ -1,6 +1,6 @@
 # Primary technical references
 
-These references support tool selection and platform constraints. Resolve and verify exact dependency versions during M0.
+These references support tool selection and platform constraints. Exact installed versions and provenance are recorded in the locked toolchain inventory.
 
 ## S01 — CommonMark 0.31.2 specification and fixtures
 
@@ -24,7 +24,7 @@ Typed JavaScript tooling; the choice of a shared interpreted engine is a project
 
 https://nodejs.org/en/about/previous-releases
 
-Node release information for verifying the selected baseline during M0.
+Node release information for the selected runtime baseline.
 
 ## S05 — D3 documentation
 
@@ -60,7 +60,7 @@ The GitHub development repository is archived following a hosting migration, not
 
 https://code.haverbeke.berlin/codemirror/dev
 
-Repository linked by the official migration notice; resolve actual package patches and notices in M0.
+Repository linked by the official migration notice; with installed package versions and notices recorded in the toolchain inventory.
 
 ## S11 — remark-gfm repository
 
@@ -112,4 +112,4 @@ Feature detection and limited availability; no promise that it works in every br
 
 ## Internal decisions versus external facts
 
-The `.tinta` extension, syntax, functions, chart semantics, limits, exports, component boundaries and delivery gates are this project’s design, not assertions about any third-party product. No exclusive file-extension registration, trademark clearance or package-name availability has been established. No external competitor review is required before implementing the agreed local scope. External websites may change after this dated review; the repository lock and recorded qualification evidence become the source of truth for actual installed versions.
+The `.tinta` extension, syntax, functions, chart semantics, limits, exports, component boundaries and build outputs are this project’s design, not assertions about any third-party product. No exclusive file-extension registration, trademark clearance or package-name availability has been established. No external competitor review is required before implementing the agreed local scope. External websites may change after this dated review; the repository lock and dependency inventory identify actual installed versions.

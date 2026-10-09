@@ -1,7 +1,6 @@
 import { createHash } from "node:crypto";
 import { readFileSync, readdirSync } from "node:fs";
 import ts from "typescript";
-import { requiredReviews } from "./qualification-evidence.mjs";
 
 export const digest = (text) => createHash("sha256").update(text).digest("hex");
 
@@ -96,7 +95,7 @@ export function validateCoverage(
   load = readFileSync,
 ) {
   const issues = [];
-  if (catalog.executionStatus !== "NOT_RUN") {
+  if (Object.hasOwn(catalog, "executionStatus")) {
     issues.push(
       "Source mappings must remain expectations, not execution results.",
     );
@@ -147,21 +146,34 @@ export function validateCoverage(
   const checkReferences = (entry, id) => {
     if (!entry.assertion?.trim())
       issues.push(`Missing assertion description: ${id}`);
-    if (!entry.references?.length && !entry.manual)
+    if (!entry.references?.length && !entry.inspection)
       issues.push(`Unmapped obligation: ${id}`);
     for (const ref of entry.references ?? []) {
       if (!references.has(ref)) issues.push(`Unknown reference ${ref}: ${id}`);
     }
-    if (entry.manual && !requiredReviews.includes(entry.manual.review)) {
-      issues.push(`Unknown manual review: ${id}`);
+    if (Object.hasOwn(entry, "manual")) {
+      issues.push(`Unexpected process metadata: ${id}`);
     }
     if (
-      entry.manual &&
-      (!entry.manual.procedure ||
-        !entry.manual.expected ||
-        !entry.manual.review)
+      entry.inspection &&
+      ![
+        "contract",
+        "security",
+        "accessibility",
+        "performance",
+        "distribution",
+      ].includes(entry.inspection.kind)
     ) {
-      issues.push(`Incomplete manual procedure: ${id}`);
+      issues.push(`Unknown inspection kind: ${id}`);
+    }
+    if (
+      entry.inspection &&
+      (typeof entry.inspection.procedure !== "string" ||
+        !entry.inspection.procedure.trim() ||
+        typeof entry.inspection.expected !== "string" ||
+        !entry.inspection.expected.trim())
+    ) {
+      issues.push(`Incomplete behavior inspection: ${id}`);
     }
   };
   for (const rule of catalog.rules) {

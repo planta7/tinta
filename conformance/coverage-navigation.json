@@ -1,6 +1,5 @@
 {
-  "executionStatus": "NOT_RUN",
-  "purpose": "Candidate test navigation only. Section and clause mappings require assertion-level review; these references never establish conformance by themselves.",
+  "purpose": "Navigation from public contract areas to concrete test files; references describe test scope and do not execute tests.",
   "authorities": [
     {
       "path": "spec/00_OVERVIEW.md",
@@ -55,7 +54,7 @@
         "tests/unit/syntax.test.mjs",
         "tests/unit/engine.test.mjs",
         "tests/unit/artifact-security.test.mjs",
-        "tests/unit/qualification.test.mjs"
+        "tests/unit/document-integrity.test.mjs"
       ]
     },
     {
@@ -87,7 +86,7 @@
       "path": "docs/04_SECURITY.md",
       "testFiles": [
         "tests/unit/artifact-security.test.mjs",
-        "tests/unit/qualification.test.mjs",
+        "tests/unit/document-integrity.test.mjs",
         "tests/browser/artifacts.test.mjs",
         "tests/browser/studio.test.mjs"
       ]
@@ -110,14 +109,14 @@
       "path": "docs/07_VERIFICATION.md",
       "testFiles": [
         "tests/unit/foundation.test.mjs",
-        "tests/unit/qualification.test.mjs"
+        "tests/unit/document-integrity.test.mjs"
       ]
     },
     {
       "path": "docs/08_CHANGE_CONTROL.md",
       "testFiles": [
         "tests/unit/foundation.test.mjs",
-        "tests/unit/qualification.test.mjs"
+        "tests/unit/document-integrity.test.mjs"
       ]
     },
     {

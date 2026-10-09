@@ -190,12 +190,15 @@ class PublicChecks(unittest.TestCase):
                 [r['id'] for r in data[filename]],
                 [f'{prefix}-{i:03}' for i in range(1, count + 1)],
             )
-            self.assertEqual(data['executionStatus'], 'NOT_RUN')
+            self.assertNotIn('executionStatus', data)
             self.assertTrue(
-                all(r['status'] == 'NOT_RUN' for r in data[filename])
+                all(
+                    not {'status', 'milestone', 'manualRequired'}.intersection(r)
+                    for r in data[filename]
+                )
             )
-        # Preserve every seed assertion and procedure across an identifier-only revision.
-        # Deliberate future semantic changes require reviewing this compatibility guard.
+        # Bind every seed input, expected result and integrated behavior.
+        # Changes to the corpus require an explicit contract review.
         records = json.loads(
             (self.root / 'conformance/cases.json').read_text()
         )['cases']
@@ -203,7 +206,7 @@ class PublicChecks(unittest.TestCase):
             hashlib.sha256(
                 json.dumps(records, sort_keys=True, ensure_ascii=False).encode()
             ).hexdigest(),
-            '24450f68dbc3fd1846e7b2c39b65b4f29798b37589399f143e6069d195fa5fc4',
+            'c474567a6444dc0af650bc729ef971f689c58b608bc44c4acd66bdc50e5f4103',
         )
         records = json.loads(
             (self.root / 'conformance/scenarios.json').read_text()
@@ -212,9 +215,30 @@ class PublicChecks(unittest.TestCase):
             hashlib.sha256(
                 json.dumps(records, sort_keys=True, ensure_ascii=False).encode()
             ).hexdigest(),
-            'afb28a1b615cf5ca878d5fc431e3191c39332b5eab14591badde104b5c85a594',
+            '5dac21aa321e9b2ada30722747c6428ad8617bc33ad88fae5e9c4c3aaeb40c93',
         )
         self.edit_json('conformance/cases.json', lambda d: d['cases'].pop())
+        self.run_check(False)
+
+    def test_execution_state_is_not_fixture_metadata(self):
+        self.edit_json(
+            'conformance/cases.json',
+            lambda d: d.update(executionStatus='PASS'),
+        )
+        self.run_check(False)
+
+    def test_process_assignments_are_not_scenario_metadata(self):
+        self.edit_json(
+            'conformance/scenarios.json',
+            lambda d: d['scenarios'][0].update(manualRequired=True),
+        )
+        self.run_check(False)
+
+    def test_progress_records_are_not_requirement_metadata(self):
+        self.edit_json(
+            'conformance/requirements.json',
+            lambda d: d['requirements'][0].update(implementationEvidence=[]),
+        )
         self.run_check(False)
 
     def test_explicit_report_and_no_overwrite(self):

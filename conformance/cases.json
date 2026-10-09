@@ -1,6 +1,5 @@
 {
   "contractRevision": "1.0-draft.2",
-  "executionStatus": "NOT_RUN",
   "cases": [
     {
       "id": "CT-001",
@@ -14,8 +13,7 @@
           "Plain",
           "normal"
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-002",
@@ -30,8 +28,7 @@
           "@slider x = 5",
           "{{ x }}"
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-003",
@@ -45,8 +42,7 @@
         "textContains": [
           "{{ x }}"
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-004",
@@ -61,8 +57,7 @@
           "@when literal",
           "{{ literal }}"
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-005",
@@ -75,8 +70,7 @@
         "textContains": [
           "{\"name\": \"reader\"}"
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-006",
@@ -91,8 +85,7 @@
           "Two",
           "A quote."
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-007",
@@ -106,8 +99,7 @@
           "W_HTML_INERT"
         ],
         "noAuthorExecution": true
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-008",
@@ -123,8 +115,7 @@
         "textExcludes": [
           "private-looking note"
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-009",
@@ -138,8 +129,7 @@
           "W_LINK_UNSAFE"
         ],
         "noActiveUnsafeLinks": true
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-010",
@@ -151,8 +141,7 @@
         "ok": true,
         "exactSource": "# An existing Markdown note\n\nKeep this JSON-like text: {\"name\": \"reader\"}.\nKeep this template-looking text too: \\{{ template_value }}.\n\n\\@team review this line as prose, not a directive.\n\n- A list item.\n  - A nested item with `{{ literal_code }}`.\n\n```text\n@slider not_active = 5\n{{ not_active_either }}\n```\n\n<!-- An author note stays a comment. -->\n\n[An external link](https://example.org/guide)\n",
         "editCount": 2
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-011",
@@ -163,8 +152,7 @@
       "expect": {
         "ok": false,
         "code": "E_DIRECTIVE_UNKNOWN"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-012",
@@ -175,8 +163,7 @@
       "expect": {
         "ok": false,
         "code": "E_BLOCK_UNCLOSED"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-013",
@@ -187,8 +174,7 @@
       "expect": {
         "ok": false,
         "code": "E_BLOCK_END"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-014",
@@ -199,8 +185,7 @@
       "expect": {
         "ok": false,
         "code": "E_BLOCK_EMPTY"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-015",
@@ -211,8 +196,7 @@
       "expect": {
         "ok": false,
         "code": "E_DECLARATION_SCOPE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-016",
@@ -225,8 +209,7 @@
         "textContains": [
           "@end"
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-017",
@@ -237,8 +220,7 @@
       "expect": {
         "ok": false,
         "code": "E_PROPERTY_DUPLICATE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-018",
@@ -249,8 +231,7 @@
       "expect": {
         "ok": false,
         "code": "E_PROPERTY_UNKNOWN"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-019",
@@ -261,8 +242,7 @@
       "expect": {
         "ok": false,
         "code": "E_VERSION"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-020",
@@ -273,8 +253,7 @@
       "expect": {
         "ok": false,
         "code": "E_META_POSITION"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-021",
@@ -285,8 +264,7 @@
       "expect": {
         "ok": false,
         "code": "E_META_VALUE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-022",
@@ -299,8 +277,7 @@
         "controls": {
           "x": 5
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-023",
@@ -311,8 +288,7 @@
       "expect": {
         "ok": false,
         "code": "E_EXPRESSION_SYNTAX"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-024",
@@ -325,8 +301,7 @@
         "values": {
           "value": 14
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-025",
@@ -339,8 +314,7 @@
         "values": {
           "value": 20
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-026",
@@ -354,8 +328,7 @@
           "a": 6,
           "b": 3
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-027",
@@ -366,8 +339,7 @@
       "expect": {
         "ok": false,
         "code": "E_CONST_DEPENDENCY"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-028",
@@ -378,8 +350,7 @@
       "expect": {
         "ok": false,
         "code": "E_CYCLE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-029",
@@ -390,8 +361,7 @@
       "expect": {
         "ok": false,
         "code": "E_NAME_RESERVED"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-030",
@@ -402,8 +372,7 @@
       "expect": {
         "ok": false,
         "code": "E_NAME_UNKNOWN"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-031",
@@ -414,8 +383,7 @@
       "expect": {
         "ok": false,
         "code": "E_TYPE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-032",
@@ -426,8 +394,7 @@
       "expect": {
         "ok": false,
         "code": "E_TYPE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-033",
@@ -438,8 +405,7 @@
       "expect": {
         "ok": false,
         "code": "E_TYPE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-034",
@@ -452,8 +418,7 @@
         "values": {
           "value": 1
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-035",
@@ -466,8 +431,7 @@
         "values": {
           "value": false
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-036",
@@ -478,8 +442,7 @@
       "expect": {
         "ok": false,
         "code": "E_NAME_UNKNOWN"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-037",
@@ -490,8 +453,7 @@
       "expect": {
         "ok": false,
         "code": "E_TYPE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-038",
@@ -502,8 +464,7 @@
       "expect": {
         "ok": false,
         "code": "E_FUNCTION_ARITY"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-039",
@@ -520,8 +481,7 @@
           "d": 8,
           "e": 3
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-040",
@@ -534,8 +494,7 @@
         "values": {
           "n": -2
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-041",
@@ -546,8 +505,7 @@
       "expect": {
         "ok": false,
         "code": "E_TYPE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-042",
@@ -558,8 +516,7 @@
       "expect": {
         "ok": false,
         "code": "E_ROW_SCOPE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-043",
@@ -574,8 +531,7 @@
           "b": "12.5%",
           "c": "$19.90"
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-044",
@@ -586,8 +542,7 @@
       "expect": {
         "ok": false,
         "code": "E_DIGITS_RANGE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-045",
@@ -600,8 +555,7 @@
         "controls": {
           "value": 0.3
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-046",
@@ -612,8 +566,7 @@
       "expect": {
         "ok": false,
         "code": "E_STATE_DOMAIN"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-047",
@@ -624,8 +577,7 @@
       "expect": {
         "ok": false,
         "code": "E_STATE_DOMAIN"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-048",
@@ -636,8 +588,7 @@
       "expect": {
         "ok": false,
         "code": "E_PROPERTY_VALUE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-049",
@@ -648,8 +599,7 @@
       "expect": {
         "ok": false,
         "code": "E_NAME_DUPLICATE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-050",
@@ -668,7 +618,6 @@
           "inverse": 1
         }
       },
-      "status": "NOT_RUN",
       "update": {
         "n": 0
       }
@@ -689,7 +638,6 @@
           "square": 9
         }
       },
-      "status": "NOT_RUN",
       "update": {
         "n": 3
       }
@@ -707,7 +655,6 @@
           "n": 1
         }
       },
-      "status": "NOT_RUN",
       "update": {
         "n": 1
       }
@@ -723,7 +670,6 @@
         "code": "E_STATE_NAME",
         "revision": 0
       },
-      "status": "NOT_RUN",
       "update": {
         "missing": 2
       }
@@ -739,7 +685,6 @@
         "code": "E_STATE_DOMAIN",
         "revision": 0
       },
-      "status": "NOT_RUN",
       "update": {
         "n": "1"
       }
@@ -757,7 +702,6 @@
           "n": 0.3
         }
       },
-      "status": "NOT_RUN",
       "update": {
         "n": 0.30000000000000004
       }
@@ -773,8 +717,7 @@
         "textContains": [
           "Safe."
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-057",
@@ -785,8 +728,7 @@
       "expect": {
         "ok": false,
         "code": "E_DIV_ZERO"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-058",
@@ -802,8 +744,7 @@
         "textContains": [
           "5"
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-059",
@@ -819,8 +760,7 @@
         "rowCounts": {
           "values": 2
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-060",
@@ -831,8 +771,7 @@
       "expect": {
         "ok": false,
         "code": "E_DATA_HEADER"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-061",
@@ -843,8 +782,7 @@
       "expect": {
         "ok": false,
         "code": "E_DATA_ARITY"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-062",
@@ -855,8 +793,7 @@
       "expect": {
         "ok": false,
         "code": "E_DATA_VALUE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-063",
@@ -870,8 +807,7 @@
           "total": 0,
           "size": 0
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-064",
@@ -882,8 +818,7 @@
       "expect": {
         "ok": false,
         "code": "E_EMPTY_MEAN"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-065",
@@ -894,8 +829,7 @@
       "expect": {
         "ok": false,
         "code": "E_COLUMN_UNKNOWN"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-066",
@@ -908,8 +842,7 @@
         "values": {
           "average": 0
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-067",
@@ -934,8 +867,7 @@
             ]
           ]
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-068",
@@ -948,8 +880,7 @@
         "rowCounts": {
           "selected": 2
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-069",
@@ -960,8 +891,7 @@
       "expect": {
         "ok": false,
         "code": "E_PROPERTY_DEPENDENCY"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-070",
@@ -972,8 +902,7 @@
       "expect": {
         "ok": false,
         "code": "E_COLUMN_UNKNOWN"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-071",
@@ -984,8 +913,7 @@
       "expect": {
         "ok": false,
         "code": "E_CYCLE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-072",
@@ -999,8 +927,7 @@
           "one": 2,
           "two": 1
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-073",
@@ -1017,8 +944,7 @@
             "seriesCount": 2
           }
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-074",
@@ -1035,8 +961,7 @@
             "seriesCount": 2
           }
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-075",
@@ -1053,8 +978,7 @@
             "seriesCount": 2
           }
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-076",
@@ -1071,8 +995,7 @@
             "seriesCount": 2
           }
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-077",
@@ -1089,8 +1012,7 @@
             "seriesCount": 1
           }
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-078",
@@ -1107,8 +1029,7 @@
             "seriesCount": 1
           }
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-079",
@@ -1132,8 +1053,7 @@
             ]
           }
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-080",
@@ -1157,8 +1077,7 @@
             ]
           }
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-081",
@@ -1175,8 +1094,7 @@
             "binCounts": []
           }
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-082",
@@ -1187,8 +1105,7 @@
       "expect": {
         "ok": false,
         "code": "E_PROPERTY_VALUE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-083",
@@ -1199,8 +1116,7 @@
       "expect": {
         "ok": false,
         "code": "E_CHART_SERIES"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-084",
@@ -1211,8 +1127,7 @@
       "expect": {
         "ok": false,
         "code": "E_CHART_VALUE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-085",
@@ -1223,8 +1138,7 @@
       "expect": {
         "ok": false,
         "code": "E_CHART_DUPLICATE_X"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-086",
@@ -1240,8 +1154,7 @@
             "pointCount": 2
           }
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-087",
@@ -1261,8 +1174,7 @@
             ]
           }
         ]
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-088",
@@ -1275,8 +1187,7 @@
         "controls": {
           "picked": 1
         }
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-089",
@@ -1287,8 +1198,7 @@
       "expect": {
         "ok": false,
         "code": "E_SELECTION_DOMAIN"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-090",
@@ -1299,8 +1209,7 @@
       "expect": {
         "ok": false,
         "code": "E_SELECTION_TARGET"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-091",
@@ -1311,8 +1220,7 @@
       "expect": {
         "ok": false,
         "code": "E_PROPERTY_VALUE"
-      },
-      "status": "NOT_RUN"
+      }
     },
     {
       "id": "CT-092",
@@ -1333,7 +1241,6 @@
           }
         ]
       },
-      "status": "NOT_RUN",
       "update": {
         "minimum": 2
       }
@@ -1353,7 +1260,6 @@
         ],
         "rowCount": 2
       },
-      "status": "NOT_RUN",
       "importName": "records"
     },
     {
@@ -1370,7 +1276,6 @@
         ],
         "rowCount": 2
       },
-      "status": "NOT_RUN",
       "importName": "records"
     },
     {
@@ -1383,7 +1288,6 @@
         "ok": false,
         "code": "E_IMPORT_SCHEMA"
       },
-      "status": "NOT_RUN",
       "importName": "records"
     },
     {
@@ -1396,7 +1300,6 @@
         "ok": false,
         "code": "E_IMPORT_SCHEMA"
       },
-      "status": "NOT_RUN",
       "importName": "records"
     },
     {
@@ -1409,7 +1312,6 @@
         "ok": false,
         "code": "E_IMPORT_SCHEMA"
       },
-      "status": "NOT_RUN",
       "importName": "records"
     },
     {
@@ -1426,7 +1328,6 @@
         ],
         "rowCount": 2
       },
-      "status": "NOT_RUN",
       "importName": "records"
     }
   ]
