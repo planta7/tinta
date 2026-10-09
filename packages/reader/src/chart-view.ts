@@ -36,6 +36,9 @@ export function createChartView(
   const description = element("p");
   const scroll = element("div");
   scroll.className = "tinta-chart-scroll";
+  scroll.tabIndex = 0;
+  scroll.setAttribute("role", "region");
+  scroll.setAttribute("aria-label", `${initial.title} — figure ${id}`);
   const legend = element("div");
   legend.className = "tinta-chart-legend";
   const explorer = element("div");

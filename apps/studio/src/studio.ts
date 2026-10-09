@@ -292,11 +292,14 @@ export class Studio {
     );
   }
 
-  async attempt(operation: () => Promise<void>): Promise<void> {
+  async attempt(
+    operation: () => Promise<void>,
+    reportError: (error: unknown) => void = (error) => this.error(error),
+  ): Promise<void> {
     try {
       await operation();
     } catch (error) {
-      this.error(error);
+      reportError(error);
     }
   }
 
@@ -795,6 +798,9 @@ export class Studio {
 
   showExport(): void {
     dialog("Export document", (body, close) => {
+      const feedback = node("p");
+      feedback.setAttribute("role", "alert");
+      feedback.setAttribute("aria-atomic", "true");
       const format = select(body, "Format", [
         "Interactive HTML",
         "Static HTML",
@@ -821,46 +827,56 @@ export class Studio {
             "tables and referenced images. Images may retain metadata.",
         ),
       );
+      body.append(feedback);
       action(
         body,
         "Export file",
         () =>
-          void this.attempt(async () => {
-            if (!this.valid || !this.session)
-              throw new Error(
-                "Source is checking or invalid. Export is unavailable.",
-              );
+          void this.attempt(
+            async () => {
+              feedback.textContent = "";
+              if (!this.valid || !this.session)
+                throw new Error(
+                  "Source is checking or invalid. Export is unavailable.",
+                );
 
-            const revision = this.revision;
-            let bytes: Uint8Array, name: string, type: string;
-            if (format.value === "Answers snapshot") {
-              bytes = sourceBytes(
-                JSON.stringify(createStateSnapshot(this.session), null, 2) +
-                  "\n",
-              );
-              name = stem(this.filename) + ".tinta.state.json";
-              type = "application/json";
-            } else {
-              const kind =
-                format.value === "Static HTML" ? "static" : "interactive";
-              const artifact = unwrap(
-                await exportHtml(this.session, this.assets, {
-                  format: kind,
-                  answers:
-                    answers.value === "Current answers" ? "current" : "initial",
-                }),
-              );
-              bytes = artifact.bytes;
-              name = stem(this.filename) + "." + kind + ".html";
-              type = artifact.mediaType;
-            }
-            if (revision !== this.revision)
-              throw new Error(
-                "Source changed during export. Export cancelled.",
-              );
-            this.message(await saveFile(bytes, name, type));
-            close();
-          }),
+              const revision = this.revision;
+              let bytes: Uint8Array, name: string, type: string;
+              if (format.value === "Answers snapshot") {
+                bytes = sourceBytes(
+                  JSON.stringify(createStateSnapshot(this.session), null, 2) +
+                    "\n",
+                );
+                name = stem(this.filename) + ".tinta.state.json";
+                type = "application/json";
+              } else {
+                const kind =
+                  format.value === "Static HTML" ? "static" : "interactive";
+                const artifact = unwrap(
+                  await exportHtml(this.session, this.assets, {
+                    format: kind,
+                    answers:
+                      answers.value === "Current answers"
+                        ? "current"
+                        : "initial",
+                  }),
+                );
+                bytes = artifact.bytes;
+                name = stem(this.filename) + "." + kind + ".html";
+                type = artifact.mediaType;
+              }
+              if (revision !== this.revision)
+                throw new Error(
+                  "Source changed during export. Export cancelled.",
+                );
+              this.message(await saveFile(bytes, name, type));
+              close();
+            },
+            (error) => {
+              this.error(error);
+              feedback.textContent = status.textContent;
+            },
+          ),
       );
     });
   }

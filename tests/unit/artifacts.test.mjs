@@ -39,6 +39,20 @@ const source =
   "\n";
 
 describe("strict artifact inputs", () => {
+  test("CRC-32 preserves known checksums and binary subarray boundaries", () => {
+    expect(crc32(new Uint8Array())).toBe(0);
+    expect(crc32(encodeUtf8("123456789"))).toBe(0xcbf43926);
+    const bytes = Uint8Array.from({ length: 4096 }, (_, index) => index % 256);
+    for (const input of [bytes, bytes.subarray(17, 513), bytes.subarray(255)]) {
+      let expected = 0xffffffff;
+      for (const byte of input) {
+        expected ^= byte;
+        for (let bit = 0; bit < 8; bit++)
+          expected = (expected >>> 1) ^ (expected & 1 ? 0xedb88320 : 0);
+      }
+      expect(crc32(input)).toBe((expected ^ 0xffffffff) >>> 0);
+    }
+  });
   test.each([
     '{"a":1,"a":2}',
     '{"a":{"b":1,"\\u0062":2}}',

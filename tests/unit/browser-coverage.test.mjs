@@ -1,5 +1,12 @@
 import { Session } from "node:inspector/promises";
-import { mkdtemp, readFile, realpath, rm, writeFile } from "node:fs/promises";
+import {
+  mkdir,
+  mkdtemp,
+  readFile,
+  realpath,
+  rm,
+  writeFile,
+} from "node:fs/promises";
 import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -9,6 +16,7 @@ import { build } from "esbuild";
 import { parseAstAsync } from "vite";
 import { expect, test } from "vitest";
 import { readerCoverage } from "../../scripts/reader-coverage.mjs";
+import { mergeBrowserCoverage } from "../../scripts/browser-coverage.mjs";
 
 const provider = createRequire(import.meta.resolve("@vitest/coverage-v8"));
 const { convert } = await import(provider.resolve("ast-v8-to-istanbul"));
@@ -80,7 +88,9 @@ for (const distinctSources of [false, true]) {
         resolve(dirname(output), path),
       );
       const expected = createCoverageMap({});
-      for (const entry of entries) {
+      const fragments = join(directory, "fragments");
+      await mkdir(fragments);
+      for (const [index, entry] of entries.entries()) {
         const converted = await convert({
           ast: parseAstAsync(entry.source),
           code: entry.source,
@@ -89,7 +99,30 @@ for (const distinctSources of [false, true]) {
           sourceMap,
         });
         expected.merge({ [input]: converted[input] });
+        for (const runtime of ["browser", "preview"])
+          await writeFile(
+            join(fragments, `${runtime}-${index}.json`),
+            JSON.stringify({ files: { [input]: converted[input] } }),
+          );
       }
+      await mergeBrowserCoverage(fragments, directory);
+      for (const runtime of ["browser", "preview"]) {
+        const merged = JSON.parse(
+          await readFile(
+            join(directory, `studio-${runtime}-coverage.json`),
+            "utf8",
+          ),
+        );
+        expect(merged.files).toEqual(
+          JSON.parse(JSON.stringify(expected.toJSON())),
+        );
+        expect(merged.summary).toEqual(expected.getCoverageSummary().toJSON());
+      }
+      for (const index of entries.keys())
+        await rm(join(fragments, `preview-${index}.json`));
+      await expect(mergeBrowserCoverage(fragments, directory)).rejects.toThrow(
+        "Missing Studio preview coverage fragments.",
+      );
       const report = join(directory, "coverage.json");
       await readerCoverage(entries, output + ".map", {
         sourceRoot: directory,

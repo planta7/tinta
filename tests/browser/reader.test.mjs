@@ -876,6 +876,12 @@ for (const name of ["article", "report", "guide", "chart-atlas"]) {
     await mount(page, await readFile(`examples/${name}.tinta`, "utf8"));
     const figures = page.locator("figure");
     for (const figure of await figures.all()) {
+      const scroll = figure.locator(".tinta-chart-scroll");
+      await expect(scroll).toHaveAttribute("tabindex", "0");
+      await expect(scroll).toHaveAttribute("role", "region");
+      await expect(scroll).toHaveAttribute("aria-label", /figure/);
+      await scroll.focus();
+      await expect(scroll).toBeFocused();
       await expect(figure.locator("svg")).toHaveAttribute(
         "aria-hidden",
         "true",

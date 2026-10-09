@@ -1,6 +1,7 @@
 import { build } from "esbuild";
 import AxeBuilder from "@axe-core/playwright";
 import { readerCoverage } from "../../scripts/reader-coverage.mjs";
+import { fragmentDirectory } from "../../scripts/browser-coverage-setup.mjs";
 import { readFile } from "node:fs/promises";
 import { test, expect, studioAction } from "./fixtures.mjs";
 import { resolve } from "node:path";
@@ -43,7 +44,7 @@ test.afterEach(async ({ page, browserName }) => {
     coverage.push(...(await page.coverage.stopJSCoverage()));
 });
 
-test.afterAll(async ({ browserName }) => {
+test.afterAll(async ({ browserName }, worker) => {
   if (browserName !== "chromium") return;
   for (const [name, runtime] of runtimes) {
     await readerCoverage(
@@ -76,10 +77,15 @@ test.afterAll(async ({ browserName }) => {
                 "drafts.js",
               ]
             : ["preview.js"],
+        // A failed test starts a new worker. Preserve every worker's execution
+        // instead of replacing earlier coverage with its final fragment.
         report:
-          "reports/verification/studio-" +
+          fragmentDirectory +
+          "/" +
           (name === "index" ? "browser" : "preview") +
-          "-coverage.json",
+          "-" +
+          worker.workerIndex +
+          ".json",
       },
     );
   }
@@ -948,7 +954,18 @@ test("a source revision change cancels an export before download handoff", async
     };
   });
   await page.getByRole("button", { name: "Export file", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText(
+  const feedback = page.getByRole("dialog").getByRole("alert");
+  await expect(feedback).toContainText(
+    "Source changed during export. Export cancelled.",
+  );
+  await expect(
+    page.getByRole("button", {
+      name: "Export",
+      exact: true,
+      includeHidden: true,
+    }),
+  ).toBeEnabled();
+  await expect(feedback).toContainText(
     "Source changed during export. Export cancelled.",
   );
   expect(downloads).toEqual([]);

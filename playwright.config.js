@@ -2,6 +2,8 @@ import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
   testDir: "./tests/browser",
+  globalSetup: "./scripts/browser-coverage-setup.mjs",
+  globalTeardown: "./scripts/browser-coverage.mjs",
   forbidOnly: true,
   workers: 2,
   retries: 0,
