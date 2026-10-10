@@ -29,3 +29,7 @@ The specification, implementation, reference editor, CLI, examples and original 
 Future proprietary product work belongs in a separate repository and depends on the open engine through the public API. No commercial-only code, secrets, billing/accounts or artificial open-engine limits are added here. Keeping workspace packages `private: true` prevents accidental npm publication; it does not make the repository's MIT-licensed content proprietary. Public hosting, registration, releases and namespace availability remain explicit owner actions outside automated implementation.
 
 Release archives and package file lists must explicitly include public inputs and exclude local configuration, credentials, and development outputs. Verify actual archive contents before distribution.
+
+## Native editor integration
+
+The [VS Code host](13_VSCODE.md) introduces portable editor-analysis DTOs and an independent outer webview protocol, `tinta-vscode-1`. It does not change source format 1.0, `tinta-ir-1`, `tinta-host-1`, source bundles or answer snapshots. The shared file adapter expands the host boundary to explicitly granted native editor operations without granting filesystem access to core packages. See [the source-fidelity decision](../decisions/native-editor-source-fidelity.md) for the native editor's line-ending limitation and separate-copy policy.

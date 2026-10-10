@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { parse } from "yaml";
 import semver from "semver";
-import { edges } from "./architecture.mjs";
+import { workspaceOwners, ownerPath } from "./architecture.mjs";
 
 const read = (p) => JSON.parse(readFileSync(p, "utf8"));
 
@@ -19,9 +19,7 @@ for (const [name, entry] of Object.entries(lock.packages))
 
 for (const path of [
   "package.json",
-  ...Object.keys(edges).map((n) =>
-    n === "studio" ? "apps/studio/package.json" : `packages/${n}/package.json`,
-  ),
+  ...workspaceOwners().map((owner) => `${ownerPath(owner)}/package.json`),
 ]) {
   const manifest = read(path);
   if (!manifest.private) throw new Error(`Publication enabled: ${path}`);

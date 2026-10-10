@@ -50,3 +50,9 @@ The security boundary includes the compiler/interpreter, raw-HTML handling, payl
 ## Vulnerability handling
 
 Before the public repository has a configured private security-advisory channel, findings stay in a local private report to the owner; do not invent an email address. Once the owner enables GitHub private vulnerability reporting, SECURITY.md may point to that repository feature. Do not disclose exploit-bearing private document content in public issues or automatically transmit it.
+
+## Native editor host
+
+The [VS Code contract](13_VSCODE.md) separates opened-source verification, Workspace Trust and explicit image/output grants. Pure language analysis and the LSP worker have no author filesystem authority. Only the bounded shared file adapter accesses granted paths. Trust loss revokes grants and cancels outputs. A decoded editor buffer does not establish valid UTF-8 or source byte identity. Native save normalization is disclosed; fidelity-sensitive edits require an explicit separate-copy conversion, never overwriting the original automatically.
+
+The trusted outer webview uses a separate closed protocol and capability from the existing inner opaque iframe. It has no command URI permission or workspace resource roots. The inner sandbox tokens, MessageChannel authentication and CSP remain unchanged. Restrict the outer CSP too: srcdoc inherits it. No source, asset or message can grant host commands, filesystem lookup or resource fetching. Analysis workers are terminable; the extension event loop supervises them. Native editor recovery belongs to VS Code; do not introduce Studio draft storage or automatic persistence of reader answers into this host.

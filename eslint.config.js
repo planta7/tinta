@@ -25,7 +25,12 @@ export default tseslint.config(
     languageOptions: { globals: globals.node },
   },
   {
-    files: ["tests/browser/**/*.mjs", "scripts/performance-browser.mjs"],
+    files: [
+      "tests/browser/**/*.mjs",
+      "tests/vscode/outer.mjs",
+      "tests/vscode/inner-audit.mjs",
+      "scripts/performance-browser.mjs",
+    ],
     languageOptions: { globals: globals.browser },
   },
   { rules: { "@typescript-eslint/no-explicit-any": "error" } },

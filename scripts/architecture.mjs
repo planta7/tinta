@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { resolve, relative } from "node:path";
 import { pathToFileURL } from "node:url";
 import ts from "typescript";
@@ -11,19 +11,80 @@ export const edges = {
   charts: ["types", "engine"],
   reader: ["types", "engine", "charts"],
   artifacts: ["types", "syntax", "engine", "charts"],
-  cli: ["types", "engine", "artifacts"],
+  cli: ["types", "engine", "artifacts", "local-files"],
   studio: ["types", "syntax", "engine", "charts", "reader", "artifacts"],
 };
 
+export const editorEdges = {
+  "language-service": ["types", "syntax", "engine"],
+  "language-server": ["types", "language-service"],
+  "local-files": ["types", "artifacts"],
+  vscode: ["types", "language-service", "local-files", "artifacts"],
+  "vscode-webview": ["types", "engine", "reader", "artifacts"],
+};
+
+const nodeCapabilities = {
+  "local-files": new Set(["fs", "fs/promises", "path", "crypto", "buffer"]),
+  "language-server": new Set([
+    "worker_threads",
+    "path",
+    "url",
+    "crypto",
+    "events",
+    "buffer",
+    "process",
+  ]),
+  vscode: new Set(["path", "url", "crypto", "buffer"]),
+};
+
+export function ownerPath(owner) {
+  return ["studio", "vscode"].includes(owner)
+    ? `apps/${owner}`
+    : `packages/${owner}`;
+}
+
+export function workspaceOwners(root = process.cwd()) {
+  return [
+    ...Object.keys(edges),
+    ...Object.keys(editorEdges).filter(
+      (owner) =>
+        owner !== "vscode-webview" &&
+        existsSync(resolve(root, ownerPath(owner))),
+    ),
+  ];
+}
+
+export function checkRelativeImport(owner, base, file, specifier) {
+  const target = resolve(file, "..", specifier);
+  const boundary =
+    owner === "vscode-webview" ? resolve(base, "src/webview") : base;
+  if (
+    owner === "vscode" &&
+    relative(base, target).replaceAll("\\", "/").startsWith("src/webview/")
+  )
+    throw new Error(`Browser entry imported by native host: ${file}`);
+  if (relative(boundary, target).startsWith(".."))
+    throw new Error(`Cross-boundary relative import: ${file}`);
+}
+
 export function checkImport(owner, specifier) {
+  if (specifier === "vscode" && owner !== "vscode")
+    throw new Error(`VS Code API outside native host: ${owner}`);
+  if (/^(vscode-language|@vscode\/)/.test(specifier))
+    throw new Error(
+      "Editor SDK dependencies require exact line/provenance approval",
+    );
   if (
     specifier.startsWith("@tinta/") &&
-    !edges[owner].includes(specifier.slice(7).split("/")[0])
+    !(edges[owner] ?? editorEdges[owner] ?? []).includes(
+      specifier.slice(7).split("/")[0],
+    )
   )
     throw new Error(`Forbidden dependency: ${owner} -> ${specifier}`);
   if (
     owner !== "cli" &&
-    (specifier.startsWith("node:") || builtinModules.includes(specifier))
+    (specifier.startsWith("node:") || builtinModules.includes(specifier)) &&
+    !nodeCapabilities[owner]?.has(specifier.replace(/^node:/, ""))
   )
     throw new Error(`Host dependency in ${owner}: ${specifier}`);
   if (
@@ -56,7 +117,15 @@ export function inspectSource(owner, text, filename = "input.ts") {
     if (ts.isIdentifier(node) && ["eval", "Function"].includes(node.text))
       throw new Error("String-to-code execution is forbidden");
     if (
-      !["cli", "studio", "reader"].includes(owner) &&
+      ![
+        "cli",
+        "studio",
+        "reader",
+        "vscode",
+        "vscode-webview",
+        "local-files",
+        "language-server",
+      ].includes(owner) &&
       ts.isIdentifier(node) &&
       !(
         ts.isPropertyAccessExpression(node.parent) &&
@@ -77,12 +146,55 @@ export function inspectSource(owner, text, filename = "input.ts") {
     )
       throw new Error(`Ambient capability in ${owner}: ${node.text}`);
     if (
-      !["cli", "studio", "reader"].includes(owner) &&
+      ![
+        "cli",
+        "studio",
+        "reader",
+        "vscode",
+        "vscode-webview",
+        "local-files",
+        "language-server",
+      ].includes(owner) &&
       ts.isPropertyAccessExpression(node) &&
       node.expression.getText(tree) === "Math" &&
       node.name.text === "random"
     )
       throw new Error("Ambient randomness");
+    const denied = {
+      "vscode-webview": [
+        "fetch",
+        "localStorage",
+        "indexedDB",
+        "process",
+        "require",
+      ],
+      "language-server": [
+        "fetch",
+        "localStorage",
+        "indexedDB",
+        "document",
+        "window",
+        "require",
+      ],
+      "local-files": [
+        "fetch",
+        "localStorage",
+        "indexedDB",
+        "document",
+        "window",
+        "require",
+      ],
+      vscode: ["fetch", "localStorage", "indexedDB", "require"],
+      "language-service": [
+        "process",
+        "require",
+        "setInterval",
+        "queueMicrotask",
+        "performance",
+      ],
+    };
+    if (ts.isIdentifier(node) && denied[owner]?.includes(node.text))
+      throw new Error(`Forbidden host capability in ${owner}: ${node.text}`);
     ts.forEachChild(node, visit);
   }
 
@@ -97,20 +209,22 @@ export function files(dir) {
 
 export function checkWorkspace(root = process.cwd()) {
   let count = 0;
-  for (const owner of Object.keys(edges)) {
-    const base = resolve(
-      root,
-      owner === "studio" ? "apps/studio" : `packages/${owner}`,
-    );
+  for (const owner of workspaceOwners(root)) {
+    const base = resolve(root, ownerPath(owner));
     const manifest = JSON.parse(readFileSync(`${base}/package.json`, "utf8"));
     if (manifest.private !== true) throw new Error(`Public package: ${owner}`);
     for (const dependency of Object.keys(manifest.dependencies ?? {}))
       checkImport(owner, dependency);
     for (const file of files(`${base}/src`).filter((p) =>
-      /\.(?:ts|js)$/.test(p),
+      /\.[cm]?[jt]sx?$/.test(p),
     )) {
       const text = readFileSync(file, "utf8");
-      inspectSource(owner, text, file);
+      const sourceOwner =
+        owner === "vscode" &&
+        relative(base, file).replaceAll("\\", "/").startsWith("src/webview/")
+          ? "vscode-webview"
+          : owner;
+      inspectSource(sourceOwner, text, file);
       const tree = ts.createSourceFile(
         file,
         text,
@@ -124,9 +238,12 @@ export function checkWorkspace(root = process.cwd()) {
           ts.isStringLiteral(node.moduleSpecifier) &&
           node.moduleSpecifier.text.startsWith(".")
         ) {
-          const target = resolve(file, "..", node.moduleSpecifier.text);
-          if (relative(base, target).startsWith(".."))
-            throw new Error(`Cross-package relative import: ${file}`);
+          checkRelativeImport(
+            sourceOwner,
+            base,
+            file,
+            node.moduleSpecifier.text,
+          );
         }
 
       count++;

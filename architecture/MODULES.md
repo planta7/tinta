@@ -19,7 +19,7 @@ schemas/                          interchange envelope definitions
 
 Dependencies form a DAG: types → syntax → engine; types/engine → charts; engine/charts → reader; syntax/engine/charts → artifacts; artifacts/engine → cli; public packages → studio. Here an arrow means “is a prerequisite for”. `reader` may use shared serialization utilities from `artifacts` only if those utilities are moved into a separate leaf `types` helper; do not create a cycle. `artifacts` embeds the already-built reader IIFE as bytes, never imports React.
 
-Only CLI accesses arbitrary filesystem paths, and only within an explicitly granted document root. Studio sees only files chosen by the user. Pure packages receive text, bytes, typed records and explicit options; no ambient path, locale, clock, random values or network. Core never calls `fetch`, `localStorage`, IndexedDB or Node fs.
+Only the CLI file boundary and the shared `@tinta/local-files` Node adapter may access granted filesystem paths. CLI and the VS Code host supply explicit bounded file/root grants; Workspace Trust is never a directory grant. Studio sees only files chosen by the user. Pure packages receive text, bytes, typed records and explicit options; no ambient path, locale, clock, random values or network. Core never calls `fetch`, `localStorage`, IndexedDB or Node fs.
 
 ## Pipeline
 
@@ -63,3 +63,17 @@ An invalid text edit retains the last valid preview with an unmistakable stale b
 ## Build outputs
 
 Core packages: ESM JavaScript and declarations. Reader: one classic IIFE and one stylesheet, plus generated license notices. Worker: one classic bundled worker script. Studio: a chunked Vite + React static application under `build/studio/`, loopback development/preview, and an additional portable `tinta-studio.html` with embedded application, worker and preview resources. Application modules are served from the same static origin; document content cannot fetch resources. No runtime CDN, source maps with private local paths, or remote fonts. Static/interactive document exports contain no source maps or editor payload.
+
+## Native editor adapters
+
+The [VS Code host contract](../docs/13_VSCODE.md) adds these separate owners:
+
+| Owner | Dependencies and authority |
+|---|---|
+| `@tinta/language-service` | types, syntax, engine; pure analysis and query DTOs, no host APIs. |
+| `@tinta/language-server` | types, language-service; local LSP scheduling and worker supervision, no asset/filesystem/network authority. |
+| `@tinta/local-files` | types, artifacts; explicit Node file capabilities shared by CLI and native host. |
+| `@tinta/vscode` | types, language-service, local-files, artifacts; local VS Code document adapter, client and grants. |
+| VS Code browser entry | types, engine, reader, artifacts; separate `src/webview` subtree with no Node, VS Code API import, React or CodeMirror. |
+
+These are reserved module boundaries, not a claim that all packages exist. The architecture checker inspects each as soon as its directory exists and forbids browser imports across its subtree. Existing required owners remain mandatory. Shared file extraction preserves CLI behavior; this boundary does not authorize arbitrary Node imports in language or browser packages. Only the native host loads the fixed bundled language server; no workspace-selected executable. Pure ESM stays intact. Trusted browser bundles remain classic scripts. The probe runner uses an isolated CommonJS test-loader shim; it does not convert engine packages to CommonJS. A product activation loader must use native ESM.

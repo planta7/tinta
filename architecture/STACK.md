@@ -5,7 +5,7 @@
 | Layer | Selection | Boundary |
 |---|---|---|
 | Shared code | TypeScript with strict checking, ESM | Browser/Node semantic parity; no author JS. |
-| Runtime/toolchain | Node 24 LTS; baseline 24.21.0 | Node is for CLI/build/test only, not required to read exported HTML. |
+| Runtime/toolchain | Node 24 LTS; baseline 24.21.0 | Node powers local hosts/build/tests; exported HTML requires no Node installation. |
 | Workspace | pnpm workspace, exact dependency versions | No Nx/Turborepo required for this size. |
 | Markdown | micromark + mdast-util-from-markdown | Real block/inline parser extensions, original source spans. |
 | Markdown extensions | Individual table, task-list, strikethrough micromark/mdast modules | Do not enable all GFM/MDX/HTML extras by convenience. |
@@ -66,3 +66,9 @@ Test code may use Node built-ins; portable packages may not import `node:*`. Arc
 ## Sources
 
 See `docs/SOURCES.md`: S01–S12, S15–S18. External documentation supports the tools' capabilities; the architecture above is this project's decision, not a claim those projects implement Tinta.
+
+## Local VS Code host
+
+The native host target is VS Code Desktop 1.141.0, pinned probe commit `2a59476c9bfcb90b3ddc372c36762471b7dfad1c` (Electron 43.7.7, Node 24.21.0). Repository builds still use Node 24.21.0. The host uses bundled ESM analysis in Node workers and the existing framework-free browser preview in an opaque frame. It requires no global CLI or separate Node installation for document editing. See [host behavior and limits](../docs/13_VSCODE.md) for platform limitations.
+
+No new npm dependencies are needed for the contract/compatibility probe: it uses the exact locked esbuild and the installed desktop's `vscode` API. The desktop binary is an external test prerequisite, not a redistributed dependency; retain its upstream license/notices in that installation. Record its version and commit with results. LSP client/server, VS Code typings, test-electron and VSIX tooling are not yet selected or installed. Before introducing any, approve their release lines, pin exact versions, resolve the full lock and add provenance/license records; they cannot inherit an unrestricted dependency allowance from Node. Language-service coverage must preserve the existing syntax/engine minimums: 95% statements/lines and 90% branches. Host/transport coverage is separate, at least 85% statements/functions/lines and 80% branches.

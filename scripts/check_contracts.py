@@ -74,6 +74,8 @@ def main():
                 'NodeNext',
                 'contracts/public-api.d.ts',
                 'contracts/worker-protocol.d.ts',
+                'contracts/editor-analysis.d.ts',
+                'contracts/vscode-webview.d.ts',
             ]
             ver = command(['tsc', '--version'])
             result = command(cmd)
