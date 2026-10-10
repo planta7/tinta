@@ -69,7 +69,7 @@ Optional text-literal summary defaults to `More information`; nonempty body. No 
 
 ```tinta
 @data reading
-period:number | count:number | completed:boolean
+period:number | readings:number | completed:boolean
 0 | 100 | false
 1 | 105 | true
 @end
@@ -80,7 +80,7 @@ Required name; no options. Root only. A required typed header and zero or more r
 ## `@view`
 
 ```tinta
-@view visible = reading (where: row.count >= minimum, sort: "period", descending: false)
+@view visible = reading (where: row.readings >= minimum, sort: "period", descending: false)
 ```
 
 Required new name and an existing table/view identifier as source; root only. Options: `where` is a row-context boolean expression (default true); `sort` is a literal existing column name (default no sorting); `descending` is a boolean literal (default false). Specifying `descending`, even false, without `sort` is `E_PROPERTY_DEPENDENCY`. No options is a legal immutable view alias. Views preserve schema, original row IDs and stable order. `sort` applies after filtering; equal keys preserve incoming order in both directions. No computed columns, projection, joins or grouping.
@@ -96,7 +96,7 @@ Required table/view name; optional static text title defaults to the source name
 ## `@chart`
 
 ```tinta
-@chart bar visible (x: "period", y: "count", title: "Readers by period")
+@chart bar visible (x: "period", y: "readings", title: "Readers by period")
 ```
 
 Required type and table/view identifier. Options: required x column literal; required y except histogram; optional title, xLabel, yLabel text; optional select binding identifier; histogram-only bins integer. No size/layout/style/event/where/sort option is recognized. Use a shared view for filtering/ordering. Full data/domain, geometry, selection, empty-state and accessibility rules are in `spec/05_CHARTS.md`.
