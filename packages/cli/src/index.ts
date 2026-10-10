@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+import { identifyInternalDiagnostic } from "@tinta/types/common";
 import { dirname, extname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import type {
@@ -91,23 +93,29 @@ export async function run(
     }[] = [];
   const details: Record<string, unknown> = {};
   let human = "";
-  const finish = (exitCode: number): CliResult => ({
-    exitCode,
-    stdout: json
-      ? JSON.stringify({
-          ok: exitCode === 0,
-          command,
-          artifacts,
-          diagnostics,
-          details,
-        }) + "\n"
-      : exitCode === 0
-        ? human || `${command}: OK\n`
-        : "",
-    stderr: json
-      ? ""
-      : diagnostics.map((item) => `${item.code}: ${item.message}\n`).join(""),
-  });
+  const finish = (exitCode: number): CliResult => {
+    const reported = diagnostics.map((item) =>
+      identifyInternalDiagnostic(item, randomUUID),
+    );
+    if (reported.some((item) => item.code === "E_INTERNAL")) exitCode = 4;
+    return {
+      exitCode,
+      stdout: json
+        ? JSON.stringify({
+            ok: exitCode === 0,
+            command,
+            artifacts,
+            diagnostics: reported,
+            details,
+          }) + "\n"
+        : exitCode === 0
+          ? human || `${command}: OK\n`
+          : "",
+      stderr: json
+        ? ""
+        : reported.map((item) => `${item.code}: ${item.message}\n`).join(""),
+    };
+  };
   try {
     const args = parseArguments(argv);
     command = args.command;

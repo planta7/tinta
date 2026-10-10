@@ -1,3 +1,4 @@
+import { identifyInternalDiagnostic } from "@tinta/types/common";
 import { decodeProgram } from "@tinta/engine";
 import { encodeUtf8, limits } from "@tinta/artifacts";
 import type { Diagnostic, Program, SourceProfile } from "@tinta/types";
@@ -103,14 +104,18 @@ export class CompilerHost {
         this.receive({
           revision,
           program: decoded.value,
-          diagnostics: data.diagnostics,
+          diagnostics: data.diagnostics.map((item) =>
+            identifyInternalDiagnostic(item, token),
+          ),
           highlights: data.highlights ?? [],
         });
       } else {
         this.stop();
         this.receive({
           revision,
-          diagnostics: data.diagnostics,
+          diagnostics: data.diagnostics.map((item) =>
+            identifyInternalDiagnostic(item, token),
+          ),
           highlights: data.highlights ?? [],
         });
       }
@@ -143,17 +148,21 @@ export class CompilerHost {
     this.receive({
       revision: this.header.sourceRevision,
       diagnostics: [
-        {
-          code,
-          message,
-          severity: "error",
-          phase: "host",
-          span: {
-            uri: "tinta:/document.tinta",
-            start: position,
-            end: position,
+        identifyInternalDiagnostic(
+          {
+            code,
+            message,
+            severity: "error",
+            phase: "host",
+            span: {
+              uri: "tinta:/document.tinta",
+              start: position,
+              end: position,
+            },
           },
-        },
+          token,
+          message,
+        ),
       ],
     });
   }

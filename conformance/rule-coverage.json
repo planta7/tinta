@@ -2591,6 +2591,87 @@
       "title": "\"preview measurement observes document content after toolbar removal\"",
       "sha256": "9a0627514e4a6e34a7946327ce88fa82ba2a4df82e39ea0269a8ed82d38da533",
       "fileSha256": "e4ec95aeed33897640eba57b21b062dc8d0a64af566d60ea46aeaec7f0361db9"
+    },
+    {
+      "id": "host-bc794857d3f1",
+      "kind": "test",
+      "path": "tests/unit/incident-diagnostics.test.mjs",
+      "line": 17,
+      "title": "\"incident decoration is pure and leaves ordinary diagnostics untouched\"",
+      "sha256": "a13c49479f25b02ffbe8062f8bb5802b8f62327f20af5aaa530ff634bf18765e",
+      "fileSha256": "8846106cd204e4053c603cbfcbc6636a601a4e48b0288efbd3dc299ca264a164"
+    },
+    {
+      "id": "host-0d254e27779a",
+      "kind": "test",
+      "path": "tests/unit/incident-diagnostics.test.mjs",
+      "line": 31,
+      "title": "\"compiler startup faults expose distinct incidents without exception contents\"",
+      "sha256": "5797eb365a4950ed042dbe122236129cccc9fbd7491442ffbdda1bf5e9d2cc1a",
+      "fileSha256": "8846106cd204e4053c603cbfcbc6636a601a4e48b0288efbd3dc299ca264a164"
+    },
+    {
+      "id": "host-8a5934f12927",
+      "kind": "test",
+      "path": "tests/unit/incident-diagnostics.test.mjs",
+      "line": 58,
+      "title": "\"compiler runtime and returned internal faults identify incidents and preserve revision\"",
+      "sha256": "96a117c3d76849d191dc444a7316f29eee1d4f2b64d4fe9167076197a7030a43",
+      "fileSha256": "8846106cd204e4053c603cbfcbc6636a601a4e48b0288efbd3dc299ca264a164"
+    },
+    {
+      "id": "host-c5120bdbcd74",
+      "kind": "test",
+      "path": "tests/unit/incident-diagnostics.test.mjs",
+      "line": 105,
+      "title": "\"CLI internal incidents are visible in JSON and text without overwriting files\"",
+      "sha256": "20419bd577471a44e8dbd6eacec85b8fa34643d8987b23123f2993c0e3c133c1",
+      "fileSha256": "8846106cd204e4053c603cbfcbc6636a601a4e48b0288efbd3dc299ca264a164"
+    },
+    {
+      "id": "host-15979ebe3db4",
+      "kind": "test",
+      "path": "tests/browser/incident-diagnostics.test.mjs",
+      "line": 29,
+      "title": "\"reader host faults display incidents and retain source, answers and focus\"",
+      "sha256": "906ae5efc9f5aa257a6c1125ec7ce5cc3cd2918fd1df2dbc8787f11241069e85",
+      "fileSha256": "fd4476fdf60aa671197b1e71b4ca6528ee21a7718e898453942ca048bd8ecebc"
+    },
+    {
+      "id": "host-106afa718e42",
+      "kind": "test",
+      "path": "tests/browser/incident-diagnostics.test.mjs",
+      "line": 64,
+      "title": "\"engine subscriber faults gain host incidents without losing the committed answer\"",
+      "sha256": "40c760c92e01eb915c724c692ae7fa18bea884efe2e4a09e746d042a914961a4",
+      "fileSha256": "fd4476fdf60aa671197b1e71b4ca6528ee21a7718e898453942ca048bd8ecebc"
+    },
+    {
+      "id": "host-7fb4bb473ec5",
+      "kind": "test",
+      "path": "tests/browser/incident-diagnostics.test.mjs",
+      "line": 84,
+      "title": "\"diagnostic callback faults display a local incident without recursive reporting\"",
+      "sha256": "66cbe032ed1e4c5b59f8dd63339ad3c110a0c33815079de9be1462436c545875",
+      "fileSha256": "fd4476fdf60aa671197b1e71b4ca6528ee21a7718e898453942ca048bd8ecebc"
+    },
+    {
+      "id": "host-684d223b1a04",
+      "kind": "test",
+      "path": "tests/browser/incident-diagnostics.test.mjs",
+      "line": 98,
+      "title": "\"Studio artifact faults expose an incident while ordinary errors retain their explanation\"",
+      "sha256": "6ae888a4474e42ce64446fdeb9e8a798de4db02bf1c5aada9880ce4ce7bc88d6",
+      "fileSha256": "fd4476fdf60aa671197b1e71b4ca6528ee21a7718e898453942ca048bd8ecebc"
+    },
+    {
+      "id": "host-72a8a70aef98",
+      "kind": "test",
+      "path": "tests/browser/incident-diagnostics.test.mjs",
+      "line": 122,
+      "title": "\"rebuilt portable Studio opens offline and starts its compiler and reader\"",
+      "sha256": "b4110421db72063d498404f8da750dde9f6cc051b014db84ec536dbcaa2db0f3",
+      "fileSha256": "fd4476fdf60aa671197b1e71b4ca6528ee21a7718e898453942ca048bd8ecebc"
     }
   ],
   "rules": [
@@ -7642,7 +7723,16 @@
         "engine-e86af86c497a",
         "engine-4a510cf21467",
         "engine-1fdd04d2dfac",
-        "engine-71f5410bbcef"
+        "engine-71f5410bbcef",
+        "host-bc794857d3f1",
+        "host-0d254e27779a",
+        "host-8a5934f12927",
+        "host-c5120bdbcd74",
+        "host-15979ebe3db4",
+        "host-106afa718e42",
+        "host-7fb4bb473ec5",
+        "host-684d223b1a04",
+        "host-72a8a70aef98"
       ],
       "inspection": {
         "kind": "security",
@@ -7667,7 +7757,16 @@
         "engine-e86af86c497a",
         "engine-4a510cf21467",
         "engine-1fdd04d2dfac",
-        "engine-71f5410bbcef"
+        "engine-71f5410bbcef",
+        "host-bc794857d3f1",
+        "host-0d254e27779a",
+        "host-8a5934f12927",
+        "host-c5120bdbcd74",
+        "host-15979ebe3db4",
+        "host-106afa718e42",
+        "host-7fb4bb473ec5",
+        "host-684d223b1a04",
+        "host-72a8a70aef98"
       ],
       "inspection": {
         "kind": "security",
@@ -7692,7 +7791,16 @@
         "engine-e86af86c497a",
         "engine-4a510cf21467",
         "engine-1fdd04d2dfac",
-        "engine-71f5410bbcef"
+        "engine-71f5410bbcef",
+        "host-bc794857d3f1",
+        "host-0d254e27779a",
+        "host-8a5934f12927",
+        "host-c5120bdbcd74",
+        "host-15979ebe3db4",
+        "host-106afa718e42",
+        "host-7fb4bb473ec5",
+        "host-684d223b1a04",
+        "host-72a8a70aef98"
       ],
       "inspection": {
         "kind": "security",
@@ -7712,7 +7820,16 @@
         "engine-33fba4d21e8e",
         "reader-c3da0125d8f6",
         "reader-6c15032349f5",
-        "reader-ef240d8dbc67"
+        "reader-ef240d8dbc67",
+        "host-bc794857d3f1",
+        "host-0d254e27779a",
+        "host-8a5934f12927",
+        "host-c5120bdbcd74",
+        "host-15979ebe3db4",
+        "host-106afa718e42",
+        "host-7fb4bb473ec5",
+        "host-684d223b1a04",
+        "host-72a8a70aef98"
       ],
       "inspection": {
         "kind": "security",
@@ -7732,7 +7849,16 @@
         "engine-33fba4d21e8e",
         "reader-c3da0125d8f6",
         "reader-6c15032349f5",
-        "reader-ef240d8dbc67"
+        "reader-ef240d8dbc67",
+        "host-bc794857d3f1",
+        "host-0d254e27779a",
+        "host-8a5934f12927",
+        "host-c5120bdbcd74",
+        "host-15979ebe3db4",
+        "host-106afa718e42",
+        "host-7fb4bb473ec5",
+        "host-684d223b1a04",
+        "host-72a8a70aef98"
       ],
       "inspection": {
         "kind": "security",
@@ -8287,7 +8413,16 @@
       "assertion": "Assert the actual E_INTERNAL code on its triggering input, with failure/no-value or successful-warning semantics as appropriate.",
       "references": [
         "diagnostics-b00dc8890d53",
-        "engine-33fba4d21e8e"
+        "engine-33fba4d21e8e",
+        "host-bc794857d3f1",
+        "host-0d254e27779a",
+        "host-8a5934f12927",
+        "host-c5120bdbcd74",
+        "host-15979ebe3db4",
+        "host-106afa718e42",
+        "host-7fb4bb473ec5",
+        "host-684d223b1a04",
+        "host-72a8a70aef98"
       ],
       "fixtures": []
     },

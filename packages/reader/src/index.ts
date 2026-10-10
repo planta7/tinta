@@ -16,11 +16,17 @@ import { createChartView, type ChartView } from "./chart-view.js";
 import { validateNodes } from "./policy.js";
 
 import { normalizeAssetPath, validateAssets } from "@tinta/types/assets";
-import { base64 } from "@tinta/types/common";
+import { base64, identifyInternalDiagnostic } from "@tinta/types/common";
 
 const mounts = new WeakSet<HTMLElement>();
 const reservedHeadings = new WeakMap<Document, Set<string>>();
 let nextInstance = 0;
+
+function incidentId(): string {
+  return Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) =>
+    byte.toString(16).padStart(2, "0"),
+  ).join("");
+}
 
 type Field = HTMLInputElement | HTMLSelectElement;
 
@@ -47,13 +53,18 @@ export function mountReader(
     code: string,
     message: string,
     span = fallback,
-  ): Diagnostic => ({
-    code,
-    message,
-    severity: code.startsWith("W_") ? "warning" : "error",
-    phase: "host",
-    span,
-  });
+  ): Diagnostic =>
+    identifyInternalDiagnostic(
+      {
+        code,
+        message,
+        severity: code.startsWith("W_") ? "warning" : "error",
+        phase: "host",
+        span,
+      },
+      incidentId,
+      message,
+    );
   let native: HTMLElement;
   try {
     if (
@@ -134,7 +145,11 @@ export function mountReader(
       try {
         options.onDiagnostic?.(item);
       } catch {
-        status.textContent = "E_INTERNAL: A diagnostic subscriber failed.";
+        const failure = diagnostic(
+          "E_INTERNAL",
+          "A diagnostic subscriber failed.",
+        );
+        status.textContent = `${failure.code}: ${failure.message}`;
       }
     }
   }
@@ -510,6 +525,14 @@ export function mountReader(
   function showResult(result: Result<Revision>, name?: string): void {
     if (destroyed) return;
     const view = name ? controls.get(name) : undefined;
+    result = {
+      ...result,
+      diagnostics: result.diagnostics.map((item) =>
+        item.details?.incidentId
+          ? item
+          : identifyInternalDiagnostic(item, incidentId),
+      ),
+    };
     if (!result.ok) {
       if (view) {
         updateField(view, revision.state[name!]!);

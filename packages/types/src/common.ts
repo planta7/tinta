@@ -42,6 +42,21 @@ export function diagnostic(code: string, message: string): Diagnostic {
   };
 }
 
+/** Host-supplied identity keeps incident generation outside portable code. */
+export function identifyInternalDiagnostic(
+  item: Diagnostic,
+  createIncidentId: () => string,
+  message = "Unexpected internal failure.",
+): Diagnostic {
+  if (item.code !== "E_INTERNAL") return item;
+  const incidentId = createIncidentId();
+  return {
+    ...item,
+    message: `${message} Incident: ${incidentId}.`,
+    details: { incidentId },
+  };
+}
+
 export function attempt<T>(operation: () => T): Result<T> {
   try {
     return { ok: true, value: operation(), diagnostics: [] };

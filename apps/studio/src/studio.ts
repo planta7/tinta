@@ -1,3 +1,4 @@
+import { diagnostic, identifyInternalDiagnostic } from "@tinta/types/common";
 import { Drafts } from "./drafts.js";
 import { readRoute, writeRoute } from "./navigation.js";
 import { catalogDialog } from "./catalog.js";
@@ -11,6 +12,7 @@ import { editorOffset, sourceOffset } from "./source-buffer.js";
 import { importCsv, importJson } from "@tinta/engine";
 import { enrichMarkdown } from "@tinta/syntax";
 import {
+  ArtifactFailure,
   createAsset,
   createStateSnapshot,
   decodeUtf8,
@@ -285,6 +287,14 @@ export class Studio {
   }
 
   error(error: unknown): void {
+    if (error instanceof ArtifactFailure && error.code === "E_INTERNAL") {
+      const item = identifyInternalDiagnostic(
+        diagnostic("E_INTERNAL", "Unexpected internal failure."),
+        token,
+      );
+      this.message(`${item.code}: ${item.message}`);
+      return;
+    }
     this.message(
       error instanceof Error
         ? error.message
@@ -509,7 +519,10 @@ export class Studio {
           );
           status.append(note);
         }
-      } else this.diagnosticList = candidate.result.diagnostics;
+      } else
+        this.diagnosticList = candidate.result.diagnostics.map((item) =>
+          identifyInternalDiagnostic(item, token),
+        );
     }
     diagnostics.replaceChildren();
     for (const item of this.diagnosticList)
