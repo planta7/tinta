@@ -371,7 +371,7 @@ export interface ListItem extends BaseNode {
 export interface ProgramIR {
   readonly abi: "tinta-ir-1";
   readonly sourceVersion: "1.0";
-  readonly contractRevision: "1.0-draft.2";
+  readonly contractRevision: "1.0-draft.3";
   readonly profile: SourceProfile;
   readonly source: string;
   readonly sourceUri: string;

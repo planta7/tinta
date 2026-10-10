@@ -1,4 +1,4 @@
-/** Tinta 1.0-draft.2 integration contract. Types only; no implementation exists here. */
+/** Tinta 1.0-draft.3 integration contract. Types only; no implementation exists here. */
 export type SourceProfile = 'markdown' | 'tinta';
 export type Scalar = string | number | boolean;
 export type ScalarType = 'text' | 'number' | 'boolean';
@@ -369,7 +369,7 @@ export interface ListItem extends BaseNode {
 export interface ProgramIR {
   readonly abi: 'tinta-ir-1';
   readonly sourceVersion: '1.0';
-  readonly contractRevision: '1.0-draft.2';
+  readonly contractRevision: '1.0-draft.3';
   readonly profile: SourceProfile;
   readonly source: string;
   readonly sourceUri: string;

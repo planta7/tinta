@@ -368,7 +368,7 @@ def main() -> int:
     record('registry-profile', registry['profiles'] == ['markdown', 'tinta'])
     record(
         'registry-revision',
-        registry['contractRevision'] == '1.0-draft.2'
+        registry['contractRevision'] == '1.0-draft.3'
         and registry['sourceVersion'] == '1.0'
         and registry['workingName'] == 'Tinta',
     )
@@ -515,7 +515,7 @@ def finish(counts: dict[str, int]) -> int:
     failed = [c for c in checks if not c['passed']]
     report = {
         'kind': 'specification-consistency',
-        'contractRevision': '1.0-draft.2',
+        'contractRevision': '1.0-draft.3',
         'checkedAtUTC': datetime.now(timezone.utc).isoformat(),
         'status': 'PASS' if not failed else 'FAIL',
         'scope': 'Public specification consistency only; no Tinta parser or runtime execution.',

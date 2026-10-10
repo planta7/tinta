@@ -84,8 +84,59 @@ export function compile(
             name = d.binding ?? "";
           const declaration = { ...base, name };
 
-          for (const [key, expression] of Object.entries(d.options))
+          const staticLiteral = (expression: Expr): boolean => {
+            const raw = source.slice(
+              expression.span.start.offset,
+              expression.span.end.offset,
+            );
+            if (expression.kind === "literal") return raw === expression.raw;
+            if (expression.kind === "unary")
+              return (
+                (expression.operator === "+" || expression.operator === "-") &&
+                expression.operand.kind === "literal" &&
+                typeof expression.operand.value === "number" &&
+                raw === expression.operator + expression.operand.raw
+              );
+            if (expression.kind === "list")
+              return (
+                raw.startsWith("[") &&
+                raw.endsWith("]") &&
+                expression.items.every(staticLiteral)
+              );
+            return false;
+          };
+          for (const [key, expression] of Object.entries(d.options)) {
             locations.set(`${node.id}:option:${key}`, expression.span);
+            if (d.name === "view" && key === "where") continue;
+            if (d.name === "chart" && key === "select") {
+              if (
+                expression.kind !== "name" ||
+                source.slice(
+                  expression.span.start.offset,
+                  expression.span.end.offset,
+                ) !== expression.name
+              )
+                fail("E_SELECTION_TARGET", expression.span);
+              continue;
+            }
+            if (
+              d.name === "chart" &&
+              key === "y" &&
+              expression.kind !== "list" &&
+              !(
+                expression.kind === "literal" &&
+                typeof expression.value === "string"
+              )
+            )
+              continue;
+            if (!staticLiteral(expression))
+              fail(
+                d.name === "chart" && key === "y"
+                  ? "E_CHART_SERIES"
+                  : "E_PROPERTY_VALUE",
+                expression.span,
+              );
+          }
           d.columnSpans?.forEach((span, i) =>
             locations.set(`${node.id}:column:${i}`, span),
           );
@@ -166,9 +217,12 @@ export function compile(
             case "toggle":
             case "choice": {
               const initial = literal(d.expression!);
+              const controlLabel = text("label", label(name));
+              if (!controlLabel.trim())
+                fail("E_PROPERTY_VALUE", d.options.label?.span ?? node.span);
               const controlBase = {
                 ...declaration,
-                label: text("label", label(name)),
+                label: controlLabel,
               };
               let control: ControlDefinition;
               if (d.name === "slider") {
@@ -277,6 +331,8 @@ export function compile(
                 },
               ];
             case "details":
+              if (d.summary !== undefined && !d.summary.trim())
+                fail("E_PROPERTY_VALUE", node.span);
               budget.limit(
                 "labelCodePoints",
                 [...(d.summary ?? "More information")].length,
@@ -499,7 +555,7 @@ export function compile(
       const ir: ProgramIR = {
         abi: "tinta-ir-1",
         sourceVersion: "1.0",
-        contractRevision: "1.0-draft.2",
+        contractRevision: "1.0-draft.3",
         profile: input.profile,
         source,
         sourceUri: input.uri,

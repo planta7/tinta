@@ -1,6 +1,6 @@
 # Language overview and normative authority
 
-Contract revision: **1.0-draft.2**. Target source-format version: **1.0**. This is a specification for implementation, not a released standard or a statement that software is complete.
+Contract revision: **1.0-draft.3**. Target source-format version: **1.0**. This is a specification for implementation, not a released standard or a statement that software is complete.
 
 **MUST**, **MUST NOT**, **SHOULD** and **MAY** are requirement levels in this package. MUST/MUST NOT are conformance requirements. SHOULD requires a written reason for deviation. MAY is optional only where explicitly stated; it must not introduce observable alternative semantics. No unspecified extension may be enabled in a conforming V1 reader.
 

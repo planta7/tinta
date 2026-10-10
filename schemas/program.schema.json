@@ -8,7 +8,7 @@
       "properties": {
         "abi": { "const": "tinta-ir-1" },
         "sourceVersion": { "const": "1.0" },
-        "contractRevision": { "const": "1.0-draft.2" },
+        "contractRevision": { "const": "1.0-draft.3" },
         "profile": { "anyOf": [{ "const": "markdown" }, { "const": "tinta" }] },
         "source": { "type": "string" },
         "sourceUri": { "type": "string" },

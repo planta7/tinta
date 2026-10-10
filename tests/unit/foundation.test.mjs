@@ -108,7 +108,7 @@ describe("registry and Ajv 2020 envelope checks, not IR validation", () => {
 
   it("preserves registry identity and unique closed enums", () => {
     const registry = json("spec/registry.json");
-    expect(registry.contractRevision).toBe("1.0-draft.2");
+    expect(registry.contractRevision).toBe("1.0-draft.3");
     expect(registry.profiles).toEqual(["markdown", "tinta"]);
 
     for (const key of ["directives", "functions", "chartTypes"])

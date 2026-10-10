@@ -21,7 +21,7 @@
   "supportingInputs": [
     {
       "path": "conformance/cases.json",
-      "sha256": "bb1b034b77f776acc9f33dba461c2c2b59b2fffd4b93efd660c3de88d2d7bbf3"
+      "sha256": "db9e61e25658b80b84748b84ecdd373823f4a717f23e0fcaa4f6382895201115"
     },
     {
       "path": "conformance/runner/semantic.mjs",
@@ -29,15 +29,15 @@
     },
     {
       "path": "spec/registry.json",
-      "sha256": "45afbcde2952a8c966e7f189b41ef019dc2ff9522979a2fdaa9d353e0ea7db06"
+      "sha256": "bdff206f2428faae73d37e4266a5b9c54de6b8d4f44e2f0584b838713531c6d7"
     },
     {
       "path": "spec/grammar.ebnf",
-      "sha256": "9001650bb95cc1f668d5ea7533d6069763c7e7d330a74938e124676f4052a6e0"
+      "sha256": "5401762ae43c1b53b59f1f02d625257c6c0feeb8973d34007400ea715356dd55"
     },
     {
       "path": "contracts/public-api.d.ts",
-      "sha256": "c7851b19befc8cafafd119aaa672c78ff12e13a31f1540df6f53b53fd7b7d874"
+      "sha256": "e24c7ca8f1136eef0ee060f614c1a83cffd258a439bcc43e2f0b714c7ead9fd5"
     },
     {
       "path": "contracts/worker-protocol.d.ts",
@@ -57,7 +57,7 @@
     },
     {
       "path": "schemas/program.schema.json",
-      "sha256": "ad5fc85675a12a0b11d152c3890aa111322a8badfca8fcef7761fd15256c273c"
+      "sha256": "bcf05d3ce8a6e488c1aabd4f9953d1ca89ee38884ad757251938d2feb3c2d855"
     },
     {
       "path": "schemas/state.schema.json",
@@ -1993,7 +1993,7 @@
       "id": "check-scripts-check_spec.py",
       "kind": "check",
       "path": "scripts/check_spec.py",
-      "sha256": "bc9b7b62457af219a2aa1d380cf54e4d59e9e12edc1cbbd4015f95a020b02696"
+      "sha256": "48afbd4715ae08b4b195314574aee287e437311df7b1e96b9a69887e5ee39c76"
     },
     {
       "id": "check-scripts-licenses.mjs",
@@ -2672,6 +2672,42 @@
       "title": "\"rebuilt portable Studio opens offline and starts its compiler and reader\"",
       "sha256": "b4110421db72063d498404f8da750dde9f6cc051b014db84ec536dbcaa2db0f3",
       "fileSha256": "fd4476fdf60aa671197b1e71b4ca6528ee21a7718e898453942ca048bd8ecebc"
+    },
+    {
+      "id": "language-9f4211bb6ba1",
+      "kind": "test",
+      "path": "tests/unit/language-boundaries.test.mjs",
+      "line": 26,
+      "title": "\"control labels and details summaries reject blank effective names without trimming valid text\"",
+      "sha256": "9f4211bb6ba11b71c3f8e8ea9a84cc45454e1226f04f29418b66278172d23362",
+      "fileSha256": "de2a98dfbe5619c57948579432b132be37fa7c5b502bed51e45a14d509f1c416"
+    },
+    {
+      "id": "language-8f5d1adf4838",
+      "kind": "test",
+      "path": "tests/unit/language-boundaries.test.mjs",
+      "line": 57,
+      "title": "\"metadata permits only blanks and comments before it, not Markdown reference definitions\"",
+      "sha256": "8f5d1adf4838464bdba8838ecf219ecafc4e118564cb547e28b9be92734890e5",
+      "fileSha256": "de2a98dfbe5619c57948579432b132be37fa7c5b502bed51e45a14d509f1c416"
+    },
+    {
+      "id": "language-0d5601c4be5c",
+      "kind": "test",
+      "path": "tests/unit/language-boundaries.test.mjs",
+      "line": 68,
+      "title": "\"static options and selection bindings reject grouping while expression positions retain it\"",
+      "sha256": "0d5601c4be5cc7ebfc30461f46626c12a53e671926fda5528b4277b9e762b3df",
+      "fileSha256": "de2a98dfbe5619c57948579432b132be37fa7c5b502bed51e45a14d509f1c416"
+    },
+    {
+      "id": "language-d6c2d9e7611c",
+      "kind": "test",
+      "path": "tests/unit/language-boundaries.test.mjs",
+      "line": 94,
+      "title": "\"directive data examples use valid column names and retain reserved identifiers\"",
+      "sha256": "d6c2d9e7611ceeea2ec4da874740b09e3c79baabe7c3ab4a12bf0953c6e1657b",
+      "fileSha256": "de2a98dfbe5619c57948579432b132be37fa7c5b502bed51e45a14d509f1c416"
     }
   ],
   "rules": [
@@ -5555,7 +5591,7 @@
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Versioning",
       "line": 11,
-      "sha256": "6071ee4fdfa59769e7f9c4bc2740d7cddb78bf27793677c1a40fee06e07dc84a",
+      "sha256": "a44d51f7a8f3650f60818ea4a173583c5e72b93f92ae95c3afa8abd71c0d9f84",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
@@ -5608,7 +5644,7 @@
       "id": "RULE-142",
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Draft 2 identifier revision",
-      "line": 19,
+      "line": 23,
       "sha256": "b6137718865e7f25abf5535140d704e14e9686300a88e724b7e903a6865d6b85",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
@@ -5626,7 +5662,7 @@
       "id": "RULE-143",
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "License and commercial separation",
-      "line": 23,
+      "line": 27,
       "sha256": "79472ea3f55d3282677c44c4054b40e48abaef034427b7cedff3dce7bd8a37b8",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
@@ -5644,7 +5680,7 @@
       "id": "RULE-144",
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "License and commercial separation",
-      "line": 25,
+      "line": 29,
       "sha256": "e4f30d6a0d16294d1e2195dadb356b50aee58b9fbcd10c7e025f2fb5cf0569d7",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
@@ -5662,7 +5698,7 @@
       "id": "RULE-145",
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "License and commercial separation",
-      "line": 27,
+      "line": 31,
       "sha256": "e2405d93607c40ec9802b9d59e99720d9465ba6dd60327fc506624d3c10480f5",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
@@ -5681,7 +5717,7 @@
       "authority": "spec/00_OVERVIEW.md",
       "section": "Language overview and normative authority",
       "line": 3,
-      "sha256": "2919fd504bc2a51f7d8381619f81dada3242fb4b9d0880589286e2eab9102767",
+      "sha256": "37ac4e5d3935223fea660dddf93f1c4ce43081165bc9047e7f2aa6072aa9630f",
       "assertion": "Inspect accepted authority and compatibility claims; closed schemas and source version errors provide automated enforcement.",
       "references": [
         "engine-b8ef2c0fbf9d",
@@ -6575,13 +6611,17 @@
       "authority": "spec/03_DIRECTIVES.md",
       "section": "Complete directive contract",
       "line": 3,
-      "sha256": "697bbe3cc2c49c4ab48d68c96452b7c6e024ac00164325b4feb2c26bbe80bd47",
+      "sha256": "40859845416e00c6a61a75c3e4fea48f717261216257c7f91369e8e5b1282bc4",
       "assertion": "Assert complete property grammar and duplicate/unknown/nonliteral option rejection.",
       "references": [
         "syntax-cd6f299d8c2a",
         "syntax-e175f0cb9d1c",
         "syntax-35940dd3d064",
-        "engine-6ab967173f12"
+        "engine-6ab967173f12",
+        "language-9f4211bb6ba1",
+        "language-8f5d1adf4838",
+        "language-0d5601c4be5c",
+        "language-d6c2d9e7611c"
       ]
     },
     {
@@ -6589,14 +6629,18 @@
       "authority": "spec/03_DIRECTIVES.md",
       "section": "`@meta`",
       "line": 11,
-      "sha256": "1e358734419b3c89e6535b573937d65848800c439ece18bf8027a22241b42886",
+      "sha256": "cd232286a636d944a04c1850f25de09f9fc458b497a771a61f060a1e35abeecf",
       "assertion": "Assert metadata placement, closed locale/currency settings and title derivation.",
       "references": [
         "engine-bc5a2c51299b",
         "engine-6ab967173f12",
         "engine-cd472204d67f",
         "syntax-cd6f299d8c2a",
-        "syntax-e175f0cb9d1c"
+        "syntax-e175f0cb9d1c",
+        "language-9f4211bb6ba1",
+        "language-8f5d1adf4838",
+        "language-0d5601c4be5c",
+        "language-d6c2d9e7611c"
       ]
     },
     {
@@ -7865,6 +7909,20 @@
         "procedure": "Inject an unexpected host exception and inspect incident identification, preservation of local content and absence of remote reporting.",
         "expected": "Unexpected faults are distinguished from ordinary document errors and receive the prescribed opaque host incident ID."
       }
+    },
+    {
+      "id": "RULE-273",
+      "authority": "docs/08_CHANGE_CONTROL.md",
+      "section": "Draft 3 syntax clarification",
+      "line": 19,
+      "sha256": "fbad853de6f81bd980a533c4a76b41700d84c7f6e187a7122b443a5fcd8ab6db",
+      "assertion": "Assert literal, label, metadata and reserved-column boundaries for the current draft contract.",
+      "references": [
+        "language-9f4211bb6ba1",
+        "language-8f5d1adf4838",
+        "language-0d5601c4be5c",
+        "language-d6c2d9e7611c"
+      ]
     }
   ],
   "diagnostics": [
@@ -7987,7 +8045,11 @@
       "name": "E_PROPERTY_VALUE",
       "assertion": "Assert the actual E_PROPERTY_VALUE code on its triggering input, with failure/no-value or successful-warning semantics as appropriate.",
       "references": [
-        "engine-bc5a2c51299b"
+        "engine-bc5a2c51299b",
+        "language-9f4211bb6ba1",
+        "language-8f5d1adf4838",
+        "language-0d5601c4be5c",
+        "language-d6c2d9e7611c"
       ],
       "fixtures": [
         "CT-048",
@@ -8009,7 +8071,11 @@
       "name": "E_META_POSITION",
       "assertion": "Assert the actual E_META_POSITION code on its triggering input, with failure/no-value or successful-warning semantics as appropriate.",
       "references": [
-        "engine-bc5a2c51299b"
+        "engine-bc5a2c51299b",
+        "language-9f4211bb6ba1",
+        "language-8f5d1adf4838",
+        "language-0d5601c4be5c",
+        "language-d6c2d9e7611c"
       ],
       "fixtures": [
         "CT-020"
@@ -8236,7 +8302,11 @@
       "name": "E_CHART_SERIES",
       "assertion": "Assert the actual E_CHART_SERIES code on its triggering input, with failure/no-value or successful-warning semantics as appropriate.",
       "references": [
-        "engine-bc5a2c51299b"
+        "engine-bc5a2c51299b",
+        "language-9f4211bb6ba1",
+        "language-8f5d1adf4838",
+        "language-0d5601c4be5c",
+        "language-d6c2d9e7611c"
       ],
       "fixtures": [
         "CT-083"
@@ -8275,7 +8345,11 @@
       "name": "E_SELECTION_TARGET",
       "assertion": "Assert the actual E_SELECTION_TARGET code on its triggering input, with failure/no-value or successful-warning semantics as appropriate.",
       "references": [
-        "engine-bc5a2c51299b"
+        "engine-bc5a2c51299b",
+        "language-9f4211bb6ba1",
+        "language-8f5d1adf4838",
+        "language-0d5601c4be5c",
+        "language-d6c2d9e7611c"
       ],
       "fixtures": [
         "CT-090"

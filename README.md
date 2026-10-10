@@ -167,7 +167,7 @@ The parser and semantic engine are portable TypeScript. The reader and export ru
 
 **Draft language. Working local tools.**
 
-Contract revision **1.0-draft.2** targets source-format version **1.0**. The repository contains the specification, reusable packages, CLI and studio. The language contract is still a draft; format version 1.0 does not identify a stable tool release.
+Contract revision **1.0-draft.3** targets source-format version **1.0**. The repository contains the specification, reusable packages, CLI and studio. The language contract is still a draft; format version 1.0 does not identify a stable tool release.
 
 ## Contribute
 

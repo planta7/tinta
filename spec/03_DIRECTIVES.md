@@ -1,6 +1,6 @@
 # Complete directive contract
 
-Option keys are case-sensitive. Only listed keys are accepted. Option lists use `(key: value, ...)` with optional trailing comma. Unless specifically described as an expression or binding, each option is a literal of the declared type, not a name, interpolation or computed value. All labels/titles are plain static text. Default labels replace `_` in a name with spaces; they do not automatically translate or capitalize it.
+Option keys are case-sensitive. Only listed keys are accepted. Option lists use `(key: value, ...)` with optional trailing comma. Unless specifically described as an expression or binding, each option is a literal of the declared type, not a name, interpolation or computed value. Static scalar options accept only an unparenthesized literal token; a numeric sign must touch its number. Static lists use unparenthesized brackets and literal items without grouping. Parentheses remain legal in expressions such as `where` and computed numeric `y`. The `select` binding is one bare identifier, without grouping. All labels/titles are plain static text. Default labels replace `_` in a name with spaces; they do not automatically translate or capitalize it. Effective control labels and details summaries must contain a character remaining after ECMAScript `String.prototype.trim`; otherwise report `E_PROPERTY_VALUE`. This rule checks blankness without trimming the displayed value. An underscore-only control name therefore requires an explicit nonblank label.
 
 ## `@meta`
 
@@ -8,7 +8,7 @@ Option keys are case-sensitive. Only listed keys are accepted. Option lists use 
 @meta (version: "1.0", title: "Reading notes", locale: "en-US", currency: "USD")
 ```
 
-Zero or one per document, root only, before any nonblank/non-comment node. Each of version/title/locale/currency is optional. Version defaults `1.0`; title defaults the first root heading's literal text without interpolations, else `Untitled document`; locale defaults `en-US`; currency defaults `USD`. At most 200 characters in metadata title. Supported locales: en-US, en-GB, es-ES, fr-FR, de-DE, ja-JP, zh-CN, zh-TW. Supported currencies: USD, EUR, GBP, JPY, CHF, CAD, AUD, CNY. Unsupported values are `E_META_VALUE`. UI remains English regardless of locale. No arbitrary metadata keys or YAML/TOML front matter interpretation.
+Zero or one per document, root only, before any nonblank/non-comment node. Markdown link reference definitions count as preceding content and produce `E_META_POSITION` if followed by metadata. Each of version/title/locale/currency is optional. Version defaults `1.0`; title defaults the first root heading's literal text without interpolations, else `Untitled document`; locale defaults `en-US`; currency defaults `USD`. At most 200 characters in metadata title. Supported locales: en-US, en-GB, es-ES, fr-FR, de-DE, ja-JP, zh-CN, zh-TW. Supported currencies: USD, EUR, GBP, JPY, CHF, CAD, AUD, CNY. Unsupported values are `E_META_VALUE`. UI remains English regardless of locale. No arbitrary metadata keys or YAML/TOML front matter interpretation.
 
 ## `@let` and `@calc`
 

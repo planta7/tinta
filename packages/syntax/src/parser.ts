@@ -383,7 +383,7 @@ function groupBlocks(source: Source, root: SyntaxNode): SyntaxNode {
         node,
         "Metadata must precede content and cannot repeat.",
       );
-    if (hasContent([node])) seenContent = true;
+    if (node.kind === "definition" || hasContent([node])) seenContent = true;
     if (
       command &&
       ["let", "calc", "slider", "toggle", "choice", "data", "view"].includes(

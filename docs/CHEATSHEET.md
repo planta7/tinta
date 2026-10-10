@@ -1,4 +1,4 @@
-# tinta syntax quick reference — 1.0-draft.2
+# tinta syntax quick reference — 1.0-draft.3
 
 **Write a document. Add exploration only where it helps the reader.** `.tinta` is UTF-8 text. The examples below show the supported syntax for this draft contract. Normative details live in spec/; this reference does not override them.
 
@@ -63,7 +63,7 @@ The total is **{{ money(total) }}**.
 
 `@let` may reference constants, not controls/calculations/tables. `@calc` may depend on constants, answers, calculations and allowed table aggregates. Forward references are legal; cycles are not. All names are document-global and unique. Root declarations (`let`, `calc`, `data`, `view`, `meta`) cannot be placed inside conditional or details bodies.
 
-Control initial values and properties are **literals**, not formulas. `@choice` requires distinct text options and an initial contained in them. `@slider` defaults to min 0, max 100, step 1; its min/max/step/initial must form the precisely defined decimal grid. All labels default to the name with underscores replaced by spaces. Metadata/labels/figure titles are static: use surrounding prose for dynamic captions.
+Control initial values and static properties are **ungrouped literals**, not formulas: use `label: "People"`, not `label: ("People")`. Numeric signs touch their number; static list items are also ungrouped. Expression parentheses remain available in calculations, conditions, filters and computed chart values. `@choice` requires distinct text options and an initial contained in them. `@slider` defaults to min 0, max 100, step 1; its min/max/step/initial must form the precisely defined decimal grid. All labels default to the name with underscores replaced by spaces. Effective control labels and details summaries cannot be blank; underscore-only control names need an explicit nonblank label. Metadata/labels/figure titles are static: use surrounding prose for dynamic captions.
 
 ## 4. Long directives can breathe
 
@@ -236,7 +236,7 @@ Selecting a mark updates an existing compatible choice/slider; changing that con
 
 ## 12. Metadata, files and boundaries
 
-The complete directive set is `meta`, `let`, `calc`, `slider`, `toggle`, `choice`, `when`, `details`, `data`, `view`, `table`, `chart`; `end` is their closing delimiter. Metadata defaults are source version 1.0, locale en-US, currency USD and title derived from the first root heading or Untitled document. See spec/03 for the exact locale/currency allowlists.
+The complete directive set is `meta`, `let`, `calc`, `slider`, `toggle`, `choice`, `when`, `details`, `data`, `view`, `table`, `chart`; `end` is their closing delimiter. Metadata must precede everything except blank lines and comments, including Markdown link reference definitions. Metadata defaults are source version 1.0, locale en-US, currency USD and title derived from the first root heading or Untitled document. See spec/03 for the exact locale/currency allowlists.
 
 `.tinta` stores editable text. `.tinta.zip` stores validated source and local image bytes. Interactive HTML stores the complete program and an explicit initial/current answer baseline; it works offline. Static HTML stores only a resolved visible reading, with no executable program. Snapshots use `.tinta.state.json` and are valid only for the exact source fingerprint. None of these requires a server or account.
 

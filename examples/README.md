@@ -1,6 +1,6 @@
 # Example documents
 
-Open these documents in Studio or use them with the CLI to explore the language. They use contract revision 1.0-draft.2 and fictional data. Each initial result below follows the authored default answers.
+Open these documents in Studio or use them with the CLI to explore the language. They use contract revision 1.0-draft.3 and fictional data. Each initial result below follows the authored default answers.
 
 | File | What it demonstrates | Initial result |
 |---|---|---|

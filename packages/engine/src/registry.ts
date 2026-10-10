@@ -1,6 +1,6 @@
 // Generated from spec/registry.json; verified against the normative registry.
 export const registry = {
-  contractRevision: "1.0-draft.2",
+  contractRevision: "1.0-draft.3",
   sourceVersion: "1.0",
   workingName: "Tinta",
   sourceExtension: ".tinta",

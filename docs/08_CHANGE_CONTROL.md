@@ -8,11 +8,15 @@ The language defines explicit behavior. Dependency compatibility, browser behavi
 
 ## Versioning
 
-`1.0-draft.2` is the revision of this design package. `1.0` is the target source-format version, not evidence that a stable implementation exists. The reference UI identifies the current contract as Draft. Package builds during development use `0.1.0-dev.<integer>`; the first such integer is 0 and increases only for an intentionally distributed build. Do not publish or claim a stable 1.0 release simply because a source file contains `version: "1.0"`.
+`1.0-draft.3` is the revision of this design package. `1.0` is the target source-format version, not evidence that a stable implementation exists. The reference UI identifies the current contract as Draft. Package builds during development use `0.1.0-dev.<integer>`; the first such integer is 0 and increases only for an intentionally distributed build. Do not publish or claim a stable 1.0 release simply because a source file contains `version: "1.0"`.
 
 Before stabilization, any grammar/semantic change increments the draft revision and updates the change record, registry, schemas, contracts, examples, expected tests and cheatsheet together. After source V1 stabilization, valid document meaning is preserved within source 1.x. New source semantics require explicit opt-in to a new supported format version; unknown future versions fail with E_VERSION. Tool package patch/minor updates may fix bugs/security without silently adding syntax under an existing source contract. IR is independently versioned by the exact ABI `tinta-ir-1`; unknown ABI is rejected, not guessed. Source bundles and answer snapshots have their own `formatVersion`.
 
 No automatic runtime interpreter for historical syntax is required. Do not overload a new parser with ambiguous legacy guesses. An old document can be migrated by a separate explicit tool later, but that is outside V1. File associations are opt-in; `.tinta` is a project convention, not a claim that no other tool uses that suffix.
+
+## Draft 3 syntax clarification
+
+Static options use ungrouped literals and selection uses a bare identifier. Control labels and details summaries must not be blank, including generated control labels. Metadata accepts only blank lines and comments before it; link reference definitions count as content. The reserved column name in the directive examples is corrected to `readings`. These changes narrow previously accepted draft inputs; source version 1.0 is still a target, not a stable release declaration.
 
 ## Draft 2 identifier revision
 

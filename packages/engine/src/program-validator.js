@@ -12,7 +12,7 @@ const schema31 = {
       properties: {
         abi: { const: "tinta-ir-1" },
         sourceVersion: { const: "1.0" },
-        contractRevision: { const: "1.0-draft.2" },
+        contractRevision: { const: "1.0-draft.3" },
         profile: { anyOf: [{ const: "markdown" }, { const: "tinta" }] },
         source: { type: "string" },
         sourceUri: { type: "string" },
@@ -982,7 +982,7 @@ const schema32 = {
   properties: {
     abi: { const: "tinta-ir-1" },
     sourceVersion: { const: "1.0" },
-    contractRevision: { const: "1.0-draft.2" },
+    contractRevision: { const: "1.0-draft.3" },
     profile: { anyOf: [{ const: "markdown" }, { const: "tinta" }] },
     source: { type: "string" },
     sourceUri: { type: "string" },
@@ -17197,13 +17197,13 @@ function validate21(
             if (valid0) {
               if (data.contractRevision !== undefined) {
                 const _errs4 = errors;
-                if ("1.0-draft.2" !== data.contractRevision) {
+                if ("1.0-draft.3" !== data.contractRevision) {
                   validate21.errors = [
                     {
                       instancePath: instancePath + "/contractRevision",
                       schemaPath: "#/properties/contractRevision/const",
                       keyword: "const",
-                      params: { allowedValue: "1.0-draft.2" },
+                      params: { allowedValue: "1.0-draft.3" },
                       message: "must be equal to constant",
                     },
                   ];

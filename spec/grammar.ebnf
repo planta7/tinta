@@ -1,4 +1,4 @@
-(* Tinta 1.0-draft.2. Normative Tinta grammar composed with CommonMark 0.31.2.
+(* Tinta 1.0-draft.3. Normative Tinta grammar composed with CommonMark 0.31.2.
    Markdown lexical contexts, flow eligibility, whitespace and source spans
    are specified in 01_MARKDOWN_AND_LEXING.md. This is not a replacement
    grammar for CommonMark. NL may end a directive only at bracket depth zero.
@@ -31,7 +31,9 @@ markdown-node  = ? CommonMark node plus allowed table/task/strikethrough extensi
 options        = "(", ws, [ option, { ws, ",", ws, option }, [ ws, "," ] ], ws, ")" ;
 option         = identifier, ws, ":", ws, expression ;
 (* Options are expression-shaped tokens. Static option fields accept only the
-   field-specific literal productions; select accepts a single identifier.
+   field-specific unparenthesized literal productions (including ungrouped
+   literal list items); numeric signs touch the token. select accepts one
+   bare identifier without grouping.
    This semantic distinction is mandatory, not arbitrary general evaluation. *)
 
 interpolation  = "{{", wsp, inline-expression, wsp, "}}" ;
