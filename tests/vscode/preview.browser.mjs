@@ -150,6 +150,13 @@ test("reconciles, rolls back atomically, resets presentation and retains reader-
   await load(page, identity, revised);
   await expect(slider).toHaveValue("3");
   await expect(reader(page).locator("details")).not.toHaveAttribute("open", "");
+  await send(page, identity, "reset");
+  await expect(slider).toHaveValue("5");
+  await slider.fill("3");
+  await slider.dispatchEvent("input");
+  await expect(reader(page).locator("body")).toContainText(
+    "Ratio: 0.3333333333",
+  );
   // Retaining amount=3 would divide by zero; all authored defaults must win.
   const fallback = sample.replace("1 / amount", "1 / (amount - 3)");
   identity.source = source(fallback, 3);

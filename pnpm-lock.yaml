@@ -212,6 +212,9 @@ importers:
       '@tinta/engine':
         specifier: workspace:*
         version: link:../engine
+      '@tinta/local-files':
+        specifier: workspace:*
+        version: link:../local-files
       '@tinta/types':
         specifier: workspace:*
         version: link:../types
@@ -254,6 +257,9 @@ importers:
 
   packages/local-files:
     dependencies:
+      '@tinta/artifacts':
+        specifier: workspace:*
+        version: link:../artifacts
       '@tinta/types':
         specifier: workspace:*
         version: link:../types

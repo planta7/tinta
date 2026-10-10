@@ -33,6 +33,7 @@ let loaded = false;
 let innerReady = false;
 let disposed = false;
 let pending: ExtensionToWebview | undefined;
+let currentLoad: Extract<ExtensionToWebview, { kind: "load" }> | undefined;
 let enabled = false;
 const innerRequests = new Map<number, number>();
 const token = () =>
@@ -133,6 +134,7 @@ function signature(control: ControlDefinition): string {
 }
 
 function load(message: Extract<ExtensionToWebview, { kind: "load" }>): void {
+  currentLoad = message;
   if (message.assetRevision < assetRevision) return reject();
   const decoded = decodeProgram(message.program);
   if (
@@ -341,7 +343,11 @@ function receive(event: MessageEvent<unknown>): void {
       } else load(message);
     } else if (message.kind === "set-enabled") setEnabled(message.enabled);
     else if (message.kind === "reset") {
-      if (enabled) send("reset");
+      if (enabled && currentLoad) {
+        session?.destroy();
+        session = undefined;
+        load({ ...currentLoad, ...identity });
+      }
     } else if (message.kind === "get-state") {
       if (session)
         reply("state", {

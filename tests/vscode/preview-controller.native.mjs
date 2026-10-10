@@ -277,3 +277,78 @@ describe("native preview controller boundaries", () => {
     expect(doc.getText()).toBe("A\r\nB\rC");
   });
 });
+
+describe("preview file-workflow revisions", () => {
+  it("supplies verified snapshots, adopts bundle bytes and validates resource revisions", async () => {
+    const doc = document("# Source", "file");
+    const source = await controller.source(doc);
+    expect(controller.matches(doc, source)).toBe(true);
+    controller.resources(doc, new Map(), 1);
+    vscode.window.activeTextEditor = { document: doc };
+    await controller.show();
+    const state = controller.panels.get(doc);
+    await ready(state);
+    expect(state.assetRevision).toBe(1);
+    expect(
+      state.panel.webview.postMessage.mock.calls.find(
+        ([value]) => value.kind === "load",
+      )[0].assetRevision,
+    ).toBe(1);
+    const old = state.identity;
+    await controller.adopt(doc, encodeUtf8("# Source"));
+    expect(controller.panels.size).toBe(0);
+    expect((await controller.source(doc)).identity.documentInstance).not.toBe(
+      old.source.documentInstance,
+    );
+    expect(controller.matches(doc, source)).toBe(false);
+    const mixed = document("A\nB");
+    await controller.adopt(mixed, encodeUtf8("A\rB"));
+    expect(vscode.window.showWarningMessage).toHaveBeenCalledWith(
+      expect.stringContaining("Native Save"),
+    );
+    doc.version++;
+    await expect(controller.source(doc)).rejects.toThrow();
+    controller.close(doc);
+    expect(() => controller.resources(doc, new Map(), 2)).toThrow();
+  });
+
+  it("acquires current answers only through a matched get-state reply and invalidates reset", async () => {
+    const doc = document();
+    await controller.open(doc, true);
+    const source = await controller.source(doc);
+    await expect(controller.reading(doc, source)).rejects.toThrow("matching");
+    vscode.window.activeTextEditor = { document: doc };
+    await controller.show();
+    const state = controller.panels.get(doc);
+    await ready(state);
+    state.panel.webview.postMessage.mockImplementation(async (value) => {
+      if (value.kind === "get-state" || value.kind === "reset")
+        queueMicrotask(() =>
+          controller.receive(state, {
+            ...state.identity,
+            kind: "state",
+            controls: {},
+            sessionRevision: 0,
+            assetRevision: 0,
+          }),
+        );
+      return true;
+    });
+    const reading = await controller.reading(doc, source);
+    expect(reading.controls).toEqual({});
+    expect(reading.current()).toBe(true);
+    vscode.window.activeTextEditor = undefined;
+    state.panel.active = true;
+    await vscode.handlers["tinta.resetReading"]();
+    await vi.waitFor(() => expect(state.enabled).toBe(true));
+    expect(reading.current()).toBe(false);
+    state.panel.webview.postMessage.mockResolvedValue(true);
+    vi.useFakeTimers();
+    const pending = controller.reading(doc, source);
+    const rejected = expect(pending).rejects.toThrow("timed out");
+    await vi.advanceTimersByTimeAsync(3001);
+    await rejected;
+    state.enabled = false;
+    controller.reset();
+  });
+});

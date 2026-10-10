@@ -9,7 +9,7 @@ import {
   webviewMessage,
   type WebviewIdentity,
 } from "@tinta/types/webview";
-import type { ProgramIR, Result } from "@tinta/types";
+import type { AssetStore, ControlState, ProgramIR, Result } from "@tinta/types";
 import type { SourceIdentity } from "@tinta/types/editor";
 import { acquireSource, editSource, type NativeSource } from "./source.js";
 import {
@@ -25,6 +25,8 @@ interface SourceState {
   error?: string;
   timer?: ReturnType<typeof setTimeout>;
   generation: number;
+  assets?: AssetStore;
+  assetRevision?: number;
 }
 interface PanelState {
   readonly panel: vscode.WebviewPanel;
@@ -38,6 +40,13 @@ interface PanelState {
   enabled: boolean;
   expectedLoad?: number;
   readonly retired: Map<string, string>;
+  controls?: ControlState;
+  assetRevision?: number;
+  pendingState?: {
+    requestId: number;
+    resolve: () => void;
+    cancel: () => void;
+  };
 }
 
 type Request = <T>(method: string, params: unknown) => Promise<T>;
@@ -73,6 +82,7 @@ export class PreviewController implements vscode.Disposable {
       ),
       vscode.commands.registerCommand("tinta.openPreview", () => this.show()),
       vscode.commands.registerCommand("tinta.previewCopy", () => this.copy()),
+      vscode.commands.registerCommand("tinta.resetReading", () => this.reset()),
     );
     for (const document of vscode.workspace.textDocuments)
       void this.open(document, false);
@@ -212,6 +222,7 @@ export class PreviewController implements vscode.Disposable {
   }
 
   private close(document: vscode.TextDocument): void {
+    this.panels.get(document)?.pendingState?.cancel();
     const state = this.sources.get(document);
     if (state?.timer) clearTimeout(state.timer);
     this.sources.delete(document);
@@ -302,6 +313,8 @@ export class PreviewController implements vscode.Disposable {
       wasVisible = visible;
     });
     panel.onDidDispose(() => {
+      state.pendingState?.cancel();
+      delete state.pendingState;
       state.generation++;
       messages.dispose();
       visibility.dispose();
@@ -313,6 +326,8 @@ export class PreviewController implements vscode.Disposable {
   }
 
   private reconstruct(state: PanelState): void {
+    state.pendingState?.cancel();
+    delete state.pendingState;
     state.generation++;
     state.ready = false;
     state.enabled = false;
@@ -382,16 +397,21 @@ export class PreviewController implements vscode.Disposable {
     } else if (message.kind === "state" && state.ready) {
       if (
         message.requestId < state.identity.requestId ||
-        message.sessionRevision <= state.sessionRevision
+        message.sessionRevision < state.sessionRevision ||
+        (message.sessionRevision === state.sessionRevision &&
+          state.pendingState?.requestId !== message.requestId)
       )
         return;
-      if (message.assetRevision !== 0) {
+      if (message.assetRevision !== (state.assetRevision ?? 0)) {
         state.panel.dispose();
         return;
       }
       if (!state.enabled && state.expectedLoad !== message.requestId) return;
       delete state.expectedLoad;
       state.sessionRevision = message.sessionRevision;
+      state.controls = message.controls;
+      state.pendingState?.resolve();
+      delete state.pendingState;
       state.enabled = true;
       state.panel.title = "Tinta Preview";
     } else if (message.kind === "diagnostics") {
@@ -422,6 +442,8 @@ export class PreviewController implements vscode.Disposable {
   }
 
   private disable(state: PanelState, title: string): void {
+    state.pendingState?.cancel();
+    delete state.pendingState;
     state.enabled = false;
     delete state.expectedLoad;
     state.generation++;
@@ -473,12 +495,24 @@ export class PreviewController implements vscode.Disposable {
       state.program = compiled.result.value;
       state.sessionRevision = -1;
       state.enabled = false;
+      const resources = this.sources.get(state.document)!;
+      state.assetRevision = resources.assetRevision ?? 0;
+      const assets = [...(resources.assets?.entries() ?? [])];
       this.send(state, "load", {
         program: compiled.result.value,
-        assets: [],
-        assetPaths: {},
+        assets: [
+          ...new Map(assets.map(([, asset]) => [asset.path, asset])).values(),
+        ].map((asset) => ({
+          path: asset.path,
+          mime: asset.mime,
+          sha256: asset.sha256,
+          bytesBase64: Buffer.from(asset.bytes).toString("base64"),
+        })),
+        assetPaths: Object.fromEntries(
+          assets.map(([key, asset]) => [key, asset.path]),
+        ),
         baseline: {},
-        assetRevision: 0,
+        assetRevision: state.assetRevision,
       });
       state.expectedLoad = state.identity.requestId;
     } catch {
@@ -488,6 +522,136 @@ export class PreviewController implements vscode.Disposable {
         `Preview failed. Incident: ${token()}.`,
       );
     }
+  }
+
+  async source(document: vscode.TextDocument): Promise<NativeSource> {
+    await this.open(document, false);
+    const snapshot = this.sources.get(document)?.snapshot;
+    if (!snapshot || snapshot.identity.editorVersion !== document.version)
+      throw new Error(
+        "Source verification is unavailable. Create a UTF-8/LF copy.",
+      );
+    return snapshot;
+  }
+
+  matches(document: vscode.TextDocument, source: NativeSource): boolean {
+    return (
+      this.sources.get(document)?.snapshot === source &&
+      document.version === source.identity.editorVersion
+    );
+  }
+
+  canAdopt(bytes: Uint8Array): void {
+    const total = [...this.sources.values()].reduce(
+      (sum, value) =>
+        sum + (value.snapshot ? encodeUtf8(value.snapshot.text).length : 0),
+      bytes.length,
+    );
+    if (
+      this.sources.size >= 32 ||
+      bytes.length > limits.sourceBytes ||
+      total > 32 * 1024 * 1024
+    )
+      throw new Error(
+        "Source capacity exceeded. Close a document before opening another.",
+      );
+  }
+
+  async adopt(document: vscode.TextDocument, bytes: Uint8Array): Promise<void> {
+    const snapshot = acquireSource(bytes, document.getText(), {
+      uri: document.uri.toString(),
+      documentInstance: token(),
+      editorVersion: document.version,
+      sourceRevision: 0,
+    });
+    this.close(document);
+    this.sources.set(document, {
+      instance: snapshot.identity.documentInstance,
+      snapshot,
+      generation: 0,
+    });
+    if (snapshot.conversionRequired)
+      void vscode.window.showWarningMessage(
+        "This source has lone-CR or mixed line endings. Native Save may rewrite them after editing. Create a separate UTF-8/LF copy before previewing edits.",
+      );
+  }
+
+  resources(
+    document: vscode.TextDocument,
+    assets: AssetStore,
+    revision: number,
+  ): void {
+    const source = this.sources.get(document);
+    if (!source) throw new Error("Document closed.");
+    source.assets = assets;
+    source.assetRevision = revision;
+    const panel = this.panels.get(document);
+    if (panel) void this.update(panel);
+  }
+
+  activeDocument(): vscode.TextDocument | undefined {
+    return (
+      vscode.window.activeTextEditor?.document ??
+      [...this.panels.values()].find((state) => state.panel.active)?.document
+    );
+  }
+
+  private reset(): void {
+    const document = this.activeDocument();
+    const state = document ? this.panels.get(document) : undefined;
+    if (!state?.enabled) return;
+    state.enabled = false;
+    state.generation++;
+    state.sessionRevision = -1;
+    this.send(state, "reset");
+    state.expectedLoad = state.identity.requestId;
+  }
+
+  async reading(
+    document: vscode.TextDocument,
+    source: NativeSource,
+  ): Promise<{
+    readonly controls: ControlState;
+    readonly current: () => boolean;
+  }> {
+    const state = this.panels.get(document);
+    if (!state?.enabled || state.source !== source)
+      throw new Error("Current answers require a matching valid preview.");
+    await new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(() => {
+        delete state.pendingState;
+        reject(new Error("Preview state request timed out."));
+      }, 3000);
+      state.pendingState = {
+        cancel: () => {
+          clearTimeout(timer);
+          reject(new Error("Preview changed during state acquisition."));
+        },
+        requestId: state.identity.requestId + 1,
+        resolve: () => {
+          clearTimeout(timer);
+          resolve();
+        },
+      };
+      this.send(state, "get-state");
+    });
+    if (!state.enabled || state.source !== source || !state.controls)
+      throw new Error("Preview changed while acquiring answers.");
+    const generation = state.generation;
+    const revision = state.sessionRevision;
+    const assetRevision = state.assetRevision;
+    const capability = state.identity.capability;
+    return {
+      controls: structuredClone(state.controls),
+      current: () =>
+        this.panels.get(document) === state &&
+        state.enabled &&
+        state.source === source &&
+        state.generation === generation &&
+        state.sessionRevision === revision &&
+        state.assetRevision === assetRevision &&
+        state.identity.capability === capability,
+    };
   }
 
   dispose(): void {

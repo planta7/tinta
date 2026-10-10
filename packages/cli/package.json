@@ -12,7 +12,8 @@
   "dependencies": {
     "@tinta/types": "workspace:*",
     "@tinta/engine": "workspace:*",
-    "@tinta/artifacts": "workspace:*"
+    "@tinta/artifacts": "workspace:*",
+    "@tinta/local-files": "workspace:*"
   },
   "bin": {
     "tinta": "./bin.mjs"

@@ -21,6 +21,7 @@ export const editorEdges = {
   "local-files": ["types", "artifacts"],
   vscode: ["types", "language-service", "local-files", "artifacts"],
   "vscode-webview": ["types", "engine", "reader", "artifacts"],
+  "vscode-artifacts": ["types", "engine", "artifacts"],
 };
 
 const nodeCapabilities = {
@@ -34,7 +35,8 @@ const nodeCapabilities = {
     "buffer",
     "process",
   ]),
-  vscode: new Set(["path", "url", "crypto", "buffer"]),
+  vscode: new Set(["path", "url", "crypto", "buffer", "worker_threads"]),
+  "vscode-artifacts": new Set(["worker_threads"]),
 };
 
 export function ownerPath(owner) {
@@ -48,7 +50,7 @@ export function workspaceOwners(root = process.cwd()) {
     ...Object.keys(edges),
     ...Object.keys(editorEdges).filter(
       (owner) =>
-        owner !== "vscode-webview" &&
+        !["vscode-webview", "vscode-artifacts"].includes(owner) &&
         existsSync(resolve(root, ownerPath(owner))),
     ),
   ];
@@ -60,9 +62,19 @@ export function checkRelativeImport(owner, base, file, specifier) {
     owner === "vscode-webview" ? resolve(base, "src/webview") : base;
   if (
     owner === "vscode" &&
-    relative(base, target).replaceAll("\\", "/").startsWith("src/webview/")
+    ["src/webview/", "src/artifact-worker/"].some((directory) =>
+      relative(base, target).replaceAll("\\", "/").startsWith(directory),
+    )
   )
-    throw new Error(`Browser entry imported by native host: ${file}`);
+    throw new Error(`Isolated runtime imported by native host: ${file}`);
+  if (
+    owner === "vscode-artifacts" &&
+    !relative(base, target)
+      .replaceAll("\\", "/")
+      .startsWith("src/artifact-worker/") &&
+    target !== resolve(base, "src/artifact-protocol.js")
+  )
+    throw new Error(`Native host imported by artifact worker: ${file}`);
 
   if (relative(boundary, target).startsWith(".."))
     throw new Error(`Cross-boundary relative import: ${file}`);
@@ -249,7 +261,12 @@ export function checkWorkspace(root = process.cwd()) {
         owner === "vscode" &&
         relative(base, file).replaceAll("\\", "/").startsWith("src/webview/")
           ? "vscode-webview"
-          : owner;
+          : owner === "vscode" &&
+              relative(base, file)
+                .replaceAll("\\", "/")
+                .startsWith("src/artifact-worker/")
+            ? "vscode-artifacts"
+            : owner;
 
       inspectSource(sourceOwner, text, file);
       const tree = ts.createSourceFile(

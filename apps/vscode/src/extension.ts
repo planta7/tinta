@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { FileController } from "./files.js";
 import { PreviewController } from "./preview.js";
 import { limits } from "@tinta/types/common";
 import { randomBytes } from "node:crypto";
@@ -10,6 +11,7 @@ import {
 
 let client: LanguageClient | undefined;
 let previews: PreviewController | undefined;
+let files: FileController | undefined;
 
 function privateOutput(): vscode.LogOutputChannel {
   const output = vscode.window.createOutputChannel("Tinta", { log: true });
@@ -151,6 +153,7 @@ export async function activate(
         if (!(tab.input instanceof vscode.TabInputText)) continue;
         const uri = tab.input.uri;
         if (openUris.has(uri.toString())) continue;
+        files?.release(uri.toString());
         previews?.release(uri.toString());
         client?.diagnostics?.delete(uri);
         void client?.sendNotification("tinta/close", { uri: uri.toString() });
@@ -180,7 +183,8 @@ export async function activate(
     previews = new PreviewController((method, params) =>
       client!.sendRequest(method, params),
     );
-    context.subscriptions.push(previews);
+    files = new FileController(previews);
+    context.subscriptions.push(files, previews);
     context.subscriptions.push(
       client.onNotification(
         "tinta/status",
@@ -208,6 +212,8 @@ export async function activate(
 }
 
 export async function deactivate(): Promise<void> {
+  files?.dispose();
+  files = undefined;
   previews?.dispose();
   previews = undefined;
   await client?.stop();

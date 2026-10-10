@@ -20,9 +20,19 @@ export class TabInputText {
   }
 }
 export const handlers = {};
+const subscriptions = new Map();
 const subscribe = (name) => (handler) => {
-  handlers[name] = handler;
-  return { dispose: vi.fn() };
+  if (!["open", "change", "save", "close"].includes(name)) {
+    handlers[name] = handler;
+    return { dispose: vi.fn() };
+  }
+  if (!subscriptions.has(name)) subscriptions.set(name, new Set());
+  const listeners = subscriptions.get(name);
+  listeners.add(handler);
+  handlers[name] = (...args) => {
+    for (const listener of listeners) listener(...args);
+  };
+  return { dispose: () => listeners.delete(handler) };
 };
 export const output = {
   name: "Tinta",
@@ -38,6 +48,8 @@ export const status = {
 };
 export const workspace = {
   workspaceFolders: [],
+  isTrusted: true,
+  registerTextDocumentContentProvider: vi.fn(() => ({ dispose: vi.fn() })),
   textDocuments: [],
   onDidOpenTextDocument: subscribe("open"),
   onDidChangeTextDocument: subscribe("change"),
@@ -58,4 +70,12 @@ export const commands = {
     handlers[_name === "tinta.check" ? "check" : _name] = callback;
     return { dispose: vi.fn() };
   },
+};
+
+export const ProgressLocation = { Notification: 15 };
+export const Uri = {
+  parse: (value) => ({
+    scheme: value.slice(0, value.indexOf(":")),
+    toString: () => value,
+  }),
 };

@@ -16,6 +16,8 @@ export default defineConfig({
       "tests/unit/authoring.test.mjs",
       "tests/vscode/adapters.native.mjs",
       "tests/vscode/preview-controller.native.mjs",
+      "tests/vscode/files.native.mjs",
+      "tests/vscode/artifacts.native.mjs",
       "tests/unit/native-preview-source.test.mjs",
     ],
     coverage: {
@@ -25,6 +27,9 @@ export default defineConfig({
         "apps/vscode/dist/extension.js",
         "apps/vscode/dist/preview.js",
         "apps/vscode/dist/source.js",
+        "apps/vscode/dist/files.js",
+        "apps/vscode/dist/artifacts.js",
+        "apps/vscode/dist/artifact-worker/operation.js",
       ],
       reportsDirectory: "coverage/vscode",
       reporter: ["text", "json-summary", "json"],

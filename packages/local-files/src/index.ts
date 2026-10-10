@@ -63,3 +63,15 @@ export async function readOpenedSource(path: string): Promise<Uint8Array> {
     await handle.close();
   }
 }
+
+export {
+  HostFailure,
+  identity,
+  assertOutput,
+  assertAssetRoot,
+  readBounded,
+  readAssets,
+  resolveAssets,
+  atomicWrite,
+  unpackTree,
+} from "./files.js";

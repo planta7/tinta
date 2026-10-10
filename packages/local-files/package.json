@@ -10,7 +10,8 @@
     }
   },
   "dependencies": {
-    "@tinta/types": "workspace:*"
+    "@tinta/types": "workspace:*",
+    "@tinta/artifacts": "workspace:*"
   },
   "files": [
     "dist"

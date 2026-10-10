@@ -37,6 +37,7 @@ for (const [entry, output, external] of [
   ["apps/vscode/dist/extension.js", "extension", ["vscode"]],
   ["packages/language-server/src/server.ts", "server", []],
   ["packages/language-server/src/worker.ts", "worker", []],
+  ["apps/vscode/dist/artifact-worker/index.js", "artifact-worker", []],
 ]) {
   await build({
     entryPoints: [entry],
@@ -47,7 +48,7 @@ for (const [entry, output, external] of [
     target: "node24",
     external,
     // The upstream SDK is CommonJS. Only its fixed host bundle gets a Node loader.
-    ...(output === "worker"
+    ...(["worker", "artifact-worker"].includes(output)
       ? {}
       : {
           banner: {

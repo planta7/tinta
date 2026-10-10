@@ -22,12 +22,18 @@ describe("native editor capability boundaries", () => {
     ["vscode", "@tinta/local-files"],
     ["vscode-webview", "@tinta/reader"],
     ["cli", "@tinta/local-files"],
+    ["vscode-artifacts", "@tinta/engine"],
+    ["vscode-artifacts", "@tinta/artifacts"],
+    ["vscode", "node:worker_threads"],
   ])
     it(`permits ${owner} -> ${dependency}`, () => {
       expect(() => checkImport(owner, dependency)).not.toThrow();
     });
 
   for (const [owner, dependency] of [
+    ["vscode-artifacts", "node:fs"],
+    ["vscode-artifacts", "@tinta/local-files"],
+    ["vscode-artifacts", "vscode"],
     ["language-service", "node:fs"],
     ["language-service", "vscode"],
     ["language-server", "fs"],

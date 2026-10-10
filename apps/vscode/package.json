@@ -59,6 +59,45 @@
       {
         "command": "tinta.previewCopy",
         "title": "Tinta: Create UTF-8/LF Copy for Preview"
+      },
+      {
+        "command": "tinta.resetReading",
+        "title": "Tinta: Reset Reading"
+      },
+      {
+        "command": "tinta.selectImageRoot",
+        "title": "Tinta: Select Image Root",
+        "enablement": "isWorkspaceTrusted"
+      },
+      {
+        "command": "tinta.refreshImages",
+        "title": "Tinta: Refresh Images",
+        "enablement": "isWorkspaceTrusted"
+      },
+      {
+        "command": "tinta.enrichMarkdown",
+        "title": "Tinta: Enrich Markdown",
+        "enablement": "isWorkspaceTrusted"
+      },
+      {
+        "command": "tinta.openSourceBundle",
+        "title": "Tinta: Open Source Bundle",
+        "enablement": "isWorkspaceTrusted"
+      },
+      {
+        "command": "tinta.saveSourceBundle",
+        "title": "Tinta: Save Source Bundle",
+        "enablement": "isWorkspaceTrusted"
+      },
+      {
+        "command": "tinta.exportInteractive",
+        "title": "Tinta: Export Interactive HTML",
+        "enablement": "isWorkspaceTrusted"
+      },
+      {
+        "command": "tinta.exportStatic",
+        "title": "Tinta: Export Static HTML",
+        "enablement": "isWorkspaceTrusted"
       }
     ],
     "configurationDefaults": {
