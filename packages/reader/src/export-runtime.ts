@@ -1,3 +1,4 @@
+import { implementationVersion } from "@tinta/types/version";
 import { restoreExportProgram, createSession } from "@tinta/engine/runtime";
 import { mountReader } from "./index.js";
 import {
@@ -37,7 +38,7 @@ export function start(expectedHash: string): void {
     if (
       envelope.kind !== "tinta-interactive" ||
       envelope.formatVersion !== "1.0" ||
-      envelope.engineVersion !== "0.0.0" ||
+      envelope.engineVersion !== implementationVersion ||
       envelope.abi !== "tinta-ir-1" ||
       !Array.isArray(envelope.assets) ||
       envelope.assets.length > 100

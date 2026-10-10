@@ -18,7 +18,8 @@ const osOffline = flags.includes("--os-offline");
 if (osOffline && process.platform !== "darwin")
   throw new Error("OS network isolation is unavailable on this platform.");
 const port = Number(process.env.TINTA_TEST_DEBUG_PORT ?? 9338);
-const inspection = inspectPackage(await readFile(archive));
+const release = flags.includes("--release");
+const inspection = inspectPackage(await readFile(archive), { release });
 await mkdir(root);
 await copyFile(archive, join(root, "tinta.vsix"));
 await mkdir(join(root, "harness"));
@@ -84,6 +85,8 @@ const env = {
   NODE_PATH: "",
   VSCODE_PORTABLE: join(root, "portable"),
   TINTA_INSTALLED_ROOT: root,
+  TINTA_INSTALLED_ID: inspection.extensionId,
+  TINTA_INSTALLED_VERSION: inspection.identity.extensionVersion,
   TINTA_INSTALLED_WORKFLOW: String(workflow),
   TINTA_INSTALLED_PERFORMANCE: String(performance),
   // The child can find OS tools, but neither a global Node/CLI nor checkout tools.

@@ -1,3 +1,6 @@
+import { readZip } from "./distribution-archive.mjs";
+import { loadReleaseConfig } from "./release-contract.mjs";
+import { implementationVersion } from "./implementation-version.mjs";
 import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
@@ -6,7 +9,7 @@ import { captureCandidate } from "./candidate.mjs";
 const require = createRequire(
   new URL("../packages/artifacts/package.json", import.meta.url),
 );
-const { zipSync, unzipSync } = require("fflate");
+const { zipSync } = require("fflate");
 export const extensionVersion = "0.1.0-dev.0";
 export const payloadFiles = [
   "package.json",
@@ -24,8 +27,20 @@ export const payloadFiles = [
 const envelopeFiles = ["[Content_Types].xml", "extension.vsixmanifest"];
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 
-export function inspectPackage(bytes) {
-  const entries = unzipSync(bytes);
+export function inspectPackage(bytes, { release = false } = {}) {
+  const config = loadReleaseConfig();
+  const expectedVersion = release
+    ? config.versions.extension
+    : extensionVersion;
+  const publisher = release
+    ? config.identities.marketplacePublisher.value
+    : "tinta-local";
+  let entries;
+  try {
+    entries = readZip(bytes);
+  } catch (cause) {
+    throw new Error("VSIX contains missing or unexpected entries.", { cause });
+  }
   const expected = [
     ...envelopeFiles,
     ...payloadFiles.map((name) => `extension/${name}`),
@@ -54,7 +69,10 @@ export function inspectPackage(bytes) {
   );
   if (
     manifest.name !== "tinta" ||
-    manifest.version !== extensionVersion ||
+    manifest.version !== expectedVersion ||
+    manifest.publisher !== publisher ||
+    manifest.engines?.vscode !== config.policy.vscodeRange ||
+    manifest.main !== "./dist/extension.mjs" ||
     !manifest.private ||
     manifest.dependencies ||
     manifest.devDependencies
@@ -71,7 +89,7 @@ export function inspectPackage(bytes) {
     JSON.stringify(identifiedPaths) !== JSON.stringify(runtimePaths) ||
     identity.extensionVersion !== manifest.version ||
     identity.contractRevision !== "1.0-draft.3" ||
-    identity.implementationVersion !== "0.0.0" ||
+    identity.implementationVersion !== implementationVersion ||
     !/^[a-f0-9]{64}$/.test(identity.sourceSha256)
   )
     throw new Error("Incomplete or inconsistent build identity.");
@@ -79,10 +97,32 @@ export function inspectPackage(bytes) {
     if (digest(entries[`extension/${file.path}`]) !== file.sha256)
       throw new Error(`Payload identity mismatch: ${file.path}.`);
   }
-  return { sha256: digest(bytes), bytes: bytes.length, files, identity };
+  const xml = Buffer.from(entries["extension.vsixmanifest"]).toString();
+  if (
+    !xml.includes(`Version="${expectedVersion}" Publisher="${publisher}"`) ||
+    !xml.includes(`Value="${config.policy.vscodeRange}"`) ||
+    (release &&
+      !xml.includes('Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"'))
+  )
+    throw new Error("Inconsistent VSIX metadata.");
+  return {
+    sha256: digest(bytes),
+    bytes: bytes.length,
+    files,
+    identity,
+    extensionId: `${manifest.publisher}.${manifest.name}`,
+  };
 }
 
-export async function packageExtension() {
+export async function packageExtension({
+  release = false,
+  destination = "build/vscode",
+} = {}) {
+  const config = loadReleaseConfig();
+  const version = release ? config.versions.extension : extensionVersion;
+  const publisher = release
+    ? config.identities.marketplacePublisher.value
+    : "tinta-local";
   const candidate = captureCandidate();
   const workspace = JSON.parse(
     await readFile("apps/vscode/package.json", "utf8"),
@@ -93,7 +133,9 @@ export async function packageExtension() {
   const manifest = {
     ...base,
     name: "tinta",
-    version: extensionVersion,
+    version,
+    publisher,
+    categories: ["Programming Languages"],
     description:
       "Local Markdown-first Tinta authoring, preview and export (development build).",
     license: "MIT",
@@ -116,10 +158,8 @@ export async function packageExtension() {
     entries[`extension/${name}`] = bytes;
   }
   const identity = {
-    extensionVersion,
-    implementationVersion: JSON.parse(
-      await readFile("packages/engine/package.json", "utf8"),
-    ).version,
+    extensionVersion: version,
+    implementationVersion,
     contractRevision: registry.contractRevision,
     sourceVersion: registry.sourceVersion,
     irAbi: "tinta-ir-1",
@@ -155,15 +195,16 @@ export async function packageExtension() {
     Buffer.from(`<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
   <Metadata>
-    <Identity Language="en-US" Id="tinta" Version="${extensionVersion}" Publisher="tinta-local"/>
+    <Identity Language="en-US" Id="tinta" Version="${version}" Publisher="${publisher}"/>
     <DisplayName>Tinta</DisplayName>
-    <Description xml:space="preserve">Local development extension</Description>
+    <Description xml:space="preserve">Local Tinta authoring, preview and export</Description>
     <Tags>markdown</Tags>
     <Categories>Programming Languages</Categories>
     <GalleryFlags>Preview</GalleryFlags>
     <Properties>
       <Property Id="Microsoft.VisualStudio.Code.Engine" Value="^1.141.0"/>
       <Property Id="Microsoft.VisualStudio.Code.ExtensionKind" Value="workspace"/>
+      ${release ? '<Property Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"/>' : ""}
     </Properties>
     <License>extension/LICENSE</License>
   </Metadata>
@@ -186,11 +227,11 @@ export async function packageExtension() {
     ),
     { level: 9 },
   );
-  const report = inspectPackage(zipped);
-  await mkdir("build/vscode", { recursive: true });
-  await writeFile(`build/vscode/tinta-${extensionVersion}.vsix`, zipped);
+  const report = inspectPackage(zipped, { release });
+  await mkdir(destination, { recursive: true });
+  await writeFile(`${destination}/tinta-${version}.vsix`, zipped);
   await writeFile(
-    "build/vscode/archive.json",
+    `${destination}/archive.json`,
     JSON.stringify(report, null, 2) + "\n",
   );
   return report;

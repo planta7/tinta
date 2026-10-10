@@ -1,3 +1,4 @@
+import { implementationVersion } from "./implementation-version.mjs";
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { classicBundle } from "./packaging.mjs";
@@ -40,6 +41,7 @@ export async function buildStudio() {
     JSON.stringify(
       {
         protocol: "tinta-host-1",
+        implementationVersion,
         scriptHash: digest(previewCode),
         styleHash: digest(readerStyle),
         htmlSha256: createHash("sha256").update(previewHtml).digest("hex"),
@@ -83,9 +85,7 @@ export async function buildStudio() {
     percent: "percent(0.5)",
     money: "money(10)",
   };
-  const studioVersion = JSON.parse(
-    await readFile("apps/studio/package.json", "utf8"),
-  ).version;
+  const studioVersion = implementationVersion;
   const snippets = Object.fromEntries(
     registry.directives.map((name) => ["@" + name, templates[name]]),
   );

@@ -4,9 +4,9 @@ Write Markdown-first interactive documents locally with controls, formulas, tabl
 
 ## Install offline
 
-Use **Extensions: Install from VSIX…** and choose `tinta-0.1.0-dev.0.vsix`, then reload VS Code. Alternatively, run `code --install-extension /path/to/tinta-0.1.0-dev.0.vsix`. The internal extension identity is `tinta-local.tinta`; it is not a registered Marketplace identity. This is a local development build, not a stable release. Only macOS arm64 has native test observations; Linux and Windows remain unverified. Remote workspaces, containers, virtual filesystems and vscode.dev are unsupported.
+Use **Extensions: Install from VSIX…** and choose the downloaded `.vsix` file, then reload VS Code. Alternatively, run `code --install-extension /path/to/tinta.vsix`. The extension is not available on the Marketplace yet. Only macOS arm64 has native test observations; Linux and Windows remain unverified. Remote workspaces, containers, virtual filesystems and vscode.dev are unsupported.
 
-The archive's `build-identity.json` records its exact source hash, commit, dirty-tree flag, bundled file hashes, engine implementation version and contracts. Workspace packages and the bundled engine currently retain implementation version `0.0.0`; the local extension artifact uses `0.1.0-dev.0`. Rebuilds are distinguished by hashes. Local packaging does not increment a distribution version or authorize publication.
+If you switch from the local `tinta-local.tinta` extension to `tinta.tinta`, disable or uninstall the local extension before enabling the new one to avoid duplicate language providers. Keep your documents and check your settings after switching; settings are not migrated automatically.
 
 ## Create a document
 

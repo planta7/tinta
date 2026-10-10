@@ -1,0 +1,25 @@
+{
+  "scripts/distribution-archive.mjs": [
+    "6b216a614b9656f823027fd729d0f9f13c23bdaf4bb3afdce4e00d5d7c954d79"
+  ],
+  "scripts/vscode-package.mjs": [
+    "cc9fcf5f0e7bb76fabd3309a713ce3b9fc624575c92795ace7b3855bafd53208"
+  ],
+  "tests/unit/vscode-package.test.mjs": [
+    "6c80835281665195a599cb350d05b084e6427b8599627bac8e47cd5a63c7bdfb",
+    "c00ef84c2a335f0282e74d411bf196f11143da2dbd08f542acb70d8719bac12c",
+    "b5ef101fedb65f5e4a3220e11a8c1bab028a24415e3ec666feab2e52f252eabe",
+    "641b86b07f4c93182526528c9c83583649aa7cd1577e7601980b202a7c871d17",
+    "1644f31e15f6bad575e6537aea6efe21172e536e28def19eb44994a1f52d33a2",
+    "fcaaf85102084e88d3e25b93e645df3420c749764c1bd3c06f8b96959febb50d"
+  ],
+  "tests/distribution/packaging.test.mjs": [
+    "6c80835281665195a599cb350d05b084e6427b8599627bac8e47cd5a63c7bdfb",
+    "ed8857ee134247cdd6cb64713edd07445ee3f9d255d8cb16fc4b236fb422fd32",
+    "ae59d858195c37f3f9bc8d6e8f8cb77f885aa43f77eae152e62c71f827edc5f6",
+    "5c91508ff478a1e162455c3b039fe55e7d30d31bc59cf1e2e257231b0def1330"
+  ],
+  "tests/unit/commands.test.mjs": [
+    "f84a6fd0b6697a7f0133e1023fad388e3c3f167690089b3349b3d1c9b77df19b"
+  ]
+}

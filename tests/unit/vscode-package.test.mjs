@@ -1,3 +1,4 @@
+import { implementationVersion } from "../../scripts/implementation-version.mjs";
 import { beforeAll, describe, it, expect } from "vitest";
 import { createRequire } from "node:module";
 import { readFile } from "node:fs/promises";
@@ -35,7 +36,7 @@ describe("local extension archive", () => {
     const report = inspectPackage(await readFile(path));
     expect(report.files).toHaveLength(13);
     expect(report.identity.contractRevision).toBe("1.0-draft.3");
-    expect(report.identity.implementationVersion).toBe("0.0.0");
+    expect(report.identity.implementationVersion).toBe(implementationVersion);
     expect(report.identity.sourceSha256).toMatch(/^[a-f0-9]{64}$/);
     expect(
       report.files.some((file) => file.path.includes("node_modules")),

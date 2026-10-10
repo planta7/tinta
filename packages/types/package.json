@@ -27,6 +27,10 @@
     "./webview": {
       "types": "./dist/webview.d.ts",
       "import": "./dist/webview.js"
+    },
+    "./version": {
+      "types": "./dist/version.d.ts",
+      "import": "./dist/version.js"
     }
   },
   "dependencies": {

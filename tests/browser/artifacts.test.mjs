@@ -1,3 +1,4 @@
+import { implementationVersion } from "../../packages/types/dist/version.js";
 import { test, expect } from "./fixtures.mjs";
 import { mkdir, mkdtemp, writeFile, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -276,7 +277,10 @@ test("tampered envelope fails closed and leaves fallback", async ({ page }) => {
   const altered = Buffer.from(
     Buffer.from(bytes)
       .toString("utf8")
-      .replace('"engineVersion":"0.0.0"', '"engineVersion":"9.9.9"'),
+      .replace(
+        `"engineVersion":"${implementationVersion}"`,
+        '"engineVersion":"9.9.9"',
+      ),
   );
   await visit(page, altered, async () => {
     await expect(page.getByRole("alert")).toContainText("could not initialize");
@@ -389,6 +393,9 @@ test("runtime rejects malformed authenticated envelopes without discarding fallb
         value.kind = "unknown";
       },
       (value) => {
+        value.engineVersion = "0.2.0-dev.1";
+      },
+      (value) => {
         value.baseline.sourceSha256 = "0".repeat(64);
       },
       (value) => {
@@ -491,4 +498,64 @@ test("exports retain answers but reset legend, pin and details presentation", as
       "Include weekends: true",
     );
   });
+});
+
+test("rebuilt runtime accepts only its coordinated implementation version", async ({
+  page,
+}) => {
+  const alternate = "0.2.0-dev.1";
+  const runtime = await build({
+    entryPoints: ["packages/reader/src/export-runtime.ts"],
+    bundle: true,
+    write: false,
+    minify: true,
+    format: "iife",
+    globalName: "TintaExportRuntime",
+    platform: "browser",
+    target: "es2022",
+    plugins: [
+      {
+        name: "test-implementation-version",
+        setup(builder) {
+          builder.onResolve({ filter: /^@tinta\/types\/version$/ }, () => ({
+            path: "implementation-version",
+            namespace: "test-version",
+          }));
+          builder.onLoad({ filter: /.*/, namespace: "test-version" }, () => ({
+            contents: `export const implementationVersion = ${JSON.stringify(alternate)};`,
+            loader: "js",
+          }));
+        },
+      },
+    ],
+  });
+  const original = Buffer.from(
+    await exported("@slider amount = 2 (min: 0, max: 5, step: 1)\n"),
+  ).toString();
+  const envelope = JSON.parse(
+    original.match(/id="tinta-payload">([\s\S]*?)<\/script>/)[1],
+  );
+  expect(envelope.engineVersion).toBe(implementationVersion);
+  for (const version of [alternate, implementationVersion]) {
+    envelope.engineVersion = version;
+    const payload = JSON.stringify(envelope).replace(/</g, "\\u003c");
+    const hash = createHash("sha256").update(payload).digest("hex");
+    const code =
+      runtime.outputFiles[0].text + `\nTintaExportRuntime.start("${hash}");`;
+    const scriptHash = createHash("sha256").update(code).digest("base64");
+    const html = `<!doctype html><html><head><meta charset="UTF-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-${scriptHash}'"></head><body><main id="tinta-content">Preserved fallback</main><script type="application/json" id="tinta-payload">${payload}</script><script>${code}</script></body></html>`;
+    await visit(page, Buffer.from(html), async () => {
+      if (version === alternate) {
+        await expect(page.getByRole("slider")).toHaveValue("2");
+        await expect(page.getByRole("alert")).toHaveCount(0);
+      } else {
+        await expect(page.getByRole("alert")).toContainText(
+          "could not initialize",
+        );
+        await expect(page.locator("#tinta-content")).toContainText(
+          "Preserved fallback",
+        );
+      }
+    });
+  }
 });

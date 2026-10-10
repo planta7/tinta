@@ -34,7 +34,9 @@ export async function run() {
     groups: [],
   };
   try {
-    const extension = vscode.extensions.getExtension("tinta-local.tinta");
+    const extension = vscode.extensions.getExtension(
+      process.env.TINTA_INSTALLED_ID,
+    );
     assert.ok(extension, "VSIX was not installed.");
     assert.ok(extension.extensionPath.startsWith(join(root, "extensions")));
     // ExtensionMode belongs to ExtensionContext, not the public Extension object.
@@ -53,7 +55,10 @@ export async function run() {
       vscode.Uri.file(join(root, "extensions", registration.relativeLocation))
         .fsPath,
     );
-    assert.equal(extension.packageJSON.version, "0.1.0-dev.0");
+    assert.equal(
+      extension.packageJSON.version,
+      process.env.TINTA_INSTALLED_VERSION,
+    );
     assert.equal(vscode.version, "1.141.0");
     report.identity = JSON.parse(
       await readFile(

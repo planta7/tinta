@@ -26,7 +26,10 @@ function residentBytes() {
     .reduce((sum, row) => sum + row[2] * 1024, 0);
 }
 export async function measureInstalled(open) {
-  const extension = vscode.extensions.getExtension("tinta-local.tinta");
+  const extension = vscode.extensions.getExtension(
+    process.env.TINTA_INSTALLED_ID,
+  );
+  assert.ok(extension, "VSIX was not installed for performance checks.");
   const worker = new Worker(join(extension.extensionPath, "dist/worker.mjs"));
   const loop = monitorEventLoopDelay({ resolution: 5 });
   const samples = [];

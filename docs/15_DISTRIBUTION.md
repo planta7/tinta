@@ -2,7 +2,7 @@
 
 This contract describes distribution of the language implementation and local tools. It does not add document publishing, hosting, remote data, telemetry, an updater or any author execution capability. The source format remains `1.0`, the language contract `1.0-draft.3`, and the ABIs remain `tinta-ir-1`, `tinta-host-1` and `tinta-vscode-1`.
 
-The machine-readable inputs are [release configuration](../toolchain/release.json), its [closed schema](../schemas/release-config.schema.json), and the [release manifest schema](../schemas/release-manifest.schema.json). The existing distribution script and local VSIX packer do not yet implement this distribution contract. No installability or public availability is implied by this inventory.
+The machine-readable inputs are [release configuration](../toolchain/release.json), its [closed schema](../schemas/release-config.schema.json), and the [release manifest schema](../schemas/release-manifest.schema.json). Run `node scripts/distribution-package.mjs` after installing the frozen dependencies to rebuild and pack all targets under `build/distribution`. The command clears generated build and package output trees first. It creates local archives only; it does not upload them. Archive construction does not establish compatibility in every required environment or public availability.
 
 ## Names and destinations
 
@@ -29,7 +29,7 @@ Every package is ESM. Portable libraries include TypeScript declarations and doc
 
 The server has no advertised stdio executable or generic `index` export. Its package must expose the supported IPC launcher and fixed `.mjs` worker layout. Transport semantics remain those of the [native host contract](13_VSCODE.md).
 
-The parser's `micromark` operation-budget patch must be carried in the distributed parser graph for both direct and mdast-mediated paths. Consumers cannot be required to inherit repository pnpm patch configuration or run postinstall patch scripts. External dependencies embedded by bundling remain part of license/provenance accounting. The implementation of this packaging policy is separate from the configuration validator.
+The parser's `micromark` operation-budget patch must be carried in the distributed parser graph for both direct and mdast-mediated paths. Consumers cannot be required to inherit repository pnpm patch configuration or run postinstall patch scripts. External dependencies embedded by bundling remain part of license/provenance accounting. The syntax tarball bundles the neutral parser graph, keeps exact source and licenses for its embedded dependencies, and records their integrity and the patch digest in `parser-provenance.json`. Its JavaScript has no external micromark import; declared upstream dependencies remain available for public declarations. The packer verifies that direct and mdast-mediated paths resolve the same patched instance.
 
 ## Artifact inventory
 
@@ -52,7 +52,7 @@ The first implementation input is `0.1.0-dev.0`. All ten npm packages use that c
 
 The proposed first Marketplace version is numeric `0.1.0`, in the pre-release channel. Extension versions are independent of npm versions and record the embedded implementation version. Odd minor versions designate pre-release; even minor versions designate stable extension releases. A transition needs a distinct numeric version and compatible update ordering. Marketplace does not accept SemVer prerelease suffixes in extension versions; see [Microsoft's version rules](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#pre-release-extensions).
 
-The local `tinta-local.tinta` artifact remains `0.1.0-dev.0` with embedded implementation `0.0.0` until build integration changes deliberately. The new public ID is a separate installation. Users must deliberately disable or uninstall the local extension before enabling the public one to avoid two active providers. Preserve documents and manually check settings; no automatic migration is promised.
+The local `tinta-local.tinta` artifact remains `0.1.0-dev.0`. Both local and distribution builds embed the implementation version from `toolchain/release.json`; private source manifests retain their development placeholders. The new public ID is a separate installation. Users must deliberately disable or uninstall the local extension before enabling the public one to avoid two active providers. Preserve documents and manually check settings; no automatic migration is promised.
 
 A coordinated release identifier is `tinta-{implementation}-vscode-{extension}-{extensionChannel}`. Its immutable Git tag is `tinta-v{implementation}-vscode-{extension}-{extensionChannel}`. Both identify one full target set and one commit/tree. The manifest digest distinguishes candidate bytes; tags are never moved. A subset release needs a separately specified target/configuration change, not silent omission of a failing artifact. Repeated local builds do not allocate public versions or tags.
 
@@ -84,3 +84,16 @@ Archive/report paths are normalized relative POSIX paths with no dot segments, b
 The manifest's own digest is stored separately as `release-manifest.json.sha256`, computed over exact UTF-8 manifest bytes, including the final newline. Never put that digest, or the digest of a containing archive, inside the manifest. Verification reports hash payloads and precede the final manifest; they must not contain the final manifest hash. This avoids circular hashes. A future consumer must recompute file sizes/hashes, inspect archive entries/licenses, bind Git commit/tree and toolchain identities, and check actual reports. Schema and metadata agreement alone do not authenticate files or establish compatibility.
 
 Run `node scripts/release-contract.mjs` for the local configuration/source dependency check, and `pnpm exec vitest run tests/unit/release-contract.test.mjs` for schema and metadata regressions. These commands do not pack, upload, register identities or alter services. They use existing pinned Ajv, SemVer and Vitest; no additional release tooling is required.
+
+
+## Local package construction
+
+The implementation version is generated into `@tinta/types/version` after TypeScript compilation and before runtime bundling. The CLI, artifact writer, embedded reader, Studio and extension build identity consume that input. Interactive envelopes retain an exact implementation-version equality check. Source-format and protocol identifiers are independent of implementation versions.
+
+The npm staging manifests provide ESM exports and declarations, an exact internal dependency graph and Node engine constraints. `@tinta/reader/reader.css` exposes the required reader stylesheet. The CLI carries its bin launcher and standalone Studio resource. The language-server package exposes only `@tinta/language-server/ipc`: resolve this path and launch it with Node `fork` and an IPC channel. Preserve the sibling `dist/worker.mjs`. It uses UTF-16 positions and full document synchronization; there is no stdio executable or root import.
+
+`toolchain/distribution-source.json` is the exact source-file allowlist. Packaging rejects missing, additional or symbolic-link source entries, and source bytes must remain unchanged throughout the build. Content inspections reject private paths, credentials and source maps. The narrow source-test exceptions in `toolchain/distribution-source-exceptions.json` are exact line digests for deliberately hostile fixtures and detector expressions; they do not exempt whole source files. Every npm and download payload carries its own license and third-party notices.
+
+ZIP entries have fixed timestamps and sorted names. npm archives use the pinned pnpm packer without lifecycle scripts in generated manifests. `inventory.json` records every archive size, SHA-256, SHA-512 integrity, unpacked file hash, complete frozen external dependency closure and source dirty state. It is a local content inventory, not a release attestation or installed-consumer test result. The configured repository is currently unset, so generated package metadata omits the repository field rather than inventing one.
+
+After constructing the archives, run `pnpm exec vitest run --config scripts/distribution-vitest.config.js` for packaging, corruption, parser-budget and IPC regressions. Installed consumer routes and platform compatibility require separate tests of the exact archives. Rebuilding under another implementation version produces a different payload and requires those tests again.

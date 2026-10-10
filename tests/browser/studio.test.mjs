@@ -1,3 +1,4 @@
+import { implementationVersion } from "../../scripts/implementation-version.mjs";
 import { build } from "esbuild";
 import AxeBuilder from "@axe-core/playwright";
 import { readerCoverage } from "../../scripts/reader-coverage.mjs";
@@ -1568,7 +1569,9 @@ test("dialog actions share one footer and reader actions remain outside the docu
   await expect(page.locator(".profile-badge")).toHaveText("1.0 draft");
   await expect(page.getByRole("status", { includeHidden: true })).toBeEmpty();
   await expect(page.locator(".studio-version")).toHaveText(
-    /^v0\.0\.0 · [a-f0-9]{8}$/,
+    new RegExp(
+      `^v${implementationVersion.replaceAll(".", "\\.")} · [a-f0-9]{8}$`,
+    ),
   );
   await expect(
     page.getByRole("button", { name: "Reset reading", exact: true }),

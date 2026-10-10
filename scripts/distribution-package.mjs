@@ -3,127 +3,234 @@ import {
   readdir,
   readFile,
   writeFile,
-  copyFile,
-  cp,
   rm,
+  lstat,
 } from "node:fs/promises";
 import { createHash } from "node:crypto";
+import { join } from "node:path";
+import { parse as parseYaml } from "yaml";
 import { requireCommandSync } from "./commands.mjs";
 import { captureCandidate } from "./candidate.mjs";
-import { join, relative, dirname, resolve } from "node:path";
-import { compile, createSession } from "../packages/engine/dist/index.js";
+import { loadReleaseConfig } from "./release-contract.mjs";
+import { packageNpm } from "./distribution-npm.mjs";
+import { packageExtension } from "./vscode-package.mjs";
 import {
-  createAsset,
-  exportHtml,
-  packSource,
-  unwrap,
-} from "../packages/artifacts/dist/index.js";
+  digest,
+  inspectEntries,
+  zipEntries,
+  readZip,
+} from "./distribution-archive.mjs";
 
+const config = loadReleaseConfig();
 const candidate = captureCandidate();
-const destination = "build/distribution";
-await mkdir(destination, { recursive: true });
-const files = [];
-async function save(name, bytes) {
-  await writeFile(join(destination, name), bytes);
-  files.push({
-    path: name,
-    bytes: bytes.length,
-    sha256: createHash("sha256").update(bytes).digest("hex"),
-  });
-}
-for (const name of ["LICENSE", "THIRD_PARTY_NOTICES.txt", "pnpm-lock.yaml"]) {
-  await save(name, await readFile(name));
-}
-for (const name of ["tinta-studio.html", "reader.js", "reader.css"]) {
-  await save(name, await readFile(join("build", name)));
-}
-await rm(join(destination, "studio"), { recursive: true, force: true });
-await cp("build/studio", join(destination, "studio"), { recursive: true });
-await inventory(join(destination, "studio"));
-const assets = new Map();
-for (const name of await readdir("examples/assets")) {
-  const asset = unwrap(
-    createAsset(await readFile(join("examples/assets", name))),
+const sourcePaths = JSON.parse(
+  await readFile("toolchain/distribution-source.json", "utf8"),
+);
+if (
+  JSON.stringify(sourcePaths) !==
+  JSON.stringify(candidate.files.map((file) => file.path))
+)
+  throw new Error(
+    "Source inventory differs from the explicit public file allowlist.",
   );
-  assets.set(asset.path, asset);
+const destination = "build/distribution";
+// Every invocation rebuilds from source, including generated runtimes and workers.
+for (const path of [
+  "build",
+  ...config.packages.map((item) => `${item.source}/dist`),
+  "apps/studio/dist",
+  "apps/vscode/dist",
+])
+  await rm(path, { recursive: true, force: true });
+requireCommandSync(["pnpm", "build"]);
+await mkdir(destination, { recursive: true });
+const reports = await packageNpm(config, destination);
+
+const licenses = {};
+for (const name of ["LICENSE", "THIRD_PARTY_NOTICES.txt"])
+  licenses[name] = await readFile(name);
+
+async function archive(id, entries, options) {
+  const expected = Object.keys(entries).sort();
+  const files = inspectEntries(entries, expected, options);
+  const bytes = zipEntries(entries);
+  const decoded = readZip(bytes);
+  inspectEntries(decoded, expected, options);
+  for (const file of files)
+    if (digest(decoded[file.path]) !== file.sha256)
+      throw new Error(`ZIP content mismatch: ${id}/${file.path}`);
+  const name = `${id}-${config.versions.implementation}.zip`;
+  await writeFile(join(destination, name), bytes);
+  reports.push({ id, archive: name, files });
 }
-for (const name of (await readdir("examples"))
-  .filter((name) => name.endsWith(".tinta"))
-  .sort()) {
-  const bytes = await readFile(join("examples", name));
+
+async function tree(directory, prefix = "") {
+  const entries = {};
+  for (const item of (await readdir(directory, { withFileTypes: true })).sort(
+    (a, b) => a.name.localeCompare(b.name, "en"),
+  )) {
+    const path = join(directory, item.name);
+    const name = prefix + item.name;
+    if (item.isSymbolicLink())
+      throw new Error("Distribution symlinks are forbidden.");
+    if (item.isDirectory())
+      Object.assign(entries, await tree(path, name + "/"));
+    else entries[name] = await readFile(path);
+  }
+  return entries;
+}
+
+const studio = await tree("build/studio");
+if (
+  !studio["index.html"] ||
+  Object.keys(studio).some(
+    (name) =>
+      !["index.html", "LICENSE", "THIRD_PARTY_NOTICES.txt"].includes(name) &&
+      !/^assets\/[A-Za-z0-9_-]+\.(?:js|css)$/.test(name),
+  )
+)
+  throw new Error("Unexpected Studio output inventory.");
+await archive("studio-directory", { ...studio, ...licenses });
+await archive("studio-standalone", {
+  "tinta-studio.html": await readFile("build/tinta-studio.html"),
+  ...licenses,
+});
+await archive("reader-runtime", {
+  "reader.js": await readFile("build/reader.js"),
+  "reader.css": await readFile("build/reader.css"),
+  ...licenses,
+});
+
+const source = {};
+for (const file of candidate.files) {
+  if (!(await lstat(file.path)).isFile())
+    throw new Error("Source must be a regular file.");
+  const bytes = await readFile(file.path);
+  if (digest(bytes) !== file.sha256)
+    throw new Error("Source changed during packaging.");
+  source[file.path] = bytes;
+}
+await archive("source", source, { source: true });
+
+const { compile, createSession } =
+  await import("../packages/engine/dist/index.js");
+const { createAsset, exportHtml, packSource, unwrap } =
+  await import("../packages/artifacts/dist/index.js");
+const examples = { ...licenses };
+const assets = new Map();
+for (const path of sourcePaths.filter((path) =>
+  path.startsWith("examples/assets/"),
+)) {
+  const bytes = await readFile(path);
+  const asset = unwrap(createAsset(bytes));
+  assets.set(asset.path, asset);
+  examples[path.slice(9)] = bytes;
+}
+for (const path of sourcePaths.filter((path) =>
+  /^examples\/[^/]+\.tinta$/.test(path),
+)) {
+  const bytes = await readFile(path);
+  const name = path.slice(9);
   const program = unwrap(
     compile({ bytes, profile: "tinta", uri: `tinta:${name}` }),
   );
   const session = unwrap(createSession(program));
   try {
-    await save(name, bytes);
-    await save(`${name}.zip`, unwrap(await packSource(program, assets)).bytes);
-    for (const format of ["interactive", "static"]) {
-      const result = unwrap(
+    examples[name] = bytes;
+    examples[`${name}.zip`] = unwrap(await packSource(program, assets)).bytes;
+    for (const format of ["interactive", "static"])
+      examples[`${name}.${format}.html`] = unwrap(
         await exportHtml(session, assets, { format, answers: "initial" }),
-      );
-      await save(`${name}.${format}.html`, result.bytes);
-    }
+      ).bytes;
   } finally {
     session.destroy();
   }
 }
-// Rebuild only the generated source copy, using the reviewed Git candidate inventory.
-await rm(join(destination, "source"), { recursive: true, force: true });
-for (const file of candidate.files) {
-  const target = join(destination, "source", file.path);
-  await mkdir(dirname(target), { recursive: true });
-  await copyFile(file.path, target);
+await archive("examples", examples);
+const extension = await packageExtension({ release: true, destination });
+reports.push({
+  id: "vscode",
+  archive: `tinta-${config.versions.extension}.vsix`,
+  files: extension.files,
+});
+await rm(join(destination, "archive.json"));
+
+// Preserve the complete frozen external graph, including optional and peer edges.
+const lock = parseYaml(await readFile("pnpm-lock.yaml", "utf8"));
+const records = JSON.parse(
+  await readFile("toolchain/lock-inventory.json", "utf8"),
+);
+const closure = new Map();
+function dependency(name, version) {
+  const key = `${name}@${version}`;
+  if (closure.has(key)) return;
+  const snapshot = lock.snapshots[key];
+  const base = `${name}@${version.split("(")[0]}`;
+  const record = records.find(
+    (item) => `${item.name}@${item.version}` === base,
+  );
+  if (
+    !snapshot ||
+    !record ||
+    !lock.packages[base]?.resolution.integrity ||
+    name.startsWith("@tinta/")
+  )
+    throw new Error(`Unapproved external dependency: ${key}`);
+  closure.set(key, {
+    key,
+    ...record,
+    dependencies: snapshot.dependencies ?? {},
+    optionalDependencies: snapshot.optionalDependencies ?? {},
+  });
+  for (const [child, resolved] of Object.entries({
+    ...snapshot.dependencies,
+    ...snapshot.optionalDependencies,
+  }))
+    dependency(child, resolved);
 }
-async function inventory(directory) {
-  for (const entry of await readdir(directory, { withFileTypes: true })) {
-    const path = join(directory, entry.name);
-    if (entry.isDirectory()) await inventory(path);
-    else {
-      const bytes = await readFile(path);
-      files.push({
-        path: relative(destination, path),
-        bytes: bytes.length,
-        sha256: createHash("sha256").update(bytes).digest("hex"),
-      });
-    }
+for (const target of [...config.packages, ...config.artifacts]) {
+  for (const [name, version] of Object.entries(target.externalDependencies)) {
+    const resolved = lock.importers[target.source]?.dependencies?.[name];
+    if (resolved?.specifier !== version)
+      throw new Error("External lock pin mismatch.");
+    dependency(name, resolved.version);
   }
 }
-const distributions = resolve(destination, "packages");
-await mkdir(distributions, { recursive: true });
-for (const name of [
-  "types",
-  "syntax",
-  "engine",
-  "charts",
-  "reader",
-  "artifacts",
-  "cli",
-]) {
-  requireCommandSync([
-    "pnpm",
-    "--dir",
-    `packages/${name}`,
-    "pack",
-    "--pack-destination",
-    distributions,
-  ]);
+for (const report of reports) {
+  const bytes = await readFile(join(destination, report.archive));
+  Object.assign(report, {
+    bytes: bytes.length,
+    sha256: digest(bytes),
+    integrity: "sha512-" + createHash("sha512").update(bytes).digest("base64"),
+  });
 }
-await inventory(distributions);
-await inventory(join(destination, "source"));
 await writeFile(
-  join(destination, "manifest.json"),
+  join(destination, "inventory.json"),
   JSON.stringify(
     {
-      buildKind: "development",
-      baseRevision: candidate.commit,
-      sourceRevision: candidate.dirty ? "UNCOMMITTED" : candidate.commit,
-      engineRevision: candidate.dirty ? "UNCOMMITTED" : candidate.commit,
-      sourceSha256: candidate.sourceSha256,
-      files: files.sort((a, b) => a.path.localeCompare(b.path, "en")),
+      buildKind: "local-distribution",
+      source: {
+        commit: candidate.commit,
+        dirty: candidate.dirty,
+        sha256: candidate.sourceSha256,
+      },
+      versions: config.versions,
+      toolchain: {
+        node: process.versions.node,
+        pnpm: JSON.parse(await readFile("package.json", "utf8")).packageManager,
+        platform: process.platform,
+        architecture: process.arch,
+      },
+      lockSha256: digest(await readFile("pnpm-lock.yaml")),
+      configSha256: digest(await readFile("toolchain/release.json")),
+      externalDependencies: [...closure.values()].sort((a, b) =>
+        a.key.localeCompare(b.key, "en"),
+      ),
+      targets: reports,
       limitations: [
-        "Development build; source-format version does not establish a stable tool release.",
-        "Browser and filesystem behavior depend on the documented environment requirements.",
+        "Local artifact inventory, not an attested or installed-consumer verification manifest.",
+        "Public identities remain proposed; repository metadata is omitted while its identity is unset.",
+        "Native Linux/Windows and system-wide offline verification remain outstanding.",
       ],
     },
     null,
@@ -131,5 +238,5 @@ await writeFile(
   ) + "\n",
 );
 console.log(
-  `Local distribution package: ${files.length} hashed files in ${destination}`,
+  `Packed ${reports.length} local distribution targets in ${destination}.`,
 );

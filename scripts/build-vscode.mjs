@@ -1,15 +1,21 @@
+import {
+  implementationVersion,
+  writeImplementationVersion,
+} from "./implementation-version.mjs";
 import { build } from "esbuild";
 import { classicBundle } from "./packaging.mjs";
 import { createHash } from "node:crypto";
 import { mkdir, copyFile, readFile, writeFile } from "node:fs/promises";
 
 await mkdir("apps/vscode/dist", { recursive: true });
+await writeImplementationVersion();
 const previewHtml = await readFile("build/preview.html", "utf8");
 const manifest = JSON.parse(
   await readFile("build/preview-runtime.json", "utf8"),
 );
 if (
   manifest.protocol !== "tinta-host-1" ||
+  manifest.implementationVersion !== implementationVersion ||
   manifest.htmlSha256 !== createHash("sha256").update(previewHtml).digest("hex")
 )
   throw new Error("Preview build output mismatch. Run pnpm build.");

@@ -1,3 +1,4 @@
+import { writeImplementationVersion } from "./implementation-version.mjs";
 import { buildStudio } from "./studio.mjs";
 import {
   mkdir,
@@ -11,6 +12,7 @@ import { build as viteBuild } from "vite";
 import { classicBundle } from "./packaging.mjs";
 
 await mkdir("build", { recursive: true });
+await writeImplementationVersion();
 
 const reader = await classicBundle(
   "packages/reader/src/standalone.ts",

@@ -1,3 +1,4 @@
+import { implementationVersion } from "@tinta/types/version";
 import type {
   Artifact,
   AssetStore,
@@ -224,7 +225,7 @@ function interactiveHtml(
     const envelope = {
       kind: "tinta-interactive",
       formatVersion: "1.0",
-      engineVersion: "0.0.0",
+      engineVersion: implementationVersion,
       abi: "tinta-ir-1",
       program: encodeProgram(copy.program),
       baseline: createStateSnapshot(chosen),
