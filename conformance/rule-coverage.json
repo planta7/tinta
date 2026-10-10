@@ -1048,7 +1048,7 @@
       "line": 56,
       "title": "\"whole-revision mark limit accepts 32000 and rejects an additional figure atomically\"",
       "sha256": "4e54663dc1c5e3b0f8a2151cc54742b8df6b97e5857b800181f44c6ffd1e310b",
-      "fileSha256": "22646640d67f4a8ae44c74333f6d57547518d262581fe4fcc629f03f6760fc02"
+      "fileSha256": "5f2533e805e193fbbd7143fa140edf83fb57efc73ab84bdf81718c729f5c4c27"
     },
     {
       "id": "charts-a48d7e374dca",
@@ -1903,7 +1903,7 @@
       "line": 80,
       "title": "\"seeded snapshot maps never mutate answers or source on rejection\"",
       "sha256": "c933e92842a926a0acf3eb12266f3a6d829c6aeb0f63112e83b7fbfd1388715f",
-      "fileSha256": "22646640d67f4a8ae44c74333f6d57547518d262581fe4fcc629f03f6760fc02"
+      "fileSha256": "5f2533e805e193fbbd7143fa140edf83fb57efc73ab84bdf81718c729f5c4c27"
     },
     {
       "id": "integrity-aac9754f7be4",
@@ -1912,7 +1912,7 @@
       "line": 99,
       "title": "\"seeded bundle mutations fail closed or preserve validated source\"",
       "sha256": "23aab4f3b9162bb6973b9868d62f4c14fdf843a477e2c0df625ecffd9464e046",
-      "fileSha256": "22646640d67f4a8ae44c74333f6d57547518d262581fe4fcc629f03f6760fc02"
+      "fileSha256": "5f2533e805e193fbbd7143fa140edf83fb57efc73ab84bdf81718c729f5c4c27"
     },
     {
       "id": "integrity-3bcac3110faf",
@@ -1921,7 +1921,7 @@
       "line": 122,
       "title": "\"seeded host messages cannot acquire a capability through arbitrary JSON\"",
       "sha256": "9fc2e2f42a66409bc8b4801ad7a4afaa0b9a0b731cad49d2dc5d1060389ff240",
-      "fileSha256": "22646640d67f4a8ae44c74333f6d57547518d262581fe4fcc629f03f6760fc02"
+      "fileSha256": "5f2533e805e193fbbd7143fa140edf83fb57efc73ab84bdf81718c729f5c4c27"
     },
     {
       "id": "check-scripts-verify.mjs",
@@ -1942,40 +1942,40 @@
       "line": 22,
       "title": "\"locked performance sources preserve declared size and complete within resource limits\"",
       "sha256": "efb8e558ba171baf0d57fe04526fd44b8b9f3a090eea3a66abd66d23e71ceebf",
-      "fileSha256": "22646640d67f4a8ae44c74333f6d57547518d262581fe4fcc629f03f6760fc02"
+      "fileSha256": "5f2533e805e193fbbd7143fa140edf83fb57efc73ab84bdf81718c729f5c4c27"
     },
     {
       "id": "check-scripts-benchmark.mjs",
       "kind": "check",
       "path": "scripts/benchmark.mjs",
-      "sha256": "2fd0db3d81217a357bc25e44f62905d2e6d4ca8fc2490e1953eed0647d0ab226"
+      "sha256": "64ba4b0d2dfe3d082f384725669f0d54916f3c8e1d72d3f519b69d0a262c18d8"
     },
     {
       "id": "performance-8e943fd71cb3",
       "kind": "test",
       "path": "tests/unit/performance-policy.test.mjs",
-      "line": 22,
+      "line": 25,
       "title": "\"interaction budgets accept exact boundaries and retain long-task diagnostics\"",
       "sha256": "bc335f242824fb6dfc129320e10300da81e0a6057dd665ca32585f7f6c6471d1",
-      "fileSha256": "ed69fbd5e3474b0ac922cd63f408b2083c6e7a70020bdf128620e1042ff79d0a"
+      "fileSha256": "3166076c1296d155c44736b696743acc95fcabacf534058e4af9a26f807d295e"
     },
     {
       "id": "performance-0713957d4fdd",
       "kind": "test",
       "path": "tests/unit/performance-policy.test.mjs",
-      "line": 47,
+      "line": 50,
       "title": "\"one extreme task exceeds the budget even when interaction percentiles pass\"",
       "sha256": "096d3c25f10c885a16961bb812ab7e95fd5c7bd7731fbc6087cdc0c2b617d54a",
-      "fileSha256": "ed69fbd5e3474b0ac922cd63f408b2083c6e7a70020bdf128620e1042ff79d0a"
+      "fileSha256": "3166076c1296d155c44736b696743acc95fcabacf534058e4af9a26f807d295e"
     },
     {
       "id": "performance-5628cb473bd5",
       "kind": "test",
       "path": "tests/unit/performance-policy.test.mjs",
-      "line": 53,
+      "line": 56,
       "title": "\"missing runs, missing samples and invalid timestamps cannot pass\"",
       "sha256": "416c0177f149d4a3b62479abe8896e26bebbb172456346762a150bb07cb809c6",
-      "fileSha256": "ed69fbd5e3474b0ac922cd63f408b2083c6e7a70020bdf128620e1042ff79d0a"
+      "fileSha256": "3166076c1296d155c44736b696743acc95fcabacf534058e4af9a26f807d295e"
     },
     {
       "id": "check-scripts-performance-browser.mjs",
@@ -1987,7 +1987,7 @@
       "id": "check-scripts-performance-policy.mjs",
       "kind": "check",
       "path": "scripts/performance-policy.mjs",
-      "sha256": "7fd38238990a64cb465ae1378c402279c8646d2845fcd05f7de54aad947a2bd9"
+      "sha256": "67477580b84f78c81003b6d541a0fdd537dd7b4d8f19691d64cf9c835103a6bb"
     },
     {
       "id": "check-scripts-check_spec.py",
@@ -2005,7 +2005,7 @@
       "id": "check-scripts-distribution-package.mjs",
       "kind": "check",
       "path": "scripts/distribution-package.mjs",
-      "sha256": "d9e4413537ace407230cea07f0d4099ecf41c5f0af7ad5988f7bc071f1f81269"
+      "sha256": "5595c5f48e228290bd25aeaf37473db672a833225df2b5491092d06ff14d6f53"
     },
     {
       "id": "engine-dc4a86eb00cc",

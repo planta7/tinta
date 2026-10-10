@@ -15,7 +15,7 @@ import { base, controls } from "../../apps/studio/dist/protocol.js";
 
 const input = (text) => ({
   text,
-  uri: "tinta:qualification",
+  uri: "tinta:document-integrity",
   profile: "tinta",
 });
 
@@ -129,42 +129,4 @@ test("seeded host messages cannot acquire a capability through arbitrary JSON", 
     }),
     { seed: 730244, numRuns: propertyRuns },
   );
-});
-
-test("release evidence cannot hide missing, duplicated or stale manual reviews", async () => {
-  const { reviewBlockers, requiredReviews } =
-    await import("../../scripts/qualification-evidence.mjs");
-  const candidate = {
-    commit: "a".repeat(40),
-    dirty: false,
-    manifestSha256: "b".repeat(64),
-  };
-  expect(reviewBlockers(undefined, candidate)).toHaveLength(
-    requiredReviews.length + 2,
-  );
-  const evidence = {
-    candidateCommit: candidate.commit,
-    manifestSha256: candidate.manifestSha256,
-    reviews: requiredReviews.map((id) => ({
-      id,
-      status: "PASS",
-      reviewer: "Synthetic validator fixture",
-      utc: "2026-10-08T00:00:00Z",
-      environment: "Synthetic test environment",
-      procedure: "Synthetic record validation only",
-      observations: "Not actual acceptance",
-      record: "synthetic-record.json",
-    })),
-  };
-  expect(reviewBlockers(evidence, candidate)).toEqual([]);
-  expect(reviewBlockers(evidence, { ...candidate, dirty: true })).toHaveLength(
-    1,
-  );
-  expect(
-    reviewBlockers({ ...evidence, candidateCommit: "wrong" }, candidate),
-  ).toHaveLength(1);
-  evidence.reviews.push(evidence.reviews[0]);
-  expect(reviewBlockers(evidence, candidate)).toHaveLength(1);
-  evidence.reviews[1].status = "NOT_RUN";
-  expect(reviewBlockers(evidence, candidate)).toHaveLength(2);
 });

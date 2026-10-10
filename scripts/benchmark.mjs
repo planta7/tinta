@@ -7,7 +7,7 @@ import { build } from "esbuild";
 import { chromium } from "@playwright/test";
 import { measureWorker, measureStudio } from "./performance-browser.mjs";
 import { performanceCorpus } from "./performance-corpus.mjs";
-import { performanceExitCode } from "./qualification-policy.mjs";
+import { performanceExitCode } from "./performance-policy.mjs";
 
 const supplementary =
   process.argv.length === 3 && process.argv[2] === "--supplementary";

@@ -20,7 +20,7 @@ import {
 } from "../packages/artifacts/dist/index.js";
 
 const candidate = captureCandidate();
-const destination = "build/qualification";
+const destination = "build/distribution";
 await mkdir(destination, { recursive: true });
 const files = [];
 async function save(name, bytes) {

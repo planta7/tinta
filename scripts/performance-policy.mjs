@@ -84,3 +84,7 @@ export function assessStudioRuns(runs) {
     pass: runs.length === 3 && summaries.every((summary) => summary.pass),
   };
 }
+
+export function performanceExitCode({ pass, complete, supplementary }) {
+  return complete && (pass || supplementary) ? 0 : 1;
+}

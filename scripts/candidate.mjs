@@ -8,7 +8,14 @@ export function captureCandidate() {
     ["ls-files", "-c", "-o", "--exclude-standard", "-z"],
     { encoding: "utf8" },
   );
-  const paths = [...new Set(output.split("\0").filter(Boolean))].sort();
+  const deleted = new Set(
+    execFileSync("git", ["ls-files", "--deleted", "-z"], {
+      encoding: "utf8",
+    }).split("\0"),
+  );
+  const paths = [...new Set(output.split("\0").filter(Boolean))]
+    .filter((path) => !deleted.has(path))
+    .sort();
   const hash = createHash("sha256");
   const files = paths.map((path) => {
     const roots = [

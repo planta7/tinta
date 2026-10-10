@@ -1,5 +1,8 @@
 import { expect, test } from "vitest";
-import { assessStudioRuns } from "../../scripts/performance-policy.mjs";
+import {
+  assessStudioRuns,
+  performanceExitCode,
+} from "../../scripts/performance-policy.mjs";
 
 function runs() {
   return Array.from({ length: 3 }, () => ({
@@ -62,4 +65,24 @@ test("missing runs, missing samples and invalid timestamps cannot pass", () => {
   const untrusted = runs();
   untrusted[0].typing[0].trusted = false;
   expect(assessStudioRuns(untrusted).pass).toBe(false);
+});
+
+test("supplementary timing cannot mask incomplete measurements or relax reference budgets", () => {
+  expect(
+    performanceExitCode({ pass: false, complete: true, supplementary: false }),
+  ).toBe(1);
+  expect(
+    performanceExitCode({ pass: false, complete: true, supplementary: true }),
+  ).toBe(0);
+  for (const supplementary of [true, false]) {
+    expect(
+      performanceExitCode({ pass: true, complete: false, supplementary }),
+    ).toBe(1);
+    expect(
+      performanceExitCode({ pass: false, complete: false, supplementary }),
+    ).toBe(1);
+    expect(
+      performanceExitCode({ pass: true, complete: true, supplementary }),
+    ).toBe(0);
+  }
 });
