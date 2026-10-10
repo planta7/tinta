@@ -71,7 +71,19 @@ export function checkRelativeImport(owner, base, file, specifier) {
 export function checkImport(owner, specifier) {
   if (specifier === "vscode" && owner !== "vscode")
     throw new Error(`VS Code API outside native host: ${owner}`);
-  if (/^(vscode-language|@vscode\/)/.test(specifier))
+  if (
+    /^(vscode-language|@vscode\/)/.test(specifier) &&
+    !(
+      (owner === "vscode" &&
+        ["vscode-languageclient", "vscode-languageclient/node"].includes(
+          specifier,
+        )) ||
+      (owner === "language-server" &&
+        ["vscode-languageserver", "vscode-languageserver/node"].includes(
+          specifier,
+        ))
+    )
+  )
     throw new Error(
       "Editor SDK dependencies require exact line/provenance approval",
     );

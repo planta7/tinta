@@ -17,6 +17,8 @@ describe("native editor capability boundaries", () => {
     ["language-server", "node:worker_threads"],
     ["local-files", "node:fs/promises"],
     ["vscode", "vscode"],
+    ["vscode", "vscode-languageclient/node"],
+    ["language-server", "vscode-languageserver/node"],
     ["vscode", "@tinta/local-files"],
     ["vscode-webview", "@tinta/reader"],
     ["cli", "@tinta/local-files"],
@@ -38,7 +40,7 @@ describe("native editor capability boundaries", () => {
     ["vscode-webview", "react"],
     ["vscode-webview", "@tinta/local-files"],
     ["engine", "@tinta/local-files"],
-    ["vscode", "vscode-languageclient"],
+    ["vscode-webview", "vscode-languageclient"],
   ])
     it(`rejects ${owner} -> ${dependency}`, () => {
       expect(() => checkImport(owner, dependency)).toThrow();

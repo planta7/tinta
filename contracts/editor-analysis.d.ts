@@ -139,6 +139,13 @@ export interface EditorHelp {
   readonly signatures: readonly string[];
 }
 
+/** Plain-text built-in call help; argument is a zero-based lexical index. */
+export interface EditorSignatureHelp {
+  readonly label: string;
+  readonly argument: number;
+  readonly example: string;
+}
+
 export interface AnalysisSnapshot {
   readonly identity: SourceIdentity;
   readonly sourceText: string;
@@ -160,6 +167,10 @@ export interface EditorAnalysisQueries {
     snapshot: AnalysisSnapshot,
     sourceOffset: number,
   ): EditorHelp | undefined;
+  signatureHelp(
+    snapshot: AnalysisSnapshot,
+    sourceOffset: number,
+  ): EditorSignatureHelp | undefined;
   definition(
     snapshot: AnalysisSnapshot,
     sourceOffset: number,

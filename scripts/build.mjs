@@ -85,3 +85,5 @@ await copyFile(
   "build/studio/THIRD_PARTY_NOTICES.txt",
 );
 await copyFile("LICENSE", "build/studio/LICENSE");
+
+await import("./build-vscode.mjs");

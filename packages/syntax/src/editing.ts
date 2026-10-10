@@ -1,6 +1,6 @@
 import type { Span } from "@tinta/types";
 import type { EditingRegion, ParsedSource, SyntaxNode } from "./parser.js";
-import { ExpressionParser, type Lexeme } from "./expression.js";
+import { ExpressionParser, numberPattern, type Lexeme } from "./expression.js";
 import { optionKeys } from "./directive.js";
 import { registry } from "./registry.js";
 import { Source } from "./source.js";
@@ -20,6 +20,14 @@ export interface EditingSite {
   readonly table?: string;
   readonly usedOptions?: readonly string[];
   readonly quoted?: boolean;
+  readonly numericOnly?: boolean;
+  readonly listItem?: boolean;
+  readonly chartType?: string;
+  readonly xColumn?: string;
+  readonly call?: {
+    readonly name: string;
+    readonly argument: number;
+  };
 }
 
 const options = Object.fromEntries(
@@ -134,11 +142,14 @@ function regionSite(
           region.span.end.offset,
         ).tokens.filter((token) => token.raw)
       : [];
-  const token = tokens.find(
-    (item) => item.start < offset && offset <= item.end,
-  );
+  const token =
+    tokens.find((item) => item.start <= offset && offset < item.end) ??
+    tokens.find((item) => item.end === offset);
   const replace =
-    token && (/^[A-Za-z_]/.test(token.raw) || token.raw.startsWith('"'))
+    token &&
+    (/^[A-Za-z_]/.test(token.raw) ||
+      token.raw.startsWith('"') ||
+      numberPattern.test(token.raw))
       ? token
       : undefined;
   const replacement = source.span(
@@ -149,11 +160,52 @@ function regionSite(
     (item) => item.end <= (replace?.start ?? offset),
   );
   const expression = (extra: Partial<EditingSite> = {}): EditingSite => {
+    const frames: {
+      name: string;
+      argument: number;
+      first?: string;
+    }[] = [];
+    let previous: Lexeme | undefined;
+    for (const item of before) {
+      if (item.raw === "(" || item.raw === "[") {
+        frames.push({
+          name: item.raw === "(" ? (previous?.raw ?? "") : "",
+          argument: 0,
+        });
+      } else if (item.raw === ")" || item.raw === "]") frames.pop();
+      else {
+        const frame = frames.at(-1);
+        if (frame) {
+          if (item.raw === ",") frame.argument++;
+          else if (frame.argument === 0 && !frame.first) frame.first = item.raw;
+        }
+      }
+      previous = item;
+    }
+    const frame = frames
+      .slice()
+      .reverse()
+      .find((item) =>
+        (editorNames.functions as readonly string[]).includes(item.name),
+      );
+    const call = frame
+      ? { name: frame.name, argument: frame.argument }
+      : undefined;
+    const context = { ...extra, ...(call ? { call } : {}) };
+    if (frame && ["sum", "mean"].includes(frame.name) && frame.argument === 1)
+      return {
+        ...context,
+        kind: "column",
+        replacement,
+        quoted: true,
+        numericOnly: true,
+        ...(frame.first ? { table: frame.first } : {}),
+      };
     const last = before.at(-1);
     if (last?.raw === "." && before.at(-2)?.raw === "row" && extra.table)
-      return { kind: "column", replacement, ...extra };
-    if (replace?.raw.startsWith('"')) return none;
-    return { kind: "expression", replacement, ...extra };
+      return { kind: "column", replacement, ...context };
+    if (replace?.raw.startsWith('"')) return { ...none, ...context };
+    return { kind: "expression", replacement, ...context };
   };
   if (region.kind === "interpolation") {
     if (source.text.slice(offset - 2, offset) === "}}") return none;
@@ -205,24 +257,56 @@ function regionSite(
   let key: string | undefined;
   let expectingKey = true;
   const used: string[] = [];
-  for (const item of tokens.slice(operandCount + 1)) {
+  let xColumn: string | undefined;
+  let optionDepth = 0;
+  const optionTokens = tokens.slice(operandCount + 1);
+  for (let index = 0; index < optionTokens.length; index++) {
+    const item = optionTokens[index]!;
+    if (optionDepth === 0 && item.raw === ")") break;
+    if (
+      optionDepth === 0 &&
+      (index === 0 || optionTokens[index - 1]?.raw === ",") &&
+      optionTokens[index + 1]?.raw === ":"
+    ) {
+      if (item.start !== replace?.start) used.push(item.raw);
+      if (item.raw === "x") {
+        try {
+          const value: unknown = JSON.parse(optionTokens[index + 2]?.raw ?? "");
+          if (typeof value === "string") xColumn = value;
+        } catch {
+          // An unfinished literal cannot establish a selection type.
+        }
+      }
+    }
+    if (item.raw === "(" || item.raw === "[") optionDepth++;
+    if (item.raw === ")" || item.raw === "]") optionDepth--;
+  }
+  let listValue = false;
+  for (const item of optionTokens) {
     if (item.start >= (replace?.start ?? offset)) break;
     if (depth === 0 && item.raw === ")") return none;
     if (depth === 0 && item.raw === ",") {
       expectingKey = true;
       key = undefined;
+      listValue = false;
       continue;
     }
     if (depth === 0 && expectingKey && item.raw !== ":") {
       key = item.raw;
-      used.push(key);
       expectingKey = false;
     }
+    if (depth === 0 && item.raw === "[") listValue = true;
     if (item.raw === "(" || item.raw === "[") depth++;
     if (item.raw === ")" || item.raw === "]") depth--;
   }
   if (expectingKey || (before.at(-1)?.raw !== ":" && key === undefined))
-    return { kind: "option", replacement, directive, usedOptions: used };
+    return {
+      kind: "option",
+      replacement,
+      directive,
+      usedOptions: used,
+      ...(name === "chart" ? { chartType: tokens[0]!.raw } : {}),
+    };
   if (!key || !(optionKeys[name] as readonly string[]).includes(key))
     return none;
   const table =
@@ -231,15 +315,31 @@ function regionSite(
       : name === "chart"
         ? tokens[1]?.raw
         : undefined;
-  const extra = { directive, option: key, ...(table ? { table } : {}) };
+  const extra = {
+    directive,
+    option: key,
+    ...(table ? { table } : {}),
+    ...(xColumn ? { xColumn } : {}),
+    ...(listValue && depth > 0 ? { listItem: true } : {}),
+    ...(name === "chart" ? { chartType: tokens[0]!.raw } : {}),
+  };
   if (
     (name === "view" && key === "where") ||
-    (name === "chart" && key === "y" && !replace?.raw.startsWith('"'))
+    (name === "chart" &&
+      key === "y" &&
+      !listValue &&
+      !replace?.raw.startsWith('"'))
   )
     return expression(extra);
   if (name === "chart" && key === "select")
     return { kind: "selection", replacement, ...extra };
   if (table && ["x", "y", "sort"].includes(key))
-    return { kind: "column", replacement, quoted: true, ...extra };
+    return {
+      kind: "column",
+      replacement,
+      quoted: true,
+      numericOnly: key === "y",
+      ...extra,
+    };
   return { kind: "literal", replacement, ...extra };
 }

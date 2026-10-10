@@ -1,6 +1,6 @@
 # VS Code Desktop host contract
 
-This document specifies the local editor adapter. The repository currently has host compatibility probes, not an installable authoring extension. The language baseline is 1.0-draft.3, source format 1.0, IR `tinta-ir-1` and inner preview protocol `tinta-host-1`. Literal-only options, nonblank labels and metadata placement retain their existing semantics.
+This document specifies the local editor adapter. The repository provides a local development extension for text editing, source diagnostics, semantic highlighting, folding, contextual authoring and navigation. Preview and file/export commands are not implemented in this adapter; the existing browser Studio remains separate. The language baseline is 1.0-draft.3, source format 1.0, IR `tinta-ir-1` and inner preview protocol `tinta-host-1`. Literal-only options, nonblank labels and metadata placement retain their existing semantics.
 
 ## Runtime and document scope
 
@@ -69,3 +69,65 @@ Snapshots contain diagnostics, exact lexical tokens, headings and declarations, 
 The catalog derives directive names, option keys and registered names from the syntax implementation; signatures and concise help are checked against the language specification. Completion supplies lexical context and conservative local candidates. Full authoring-provider behavior, including insertion edits and contextual suggestion ranking, belongs to the native adapter. Parsed data headers can support column suggestions while another region is invalid; schemas of invalid views are not inferred. A weak parser cache is only an optimization: copied snapshot DTOs are queried by reparsing their exact text. Query work remains bounded by the source and grammar limits; no incremental-parsing or native latency guarantee is implied.
 
 For DOM-free browser workers, bundle with neutral resolution or the dependency `worker` export condition, as the existing Studio worker does. The locked Markdown entity decoder has a separate `browser` export that uses the DOM; selecting that export is incompatible with a DOM-free worker. The portable bundle test executes the neutral bundle without DOM, filesystem, timers or network globals. Native Node ESM uses the default portable dependency exports.
+
+## Native editing and source diagnostics
+
+Build the native adapter with `pnpm build:vscode` (also included in `pnpm build`). Open `apps/vscode` as an Extension Development Path in the pinned desktop runtime. The private workspace manifest and generated ESM bundles are for local development; no VSIX or Marketplace distribution is provided. Bundles include the language client, IPC server and terminable analysis worker. No global CLI, workspace-selected executable, listening port or external Node installation is used. The upstream CommonJS LSP SDK has a fixed Node `createRequire` shim in its ESM host bundles; portable packages remain ESM and author text never selects modules.
+
+Only `.tinta` is associated with the language. Untitled documents can explicitly select Tinta. The fallback TextMate grammar uses the built-in Markdown grammar and intentionally adds no approximate Tinta recognition; parser-owned semantic tokens supply Tinta highlighting after analysis. Markdown files remain Markdown. Comment toggling uses HTML comments. Matching brackets and two-space defaults retain indentation detection and existing tabs. Automatic indentation keeps the current physical indentation rather than indenting Tinta block bodies. Folding covers matched parser-owned Tinta blocks and heading sections; unmatched recovered blocks do not acquire fabricated closing ranges.
+
+The native adapter currently analyzes supplied editor text only. Its status tooltip explicitly reports disk encoding as unverified and assets as not checked. “Source valid” means that the current native text compiles and its authored initial state evaluates successfully; it does not establish original disk bytes, asset availability or export readiness. It performs no source-file or asset reads. Strict original-byte acquisition, the source map and explicit conversion workflow described above are required before preview/export can consume a verified source snapshot. Native saves remain VS Code operations, with the native normalization limitations already described.
+
+`Tinta: Check` bypasses the editing debounce. Normal changes use full UTF-16 synchronization, bounded by the source byte limit before transport. Diagnostics retain compiler codes, messages and related locations. Oversized source is rejected explicitly and never analyzed as truncated text. Source errors clear when repaired; closing the final text tab clears diagnostics and cached analysis even when VS Code retains its internal model. Reopening that model creates a fresh analysis instance. A full host-capacity condition retains the editor buffer and offers Check to retry after other documents close.
+
+The server owns one worker, coalesces pending edits and terminates superseded or timed-out work before starting another worker. It ignores replies from retired workers and mismatched document instances/versions. Worker crashes produce opaque incident IDs and the next request starts a new worker. The client suppresses SDK payload/trace logging, including source text and paths; its error output contains only a fresh incident ID. Restricted Mode supports this supplied-text analysis without granting a directory or creating files.
+
+Run `pnpm test:vscode:unit` for adapter, supervisor and protocol coverage. Run `node scripts/test-vscode-editing.mjs <desktop-executable> <fresh-temporary-directory>` after building for real Extension Host checks of typing, undo/redo, document lifecycle, Unicode locations, literal contexts, folding and worker termination/restart. The native runner uses an isolated profile and requires an actual result file; a process exit alone is insufficient. Linux/Windows behavior and the broader host performance targets remain unmeasured by the macOS native run.
+
+## Contextual authoring and navigation
+
+Native completion uses parser-owned contexts and replacement spans. Tinta's
+language defaults turn off word-based fallback suggestions, which otherwise
+propose unrelated words even inside literal fences; users may override that
+native preference. Type `@` at
+physical column 1 for legal directives; root declarations and metadata are
+omitted where their placement would be illegal. Option completion omits used
+keys and chart-incompatible keys. Literal-only properties offer literals, and
+chart selection offers bare slider/choice names compatible with a known x
+column type. Source operands offer tables/views; row expressions offer their
+source columns. Aggregate column arguments offer quoted numeric columns. Function completion
+inserts a complete example call unless an opening parenthesis already follows;
+aggregate examples use a known local numeric column. The pure
+`functionExample(snapshot, name)` helper returns these call examples without
+changing source.
+Suggestions remain editing assistance: surrounding errors, expression types and
+runtime domains still require normal validation.
+
+Items labelled “example” insert complete plain-text examples with nonblank
+labels/summaries and unused binding names. At root, table/view/chart examples
+can include a small data declaration. Metadata examples appear only before
+content and when no other metadata exists. Examples do not reindent the document
+or insert executable snippet commands.
+
+Hover shows definitions, available types, built-in signatures and option help.
+Signature help follows nested and unfinished calls, including their active
+argument and a concise example. Both use plain text; authored content cannot
+activate raw HTML or trusted command links. No live reader values are shown.
+The portable `signatureHelp(snapshot, sourceOffset)` query returns a plain-text
+label, zero-based argument index and example, or no result outside a known call.
+
+The outline lists headings and declarations. Go to Definition and Find
+References use exact, document-local bound identifier spans. Prose, strings,
+fences and unrelated column names do not become references. Ambiguous or
+partially compiled programs have no navigation destination; safe local help and
+syntax-based column completion remain available. Column navigation is not
+provided, including view-column provenance.
+
+Authoring queries execute in the same terminable worker as analysis and bypass
+the editing debounce. One pending query per document replaces an older query;
+edits, closure, worker failure and watchdog expiry release waiting requests
+without stale edits or destinations. The worker reuses its most recent matching
+analysis when available. Queries acquire no filesystem, network, command or
+preview authority. Native latency and cross-platform behavior require their own
+measurements; the editing test command above exercises these providers in the
+actual desktop host.

@@ -7,11 +7,14 @@ export {
   definition,
   references,
   queries,
+  signatureHelp,
+  functionExample,
 } from "./queries.js";
 export type {
   AnalysisSnapshot,
   CompletionContext,
   EditorHelp,
+  EditorSignatureHelp,
   EditorSymbol,
   EditorToken,
   EditorType,

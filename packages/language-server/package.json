@@ -1,0 +1,11 @@
+{
+  "name": "@tinta/language-server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@tinta/types": "workspace:*",
+    "@tinta/language-service": "workspace:*",
+    "vscode-languageserver": "10.1.2"
+  }
+}

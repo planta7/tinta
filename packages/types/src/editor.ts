@@ -39,7 +39,10 @@ export interface SourceSnapshot {
 
 /** Unverified/replacement-decoded disk text cannot become a SourceSnapshot. */
 export type SourceAcquisition =
-  | Readonly<{ kind: "verified"; snapshot: SourceSnapshot }>
+  | Readonly<{
+      kind: "verified";
+      snapshot: SourceSnapshot;
+    }>
   | Readonly<{
       kind: "unverified" | "invalid-encoding" | "conversion-required";
       uri: string;
@@ -66,11 +69,20 @@ export interface EditorPosition {
 }
 
 export type EditorType =
-  | Readonly<{ kind: "scalar"; scalar: ScalarType }>
-  | Readonly<{ kind: "list"; scalar: ScalarType | "never" }>
+  | Readonly<{
+      kind: "scalar";
+      scalar: ScalarType;
+    }>
+  | Readonly<{
+      kind: "list";
+      scalar: ScalarType | "never";
+    }>
   | Readonly<{
       kind: "table";
-      columns: readonly { readonly name: string; readonly type: ScalarType }[];
+      columns: readonly {
+        readonly name: string;
+        readonly type: ScalarType;
+      }[];
     }>;
 
 export interface EditorSymbol {
@@ -127,6 +139,13 @@ export interface EditorHelp {
   readonly signatures: readonly string[];
 }
 
+/** Plain-text built-in call help; argument is a zero-based lexical index. */
+export interface EditorSignatureHelp {
+  readonly label: string;
+  readonly argument: number;
+  readonly example: string;
+}
+
 export interface AnalysisSnapshot {
   readonly identity: SourceIdentity;
   readonly sourceText: string;
@@ -148,6 +167,10 @@ export interface EditorAnalysisQueries {
     snapshot: AnalysisSnapshot,
     sourceOffset: number,
   ): EditorHelp | undefined;
+  signatureHelp(
+    snapshot: AnalysisSnapshot,
+    sourceOffset: number,
+  ): EditorSignatureHelp | undefined;
   definition(
     snapshot: AnalysisSnapshot,
     sourceOffset: number,

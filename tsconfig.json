@@ -30,6 +30,12 @@
     },
     {
       "path": "tests/types"
+    },
+    {
+      "path": "packages/language-server"
+    },
+    {
+      "path": "apps/vscode"
     }
   ]
 }

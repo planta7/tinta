@@ -309,7 +309,8 @@ export async function run(
       },
     );
     diagnostics.push(...compiled.diagnostics);
-    const program = unwrap(compiled);
+    if (!compiled.ok) return finish(1);
+    const program = compiled.value;
     const baseline =
       flag("state") === "snapshot"
         ? unwrap(
@@ -321,9 +322,15 @@ export async function run(
             ),
           )
         : undefined;
-    const session = unwrap(
-      createSession(program, baseline ? { baseline } : undefined),
+    const initialized = createSession(
+      program,
+      baseline ? { baseline } : undefined,
     );
+    if (!initialized.ok) {
+      diagnostics.push(...initialized.diagnostics);
+      return finish(1);
+    }
+    const session = initialized.value;
     try {
       details.profile = profile;
       details.sourceVersion = "1.0";

@@ -4347,5 +4347,107 @@
     "registry": "https://registry.npmjs.org/zwitch/2.0.4",
     "integrity": "sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==",
     "resolvedAtUTC": "2026-10-08T13:19:59.084290+00:00"
+  },
+  {
+    "name": "@types/vscode",
+    "version": "1.140.0",
+    "license": "MIT",
+    "engines": {},
+    "repository": {
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
+      "type": "git",
+      "directory": "types/vscode"
+    },
+    "registry": "https://registry.npmjs.org/@types%2fvscode/1.140.0",
+    "integrity": "sha512-KAB5RBZIgnUhpp4mKsVJPPHLOQKu6WtGy2xpfWjaajEXO4xIIC+UESAXLiQ9ewx6QD1uBmvC/S8BJzkbvv4bRA==",
+    "resolvedAtUTC": "2026-10-10T07:35:32.455756+00:00"
+  },
+  {
+    "name": "vscode-jsonrpc",
+    "version": "9.0.3",
+    "license": "MIT",
+    "engines": {
+      "node": ">=14.0.0"
+    },
+    "repository": {
+      "url": "git+https://github.com/Microsoft/vscode-languageserver-node.git",
+      "type": "git",
+      "directory": "jsonrpc"
+    },
+    "registry": "https://registry.npmjs.org/vscode-jsonrpc/9.0.3",
+    "integrity": "sha512-qETYf9PCl1lVfwR+oBmMfc4vP2nqLNA35ABxorw3j06+xlKRgDVxbLgKm4Y/xPL0YWdeDjLoI4ImICIT3nB0zQ==",
+    "resolvedAtUTC": "2026-10-10T07:35:32.455756+00:00"
+  },
+  {
+    "name": "vscode-languageclient",
+    "version": "10.1.2",
+    "license": "MIT",
+    "engines": {
+      "vscode": "^1.91.0"
+    },
+    "repository": {
+      "url": "git+https://github.com/Microsoft/vscode-languageserver-node.git",
+      "type": "git",
+      "directory": "client"
+    },
+    "registry": "https://registry.npmjs.org/vscode-languageclient/10.1.2",
+    "integrity": "sha512-cOv5SMvtAhfVeo5m2r9L2rVHAD0J5CFOsmvH1WgNmPaI61VYjJNc3XUDLOKeFSDtWoAXIEoK6KetuBEL/3hErg==",
+    "resolvedAtUTC": "2026-10-10T07:35:32.455756+00:00"
+  },
+  {
+    "name": "vscode-languageserver",
+    "version": "10.1.2",
+    "license": "MIT",
+    "engines": {},
+    "repository": {
+      "url": "git+https://github.com/Microsoft/vscode-languageserver-node.git",
+      "type": "git",
+      "directory": "server"
+    },
+    "registry": "https://registry.npmjs.org/vscode-languageserver/10.1.2",
+    "integrity": "sha512-pXPWde3RytdeBVEs6PulOOT5OpeXC5GkWRpcT11f5rNn41jviQsAYPyAqJ/0oVGETQLKPJtYbHNiMPlfLb0NTQ==",
+    "resolvedAtUTC": "2026-10-10T07:35:32.455756+00:00"
+  },
+  {
+    "name": "vscode-languageserver-protocol",
+    "version": "3.18.4",
+    "license": "MIT",
+    "engines": {},
+    "repository": {
+      "url": "git+https://github.com/Microsoft/vscode-languageserver-node.git",
+      "type": "git",
+      "directory": "protocol"
+    },
+    "registry": "https://registry.npmjs.org/vscode-languageserver-protocol/3.18.4",
+    "integrity": "sha512-CCXbyr99dafRJzJH/0Ryk7ly5T8XPmSR0//OuF2w4m+9JiOin7zcAT5iET8GRE7Z9taFBejb3GbM0a0mbjdbrg==",
+    "resolvedAtUTC": "2026-10-10T07:35:32.455756+00:00"
+  },
+  {
+    "name": "vscode-languageserver-textdocument",
+    "version": "1.0.15",
+    "license": "MIT",
+    "engines": {},
+    "repository": {
+      "url": "git+https://github.com/Microsoft/vscode-languageserver-node.git",
+      "type": "git",
+      "directory": "textDocument"
+    },
+    "registry": "https://registry.npmjs.org/vscode-languageserver-textdocument/1.0.15",
+    "integrity": "sha512-Gsfr9S8LU3S6885cS+NaleasJ0n3V5y/SOTqHCifQiXWFw3G9w9/YItDfwHrlCz+dSZWWZ8ilYVMcJe7Sz7Sxw==",
+    "resolvedAtUTC": "2026-10-10T07:35:32.455756+00:00"
+  },
+  {
+    "name": "vscode-languageserver-types",
+    "version": "3.18.4",
+    "license": "MIT",
+    "engines": {},
+    "repository": {
+      "url": "git+https://github.com/Microsoft/vscode-languageserver-node.git",
+      "type": "git",
+      "directory": "types"
+    },
+    "registry": "https://registry.npmjs.org/vscode-languageserver-types/3.18.4",
+    "integrity": "sha512-nQsacoiijvl0fRf2q28uFDrAVwRhdCa3QveiF7/CX0r18mLR5FU/1WskSsCKOjmEbtteKUnY8x8Yzxop+k0zwg==",
+    "resolvedAtUTC": "2026-10-10T07:35:32.455756+00:00"
   }
 ]

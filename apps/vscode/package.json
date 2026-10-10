@@ -1,0 +1,67 @@
+{
+  "name": "@tinta/vscode",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "vscode-languageclient": "10.1.2",
+    "@tinta/types": "workspace:*"
+  },
+  "displayName": "Tinta",
+  "publisher": "tinta-local",
+  "engines": {
+    "vscode": "^1.141.0"
+  },
+  "main": "./dist/extension.mjs",
+  "extensionKind": [
+    "workspace"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": false
+  },
+  "activationEvents": [
+    "onLanguage:tinta"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "tinta",
+        "aliases": [
+          "Tinta"
+        ],
+        "extensions": [
+          ".tinta"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "tinta",
+        "scopeName": "text.html.markdown.tinta",
+        "path": "./syntaxes/tinta.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "tinta.check",
+        "title": "Tinta: Check"
+      }
+    ],
+    "configurationDefaults": {
+      "[tinta]": {
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": true,
+        "editor.autoIndent": "keep",
+        "editor.wordBasedSuggestions": "off"
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/vscode": "1.140.0"
+  }
+}

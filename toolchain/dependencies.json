@@ -1428,5 +1428,85 @@
     "registry": "https://registry.npmjs.org/yaml",
     "releaseLine": null,
     "resolvedAtUTC": "2026-10-08T13:11:42.650923+00:00"
+  },
+  {
+    "name": "@types/vscode",
+    "version": "1.140.0",
+    "license": "MIT",
+    "dist": {
+      "shasum": "cc1db266d6e7a2fe7a0a7ed7f96620f267344db2",
+      "tarball": "https://registry.npmjs.org/@types/vscode/-/vscode-1.140.0.tgz",
+      "fileCount": 5,
+      "integrity": "sha512-KAB5RBZIgnUhpp4mKsVJPPHLOQKu6WtGy2xpfWjaajEXO4xIIC+UESAXLiQ9ewx6QD1uBmvC/S8BJzkbvv4bRA==",
+      "signatures": [
+        {
+          "sig": "MEQCIFOklqZzpBHhH7kMUkkccdm/OstlGYYMqT4DdQ89q6Z5AiA3jObUfuEdVw12TvMZN7ZkBM747JouX0CvXn5xBP+eBA==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEYCIQDs/3Q9bvVVmEHn0p52ISxFTqbMTPwg5Gy3VaZ7aaz3FAIhANqfejcF+Yvs4EM2lOVF1P7khIyk+R6SDM0XeeGuUDiB",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 744874
+    },
+    "engines": {},
+    "registry": "https://registry.npmjs.org/@types%2fvscode/1.140.0",
+    "releaseLine": "1.140",
+    "resolvedAtUTC": "2026-10-10T07:35:32.455756+00:00"
+  },
+  {
+    "name": "vscode-languageclient",
+    "version": "10.1.2",
+    "license": "MIT",
+    "dist": {
+      "shasum": "e03f6d3eaf1511132cb8e08499f8fea8c0f4e1f8",
+      "tarball": "https://registry.npmjs.org/vscode-languageclient/-/vscode-languageclient-10.1.2.tgz",
+      "fileCount": 121,
+      "integrity": "sha512-cOv5SMvtAhfVeo5m2r9L2rVHAD0J5CFOsmvH1WgNmPaI61VYjJNc3XUDLOKeFSDtWoAXIEoK6KetuBEL/3hErg==",
+      "signatures": [
+        {
+          "sig": "MEUCIBFFQcyd87JkcX7ePbpFBbhgdO6o+OsUf/ahhe8E8l0oAiEA0DvWE66kdC8z/KSGZPrqvabAiuxrkmctJCl1reJaKYY=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEYCIQDA4psrXoZnX45M6mk2npxvdnDKdIu7+we1iuWrBA6cJAIhAIrCfkhuas7+KFDwoQCPRwnLWq3EeDXNA/hsS8M1Lo/v",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 771839
+    },
+    "engines": {
+      "vscode": "^1.91.0"
+    },
+    "registry": "https://registry.npmjs.org/vscode-languageclient/10.1.2",
+    "releaseLine": "10",
+    "resolvedAtUTC": "2026-10-10T07:35:32.455756+00:00"
+  },
+  {
+    "name": "vscode-languageserver",
+    "version": "10.1.2",
+    "license": "MIT",
+    "dist": {
+      "shasum": "d2ea03d4362f5a532ac43fce86746ca5ab476b0f",
+      "tarball": "https://registry.npmjs.org/vscode-languageserver/-/vscode-languageserver-10.1.2.tgz",
+      "fileCount": 59,
+      "integrity": "sha512-pXPWde3RytdeBVEs6PulOOT5OpeXC5GkWRpcT11f5rNn41jviQsAYPyAqJ/0oVGETQLKPJtYbHNiMPlfLb0NTQ==",
+      "signatures": [
+        {
+          "sig": "MEUCIQCqj7fe4hFmdsEtlZBuP3jPtOZZOISESeUtRccQDn2QzwIgdFTE2BEDEzaEXPk0TbJHIKeyeSAKHgZgs4suVJjMxVQ=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEYCIQDGQ/3f2Y96oZW6wRANbl6CQHjzhj1cxTqzEBptDwXvQAIhAMAMJvr0OvJc2TxWT0Os7m5dFWoMuNfKPQ5CXI7N1wcP",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 208141
+    },
+    "engines": {},
+    "registry": "https://registry.npmjs.org/vscode-languageserver/10.1.2",
+    "releaseLine": "10",
+    "resolvedAtUTC": "2026-10-10T07:35:32.455756+00:00"
   }
 ]
