@@ -19,6 +19,7 @@ export default defineConfig({
         "packages/charts/dist/**/*.js",
         "packages/artifacts/dist/**/*.js",
         "packages/cli/dist/**/*.js",
+        "packages/local-files/dist/**/*.js",
         "packages/types/dist/**/*.js",
       ],
       exclude: [
@@ -39,6 +40,11 @@ export default defineConfig({
         },
         "packages/types/dist/**": { statements: 90, branches: 85, lines: 90 },
         "packages/cli/dist/**": { statements: 85, branches: 80, lines: 85 },
+        "packages/local-files/dist/**": {
+          statements: 85,
+          branches: 80,
+          lines: 85,
+        },
         "packages/charts/dist/**": {
           statements: 90,
           branches: 85,

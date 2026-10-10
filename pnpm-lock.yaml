@@ -139,6 +139,12 @@ importers:
 
   apps/vscode:
     dependencies:
+      '@tinta/artifacts':
+        specifier: workspace:*
+        version: link:../../packages/artifacts
+      '@tinta/local-files':
+        specifier: workspace:*
+        version: link:../../packages/local-files
       '@tinta/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -146,6 +152,9 @@ importers:
         specifier: 10.1.2
         version: 10.1.2
     devDependencies:
+      '@tinta/engine':
+        specifier: workspace:*
+        version: link:../../packages/engine
       '@types/vscode':
         specifier: 1.140.0
         version: 1.140.0
@@ -239,6 +248,12 @@ importers:
       '@tinta/syntax':
         specifier: workspace:*
         version: link:../syntax
+      '@tinta/types':
+        specifier: workspace:*
+        version: link:../types
+
+  packages/local-files:
+    dependencies:
       '@tinta/types':
         specifier: workspace:*
         version: link:../types

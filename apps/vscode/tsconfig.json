@@ -4,13 +4,19 @@
     "rootDir": "src",
     "outDir": "dist",
     "tsBuildInfoFile": "dist/.tsbuildinfo",
-    "lib": ["ES2022"],
+    "lib": ["ES2022", "DOM"],
     "types": ["node"]
   },
   "include": ["src/**/*.ts"],
   "references": [
     {
       "path": "../../packages/types"
+    },
+    {
+      "path": "../../packages/local-files"
+    },
+    {
+      "path": "../../packages/artifacts"
     }
   ]
 }

@@ -23,6 +23,10 @@
     "./editor": {
       "types": "./dist/editor.d.ts",
       "import": "./dist/editor.js"
+    },
+    "./webview": {
+      "types": "./dist/webview.d.ts",
+      "import": "./dist/webview.js"
     }
   },
   "dependencies": {

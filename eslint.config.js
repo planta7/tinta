@@ -29,6 +29,8 @@ export default tseslint.config(
       "tests/browser/**/*.mjs",
       "tests/vscode/outer.mjs",
       "tests/vscode/inner-audit.mjs",
+      "tests/vscode/preview-inner.mjs",
+      "tests/vscode/preview.browser.mjs",
       "scripts/performance-browser.mjs",
     ],
     languageOptions: { globals: globals.browser },

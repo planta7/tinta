@@ -230,6 +230,27 @@ export async function run() {
     } finally {
       supervisor.dispose();
     }
+    const previewDocument = await vscode.workspace.openTextDocument({
+      language: "tinta",
+      content:
+        '@slider amount = 2 (min: 0, max: 5, label: "Amount")\nValue: {{ amount }}',
+    });
+    await vscode.window.showTextDocument(previewDocument);
+    await vscode.commands.executeCommand("tinta.openPreview");
+    await until(
+      () =>
+        vscode.window.tabGroups.all.some((group) =>
+          group.tabs.some(
+            (tab) =>
+              tab.input instanceof vscode.TabInputWebview &&
+              tab.label === "Tinta Preview",
+          ),
+        ),
+      "Native preview did not complete the LSP compilation path",
+    );
+    results.push(
+      "native preview command, supervised compilation and webview load",
+    );
     await writeFile(
       join(root, "result.json"),
       JSON.stringify(

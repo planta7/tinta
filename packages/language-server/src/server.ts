@@ -1,3 +1,6 @@
+import { sourceIdentity } from "@tinta/types/webview";
+import { limits } from "@tinta/types/common";
+import type { SourceIdentity } from "@tinta/types/editor";
 import type { AuthoringQuery } from "./authoring.js";
 import type {
   CompletionItem,
@@ -194,6 +197,21 @@ connection.onReferences((params, token) =>
 );
 connection.onDocumentSymbol((params, token) =>
   query<DocumentSymbol[]>(params.textDocument.uri, { kind: "symbols" }, token),
+);
+connection.onRequest(
+  "tinta/preview",
+  async (params: { identity: SourceIdentity; text: string }) => {
+    if (
+      !sourceIdentity(params?.identity) ||
+      typeof params.text !== "string" ||
+      Buffer.byteLength(params.text, "utf8") > limits.sourceBytes
+    )
+      return null;
+    return supervisor.query(params.identity.uri, {
+      kind: "preview",
+      preview: params,
+    });
+  },
 );
 connection.onShutdown(() => supervisor.dispose());
 connection.onExit(() => supervisor.dispose());

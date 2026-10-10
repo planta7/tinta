@@ -5,7 +5,9 @@
   "type": "module",
   "dependencies": {
     "vscode-languageclient": "10.1.2",
-    "@tinta/types": "workspace:*"
+    "@tinta/types": "workspace:*",
+    "@tinta/local-files": "workspace:*",
+    "@tinta/artifacts": "workspace:*"
   },
   "displayName": "Tinta",
   "publisher": "tinta-local",
@@ -49,6 +51,14 @@
       {
         "command": "tinta.check",
         "title": "Tinta: Check"
+      },
+      {
+        "command": "tinta.openPreview",
+        "title": "Tinta: Open Preview"
+      },
+      {
+        "command": "tinta.previewCopy",
+        "title": "Tinta: Create UTF-8/LF Copy for Preview"
       }
     ],
     "configurationDefaults": {
@@ -62,6 +72,7 @@
     }
   },
   "devDependencies": {
-    "@types/vscode": "1.140.0"
+    "@types/vscode": "1.140.0",
+    "@tinta/engine": "workspace:*"
   }
 }

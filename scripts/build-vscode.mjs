@@ -1,9 +1,40 @@
 import { build } from "esbuild";
-import { mkdir, copyFile, readFile } from "node:fs/promises";
+import { classicBundle } from "./packaging.mjs";
+import { createHash } from "node:crypto";
+import { mkdir, copyFile, readFile, writeFile } from "node:fs/promises";
 
 await mkdir("apps/vscode/dist", { recursive: true });
+const previewHtml = await readFile("build/preview.html", "utf8");
+const manifest = JSON.parse(
+  await readFile("build/preview-runtime.json", "utf8"),
+);
+if (
+  manifest.protocol !== "tinta-host-1" ||
+  manifest.htmlSha256 !== createHash("sha256").update(previewHtml).digest("hex")
+)
+  throw new Error("Preview build output mismatch. Run pnpm build.");
+const outer = await classicBundle(
+  "apps/vscode/dist/webview/index.js",
+  undefined,
+  "browser",
+  { minify: true },
+);
+const outerCode = outer.code
+  .replace(/<\/script/gi, "<\\/script")
+  .replace(/<!--/g, "<\\!--");
+await writeFile(
+  "apps/vscode/dist/preview-runtime.js",
+  Object.entries({
+    previewHtml,
+    outerCode,
+    previewScriptHash: manifest.scriptHash,
+    previewStyleHash: manifest.styleHash,
+  })
+    .map(([key, value]) => `export const ${key} = ${JSON.stringify(value)};`)
+    .join("\n") + "\n",
+);
 for (const [entry, output, external] of [
-  ["apps/vscode/src/extension.ts", "extension", ["vscode"]],
+  ["apps/vscode/dist/extension.js", "extension", ["vscode"]],
   ["packages/language-server/src/server.ts", "server", []],
   ["packages/language-server/src/worker.ts", "worker", []],
 ]) {

@@ -1,4 +1,6 @@
 import {
+  preparePreview,
+  type PreviewCompilation,
   completion,
   catalog,
   functionExample,
@@ -8,7 +10,7 @@ import {
   signatureHelp,
 } from "@tinta/language-service";
 import type { Span } from "@tinta/types";
-import type { AnalysisSnapshot } from "@tinta/types/editor";
+import type { SourceIdentity, AnalysisSnapshot } from "@tinta/types/editor";
 import type {
   CompletionItem,
   DocumentSymbol,
@@ -27,12 +29,18 @@ export interface AuthoringQuery {
     | "signature"
     | "definition"
     | "references"
-    | "symbols";
+    | "symbols"
+    | "preview";
+  readonly preview?: {
+    readonly identity: SourceIdentity;
+    readonly text: string;
+  };
   readonly position?: Position;
   readonly includeDeclaration?: boolean;
 }
 
 export type AuthoringResult =
+  | PreviewCompilation
   | CompletionItem[]
   | DocumentSymbol[]
   | Location[]
@@ -45,6 +53,10 @@ export function authoring(
   snapshot: AnalysisSnapshot,
   query: AuthoringQuery,
 ): AuthoringResult {
+  if (query.kind === "preview")
+    return query.preview
+      ? preparePreview(query.preview.identity, query.preview.text)
+      : null;
   const text = snapshot.sourceText;
   const starts = lineStarts(text);
   const range = (span: Span): Range => ({

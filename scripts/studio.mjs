@@ -34,6 +34,21 @@ export async function buildStudio() {
     `<meta http-equiv="Content-Security-Policy" content="${previewPolicy}">` +
     `<style>${readerStyle}</style></head><body>` +
     `<script>${previewCode}</script></body></html>`;
+  await writeFile("build/preview.html", previewHtml);
+  await writeFile(
+    "build/preview-runtime.json",
+    JSON.stringify(
+      {
+        protocol: "tinta-host-1",
+        scriptHash: digest(previewCode),
+        styleHash: digest(readerStyle),
+        htmlSha256: createHash("sha256").update(previewHtml).digest("hex"),
+        inputs: preview.inputs,
+      },
+      null,
+      2,
+    ) + "\n",
+  );
   const examples = {};
   for (const name of ["article", "report", "guide", "chart-atlas"])
     examples[name] = await readFile(`examples/${name}.tinta`, "utf8");

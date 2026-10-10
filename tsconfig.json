@@ -35,6 +35,9 @@
       "path": "packages/language-server"
     },
     {
+      "path": "packages/local-files"
+    },
+    {
       "path": "apps/vscode"
     }
   ]

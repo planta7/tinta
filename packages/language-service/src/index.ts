@@ -19,3 +19,5 @@ export type {
   EditorToken,
   EditorType,
 } from "@tinta/types/editor";
+export { preparePreview } from "./preview.js";
+export type { PreviewCompilation } from "./preview.js";

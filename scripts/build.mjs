@@ -60,6 +60,7 @@ for (const name of [
   "syntax",
   "engine",
   "language-service",
+  "local-files",
   "charts",
   "reader",
   "artifacts",
