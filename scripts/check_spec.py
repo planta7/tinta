@@ -31,6 +31,7 @@ PUBLIC_ROOTS = (
     'scripts',
     'patches',
     'third_party',
+    'toolchain',
 )
 PUBLIC_TOP = (
     'README.md',

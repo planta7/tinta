@@ -1,0 +1,466 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "identities",
+    "versions",
+    "policy",
+    "packages",
+    "artifacts",
+    "environments"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "identities": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "npmScope",
+        "repository",
+        "marketplacePublisher",
+        "extensionName"
+      ],
+      "properties": {
+        "npmScope": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "status"],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^@tinta$"
+            },
+            "status": {
+              "const": "proposed"
+            }
+          }
+        },
+        "repository": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "status"],
+          "properties": {
+            "value": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "string",
+                  "maxLength": 256,
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*/[A-Za-z0-9][A-Za-z0-9._-]*$"
+                }
+              ]
+            },
+            "status": {
+              "const": "proposed"
+            }
+          }
+        },
+        "marketplacePublisher": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "status"],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            },
+            "status": {
+              "const": "proposed"
+            }
+          }
+        },
+        "extensionName": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "status"],
+          "properties": {
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            },
+            "status": {
+              "const": "proposed"
+            }
+          }
+        }
+      }
+    },
+    "versions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementation",
+        "npmChannel",
+        "extension",
+        "extensionChannel",
+        "contract",
+        "sourceFormat",
+        "ir",
+        "host",
+        "webview"
+      ],
+      "properties": {
+        "implementation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-dev\\.(0|[1-9][0-9]*))?$"
+        },
+        "npmChannel": {
+          "enum": ["next", "latest"]
+        },
+        "extension": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+        },
+        "extensionChannel": {
+          "enum": ["pre-release", "stable"]
+        },
+        "contract": {
+          "const": "1.0-draft.3"
+        },
+        "sourceFormat": {
+          "const": "1.0"
+        },
+        "ir": {
+          "const": "tinta-ir-1"
+        },
+        "host": {
+          "const": "tinta-host-1"
+        },
+        "webview": {
+          "const": "tinta-vscode-1"
+        }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceManifestsPrivate",
+        "stagingRoot",
+        "npmAccess",
+        "internalDependencies",
+        "tagPrefix",
+        "releaseIdPattern",
+        "nodeRange",
+        "vscodeRange",
+        "parserDistribution",
+        "externalActivation"
+      ],
+      "properties": {
+        "sourceManifestsPrivate": {
+          "const": true
+        },
+        "stagingRoot": {
+          "const": "build/release-staging"
+        },
+        "npmAccess": {
+          "const": "public"
+        },
+        "internalDependencies": {
+          "const": "exact"
+        },
+        "tagPrefix": {
+          "const": "tinta-v"
+        },
+        "releaseIdPattern": {
+          "const": "tinta-{implementation}-vscode-{extension}-{extensionChannel}"
+        },
+        "nodeRange": {
+          "const": ">=24.21.0 <25"
+        },
+        "vscodeRange": {
+          "const": "^1.141.0"
+        },
+        "parserDistribution": {
+          "const": "bundle-patched-graph"
+        },
+        "externalActivation": {
+          "const": false
+        }
+      }
+    },
+    "packages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "source",
+          "proposedName",
+          "identityStatus",
+          "dependencies",
+          "externalDependencies",
+          "embeddedTargets",
+          "environments"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "types",
+              "syntax",
+              "engine",
+              "charts",
+              "reader",
+              "artifacts",
+              "local-files",
+              "cli",
+              "language-service",
+              "language-server"
+            ]
+          },
+          "source": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[A-Za-z0-9_-][A-Za-z0-9._-]*(/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
+          },
+          "proposedName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^@tinta/[a-z-]+$"
+          },
+          "identityStatus": {
+            "const": "proposed"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "types",
+                "syntax",
+                "engine",
+                "charts",
+                "reader",
+                "artifacts",
+                "local-files",
+                "cli",
+                "language-service",
+                "language-server"
+              ]
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "externalDependencies": {
+            "type": "object",
+            "propertyNames": {
+              "pattern": "^(?!@tinta/)(@[^/]+/)?[a-z0-9][a-z0-9._-]*$"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-dev\\.(0|[1-9][0-9]*))?$"
+            }
+          },
+          "embeddedTargets": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "vscode",
+                "studio-directory",
+                "studio-standalone",
+                "reader-runtime",
+                "source",
+                "examples"
+              ]
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "environments": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        }
+      },
+      "minItems": 10,
+      "uniqueItems": true,
+      "maxItems": 10
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "source",
+          "destination",
+          "identityStatus",
+          "dependencies",
+          "embeddedTargets",
+          "environments",
+          "contents",
+          "externalDependencies"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "vscode",
+              "studio-directory",
+              "studio-standalone",
+              "reader-runtime",
+              "source",
+              "examples"
+            ]
+          },
+          "kind": {
+            "enum": ["zip", "vsix"]
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512,
+                "pattern": "^[A-Za-z0-9_-][A-Za-z0-9._-]*(/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "destination": {
+            "enum": ["marketplace-and-download", "release-download"]
+          },
+          "identityStatus": {
+            "const": "proposed"
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "types",
+                "syntax",
+                "engine",
+                "charts",
+                "reader",
+                "artifacts",
+                "local-files",
+                "cli",
+                "language-service",
+                "language-server"
+              ]
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "embeddedTargets": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "vscode",
+                "studio-directory",
+                "studio-standalone",
+                "reader-runtime",
+                "source",
+                "examples"
+              ]
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "environments": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "contents": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "externalDependencies": {
+            "type": "object",
+            "propertyNames": {
+              "pattern": "^(?!@tinta/)(@[^/]+/)?[a-z0-9][a-z0-9._-]*$"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-dev\\.(0|[1-9][0-9]*))?$"
+            }
+          }
+        }
+      },
+      "minItems": 6,
+      "uniqueItems": true,
+      "maxItems": 6
+    },
+    "environments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "runtime", "version", "platform", "architecture"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "runtime": {
+            "enum": [
+              "node",
+              "vscode",
+              "chromium",
+              "firefox",
+              "webkit",
+              "source"
+            ]
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "platform": {
+            "enum": ["darwin", "linux", "win32", "any"]
+          },
+          "architecture": {
+            "enum": ["arm64", "x64", "any"]
+          }
+        }
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}

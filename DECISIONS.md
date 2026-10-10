@@ -10,7 +10,7 @@ Status: normative scope and implementation baseline, 8 October 2026.
 | OWN-02 | The draft syntax can evolve before stabilization; historical prototypes are not compatibility contracts. |
 | OWN-03 | Users must be able to enrich existing Markdown documents. |
 | OWN-04 | V1 interaction scope: existing controls, formulas, conditions, details, tables/views and seven interactive chart types, including linked selection. |
-| OWN-05 | Everything is local. Do not design a publication workflow now. |
+| OWN-05 | Document processing remains local; no authored-document publication workflow or hosting service. Software distribution metadata is defined separately in docs/15_DISTRIBUTION.md and grants no external publication authority. |
 | OWN-06 | Editable source, autonomous interactive HTML and static HTML are accepted. PDF and flattened Markdown exports are outside V1. |
 | OWN-07 | No AI in this version. |
 | OWN-08 | Specification and engine are open; a future commercial product above them may remain closed. |

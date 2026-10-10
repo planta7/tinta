@@ -81,6 +81,12 @@ class PublicChecks(unittest.TestCase):
             p.write_text('{bad')
         self.run_check()
 
+    def test_release_config_duplicate_keys_are_rejected(self):
+        path = self.root / 'toolchain/release.json'
+        path.write_text('{"schemaVersion": 1, "schemaVersion": 2}')
+        result = self.run_check(False)
+        self.assertIn('Duplicate JSON key', result.stdout)
+
     def test_missing_required_file(self):
         (self.root / 'spec/grammar.ebnf').unlink()
         self.run_check(False)

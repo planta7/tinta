@@ -1,0 +1,444 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "releaseId",
+    "tag",
+    "source",
+    "versions",
+    "targets",
+    "toolchain",
+    "verification",
+    "limitations"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "releaseId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "tag": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commit", "tree", "lockSha256", "configSha256"],
+      "properties": {
+        "commit": {
+          "type": "string",
+          "pattern": "^([a-f0-9]{40}|[a-f0-9]{64})$"
+        },
+        "tree": {
+          "type": "string",
+          "pattern": "^([a-f0-9]{40}|[a-f0-9]{64})$"
+        },
+        "lockSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "configSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "versions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "implementation",
+        "npmChannel",
+        "extension",
+        "extensionChannel",
+        "contract",
+        "sourceFormat",
+        "ir",
+        "host",
+        "webview"
+      ],
+      "properties": {
+        "implementation": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-dev\\.(0|[1-9][0-9]*))?$"
+        },
+        "npmChannel": {
+          "enum": ["next", "latest"]
+        },
+        "extension": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+        },
+        "extensionChannel": {
+          "enum": ["pre-release", "stable"]
+        },
+        "contract": {
+          "const": "1.0-draft.3"
+        },
+        "sourceFormat": {
+          "const": "1.0"
+        },
+        "ir": {
+          "const": "tinta-ir-1"
+        },
+        "host": {
+          "const": "tinta-host-1"
+        },
+        "webview": {
+          "const": "tinta-vscode-1"
+        }
+      }
+    },
+    "targets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "kind",
+          "name",
+          "version",
+          "channel",
+          "dependencies",
+          "embeddedTargets",
+          "archive",
+          "licenses",
+          "environments",
+          "externalDependencies"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "types",
+              "syntax",
+              "engine",
+              "charts",
+              "reader",
+              "artifacts",
+              "local-files",
+              "cli",
+              "language-service",
+              "language-server",
+              "vscode",
+              "studio-directory",
+              "studio-standalone",
+              "reader-runtime",
+              "source",
+              "examples"
+            ]
+          },
+          "kind": {
+            "enum": ["npm", "zip", "vsix"]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-dev\\.(0|[1-9][0-9]*))?$"
+          },
+          "channel": {
+            "enum": ["next", "latest", "pre-release", "stable"]
+          },
+          "dependencies": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "version"],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512
+                },
+                "version": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-dev\\.(0|[1-9][0-9]*))?$"
+                }
+              }
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "embeddedTargets": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "vscode",
+                "studio-directory",
+                "studio-standalone",
+                "reader-runtime",
+                "source",
+                "examples"
+              ]
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "archive": {
+            "$ref": "#/$defs/file"
+          },
+          "licenses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["path", "sha256"],
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512,
+                  "pattern": "^[A-Za-z0-9_-][A-Za-z0-9._-]*(/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              }
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "environments": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "externalDependencies": {
+            "type": "object",
+            "propertyNames": {
+              "pattern": "^(?!@tinta/)(@[^/]+/)?[a-z0-9][a-z0-9._-]*$"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512,
+              "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(-dev\\.(0|[1-9][0-9]*))?$"
+            }
+          }
+        }
+      },
+      "minItems": 16,
+      "uniqueItems": true
+    },
+    "toolchain": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "version", "integrity"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "integrity": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          }
+        }
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "runId", "attempt", "environments", "results"],
+      "properties": {
+        "provider": {
+          "enum": ["local", "github-actions"]
+        },
+        "runId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "attempt": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "environments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "runtime",
+              "version",
+              "platform",
+              "architecture",
+              "osVersion",
+              "runtimeIntegrity"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "runtime": {
+                "enum": [
+                  "node",
+                  "vscode",
+                  "chromium",
+                  "firefox",
+                  "webkit",
+                  "source"
+                ]
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "platform": {
+                "enum": ["darwin", "linux", "win32", "any"]
+              },
+              "architecture": {
+                "enum": ["arm64", "x64", "any"]
+              },
+              "osVersion": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "runtimeIntegrity": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              }
+            }
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["target", "environment", "status", "checks", "report"],
+            "properties": {
+              "target": {
+                "enum": [
+                  "types",
+                  "syntax",
+                  "engine",
+                  "charts",
+                  "reader",
+                  "artifacts",
+                  "local-files",
+                  "cli",
+                  "language-service",
+                  "language-server",
+                  "vscode",
+                  "studio-directory",
+                  "studio-standalone",
+                  "reader-runtime",
+                  "source",
+                  "examples"
+                ]
+              },
+              "environment": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 512
+              },
+              "status": {
+                "enum": ["passed", "failed", "blocked", "not-run"]
+              },
+              "checks": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 512
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "report": {
+                "$ref": "#/$defs/file"
+              }
+            }
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 512
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "bytes", "sha256", "integrity"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[A-Za-z0-9_-][A-Za-z0-9._-]*(/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "integrity": {
+          "type": "string",
+          "pattern": "^sha512-[A-Za-z0-9+/]{86}==$"
+        }
+      }
+    }
+  }
+}

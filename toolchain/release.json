@@ -1,0 +1,473 @@
+{
+  "schemaVersion": 1,
+  "identities": {
+    "npmScope": {
+      "value": "@tinta",
+      "status": "proposed"
+    },
+    "repository": {
+      "value": null,
+      "status": "proposed"
+    },
+    "marketplacePublisher": {
+      "value": "tinta",
+      "status": "proposed"
+    },
+    "extensionName": {
+      "value": "tinta",
+      "status": "proposed"
+    }
+  },
+  "versions": {
+    "implementation": "0.1.0-dev.0",
+    "npmChannel": "next",
+    "extension": "0.1.0",
+    "extensionChannel": "pre-release",
+    "contract": "1.0-draft.3",
+    "sourceFormat": "1.0",
+    "ir": "tinta-ir-1",
+    "host": "tinta-host-1",
+    "webview": "tinta-vscode-1"
+  },
+  "policy": {
+    "sourceManifestsPrivate": true,
+    "stagingRoot": "build/release-staging",
+    "npmAccess": "public",
+    "internalDependencies": "exact",
+    "tagPrefix": "tinta-v",
+    "releaseIdPattern": "tinta-{implementation}-vscode-{extension}-{extensionChannel}",
+    "nodeRange": ">=24.21.0 <25",
+    "vscodeRange": "^1.141.0",
+    "parserDistribution": "bundle-patched-graph",
+    "externalActivation": false
+  },
+  "packages": [
+    {
+      "id": "types",
+      "source": "packages/types",
+      "proposedName": "@tinta/types",
+      "identityStatus": "proposed",
+      "dependencies": [],
+      "externalDependencies": {
+        "@noble/hashes": "2.4.0",
+        "fflate": "0.8.3"
+      },
+      "embeddedTargets": [],
+      "environments": [
+        "node-darwin-arm64",
+        "node-linux-x64",
+        "node-win32-x64",
+        "chromium-darwin-arm64",
+        "firefox-darwin-arm64",
+        "webkit-darwin-arm64"
+      ]
+    },
+    {
+      "id": "syntax",
+      "source": "packages/syntax",
+      "proposedName": "@tinta/syntax",
+      "identityStatus": "proposed",
+      "dependencies": ["types"],
+      "externalDependencies": {
+        "micromark": "4.0.3",
+        "mdast-util-from-markdown": "2.1.0",
+        "micromark-extension-gfm-table": "2.1.2",
+        "micromark-extension-gfm-task-list-item": "2.1.0",
+        "micromark-extension-gfm-strikethrough": "2.1.0",
+        "mdast-util-gfm-table": "2.0.0",
+        "mdast-util-gfm-task-list-item": "2.0.0",
+        "mdast-util-gfm-strikethrough": "2.0.1",
+        "@noble/hashes": "2.4.0"
+      },
+      "embeddedTargets": [],
+      "environments": [
+        "node-darwin-arm64",
+        "node-linux-x64",
+        "node-win32-x64",
+        "chromium-darwin-arm64",
+        "firefox-darwin-arm64",
+        "webkit-darwin-arm64"
+      ]
+    },
+    {
+      "id": "engine",
+      "source": "packages/engine",
+      "proposedName": "@tinta/engine",
+      "identityStatus": "proposed",
+      "dependencies": ["types", "syntax"],
+      "externalDependencies": {
+        "@noble/hashes": "2.4.0"
+      },
+      "embeddedTargets": [],
+      "environments": [
+        "node-darwin-arm64",
+        "node-linux-x64",
+        "node-win32-x64",
+        "chromium-darwin-arm64",
+        "firefox-darwin-arm64",
+        "webkit-darwin-arm64"
+      ]
+    },
+    {
+      "id": "charts",
+      "source": "packages/charts",
+      "proposedName": "@tinta/charts",
+      "identityStatus": "proposed",
+      "dependencies": ["types", "engine"],
+      "externalDependencies": {
+        "d3-array": "3.2.4",
+        "d3-scale": "4.0.2",
+        "d3-shape": "3.2.0"
+      },
+      "embeddedTargets": [],
+      "environments": [
+        "node-darwin-arm64",
+        "node-linux-x64",
+        "node-win32-x64",
+        "chromium-darwin-arm64",
+        "firefox-darwin-arm64",
+        "webkit-darwin-arm64"
+      ]
+    },
+    {
+      "id": "reader",
+      "source": "packages/reader",
+      "proposedName": "@tinta/reader",
+      "identityStatus": "proposed",
+      "dependencies": ["types", "engine", "charts"],
+      "externalDependencies": {},
+      "embeddedTargets": [],
+      "environments": [
+        "node-darwin-arm64",
+        "node-linux-x64",
+        "node-win32-x64",
+        "chromium-darwin-arm64",
+        "firefox-darwin-arm64",
+        "webkit-darwin-arm64"
+      ]
+    },
+    {
+      "id": "artifacts",
+      "source": "packages/artifacts",
+      "proposedName": "@tinta/artifacts",
+      "identityStatus": "proposed",
+      "dependencies": ["types", "syntax", "engine", "charts"],
+      "externalDependencies": {
+        "fflate": "0.8.3",
+        "@noble/hashes": "2.4.0",
+        "ajv": "8.20.0",
+        "ajv-formats": "3.0.1"
+      },
+      "embeddedTargets": ["reader-runtime"],
+      "environments": [
+        "node-darwin-arm64",
+        "node-linux-x64",
+        "node-win32-x64",
+        "chromium-darwin-arm64",
+        "firefox-darwin-arm64",
+        "webkit-darwin-arm64"
+      ]
+    },
+    {
+      "id": "local-files",
+      "source": "packages/local-files",
+      "proposedName": "@tinta/local-files",
+      "identityStatus": "proposed",
+      "dependencies": ["types", "artifacts"],
+      "externalDependencies": {},
+      "embeddedTargets": [],
+      "environments": ["node-darwin-arm64", "node-linux-x64", "node-win32-x64"]
+    },
+    {
+      "id": "cli",
+      "source": "packages/cli",
+      "proposedName": "@tinta/cli",
+      "identityStatus": "proposed",
+      "dependencies": ["types", "engine", "artifacts", "local-files"],
+      "externalDependencies": {},
+      "embeddedTargets": ["studio-standalone"],
+      "environments": ["node-darwin-arm64", "node-linux-x64", "node-win32-x64"]
+    },
+    {
+      "id": "language-service",
+      "source": "packages/language-service",
+      "proposedName": "@tinta/language-service",
+      "identityStatus": "proposed",
+      "dependencies": ["types", "syntax", "engine"],
+      "externalDependencies": {},
+      "embeddedTargets": [],
+      "environments": [
+        "node-darwin-arm64",
+        "node-linux-x64",
+        "node-win32-x64",
+        "chromium-darwin-arm64",
+        "firefox-darwin-arm64",
+        "webkit-darwin-arm64"
+      ]
+    },
+    {
+      "id": "language-server",
+      "source": "packages/language-server",
+      "proposedName": "@tinta/language-server",
+      "identityStatus": "proposed",
+      "dependencies": ["types", "language-service"],
+      "externalDependencies": {
+        "vscode-languageserver": "10.1.2"
+      },
+      "embeddedTargets": [],
+      "environments": ["node-darwin-arm64", "node-linux-x64", "node-win32-x64"]
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "vscode",
+      "kind": "vsix",
+      "source": "apps/vscode",
+      "destination": "marketplace-and-download",
+      "identityStatus": "proposed",
+      "dependencies": [
+        "types",
+        "local-files",
+        "artifacts",
+        "engine",
+        "reader",
+        "language-service",
+        "language-server"
+      ],
+      "embeddedTargets": [],
+      "environments": [
+        "vscode-darwin-arm64",
+        "vscode-linux-x64",
+        "vscode-win32-x64"
+      ],
+      "contents": [
+        "extension manifest",
+        "extension.mjs",
+        "server.mjs",
+        "analysis worker",
+        "artifact worker",
+        "preview",
+        "language catalog",
+        "grammar",
+        "README",
+        "LICENSE",
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "externalDependencies": {
+        "vscode-languageclient": "10.1.2"
+      }
+    },
+    {
+      "id": "studio-directory",
+      "kind": "zip",
+      "source": "apps/studio",
+      "destination": "release-download",
+      "identityStatus": "proposed",
+      "dependencies": [
+        "types",
+        "syntax",
+        "engine",
+        "charts",
+        "reader",
+        "artifacts"
+      ],
+      "embeddedTargets": [],
+      "environments": [
+        "chromium-darwin-arm64",
+        "firefox-darwin-arm64",
+        "webkit-darwin-arm64"
+      ],
+      "contents": [
+        "index.html",
+        "relative application chunks",
+        "embedded compiler and preview",
+        "LICENSE",
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "externalDependencies": {
+        "react": "19.3.0",
+        "react-dom": "19.3.0",
+        "@codemirror/state": "6.7.6",
+        "@codemirror/view": "6.43.14",
+        "@codemirror/language": "6.13.1",
+        "@codemirror/commands": "6.11.1",
+        "@codemirror/search": "6.7.2",
+        "@codemirror/autocomplete": "6.20.3",
+        "@codemirror/lint": "6.9.7",
+        "@codemirror/lang-markdown": "6.5.2"
+      }
+    },
+    {
+      "id": "studio-standalone",
+      "kind": "zip",
+      "source": "apps/studio",
+      "destination": "release-download",
+      "identityStatus": "proposed",
+      "dependencies": [
+        "types",
+        "syntax",
+        "engine",
+        "charts",
+        "reader",
+        "artifacts"
+      ],
+      "embeddedTargets": [],
+      "environments": [
+        "chromium-darwin-arm64",
+        "firefox-darwin-arm64",
+        "webkit-darwin-arm64"
+      ],
+      "contents": ["tinta-studio.html", "LICENSE", "THIRD_PARTY_NOTICES.txt"],
+      "externalDependencies": {
+        "react": "19.3.0",
+        "react-dom": "19.3.0",
+        "@codemirror/state": "6.7.6",
+        "@codemirror/view": "6.43.14",
+        "@codemirror/language": "6.13.1",
+        "@codemirror/commands": "6.11.1",
+        "@codemirror/search": "6.7.2",
+        "@codemirror/autocomplete": "6.20.3",
+        "@codemirror/lint": "6.9.7",
+        "@codemirror/lang-markdown": "6.5.2"
+      }
+    },
+    {
+      "id": "reader-runtime",
+      "kind": "zip",
+      "source": "packages/reader",
+      "destination": "release-download",
+      "identityStatus": "proposed",
+      "dependencies": ["types", "engine", "charts"],
+      "embeddedTargets": [],
+      "environments": [
+        "chromium-darwin-arm64",
+        "firefox-darwin-arm64",
+        "webkit-darwin-arm64"
+      ],
+      "contents": [
+        "reader.js",
+        "reader.css",
+        "LICENSE",
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "externalDependencies": {}
+    },
+    {
+      "id": "source",
+      "kind": "zip",
+      "source": null,
+      "destination": "release-download",
+      "identityStatus": "proposed",
+      "dependencies": [],
+      "embeddedTargets": [],
+      "environments": ["source-inventory"],
+      "contents": [
+        "public tracked source inventory",
+        "schemas",
+        "specifications",
+        "contracts",
+        "lockfile",
+        "patches",
+        "LICENSE",
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "externalDependencies": {}
+    },
+    {
+      "id": "examples",
+      "kind": "zip",
+      "source": "examples",
+      "destination": "release-download",
+      "identityStatus": "proposed",
+      "dependencies": ["artifacts"],
+      "embeddedTargets": [],
+      "environments": [
+        "chromium-darwin-arm64",
+        "firefox-darwin-arm64",
+        "webkit-darwin-arm64"
+      ],
+      "contents": [
+        "tinta sources",
+        "local raster images",
+        "tinta source bundles",
+        "interactive HTML",
+        "static HTML",
+        "LICENSE",
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "externalDependencies": {}
+    }
+  ],
+  "environments": [
+    {
+      "id": "node-darwin-arm64",
+      "runtime": "node",
+      "version": "24.21.0",
+      "platform": "darwin",
+      "architecture": "arm64"
+    },
+    {
+      "id": "node-linux-x64",
+      "runtime": "node",
+      "version": "24.21.0",
+      "platform": "linux",
+      "architecture": "x64"
+    },
+    {
+      "id": "node-win32-x64",
+      "runtime": "node",
+      "version": "24.21.0",
+      "platform": "win32",
+      "architecture": "x64"
+    },
+    {
+      "id": "vscode-darwin-arm64",
+      "runtime": "vscode",
+      "version": "1.141.0",
+      "platform": "darwin",
+      "architecture": "arm64"
+    },
+    {
+      "id": "vscode-linux-x64",
+      "runtime": "vscode",
+      "version": "1.141.0",
+      "platform": "linux",
+      "architecture": "x64"
+    },
+    {
+      "id": "vscode-win32-x64",
+      "runtime": "vscode",
+      "version": "1.141.0",
+      "platform": "win32",
+      "architecture": "x64"
+    },
+    {
+      "id": "chromium-darwin-arm64",
+      "runtime": "chromium",
+      "version": "playwright-lock",
+      "platform": "darwin",
+      "architecture": "arm64"
+    },
+    {
+      "id": "firefox-darwin-arm64",
+      "runtime": "firefox",
+      "version": "playwright-lock",
+      "platform": "darwin",
+      "architecture": "arm64"
+    },
+    {
+      "id": "webkit-darwin-arm64",
+      "runtime": "webkit",
+      "version": "playwright-lock",
+      "platform": "darwin",
+      "architecture": "arm64"
+    },
+    {
+      "id": "source-inventory",
+      "runtime": "source",
+      "version": "inventory",
+      "platform": "any",
+      "architecture": "any"
+    }
+  ]
+}

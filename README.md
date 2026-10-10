@@ -202,6 +202,7 @@ The parser and semantic engine are portable TypeScript. The reader and export ru
 | Keyboard use, charts and accessible reading   | [Accessibility and design](docs/05_ACCESSIBILITY_AND_DESIGN.md)                                                  |
 | Local resource access and untrusted documents | [Security model](docs/04_SECURITY.md) · [Security reporting](SECURITY.md)                                        |
 | Development setup and checks                  | [Toolchain](docs/09_FOUNDATION_TOOLCHAIN.md) · [Testing](docs/07_VERIFICATION.md) · [Scripts](scripts/README.md) |
+| Package formats and versions                  | [Software distribution](docs/15_DISTRIBUTION.md) |
 | Scope and compatibility                       | [Product contract](docs/01_PRODUCT.md) · [Decisions](DECISIONS.md) · [Change control](docs/08_CHANGE_CONTROL.md) |
 
 ## Status
