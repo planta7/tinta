@@ -63,6 +63,7 @@ export function checkRelativeImport(owner, base, file, specifier) {
     relative(base, target).replaceAll("\\", "/").startsWith("src/webview/")
   )
     throw new Error(`Browser entry imported by native host: ${file}`);
+
   if (relative(boundary, target).startsWith(".."))
     throw new Error(`Cross-boundary relative import: ${file}`);
 }
@@ -74,6 +75,7 @@ export function checkImport(owner, specifier) {
     throw new Error(
       "Editor SDK dependencies require exact line/provenance approval",
     );
+
   if (
     specifier.startsWith("@tinta/") &&
     !(edges[owner] ?? editorEdges[owner] ?? []).includes(
@@ -81,12 +83,14 @@ export function checkImport(owner, specifier) {
     )
   )
     throw new Error(`Forbidden dependency: ${owner} -> ${specifier}`);
+
   if (
     owner !== "cli" &&
     (specifier.startsWith("node:") || builtinModules.includes(specifier)) &&
     !nodeCapabilities[owner]?.has(specifier.replace(/^node:/, ""))
   )
     throw new Error(`Host dependency in ${owner}: ${specifier}`);
+
   if (
     owner !== "studio" &&
     /^(react(?:-dom)?(?:\/|$)|@codemirror\/)/.test(specifier)
@@ -109,13 +113,16 @@ export function inspectSource(owner, text, filename = "input.ts") {
       ts.isStringLiteral(node.moduleSpecifier)
     )
       checkImport(owner, node.moduleSpecifier.text);
+
     if (
       ts.isCallExpression(node) &&
       node.expression.kind === ts.SyntaxKind.ImportKeyword
     )
       throw new Error("Dynamic imports require an explicit capability review");
+
     if (ts.isIdentifier(node) && ["eval", "Function"].includes(node.text))
       throw new Error("String-to-code execution is forbidden");
+
     if (
       ![
         "cli",
@@ -145,6 +152,7 @@ export function inspectSource(owner, text, filename = "input.ts") {
       ].includes(node.text)
     )
       throw new Error(`Ambient capability in ${owner}: ${node.text}`);
+
     if (
       ![
         "cli",
@@ -160,6 +168,7 @@ export function inspectSource(owner, text, filename = "input.ts") {
       node.name.text === "random"
     )
       throw new Error("Ambient randomness");
+
     const denied = {
       "vscode-webview": [
         "fetch",
@@ -193,8 +202,10 @@ export function inspectSource(owner, text, filename = "input.ts") {
         "performance",
       ],
     };
+
     if (ts.isIdentifier(node) && denied[owner]?.includes(node.text))
       throw new Error(`Forbidden host capability in ${owner}: ${node.text}`);
+
     ts.forEachChild(node, visit);
   }
 
@@ -209,12 +220,15 @@ export function files(dir) {
 
 export function checkWorkspace(root = process.cwd()) {
   let count = 0;
+
   for (const owner of workspaceOwners(root)) {
     const base = resolve(root, ownerPath(owner));
     const manifest = JSON.parse(readFileSync(`${base}/package.json`, "utf8"));
     if (manifest.private !== true) throw new Error(`Public package: ${owner}`);
+
     for (const dependency of Object.keys(manifest.dependencies ?? {}))
       checkImport(owner, dependency);
+
     for (const file of files(`${base}/src`).filter((p) =>
       /\.[cm]?[jt]sx?$/.test(p),
     )) {
@@ -224,6 +238,7 @@ export function checkWorkspace(root = process.cwd()) {
         relative(base, file).replaceAll("\\", "/").startsWith("src/webview/")
           ? "vscode-webview"
           : owner;
+
       inspectSource(sourceOwner, text, file);
       const tree = ts.createSourceFile(
         file,
@@ -231,6 +246,7 @@ export function checkWorkspace(root = process.cwd()) {
         ts.ScriptTarget.ES2022,
         true,
       );
+
       for (const node of tree.statements)
         if (
           (ts.isImportDeclaration(node) || ts.isExportDeclaration(node)) &&

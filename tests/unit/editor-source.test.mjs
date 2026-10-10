@@ -26,6 +26,7 @@ describe("native source identity mapping probe", () => {
       });
     });
   }
+
   it("retains original segments and BOM through a versioned edit", () => {
     const model = sourceMap(bytes("\uFEFFA😀\r\nB\r\n"), "A😀\r\nB\r\n");
     const edited = sourceEdit(model, 4, {
@@ -35,6 +36,7 @@ describe("native source identity mapping probe", () => {
     });
     expect(edited).toEqual(bytes("\uFEFFA😀\r\nC\r\n"));
   });
+
   it("maps mixed endings without claiming an inverse at collapsed positions", () => {
     const model = sourceMap(bytes("A\rB\r\nC\n"), "A\r\nB\r\nC\r\n");
     expect(sourcePosition(model, 2)).toEqual({ line: 1, character: 0 });
@@ -42,15 +44,22 @@ describe("native source identity mapping probe", () => {
     expect(sourcePosition(model, 4)).toEqual({ line: 1, character: 1 });
     expect(sourcePosition(model, 5)).toEqual({ line: 2, character: 0 });
   });
+
   it("rejects invalid UTF-8 but permits an authored replacement character", () => {
     expect(() => sourceMap(Uint8Array.of(0xc3, 0x28), "�(")).toThrow();
     expect(sourceMap(bytes("�"), "�").text).toBe("�");
   });
+
   it("rejects mismatched buffers, stale edits, invalid ranges and scalar splits", () => {
     expect(() => sourceMap(bytes("A"), "B")).toThrow();
     const model = sourceMap(bytes("A😀\r\nB"), "A😀\r\nB");
-    const event = { previousVersion: 1, nextVersion: 2, changes: [] };
+    const event = {
+      previousVersion: 1,
+      nextVersion: 2,
+      changes: [],
+    };
     expect(() => sourceEdit(model, 2, event)).toThrow();
+
     for (const changes of [
       [{ from: 2, to: 2, text: "X" }],
       [{ from: 4, to: 4, text: "X" }],

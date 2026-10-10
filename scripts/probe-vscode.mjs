@@ -5,10 +5,13 @@ import { spawn } from "node:child_process";
 import { previewHtml } from "../apps/studio/dist/runtime/previewHtml.js";
 
 const executable = process.argv[2];
+
 if (!executable)
   throw new Error("Pass the path to the pinned VS Code executable");
+
 const root = resolve(process.argv[3] ?? "build/vscode-probe");
 await mkdir(root);
+
 await build({
   entryPoints: ["tests/vscode/host.mjs"],
   outfile: `${root}/host.cjs`,
@@ -17,6 +20,7 @@ await build({
   format: "cjs",
   external: ["vscode"],
 });
+
 await build({
   entryPoints: ["tests/vscode/analysis-worker.mjs"],
   outfile: `${root}/analysis.mjs`,
@@ -24,11 +28,13 @@ await build({
   platform: "node",
   format: "esm",
 });
+
 for (const name of ["outer", "inner-audit"])
   await writeFile(
     `${root}/${name}.js`,
     await readFile(`tests/vscode/${name}.mjs`),
   );
+
 await writeFile(`${root}/preview.html`, previewHtml);
 await writeFile(
   `${root}/package.json`,
@@ -56,6 +62,7 @@ await writeFile(
     "files.autoSave": "off",
   }),
 );
+
 const child = spawn(
   executable,
   [
@@ -73,20 +80,31 @@ const child = spawn(
     "--disable-workspace-trust",
     "--new-window",
   ],
-  { stdio: "inherit", env: { ...process.env, TINTA_PROBE_ROOT: root } },
+  {
+    stdio: "inherit",
+    env: {
+      ...process.env,
+      TINTA_PROBE_ROOT: root,
+    },
+  },
 );
 const timer = setTimeout(() => child.kill(), 60000);
+
 child.on("error", (error) => {
   clearTimeout(timer);
   console.error(error.message);
   process.exitCode = 1;
 });
+
 child.on("exit", async (code) => {
   clearTimeout(timer);
+
   try {
     const result = JSON.parse(await readFile(`${root}/result.json`, "utf8"));
+
     if (code !== 0 || result.status !== "PASS")
       throw new Error("Native probe failed");
+
     console.log(
       `VS Code probe PASS: ${result.sources.length} source cases, worker and webview`,
     );

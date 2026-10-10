@@ -19,6 +19,7 @@ export async function run() {
     sources: [],
   };
   const workerPath = join(root, "analysis.mjs");
+
   try {
     assert.equal(vscode.version, "1.141.0");
     const product = JSON.parse(
@@ -32,6 +33,7 @@ export async function run() {
     await extension.activate();
     assert.equal(extension.isActive, true);
     report.esmActivation = true;
+
     const fixtures = [
       ["bom", Buffer.from("\uFEFF# A\r\n😀 B\r\n")],
       ["lf", Buffer.from("# A\n😀 B\n")],
@@ -41,24 +43,30 @@ export async function run() {
       ["replacement", Buffer.from("A � B\n")],
       ["invalid", Buffer.from([0x41, 0xc3, 0x28, 0x0a])],
     ];
+
     for (const [name, bytes] of fixtures) {
       const file = join(root, `${name}.tinta`);
       await writeFile(file, bytes);
       const doc = await vscode.workspace.openTextDocument(
         vscode.Uri.file(file),
       );
+
       let strict = true;
+
       try {
         new TextDecoder("utf-8", { fatal: true }).decode(bytes);
       } catch {
         strict = false;
       }
+
       const text = doc.getText();
       const positions = [];
+
       for (let offset = 0; offset <= text.length; offset++) {
         const pos = doc.positionAt(offset);
         positions.push([offset, pos.line, pos.character, doc.offsetAt(pos)]);
       }
+
       if (strict) {
         const model = sourceMap(bytes, text);
         for (let offset = 0; offset <= model.text.length; offset++) {
@@ -69,6 +77,7 @@ export async function run() {
           assert.equal(native.line, mapped.line);
           assert.equal(native.character, mapped.character);
         }
+
         const astral = text.indexOf("😀");
         if (astral >= 0) {
           const before = doc.positionAt(astral);
@@ -76,9 +85,11 @@ export async function run() {
           assert.equal(after.character - before.character, 2);
         }
       }
+
       const original = Buffer.from(bytes);
       await doc.save();
       assert.deepEqual(await readFile(file), original);
+
       const editor = await vscode.window.showTextDocument(doc);
       const change = onceChange(doc);
       await editor.edit((edit) => edit.insert(new vscode.Position(0, 0), "X"));
@@ -100,6 +111,7 @@ export async function run() {
       await doc.save();
       report.sources.at(-1).savedHex = (await readFile(file)).toString("hex");
     }
+
     for (const name of ["bom", "lf", "crlf", "replacement"]) {
       const entry = report.sources.find((item) => item.name === name);
       const originalText = Buffer.from(entry.originalHex, "hex").toString(
@@ -113,6 +125,7 @@ export async function run() {
         expected,
       );
     }
+
     for (const name of ["cr", "mixed"]) {
       const entry = report.sources.find((item) => item.name === name);
       assert.equal(entry.text.includes("\r\n"), true);
@@ -122,26 +135,32 @@ export async function run() {
       );
       assert.notEqual(entry.savedHex, "58" + entry.originalHex);
     }
+
     assert.equal(
       report.sources.find((x) => x.name === "invalid").strict,
       false,
     );
+
     assert.equal(
       report.sources.find((x) => x.name === "replacement").strict,
       true,
     );
 
     let worker = new Worker(workerPath);
+
     try {
       let response = once(worker, "message");
       worker.postMessage("compile");
       const [compiled] = await response;
       assert.equal(compiled.kind, "compiled");
       report.worker = { node: compiled.node, esmCompile: true };
+
       response = once(worker, "message");
       worker.postMessage("stall");
       assert.equal((await response)[0].kind, "entered");
+
       const preview = previewProbe(root, compiled.program);
+
       // Observe UI-thread work completing while the analysis thread spins.
       const nativeStarted = performance.now();
       const liveDocument = await vscode.workspace.openTextDocument({
@@ -160,6 +179,7 @@ export async function run() {
       await vscode.commands.executeCommand(
         "workbench.action.revertAndCloseActiveEditor",
       );
+
       let ticks = 0;
       const ticker = setInterval(() => ticks++, 25);
       const started = performance.now();
@@ -170,16 +190,20 @@ export async function run() {
       report.worker.responsiveTicks = ticks;
       assert.ok(ticks >= 50);
       assert.ok(report.worker.terminationMs < 4000);
+
       worker = new Worker(workerPath);
+
       response = once(worker, "message");
       worker.postMessage("compile");
       assert.equal((await response)[0].kind, "compiled");
       report.worker.restart = true;
+
       report.preview = await preview;
       report.inheritedCsp = await previewProbe(root, compiled.program, false);
     } finally {
       await worker.terminate();
     }
+
     report.status = "PASS";
   } catch (error) {
     report.status = "FAIL";
@@ -222,10 +246,16 @@ async function previewProbe(root, program, allowReader = true) {
     "tinta.probe",
     "Tinta host probe",
     vscode.ViewColumn.Beside,
-    { enableScripts: true, localResourceRoots: [], enableCommandUris: false },
+    {
+      enableScripts: true,
+      localResourceRoots: [],
+      enableCommandUris: false,
+    },
   );
+
   let listener;
   let timer;
+
   try {
     const completed = new Promise((resolve, reject) => {
       timer = setTimeout(
@@ -236,12 +266,14 @@ async function previewProbe(root, program, allowReader = true) {
         if (message.kind === "result") resolve(message);
       });
     });
+
     panel.webview.html = `<!doctype html><html><head>
       <meta http-equiv="Content-Security-Policy" content="default-src 'none';
       script-src 'sha256-${digest(code)}' ${allowReader ? `'sha256-${innerHash}'` : ""} 'sha256-${digest(audit)}';
       style-src 'unsafe-inline'; img-src data: blob:; frame-src 'self';
       connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
       </head><body><script>${code}</script></body></html>`;
+
     const result = await completed;
     assert.equal(result.loaded, allowReader);
     assert.equal(result.opaque, true);
@@ -253,6 +285,7 @@ async function previewProbe(root, program, allowReader = true) {
     assert.equal(result.unhashedScriptBlocked, true);
     assert.equal(result.protocolRejected, allowReader);
     if (!allowReader) assert.equal(result.inheritedReaderBlock, true);
+
     return result;
   } finally {
     clearTimeout(timer);

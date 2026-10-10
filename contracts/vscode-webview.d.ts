@@ -33,7 +33,10 @@ export type ExtensionToWebview = WebviewIdentity &
         baseline: ControlState;
         assetRevision: number;
       }>
-    | Readonly<{ kind: "set-enabled"; enabled: boolean }>
+    | Readonly<{
+        kind: "set-enabled";
+        enabled: boolean;
+      }>
     | Readonly<{ kind: "reset" | "get-state" | "destroy" }>
   );
 

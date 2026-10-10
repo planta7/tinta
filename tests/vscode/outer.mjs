@@ -12,22 +12,30 @@ const header = {
   requestId: 0,
   sourceRevision: 1,
 };
-const result = { kind: "result", loaded: false, protocolRejected: false };
+const result = {
+  kind: "result",
+  loaded: false,
+  protocolRejected: false,
+};
 let channel;
 let sent = false;
+
 function finish() {
   if (result.loaded && result.protocolRejected && result.fileDenied && !sent) {
     sent = true;
     api.postMessage(result);
   }
 }
+
 window.addEventListener("message", (event) => {
   if (event.source !== frame.contentWindow) return;
+
   if (event.data?.kind === "audit") {
     Object.assign(result, event.data, {
       kind: "result",
       opaque: event.origin === "null",
     });
+
     if (!payload.allowReader) {
       setTimeout(() => {
         result.inheritedReaderBlock = !channel;
@@ -36,12 +44,14 @@ window.addEventListener("message", (event) => {
     } else finish();
     return;
   }
+
   if (
     JSON.stringify(event.data) !==
       JSON.stringify({ protocol: "tinta-host-1", kind: "hello" }) ||
     channel
   )
     return;
+
   channel = new MessageChannel();
   channel.port1.onmessage = ({ data }) => {
     if (
@@ -50,6 +60,7 @@ window.addEventListener("message", (event) => {
       data.capability !== header.capability
     )
       throw new Error("Invalid identity");
+
     if (data.kind === "ready") {
       channel.port1.postMessage({
         ...header,
@@ -77,5 +88,6 @@ window.addEventListener("message", (event) => {
     channel.port2,
   ]);
 });
+
 frame.srcdoc = payload.preview;
 document.body.append(frame);

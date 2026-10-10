@@ -39,7 +39,10 @@ export interface SourceSnapshot {
 
 /** Unverified/replacement-decoded disk text cannot become a SourceSnapshot. */
 export type SourceAcquisition =
-  | Readonly<{ kind: "verified"; snapshot: SourceSnapshot }>
+  | Readonly<{
+      kind: "verified";
+      snapshot: SourceSnapshot;
+    }>
   | Readonly<{
       kind: "unverified" | "invalid-encoding" | "conversion-required";
       uri: string;
@@ -66,11 +69,20 @@ export interface EditorPosition {
 }
 
 export type EditorType =
-  | Readonly<{ kind: "scalar"; scalar: ScalarType }>
-  | Readonly<{ kind: "list"; scalar: ScalarType | "never" }>
+  | Readonly<{
+      kind: "scalar";
+      scalar: ScalarType;
+    }>
+  | Readonly<{
+      kind: "list";
+      scalar: ScalarType | "never";
+    }>
   | Readonly<{
       kind: "table";
-      columns: readonly { readonly name: string; readonly type: ScalarType }[];
+      columns: readonly {
+        readonly name: string;
+        readonly type: ScalarType;
+      }[];
     }>;
 
 export interface EditorSymbol {

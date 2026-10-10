@@ -59,6 +59,7 @@ describe("native editor capability boundaries", () => {
 
   it("discovers native owners and checks their actual browser entries", () => {
     const root = mkdtempSync(join(tmpdir(), "tinta-boundaries-"));
+
     function owner(name) {
       const base = join(root, ownerPath(name));
       mkdirSync(join(base, "src"), { recursive: true });
@@ -69,19 +70,26 @@ describe("native editor capability boundaries", () => {
       writeFileSync(join(base, "src/index.ts"), "export const value = 1;");
       return base;
     }
+
     try {
       for (const name of Object.keys(edges)) owner(name);
       owner("language-service");
+
       const native = owner("vscode");
       mkdirSync(join(native, "src/webview"));
       const browser = join(native, "src/webview/index.mjs");
+
       writeFileSync(browser, 'import "@tinta/reader";');
       expect(checkWorkspace(root)).toBe(11);
+
       writeFileSync(browser, 'import "node:fs";');
       expect(() => checkWorkspace(root)).toThrow("Host dependency");
+
       writeFileSync(browser, 'import "../index.js";');
       expect(() => checkWorkspace(root)).toThrow("Cross-boundary");
+
       writeFileSync(browser, 'import "@tinta/reader";');
+
       rmSync(join(root, ownerPath("engine"), "package.json"));
       expect(() => checkWorkspace(root)).toThrow();
     } finally {
