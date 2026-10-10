@@ -48,3 +48,7 @@ pnpm test:conformance semantics
 ```
 
 The semantic aggregate includes specification checks, generated-schema reproducibility, types, formatting/lint, dependency/license/architecture checks, unit/property tests and coverage, builds, offline browser portability, both conformance adapters and the portable bundle-size ceiling. The semantic adapter checks pure compilation and evaluation. DOM effects and file/export behavior are exercised by the separate browser and artifact suites.
+
+## Read-only binding analysis
+
+`analyzeProgram(program)` returns immutable name/type records from the same binding pass used by compilation and validated decoding. It accepts only engine-owned compiled or decoded programs, throwing `TypeError` for other objects. It does not compile, create a session, expose private maps or add fields to ProgramIR. Table records copy their ordered column schemas; list records include the `never` element type for empty lists. These are static types, independent of whether initial evaluation succeeds. Callers must still use `createSession` and destroy a successful temporary session before treating source as valid for preview or export.

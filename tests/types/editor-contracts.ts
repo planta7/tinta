@@ -44,3 +44,10 @@ export type UnverifiedSourceHasNoSnapshot = Assert<
     false
   >
 >;
+
+export type PortableAnalysisDto = Assert<
+  Equal<
+    AnalysisSnapshot,
+    import("../../packages/types/src/editor.js").AnalysisSnapshot
+  >
+>;

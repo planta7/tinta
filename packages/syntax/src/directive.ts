@@ -19,6 +19,10 @@ export interface DataRowSyntax {
 export interface DirectiveSyntax {
   readonly name: DirectiveName | "end";
   readonly binding?: string;
+  readonly bindingSpan?: Span;
+  readonly sourceSpan?: Span;
+  readonly optionSpans?: Readonly<Record<string, Span>>;
+  readonly columnNameSpans?: readonly Span[];
   readonly source?: string;
   readonly chartType?: (typeof registry.chartTypes)[number];
   readonly expression?: Expr;
@@ -51,6 +55,11 @@ export function parseDirective(
 ): DirectiveSyntax {
   const match = /^@([a-z][a-z0-9_]*)/.exec(source.text.slice(start, end))!;
   const name = match[1]!;
+  source.lexemes.push({
+    raw: match[0],
+    start,
+    end: start + match[0].length,
+  });
   if (
     name !== "end" &&
     !(registry.directives as readonly string[]).includes(name)
@@ -77,12 +86,19 @@ export function parseDirective(
   const result: {
     name: DirectiveName;
     binding?: string;
+    bindingSpan?: Span;
+    sourceSpan?: Span;
+    optionSpans: Record<string, Span>;
     source?: string;
     chartType?: DirectiveSyntax["chartType"];
     expression?: Expr;
     summary?: string;
     options: Record<string, Expr>;
-  } = { name: command, options };
+  } = {
+    name: command,
+    options,
+    optionSpans: Object.create(null) as Record<string, Span>,
+  };
   if (
     command !== "meta" &&
     command !== "details" &&
@@ -95,10 +111,15 @@ export function parseDirective(
       "Directive operands require whitespace.",
     );
   if (["let", "calc", "slider", "toggle", "choice", "view"].includes(command)) {
-    result.binding = identifier(source, p.take());
+    const binding = p.take();
+    result.binding = identifier(source, binding);
+    result.bindingSpan = source.span(binding.start, binding.end);
     p.expect("=", "E_DIRECTIVE_SYNTAX");
-    if (command === "view") result.source = identifier(source, p.take());
-    else result.expression = p.parse();
+    if (command === "view") {
+      const table = p.take();
+      result.source = identifier(source, table);
+      result.sourceSpan = source.span(table.start, table.end);
+    } else result.expression = p.parse();
   } else if (command === "when") result.expression = p.parse();
   else if (command === "details" && p.peek().raw) {
     const token = p.take();
@@ -110,8 +131,11 @@ export function parseDirective(
         "Details summary must be a text literal.",
       );
     result.summary = stringValue(source, token);
-  } else if (command === "table") result.source = identifier(source, p.take());
-  else if (command === "chart") {
+  } else if (command === "table") {
+    const table = p.take();
+    result.source = identifier(source, table);
+    result.sourceSpan = source.span(table.start, table.end);
+  } else if (command === "chart") {
     const type = p.take();
     if (!(registry.chartTypes as readonly string[]).includes(type.raw))
       source.fail("E_CHART_TYPE", type.start, type.end, "Unknown chart type.");
@@ -125,6 +149,7 @@ export function parseDirective(
         "Chart operands require whitespace.",
       );
     result.source = identifier(source, table);
+    result.sourceSpan = source.span(table.start, table.end);
   }
 
   const group = p.accept("(");
@@ -154,6 +179,7 @@ export function parseDirective(
             "Duplicate option key.",
           );
         p.expect(":", "E_DIRECTIVE_SYNTAX");
+        result.optionSpans[key.raw] = source.span(key.start, key.end);
         options[key.raw] = p.parse();
       } while (p.accept(",") && p.peek().raw !== ")");
       p.expect(")", "E_DIRECTIVE_SYNTAX");
@@ -279,7 +305,8 @@ function parseData(
       "Data name requires whitespace.",
     );
 
-  const binding = identifier(source, p.take());
+  const bindingToken = p.take();
+  const binding = identifier(source, bindingToken);
   p.finish("E_DIRECTIVE_SYNTAX");
   const close = lines[lines.length - 1];
   if (!close || !/^@end[ \t]*$/.test(close.raw))
@@ -377,6 +404,12 @@ function parseData(
   return {
     name: "data",
     binding,
+    bindingSpan: source.span(bindingToken.start, bindingToken.end),
+    columnNameSpans: headerCells.map((cell, index) => {
+      let begin = cell.start;
+      while (source.text[begin] === " " || source.text[begin] === "\t") begin++;
+      return source.span(begin, begin + columns[index]!.name.length);
+    }),
     columns,
     columnSpans: headerCells.map((cell) => source.span(cell.start, cell.end)),
     rows,

@@ -15,6 +15,7 @@ export default defineConfig({
         "scripts/capabilities.mjs",
         "packages/syntax/dist/**/*.js",
         "packages/engine/dist/**/*.js",
+        "packages/language-service/dist/**/*.js",
         "packages/charts/dist/**/*.js",
         "packages/artifacts/dist/**/*.js",
         "packages/cli/dist/**/*.js",
@@ -44,6 +45,11 @@ export default defineConfig({
           lines: 90,
         },
         "packages/engine/dist/**": {
+          statements: 95,
+          branches: 90,
+          lines: 95,
+        },
+        "packages/language-service/dist/**": {
           statements: 95,
           branches: 90,
           lines: 95,

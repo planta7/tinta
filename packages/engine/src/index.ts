@@ -7,3 +7,5 @@ export {
   legendKey,
   numericDomain,
 } from "./chart-presentation.js";
+export { analyzeProgram } from "./analysis.js";
+export type { AnalyzedBinding } from "./analysis.js";

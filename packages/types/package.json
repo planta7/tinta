@@ -19,6 +19,10 @@
     "./assets": {
       "types": "./dist/assets.d.ts",
       "import": "./dist/assets.js"
+    },
+    "./editor": {
+      "types": "./dist/editor.d.ts",
+      "import": "./dist/editor.js"
     }
   },
   "dependencies": {

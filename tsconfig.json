@@ -11,6 +11,9 @@
       "path": "packages/engine"
     },
     {
+      "path": "packages/language-service"
+    },
+    {
       "path": "packages/charts"
     },
     {

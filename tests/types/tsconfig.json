@@ -7,5 +7,10 @@
     "rootDir": "../..",
     "tsBuildInfoFile": "../../build/contracts/.tsbuildinfo"
   },
-  "include": ["../../contracts/*.d.ts", "*.ts"]
+  "include": ["../../contracts/*.d.ts", "*.ts"],
+  "references": [
+    {
+      "path": "../../packages/types"
+    }
+  ]
 }

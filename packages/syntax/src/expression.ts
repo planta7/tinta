@@ -124,6 +124,8 @@ export class ExpressionParser {
       });
     }
 
+    for (const token of this.tokens) source.lexemes.push(token);
+
     this.tokens.push({
       raw: "",
       start: end,

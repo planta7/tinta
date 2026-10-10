@@ -9,7 +9,7 @@ import type {
 import type { CompileContext } from "mdast-util-from-markdown";
 import { markdown } from "./markdown.js";
 import { parseDirective, type DirectiveSyntax } from "./directive.js";
-import { ExpressionParser } from "./expression.js";
+import { ExpressionParser, type Lexeme } from "./expression.js";
 import { Source, SyntaxFailure } from "./source.js";
 
 type MdNode = CompileContext["stack"][number];
@@ -38,8 +38,16 @@ export interface EditorToken {
   readonly span: Span;
 }
 
+export interface EditingRegion {
+  readonly kind: "directive" | "interpolation";
+  readonly span: Span;
+  readonly lexemes: readonly Lexeme[];
+}
+
 /** Lossless syntax, deliberately distinct from a validated/typed Program. */
 export interface ParsedSource {
+  readonly lexemes: readonly Lexeme[];
+  readonly regions: readonly EditingRegion[];
   readonly compileOperations: number;
   readonly source: string;
   readonly bytes: Uint8Array;
@@ -70,6 +78,7 @@ export function parseRecovering(
     const source = new Source(input, options);
     const ast = markdown(source);
     const tokens: EditorToken[] = [];
+    const regions: EditingRegion[] = [];
     const definitions = new Map<
       string,
       {
@@ -124,6 +133,9 @@ export function parseRecovering(
       const id = "n" + String(++nextId).padStart(6, "0"),
         span = source.span(start, end);
       let result: SyntaxNode;
+      const firstLexeme = source.lexemes.length;
+      const role =
+        node.data && "tinta" in node.data ? node.data.tinta : undefined;
       try {
         if (
           node.data &&
@@ -259,6 +271,13 @@ export function parseRecovering(
           value: source.text.slice(start, end),
         };
       }
+      if (role === "directive" || role === "interpolation") {
+        regions.push({
+          kind: role,
+          span,
+          lexemes: source.lexemes.slice(firstLexeme),
+        });
+      }
       tokens.push({ kind: result.kind, span });
 
       return result;
@@ -280,6 +299,8 @@ export function parseRecovering(
     );
 
     const value = {
+      lexemes: source.lexemes.sort((a, b) => a.start - b.start),
+      regions,
       compileOperations: source.compileOperations,
       source: source.text,
       bytes: source.bytes,

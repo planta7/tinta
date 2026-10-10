@@ -12,6 +12,7 @@ import { Budget, Failure, fail } from "./common.js";
 import { evaluate, infer, type RuntimeValue, type Type } from "./expression.js";
 
 export interface Bound {
+  readonly types: ReadonlyMap<string, Type>;
   readonly compileOperations: number;
   readonly locations: ReadonlyMap<string, Span>;
   readonly order: readonly Declaration[];
@@ -321,6 +322,7 @@ export function bind(
       );
 
   return {
+    types,
     order,
     controls,
     constants,

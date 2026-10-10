@@ -67,7 +67,7 @@ export interface EditorPosition {
 
 export type EditorType =
   | Readonly<{ kind: "scalar"; scalar: ScalarType }>
-  | Readonly<{ kind: "list"; scalar: ScalarType }>
+  | Readonly<{ kind: "list"; scalar: ScalarType | "never" }>
   | Readonly<{
       kind: "table";
       columns: readonly { readonly name: string; readonly type: ScalarType }[];

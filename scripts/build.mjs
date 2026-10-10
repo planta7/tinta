@@ -59,6 +59,7 @@ for (const name of [
   "types",
   "syntax",
   "engine",
+  "language-service",
   "charts",
   "reader",
   "artifacts",

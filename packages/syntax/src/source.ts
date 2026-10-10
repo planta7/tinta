@@ -17,6 +17,11 @@ import { decodeUtf8, encodeUtf8 } from "@tinta/types/utf8";
 export { decodeUtf8, encodeUtf8 } from "@tinta/types/utf8";
 
 export class Source {
+  readonly lexemes: {
+    raw: string;
+    start: number;
+    end: number;
+  }[] = [];
   readonly text: string;
   readonly bytes: Uint8Array;
   readonly lines = [0];

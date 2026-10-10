@@ -23,3 +23,9 @@ pnpm verify --suite parsing
 ```
 
 The parsing aggregate includes specification checks, strict types, formatting/lint, dependency/license/architecture checks, unit/property/corpus tests, build, offline browser portability and the parse-only adapter. The parsing adapter leaves semantic/import expectations unrun; the separate [engine adapter](11_ENGINE_API.md) executes them. Coverage includes all syntax implementation modules; the generated registry copy and type declarations are excluded, and the registry is compared byte-for-value with its normative source. The fixtures define expected parse results; test commands report observed results separately.
+
+## Editor metadata and incomplete contexts
+
+Recovering parse results additionally expose `regions` for active directive/interpolation tokenizer regions and sorted `lexemes` with exact original offsets. Literal Markdown never contributes active regions. Directive syntax includes `bindingSpan`, `sourceSpan`, `optionSpans` and `columnNameSpans` where those tokens parsed successfully. Existing expression spans continue to include grouping; `expressionLexemes(parsed, span)` selects the exact lexer tokens within such a span without searching prose or string contents for identifiers.
+
+`editingSite(parsed, offset)` queries an original UTF-16 position for directive, option, expression, selection, column or literal context. It uses the existing extension's regions and expression lexer, including unfinished interpolation delimiters. This is editing metadata, not successful compilation. `editorNames` is an immutable catalog of registered names and parser option keys. The portable language service combines this syntax information with compiler facts and enforces the selected source profile.
