@@ -8,6 +8,7 @@
 
 <p align="center">
   <a href="#try-it-locally">Try the studio</a> ·
+  <a href="#write-in-vs-code">Use VS Code</a> ·
   <a href="examples/README.md">Explore examples</a> ·
   <a href="docs/CHEATSHEET.md">Syntax cheatsheet</a> ·
   <a href="spec/00_OVERVIEW.md">Read the specification</a>
@@ -18,6 +19,8 @@
 **tinta is a language for interactive documents.** It brings writing, data and interaction into a single document. Readers can explore a question, compare scenarios and see how their choices change the explanation.
 
 An article that invites questions. A report where readers can test their assumptions. A guide that gives each reader the explanation they need.
+
+Choose the tool that fits your work. **Studio** is the local browser editor, the **VS Code extension** brings authoring into your desktop editor, and the **CLI** validates and exports documents from the terminal. They share the same language and engine. Exported HTML opens independently of all three.
 
 ## Meet tinta studio
 
@@ -33,6 +36,24 @@ _The included [explorable article](examples/article.tinta), open in tinta studio
 - **Pick up where you left off.** Recovery copies help you return to a draft. Save your work, then export the finished document for your readers.
 
 New documents open ready to type. Existing documents open in Reading mode. Studio runs as a static web app or as a single local HTML file, without an account or backend.
+
+## Write in VS Code
+
+The local VS Code Desktop extension brings `.tinta` documents into your editor: directive and expression completion, diagnostics, hover help, definitions and references, plus an interactive preview with controls and charts.
+
+Enrich an existing Markdown file into a separate Tinta document, explicitly select local images, open and save source bundles, and export interactive or static HTML. Markdown files keep their normal editing behavior. Image, bundle, enrichment and export commands require workspace trust and explicit confirmation or file choices.
+
+After installing the [repository toolchain and dependencies](#try-it-locally), build the local extension:
+
+```sh
+pnpm package:vscode
+```
+
+In VS Code, run **Extensions: Install from VSIX…**, select `build/vscode/tinta-0.1.0-dev.0.vsix`, then reload. Open a `.tinta` file and run **Tinta: Open Preview**. The installed extension bundles its runtimes; editing requires no global Tinta CLI or separate Node installation.
+
+This development build targets **VS Code Desktop 1.141.0** and is not published on the Marketplace. Native use has been tested on macOS arm64; Linux and Windows remain unverified. Remote workspaces and vscode.dev are unsupported. Rename, quick fixes and a formatter are not included.
+
+See the [VS Code quickstart](docs/14_VSCODE_QUICKSTART.md) for examples, local installation, diagnostics and exports, and the [host reference](docs/13_VSCODE.md) for behavior and limits.
 
 ## A small document, a real interaction
 
@@ -106,6 +127,8 @@ The [CLI reference](docs/06_CLI.md) covers validation, enrichment, imports, expo
 
 </details>
 
+Studio targets modern desktop Chromium, Firefox and Safari; the reader and HTML exports also support narrow layouts. Browser storage, file permissions and assistive technology vary by environment. See the [usage environments](docs/01_PRODUCT.md#supported-usage-environments) and [accessibility requirements](docs/05_ACCESSIBILITY_AND_DESIGN.md). Automated WebKit results do not establish native Safari or iOS compatibility.
+
 ## More than a slider
 
 | In your document                      | What it does                                                               |
@@ -143,7 +166,9 @@ The [example collection](examples/README.md) also includes a minimal starting po
 
 **Interactive HTML includes the complete source, hidden branches and all embedded data.** Hidden does not mean private. Static export contains the resolved visible presentation and its referenced images. See the [file and export contract](docs/02_FILES_AND_EXPORTS.md) for the exact boundaries.
 
-Local recovery stores up to 10 copies and 30 MiB, replacing the oldest copies first. It can be disabled, and copies can be deleted. Reader answers are not automatically persisted. [How recovery works →](docs/03_EDITOR_AND_READER.md)
+Studio's local recovery stores up to 10 copies and 30 MiB, replacing the oldest copies first. It can be disabled, and copies can be deleted. Reader answers are not automatically persisted. Studio can explicitly export an answers snapshot; the CLI can apply a matching snapshot during export. The VS Code preview keeps answers in memory and can include them in HTML exports, but does not provide snapshot import/export. [How saving and recovery work →](docs/03_EDITOR_AND_READER.md)
+
+CSV and JSON imports in Studio or the CLI copy data into typed document tables; they do not retain a live connection to the original file. Images must be validated local raster files. Use a source bundle when moving a document together with its images. See the [data and import rules](spec/04_DATA.md) and [file formats](docs/02_FILES_AND_EXPORTS.md).
 
 ## A small language. Clear boundaries.
 
@@ -155,19 +180,35 @@ tinta focuses on interactive documents. There is no cloud storage, account syste
 
 The parser and semantic engine are portable TypeScript. The reader and export runtime are independent of React and CodeMirror; those belong to the studio.
 
-| Layer                                               | Documentation                                                                           |
-| --------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Parse and enrich Markdown                           | [Syntax API](docs/10_SYNTAX_API.md)                                                     |
-| Compile, evaluate and manage transactional sessions | [Engine API](docs/11_ENGINE_API.md)                                                     |
-| Render safe documents, controls and charts          | [Reader API](docs/12_READER_API.md)                                                     |
-| Understand package boundaries                       | [Architecture](architecture/MODULES.md) · [Stack](architecture/STACK.md)                |
-| Work with public contracts                          | [Interfaces](contracts/public-api.d.ts) · [Contract rules](contracts/CONTRACT_RULES.md) |
+| Layer                                               | Documentation                                                                                         |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Parse and enrich Markdown                           | [Syntax API](docs/10_SYNTAX_API.md)                                                                   |
+| Compile, evaluate and manage transactional sessions | [Engine API](docs/11_ENGINE_API.md)                                                                   |
+| Render safe documents, controls and charts          | [Reader API](docs/12_READER_API.md)                                                                   |
+| Integrate editor analysis and native previews       | [Editor analysis](contracts/editor-analysis.d.ts) · [Webview protocol](contracts/vscode-webview.d.ts) |
+| Understand package boundaries                       | [Architecture](architecture/MODULES.md) · [Stack](architecture/STACK.md)                              |
+| Work with public contracts                          | [Interfaces](contracts/public-api.d.ts) · [Contract rules](contracts/CONTRACT_RULES.md)               |
+
+## Documentation
+
+| Looking for                                   | Start here                                                                                                       |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Syntax and complete documents                 | [Cheatsheet](docs/CHEATSHEET.md) · [Examples](examples/README.md)                                                |
+| Studio editing, imports, saving and recovery  | [Editor and reader guide](docs/03_EDITOR_AND_READER.md)                                                          |
+| VS Code installation and everyday use         | [Quickstart](docs/14_VSCODE_QUICKSTART.md) · [Host behavior and limits](docs/13_VSCODE.md)                       |
+| Terminal commands and automation              | [CLI reference](docs/06_CLI.md)                                                                                  |
+| Source bundles, answers and HTML exports      | [File and export formats](docs/02_FILES_AND_EXPORTS.md)                                                          |
+| Language semantics and error codes            | [Specification](spec/00_OVERVIEW.md) · [Limits and diagnostics](spec/06_LIMITS_AND_DIAGNOSTICS.md)               |
+| Keyboard use, charts and accessible reading   | [Accessibility and design](docs/05_ACCESSIBILITY_AND_DESIGN.md)                                                  |
+| Local resource access and untrusted documents | [Security model](docs/04_SECURITY.md) · [Security reporting](SECURITY.md)                                        |
+| Development setup and checks                  | [Toolchain](docs/09_FOUNDATION_TOOLCHAIN.md) · [Testing](docs/07_VERIFICATION.md) · [Scripts](scripts/README.md) |
+| Scope and compatibility                       | [Product contract](docs/01_PRODUCT.md) · [Decisions](DECISIONS.md) · [Change control](docs/08_CHANGE_CONTROL.md) |
 
 ## Status
 
 **Draft language. Working local tools.**
 
-Contract revision **1.0-draft.3** targets source-format version **1.0**. The repository contains the specification, reusable packages, CLI and studio. The language contract is still a draft; format version 1.0 does not identify a stable tool release.
+Contract revision **1.0-draft.3** targets source-format version **1.0**. The repository contains the specification, reusable packages, CLI, Studio and local VS Code extension. The language contract is still a draft; format version 1.0 does not identify a stable tool release. Workspace packages currently use implementation version `0.0.0`; the local VSIX uses development version `0.1.0-dev.0`.
 
 ## Contribute
 
@@ -183,6 +224,8 @@ pnpm verify
 
 `pnpm verify` runs the infrastructure aggregate. `pnpm verify --suite editing` adds the implemented document-tooling and editor checks. Dependency auditing needs access to the npm advisory service.
 
+For the native extension, run `pnpm verify --suite vscode` after provisioning VS Code Desktop and setting `TINTA_VSCODE_EXECUTABLE` and `TINTA_VSCODE_CLI` to its executable and CLI launcher. This suite includes local VSIX packaging and installed-extension workflows; missing desktop prerequisites return nonzero. See the [native test instructions](scripts/README.md#local-vs-code-artifact).
+
 Specification consistency checks use Python's standard library:
 
 ```sh
@@ -193,3 +236,7 @@ python3 -m unittest discover -s scripts/tests -v
 See [testing and performance](docs/07_VERIFICATION.md), [conformance fixtures](conformance/README.md) and [checker prerequisites](scripts/README.md).
 
 </details>
+
+## License
+
+The original specification, engine, reference tools, fixtures and examples are available under the [MIT License](LICENSE). Bundled dependencies retain their own licenses, collected in `THIRD_PARTY_NOTICES.txt` at the repository root.

@@ -13,13 +13,19 @@ if (
     "--suite charting",
     "--suite artifacts",
     "--suite editing",
+    "--suite vscode",
   ].includes(suite)
 ) {
   console.error(
     "NOT_IMPLEMENTED: supported aggregate suites are infrastructure, " +
-      "parsing, semantics, reading, charting, artifacts and editing",
+      "parsing, semantics, reading, charting, artifacts, editing and vscode",
   );
   process.exit(1);
+}
+
+if (suite === "--suite vscode") {
+  await import("./verify-vscode.mjs");
+  process.exit(process.exitCode ?? 0);
 }
 
 const commands = [

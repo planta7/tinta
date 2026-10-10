@@ -33,3 +33,7 @@ Release archives and package file lists must explicitly include public inputs an
 ## Native editor integration
 
 The [VS Code host](13_VSCODE.md) introduces portable editor-analysis DTOs and an independent outer webview protocol, `tinta-vscode-1`. It does not change source format 1.0, `tinta-ir-1`, `tinta-host-1`, source bundles or answer snapshots. The shared file adapter expands the host boundary to explicitly granted native editor operations without granting filesystem access to core packages. See [the source-fidelity decision](../decisions/native-editor-source-fidelity.md) for the native editor's line-ending limitation and separate-copy policy.
+
+## Local extension artifact identity
+
+The local VSIX uses development version `0.1.0-dev.0` and the internal installation identity `tinta-local.tinta`. Its generated manifest is separate from the private `@tinta/vscode` workspace package. Existing workspace and embedded engine versions remain `0.0.0`, including the interactive-envelope version check. The build identity records both versions, contract revision, source hash, commit/dirty state and payload hashes. Repeated local builds retain the development version and are distinguished by hashes. No intentional distribution, version increment, Marketplace identity or publication is implied by creating or testing a local archive.

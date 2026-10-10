@@ -27,7 +27,8 @@
     "preview": "vite preview apps/studio --config apps/studio/vite.config.js",
     "build:vscode": "tsc -b && node scripts/build-vscode.mjs",
     "test:vscode:unit": "vitest run --config scripts/vscode-vitest.config.js --coverage",
-    "test:vscode:browser": "playwright test --config scripts/vscode-playwright.config.js"
+    "test:vscode:browser": "playwright test --config scripts/vscode-playwright.config.js",
+    "package:vscode": "pnpm build && node scripts/package-vscode.mjs"
   },
   "devDependencies": {
     "typescript": "6.0.3",
