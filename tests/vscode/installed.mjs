@@ -6,6 +6,7 @@ import { testAuthoring } from "./authoring.mjs";
 import { installedWorkflow } from "./installed-workflow.mjs";
 import { checkIpcWatchdog } from "../consumer/ipc-watchdog.mjs";
 import { measureInstalled } from "./installed-performance.mjs";
+import { openInstalledPreview } from "./installed-preview.mjs";
 
 const root = process.env.TINTA_INSTALLED_ROOT;
 const wait = (ms) => new Promise((accept) => setTimeout(accept, ms));
@@ -109,13 +110,7 @@ export async function run() {
       "preview.tinta",
       '@slider amount = 2 (min: 0, max: 10, step: 1, label: "Amount")\nValue: {{ amount }}\n',
     );
-    await vscode.commands.executeCommand("tinta.openPreview");
-    await wait(1500);
-    assert.ok(
-      vscode.window.tabGroups.all
-        .flatMap((group) => group.tabs)
-        .some((tab) => tab.input instanceof vscode.TabInputWebview),
-    );
+    await openInstalledPreview(vscode);
     await vscode.window.showTextDocument(preview);
     await vscode.commands.executeCommand("tinta.resetReading");
     report.groups.push(

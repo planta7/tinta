@@ -34,6 +34,7 @@ export async function registryPackages(
   archives,
   dependencies,
   tools,
+  { extract = spawnSync } = {},
 ) {
   const packages = [];
   for (const target of inventory.targets.filter((item) =>
@@ -52,17 +53,17 @@ export async function registryPackages(
   for (const record of [...inventory.externalDependencies, ...tools]) {
     const bytes = await readFile(join(dependencies, dependencyArchive(record)));
     verifyIntegrity(bytes, record.integrity);
-    const listing = spawnSync("tar", ["-tzf", "-"], {
+    const listing = extract("tar", ["-tzf", "-"], {
       input: bytes,
       maxBuffer: 4 * 1024 * 1024,
     });
     assert.equal(listing.status, 0);
     const paths = listing.stdout
       .toString()
-      .split("\n")
+      .split(/\r?\n/)
       .filter((path) => /^[^/]+\/package\.json$/.test(path));
     assert.equal(paths.length, 1, record.name);
-    const extracted = spawnSync("tar", ["-xzOf", "-", paths[0]], {
+    const extracted = extract("tar", ["-xzOf", "-", paths[0]], {
       input: bytes,
       maxBuffer: 2 * 1024 * 1024,
     });
