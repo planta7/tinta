@@ -72,6 +72,10 @@ export async function driveInstalledUI(root, port, signal) {
           .getByText("Current preview answers", { exact: true })
           .click();
         await page.getByRole("button", { name: "Export", exact: true }).click();
+        await page
+          .locator(".quick-input-title")
+          .filter({ hasText: "Export HTML" })
+          .waitFor();
         const input = page.locator(".quick-input-widget input[type=text]");
         await input.fill(request.path);
         await input.press("Enter");

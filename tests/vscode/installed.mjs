@@ -4,6 +4,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { testAuthoring } from "./authoring.mjs";
 import { installedWorkflow } from "./installed-workflow.mjs";
+import { checkIpcWatchdog } from "../consumer/ipc-watchdog.mjs";
 import { measureInstalled } from "./installed-performance.mjs";
 
 const root = process.env.TINTA_INSTALLED_ROOT;
@@ -67,6 +68,13 @@ export async function run() {
       ),
     );
     await extension.activate();
+    report.watchdog = await checkIpcWatchdog(
+      join(extension.extensionPath, "dist/server.mjs"),
+      join(root, "watchdog"),
+    );
+    report.groups.push(
+      "installed IPC server watchdog and production worker restart",
+    );
     report.groups.push(
       "installed production extension in isolated profile; no checkout runtime dependencies",
     );

@@ -27,6 +27,7 @@ export default tseslint.config(
   {
     files: [
       "tests/browser/**/*.mjs",
+      "scripts/consumer-browsers.mjs",
       "tests/vscode/outer.mjs",
       "tests/vscode/inner-audit.mjs",
       "tests/vscode/preview-inner.mjs",
