@@ -181,6 +181,7 @@ describe("credential and dispatch boundaries", () => {
       expect(() => activationPolicy(policy, config, env)).toThrow();
       policy.npm[key] = true;
     }
+    policy.marketplace.githubFederationVerified = false;
     expect(() => activationPolicy(policy, config, env)).toThrow("unverified");
   });
   it("redacts service error bodies and disallows HTTP redirects", async () => {

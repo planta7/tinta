@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "enabled": false,
-  "repository": null,
-  "repositoryId": null,
+  "repository": "planta7/tinta",
+  "repositoryId": "1410906994",
   "environment": "release",
   "npm": {
     "version": "11.21.0",
@@ -15,9 +15,9 @@
     "bootstrapComplete": false
   },
   "marketplace": {
-    "tenant": null,
-    "client": null,
-    "publisherId": null,
-    "githubFederationVerified": false
+    "tenant": "965b4876-de8a-43b7-b14d-6561c23374b3",
+    "client": "b9f5a8d5-3a91-42b5-a732-b44101964561",
+    "publisherId": "d5a3d449-d8c6-482b-b95c-db2716610389",
+    "githubFederationVerified": true
   }
 }
