@@ -1,3 +1,4 @@
+import { implementationVersion } from "../../packages/types/dist/version.js";
 import { describe, test, expect, beforeEach, afterEach } from "vitest";
 import {
   cp,
@@ -42,6 +43,11 @@ describe("command arguments", () => {
       expect(result.stdout).toContain(
         arg === "--version" ? "tinta-ir-1" : "Usage:",
       );
+      if (arg === "--version") {
+        expect(result.stdout).toContain(
+          `tinta ${implementationVersion}; source format 1.0; IR ABI tinta-ir-1`,
+        );
+      }
     }
   });
   test.each(

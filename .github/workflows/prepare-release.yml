@@ -1,0 +1,57 @@
+name: Prepare release
+on:
+  workflow_dispatch:
+    inputs:
+      request:
+        description: JSON request with recorded decision, baseline digest, versions and notes
+        required: true
+        type: string
+      authorize_remote:
+        description: Authorize the dedicated release branch and pull request
+        required: true
+        default: false
+        type: boolean
+permissions:
+  contents: read
+concurrency:
+  group: prepare-release
+  cancel-in-progress: false
+jobs:
+  validate:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - run: npm install --global pnpm@10.34.6
+      - run: pnpm install --frozen-lockfile
+      - name: Prepare requested local diff
+        run: node scripts/prepare-release-event.mjs
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - run: node scripts/validate-release-preparation.mjs
+  pull-request:
+    needs: validate
+    if: inputs.authorize_remote && github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - run: npm install --global pnpm@10.34.6
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Create or resume the authorized release PR
+        run: node scripts/release-pr.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}

@@ -38,6 +38,7 @@ export function captureCandidate() {
     ];
     const rootFiles = [
       "README.md",
+      "CHANGELOG.md",
       "CONTRIBUTING.md",
       "SECURITY.md",
       "DECISIONS.md",

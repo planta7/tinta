@@ -393,7 +393,11 @@ test("runtime rejects malformed authenticated envelopes without discarding fallb
         value.kind = "unknown";
       },
       (value) => {
-        value.engineVersion = "0.2.0-dev.1";
+        value.engineVersion =
+          implementationVersion === "0.2.0-dev.1"
+            ? "0.2.0-dev.2"
+            : "0.2.0-dev.1";
+        expect(value.engineVersion).not.toBe(implementationVersion);
       },
       (value) => {
         value.baseline.sourceSha256 = "0".repeat(64);
@@ -503,7 +507,9 @@ test("exports retain answers but reset legend, pin and details presentation", as
 test("rebuilt runtime accepts only its coordinated implementation version", async ({
   page,
 }) => {
-  const alternate = "0.2.0-dev.1";
+  const alternate =
+    implementationVersion === "0.2.0-dev.1" ? "0.2.0-dev.2" : "0.2.0-dev.1";
+  expect(alternate).not.toBe(implementationVersion);
   const runtime = await build({
     entryPoints: ["packages/reader/src/export-runtime.ts"],
     bundle: true,
