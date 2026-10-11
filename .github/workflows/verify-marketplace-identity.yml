@@ -1,0 +1,101 @@
+name: Verify Marketplace identity
+on:
+  workflow_dispatch:
+permissions: {}
+jobs:
+  identity:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    environment: release
+    permissions:
+      id-token: write
+    steps:
+      - name: Resolve application profile without publishing
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+
+          const tenant = '965b4876-de8a-43b7-b14d-6561c23374b3';
+          const client = 'b9f5a8d5-3a91-42b5-a732-b44101964561';
+          const audience = 'api://AzureADTokenExchange';
+          const resource = '499b84ac-1321-427f-aa17-267ca6975798';
+
+          async function request(label, url, options = {}) {
+            const response = await fetch(url, {
+              ...options,
+              redirect: 'error',
+              signal: AbortSignal.timeout(30000),
+            });
+            if (!response.ok) {
+              throw new Error(`${label}: HTTP ${response.status}`);
+            }
+            return response.json();
+          }
+
+          try {
+            assert.equal(process.env.GITHUB_REPOSITORY_ID, '1410906994');
+            const url = new URL(process.env.ACTIONS_ID_TOKEN_REQUEST_URL);
+            assert.equal(url.protocol, 'https:');
+            assert.ok(url.hostname.endsWith('.actions.githubusercontent.com'));
+            url.searchParams.set('audience', audience);
+            const oidc = await request('GitHub OIDC', url, {
+              headers: {
+                Authorization: `Bearer ${process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN}`,
+              },
+            });
+            assert.ok(typeof oidc.value === 'string' && oidc.value.length > 0);
+            console.log(`::add-mask::${oidc.value}`);
+
+            const token = await request(
+              'Entra token exchange',
+              `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                  client_id: client,
+                  scope: `${resource}/.default`,
+                  grant_type: 'client_credentials',
+                  client_assertion_type:
+                    'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+                  client_assertion: oidc.value,
+                }),
+              },
+            );
+            assert.ok(typeof token.access_token === 'string');
+            console.log(`::add-mask::${token.access_token}`);
+
+            const profile = await request(
+              'Marketplace identity profile',
+              'https://app.vssps.visualstudio.com/_apis/profile/profiles/me?api-version=7.1',
+              { headers: { Authorization: `Bearer ${token.access_token}` } },
+            );
+            assert.match(profile.id, /^[a-f0-9-]{36}$/i);
+            const publisher = await request(
+              'Marketplace publisher access',
+              'https://marketplace.visualstudio.com/_apis/gallery/publishers/planta7?api-version=7.2-preview.1',
+              { headers: { Authorization: `Bearer ${token.access_token}` } },
+            );
+            assert.equal(
+              publisher.publisherId,
+              'd5a3d449-d8c6-482b-b95c-db2716610389',
+            );
+            console.log(JSON.stringify({
+              tenant,
+              client,
+              marketplaceProfileId: profile.id,
+              publisherId: publisher.publisherId,
+              publicationPerformed: false,
+            }, null, 2));
+          } catch (error) {
+            const safeStatus = /^(GitHub OIDC|Entra token exchange|Marketplace identity profile|Marketplace publisher access): HTTP \d{3}$/;
+            console.error(
+              safeStatus.test(error.message)
+                ? error.message
+                : 'Identity verification failed; response and credentials omitted.',
+            );
+            process.exitCode = 1;
+          }
+          NODE
