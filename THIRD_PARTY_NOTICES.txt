@@ -13645,3 +13645,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## npm 11.21.0 publication tool
+
+The separately acquired npm CLI is licensed under Artistic-2.0. Its bundled dependencies retain their individual terms. Exact bundled package versions, archive integrity, source provenance and license declarations are recorded in toolchain/publication-npm-lock.json. Original upstream notices and declarations are preserved in third_party/npm/NOTICE.txt. This tool is not embedded in the document runtime.
