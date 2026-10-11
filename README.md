@@ -51,7 +51,7 @@ pnpm package:vscode
 
 In VS Code, run **Extensions: Install from VSIX…**, select `build/vscode/tinta-0.1.0-dev.0.vsix`, then reload. Open a `.tinta` file and run **Tinta: Open Preview**. The installed extension bundles its runtimes; editing requires no global Tinta CLI or separate Node installation.
 
-This development build targets **VS Code Desktop 1.141.0** and is not published on the Marketplace. Native use has been tested on macOS arm64; Linux and Windows remain unverified. Remote workspaces and vscode.dev are unsupported. Rename, quick fixes and a formatter are not included.
+The extension targets **VS Code Desktop 1.141.0** on macOS arm64, Linux arm64 and Windows x64. Remote workspaces and vscode.dev are unsupported. Rename, quick fixes and a formatter are not included.
 
 See the [VS Code quickstart](docs/14_VSCODE_QUICKSTART.md) for examples, local installation, diagnostics and exports, and the [host reference](docs/13_VSCODE.md) for behavior and limits.
 

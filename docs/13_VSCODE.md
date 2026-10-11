@@ -4,7 +4,7 @@ This document specifies the local editor adapter. The repository provides a loca
 
 ## Runtime and document scope
 
-Use the local desktop extension host and native text editor. The minimum target and current probe runtime is VS Code 1.141.0, commit `2a59476c9bfcb90b3ddc372c36762471b7dfad1c`, with Electron 43.7.7 and embedded Node 24.21.0. The native probe runs on macOS arm64. Linux and Windows are target platforms with no native result yet; browser results do not establish desktop support. Remote/SSH/container workspaces, virtual filesystems and vscode.dev are unsupported. Reject unsupported hosts before acquiring resources.
+Use the local desktop extension host and native text editor. The minimum target and current probe runtime is VS Code 1.141.0, commit `2a59476c9bfcb90b3ddc372c36762471b7dfad1c`, with Electron 43.7.7 and embedded Node 24.21.0. Native workflow, Restricted Mode, performance and OS-offline checks cover macOS arm64, Linux arm64 and Windows x64 on this runtime. Other architectures and editor versions are not covered; browser results do not establish desktop support. Remote/SSH/container workspaces, virtual filesystems and vscode.dev are unsupported. Reject unsupported hosts before acquiring resources.
 
 Associate only `.tinta` with `tinta` inside VS Code. Accept untitled buffers explicitly assigned that language. `.md` remains Markdown; enrichment creates a separate document. `.tinta.zip` is opened by an explicit archive command, never as text. Do not modify operating-system associations. Multi-root workspaces have independent document instances and resource grants; no workspace scanning, source imports or project resolution is permitted.
 
