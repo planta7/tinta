@@ -499,6 +499,14 @@ describe("candidate workflow security topology", () => {
     expect(
       workflow.jobs.installed.strategy.matrix.include.map((c) => c.cell),
     ).toEqual(matrixCells);
+    const installedSteps = workflow.jobs.installed.steps;
+    const checkout = installedSteps.findIndex((step) =>
+      step.uses?.startsWith("actions/checkout@"),
+    );
+    expect(checkout).toBeGreaterThan(0);
+    expect(installedSteps[checkout - 1].run).toBe(
+      "git config --global core.autocrlf false",
+    );
     const pins = JSON.parse(readFileSync("toolchain/actions.json", "utf8"));
     for (const [name, job] of Object.entries(workflow.jobs)) {
       expect(job["timeout-minutes"]).toBeGreaterThan(0);

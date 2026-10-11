@@ -84,6 +84,8 @@ jobs:
     env:
       TINTA_MATRIX_CELL: ${{ matrix.cell }}
     steps:
+      - name: Preserve committed bytes on every platform
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           ref: ${{ github.sha }}

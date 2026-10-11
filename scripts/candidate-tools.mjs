@@ -49,6 +49,23 @@ if (process.argv.includes("--desktop")) {
   else if (process.platform === "linux")
     requireCommandSync(["tar", "-xzf", archive, "-C", root]);
   else requireCommandSync(["tar", "-xf", archive, "-C", root]);
+  let macExecutable;
+  if (process.platform === "darwin") {
+    macExecutable = requireCommandSync([
+      "/usr/bin/plutil",
+      "-extract",
+      "CFBundleExecutable",
+      "raw",
+      join(root, "Visual Studio Code.app/Contents/Info.plist"),
+    ]).stdout.trim();
+    assert.match(macExecutable, /^[A-Za-z0-9._ -]+$/);
+  } else if (process.platform === "linux") {
+    assert.equal(process.env.GITHUB_ACTIONS, "true");
+    assert.equal(process.env.RUNNER_ENVIRONMENT, "github-hosted");
+    const sandbox = join(root, "VSCode-linux-arm64/chrome-sandbox");
+    requireCommandSync(["sudo", "chown", "root:root", sandbox]);
+    requireCommandSync(["sudo", "chmod", "4755", sandbox]);
+  }
   const app =
     process.platform === "darwin"
       ? join(root, "Visual Studio Code.app/Contents/Resources/app")
@@ -57,7 +74,7 @@ if (process.argv.includes("--desktop")) {
         : join(root, "resources/app");
   values.TINTA_VSCODE_EXECUTABLE =
     process.platform === "darwin"
-      ? join(root, "Visual Studio Code.app/Contents/MacOS/Electron")
+      ? join(root, "Visual Studio Code.app/Contents/MacOS", macExecutable)
       : process.platform === "linux"
         ? join(root, "VSCode-linux-arm64/code")
         : join(root, "Code.exe");
@@ -69,6 +86,14 @@ if (process.argv.includes("--desktop")) {
     values.TINTA_VSCODE_CLI = join(root, "VSCode-linux-arm64/bin/code");
   values.TINTA_VSCODE_PRODUCT = join(app, "product.json");
   values.TINTA_VSCODE_PACKAGE = join(app, "package.json");
+  for (const path of [
+    values.TINTA_VSCODE_EXECUTABLE,
+    values.TINTA_VSCODE_CLI,
+    values.TINTA_VSCODE_PRODUCT,
+    values.TINTA_VSCODE_PACKAGE,
+  ]) {
+    assert.ok(existsSync(path), `Pinned desktop file missing: ${path}`);
+  }
 }
 for (const [name, value] of Object.entries(values)) {
   assert.ok(!/[\r\n]/.test(value));
