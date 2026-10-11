@@ -1,5 +1,10 @@
 import { sha256 } from "@noble/hashes/sha2.js";
-import type { Enrichment, Result, SourceInput, TextEdit } from "@tinta/types";
+import type {
+  Enrichment,
+  Result,
+  SourceInput,
+  TextEdit,
+} from "@tinta-lang/types";
 import { parse, type SyntaxNode } from "./parser.js";
 
 /** Discard only source bookkeeping; retain all Markdown meaning and inert resource policy. */

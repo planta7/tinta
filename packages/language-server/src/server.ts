@@ -1,6 +1,6 @@
-import { sourceIdentity } from "@tinta/types/webview";
-import { limits } from "@tinta/types/common";
-import type { SourceIdentity } from "@tinta/types/editor";
+import { sourceIdentity } from "@tinta-lang/types/webview";
+import { limits } from "@tinta-lang/types/common";
+import type { SourceIdentity } from "@tinta-lang/types/editor";
 import type { AuthoringQuery } from "./authoring.js";
 import type {
   CompletionItem,

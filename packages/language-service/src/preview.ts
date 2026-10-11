@@ -1,8 +1,8 @@
-import { compile, createSession, encodeProgram } from "@tinta/engine";
-import { encodeUtf8, hash } from "@tinta/types/common";
-import { sourceIdentity } from "@tinta/types/webview";
-import type { ProgramIR, Result } from "@tinta/types";
-import type { SourceIdentity } from "@tinta/types/editor";
+import { compile, createSession, encodeProgram } from "@tinta-lang/engine";
+import { encodeUtf8, hash } from "@tinta-lang/types/common";
+import { sourceIdentity } from "@tinta-lang/types/webview";
+import type { ProgramIR, Result } from "@tinta-lang/types";
+import type { SourceIdentity } from "@tinta-lang/types/editor";
 
 export interface PreviewCompilation {
   readonly identity: SourceIdentity;

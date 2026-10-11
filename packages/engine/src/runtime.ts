@@ -1,5 +1,5 @@
-import type { Program, ProgramIR, Result, Span } from "@tinta/types";
-import { hash, encodeUtf8 } from "@tinta/types/common";
+import type { Program, ProgramIR, Result, Span } from "@tinta-lang/types";
+import { hash, encodeUtf8 } from "@tinta-lang/types/common";
 import { attempt, Budget, fail, freeze } from "./common.js";
 import { bind } from "./binding.js";
 import { programs } from "./programs.js";

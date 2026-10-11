@@ -124,7 +124,7 @@ export function validateConfig(config, manifests) {
         : `${environment.runtime}-${environment.platform}-${environment.architecture}`;
     same(environment.id, id, "environment identity");
   }
-  same(config.identities.npmScope.value, "@tinta", "proposed scope");
+  same(config.identities.npmScope.value, "@tinta-lang", "proposed scope");
   for (const target of targets) {
     const requiredRuntimes = config.packages.includes(target)
       ? ["node"]
@@ -164,8 +164,8 @@ export function validateConfig(config, manifests) {
       same(
         target.dependencies.toSorted(),
         Object.keys(manifest.dependencies ?? {})
-          .filter((name) => name.startsWith("@tinta/"))
-          .map((name) => name.slice(7))
+          .filter((name) => name.startsWith("@tinta-lang/"))
+          .map((name) => name.slice("@tinta-lang/".length))
           .sort(),
         `dependencies for ${target.id}`,
       );
@@ -173,7 +173,7 @@ export function validateConfig(config, manifests) {
         target.externalDependencies,
         Object.fromEntries(
           Object.entries(manifest.dependencies ?? {}).filter(
-            ([name]) => !name.startsWith("@tinta/"),
+            ([name]) => !name.startsWith("@tinta-lang/"),
           ),
         ),
         `external dependencies for ${target.id}`,
@@ -186,7 +186,7 @@ export function validateConfig(config, manifests) {
           artifact.externalDependencies,
           Object.fromEntries(
             Object.entries(manifest.dependencies ?? {}).filter(
-              ([name]) => !name.startsWith("@tinta/"),
+              ([name]) => !name.startsWith("@tinta-lang/"),
             ),
           ),
           `artifact external dependencies for ${artifact.id}`,
@@ -201,9 +201,9 @@ export function validateConfig(config, manifests) {
         app === "studio" ? "studio-directory" : app,
       );
       for (const name of Object.keys(manifest.dependencies ?? {}))
-        if (name.startsWith("@tinta/"))
+        if (name.startsWith("@tinta-lang/"))
           requireValue(
-            closure.includes(name.slice(7)),
+            closure.includes(name.slice("@tinta-lang/".length)),
             `Missing application dependency: ${name}`,
           );
     }

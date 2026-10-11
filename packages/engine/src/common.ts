@@ -4,7 +4,7 @@ import type {
   Phase,
   Result,
   Span,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import { registry } from "./registry.js";
 
 export class Failure extends Error {

@@ -1,5 +1,9 @@
-import { editingSite, type EditingSite, type SyntaxNode } from "@tinta/syntax";
-import type { Span } from "@tinta/types";
+import {
+  editingSite,
+  type EditingSite,
+  type SyntaxNode,
+} from "@tinta-lang/syntax";
+import type { Span } from "@tinta-lang/types";
 import type {
   AnalysisSnapshot,
   CompletionContext,
@@ -7,7 +11,7 @@ import type {
   EditorHelp,
   EditorSymbol,
   EditorSignatureHelp,
-} from "@tinta/types/editor";
+} from "@tinta-lang/types/editor";
 import { immutable, snapshotSyntax } from "./analysis.js";
 import { catalog } from "./catalog.js";
 

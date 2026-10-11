@@ -1,5 +1,5 @@
 {
-  "name": "@tinta/reader",
+  "name": "@tinta-lang/reader",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,9 +10,9 @@
     }
   },
   "dependencies": {
-    "@tinta/types": "workspace:*",
-    "@tinta/engine": "workspace:*",
-    "@tinta/charts": "workspace:*"
+    "@tinta-lang/types": "workspace:*",
+    "@tinta-lang/engine": "workspace:*",
+    "@tinta-lang/charts": "workspace:*"
   },
   "files": [
     "dist"

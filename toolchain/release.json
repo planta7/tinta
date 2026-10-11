@@ -2,15 +2,15 @@
   "schemaVersion": 1,
   "identities": {
     "npmScope": {
-      "value": "@tinta",
+      "value": "@tinta-lang",
       "status": "proposed"
     },
     "repository": {
-      "value": null,
+      "value": "planta7/tinta",
       "status": "proposed"
     },
     "marketplacePublisher": {
-      "value": "tinta",
+      "value": "planta7",
       "status": "proposed"
     },
     "extensionName": {
@@ -45,7 +45,7 @@
     {
       "id": "types",
       "source": "packages/types",
-      "proposedName": "@tinta/types",
+      "proposedName": "@tinta-lang/types",
       "identityStatus": "proposed",
       "dependencies": [],
       "externalDependencies": {
@@ -65,7 +65,7 @@
     {
       "id": "syntax",
       "source": "packages/syntax",
-      "proposedName": "@tinta/syntax",
+      "proposedName": "@tinta-lang/syntax",
       "identityStatus": "proposed",
       "dependencies": ["types"],
       "externalDependencies": {
@@ -92,7 +92,7 @@
     {
       "id": "engine",
       "source": "packages/engine",
-      "proposedName": "@tinta/engine",
+      "proposedName": "@tinta-lang/engine",
       "identityStatus": "proposed",
       "dependencies": ["types", "syntax"],
       "externalDependencies": {
@@ -111,7 +111,7 @@
     {
       "id": "charts",
       "source": "packages/charts",
-      "proposedName": "@tinta/charts",
+      "proposedName": "@tinta-lang/charts",
       "identityStatus": "proposed",
       "dependencies": ["types", "engine"],
       "externalDependencies": {
@@ -132,7 +132,7 @@
     {
       "id": "reader",
       "source": "packages/reader",
-      "proposedName": "@tinta/reader",
+      "proposedName": "@tinta-lang/reader",
       "identityStatus": "proposed",
       "dependencies": ["types", "engine", "charts"],
       "externalDependencies": {},
@@ -149,7 +149,7 @@
     {
       "id": "artifacts",
       "source": "packages/artifacts",
-      "proposedName": "@tinta/artifacts",
+      "proposedName": "@tinta-lang/artifacts",
       "identityStatus": "proposed",
       "dependencies": ["types", "syntax", "engine", "charts"],
       "externalDependencies": {
@@ -171,7 +171,7 @@
     {
       "id": "local-files",
       "source": "packages/local-files",
-      "proposedName": "@tinta/local-files",
+      "proposedName": "@tinta-lang/local-files",
       "identityStatus": "proposed",
       "dependencies": ["types", "artifacts"],
       "externalDependencies": {},
@@ -185,7 +185,7 @@
     {
       "id": "cli",
       "source": "packages/cli",
-      "proposedName": "@tinta/cli",
+      "proposedName": "@tinta-lang/cli",
       "identityStatus": "proposed",
       "dependencies": ["types", "engine", "artifacts", "local-files"],
       "externalDependencies": {},
@@ -199,7 +199,7 @@
     {
       "id": "language-service",
       "source": "packages/language-service",
-      "proposedName": "@tinta/language-service",
+      "proposedName": "@tinta-lang/language-service",
       "identityStatus": "proposed",
       "dependencies": ["types", "syntax", "engine"],
       "externalDependencies": {},
@@ -216,7 +216,7 @@
     {
       "id": "language-server",
       "source": "packages/language-server",
-      "proposedName": "@tinta/language-server",
+      "proposedName": "@tinta-lang/language-server",
       "identityStatus": "proposed",
       "dependencies": ["types", "language-service"],
       "externalDependencies": {

@@ -114,10 +114,10 @@ See the [setup and toolchain guide](docs/09_FOUNDATION_TOOLCHAIN.md) for prerequ
 After `pnpm build`, validate and export an included example:
 
 ```sh
-pnpm --filter @tinta/cli exec tinta check examples/article.tinta
-pnpm --filter @tinta/cli exec tinta build examples/article.tinta \
+pnpm --filter @tinta-lang/cli exec tinta check examples/article.tinta
+pnpm --filter @tinta-lang/cli exec tinta build examples/article.tinta \
   --format interactive --output build/article.interactive.html
-pnpm --filter @tinta/cli exec tinta build examples/article.tinta \
+pnpm --filter @tinta-lang/cli exec tinta build examples/article.tinta \
   --format static --output build/article.static.html
 ```
 

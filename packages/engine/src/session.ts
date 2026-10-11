@@ -11,7 +11,7 @@ import type {
   Session,
   TableValue,
   Value,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import { attempt, Budget, fail, freeze, record } from "./common.js";
 import { programs } from "./programs.js";
 import {

@@ -1,5 +1,5 @@
 {
-  "name": "@tinta/language-service",
+  "name": "@tinta-lang/language-service",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,9 +10,9 @@
     }
   },
   "dependencies": {
-    "@tinta/types": "workspace:*",
-    "@tinta/syntax": "workspace:*",
-    "@tinta/engine": "workspace:*"
+    "@tinta-lang/types": "workspace:*",
+    "@tinta-lang/syntax": "workspace:*",
+    "@tinta-lang/engine": "workspace:*"
   },
   "files": [
     "dist"

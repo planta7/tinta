@@ -1,5 +1,5 @@
-import type { Program, ScalarType } from "@tinta/types";
-import type { EditorType } from "@tinta/types/editor";
+import type { Program, ScalarType } from "@tinta-lang/types";
+import type { EditorType } from "@tinta-lang/types/editor";
 import { freeze } from "./common.js";
 import { programs } from "./programs.js";
 

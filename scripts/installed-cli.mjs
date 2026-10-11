@@ -108,7 +108,7 @@ try {
   run([
     "pnpm",
     "--filter",
-    "@tinta/cli",
+    "@tinta-lang/cli",
     "--config.inject-workspace-packages=true",
     "deploy",
     "--prod",
@@ -272,7 +272,7 @@ try {
   );
   for (const name of ["artifacts", "engine", "types"]) {
     const dependency = realpathSync(
-      join(deployed, "node_modules", "@tinta", name),
+      join(deployed, "node_modules", "@tinta-lang", name),
     );
     const path = relative(temporary, dependency);
     check(

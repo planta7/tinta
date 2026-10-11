@@ -1,4 +1,4 @@
-import { createSession } from "@tinta/engine";
+import { createSession } from "@tinta-lang/engine";
 import type {
   ControlDefinition,
   ControlState,
@@ -6,7 +6,7 @@ import type {
   Result,
   Session,
   SourceProfile,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 
 export function signature(control: ControlDefinition): string {
   return JSON.stringify([

@@ -1,4 +1,8 @@
-import { parse, type SyntaxNode, type DirectiveSyntax } from "@tinta/syntax";
+import {
+  parse,
+  type SyntaxNode,
+  type DirectiveSyntax,
+} from "@tinta-lang/syntax";
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex } from "@noble/hashes/utils.js";
 import type {
@@ -15,7 +19,7 @@ import type {
   Scalar,
   Span,
   SourceInput,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import { attempt, Budget, fail, freeze, label } from "./common.js";
 import { grid, inDomain, units } from "./grid.js";
 import { bind } from "./binding.js";

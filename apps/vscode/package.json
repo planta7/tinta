@@ -1,13 +1,13 @@
 {
-  "name": "@tinta/vscode",
+  "name": "@tinta-lang/vscode",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "dependencies": {
     "vscode-languageclient": "10.1.2",
-    "@tinta/types": "workspace:*",
-    "@tinta/local-files": "workspace:*",
-    "@tinta/artifacts": "workspace:*"
+    "@tinta-lang/types": "workspace:*",
+    "@tinta-lang/local-files": "workspace:*",
+    "@tinta-lang/artifacts": "workspace:*"
   },
   "displayName": "Tinta",
   "publisher": "tinta-local",
@@ -112,6 +112,6 @@
   },
   "devDependencies": {
     "@types/vscode": "1.140.0",
-    "@tinta/engine": "workspace:*"
+    "@tinta-lang/engine": "workspace:*"
   }
 }

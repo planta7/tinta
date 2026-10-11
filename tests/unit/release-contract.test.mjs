@@ -28,7 +28,7 @@ function manifestFixture() {
     return {
       id: target.id,
       kind: npm ? "npm" : target.kind,
-      name: npm ? target.proposedName : extension ? "tinta.tinta" : target.id,
+      name: npm ? target.proposedName : extension ? "planta7.tinta" : target.id,
       version: extension
         ? config.versions.extension
         : config.versions.implementation,
@@ -101,7 +101,10 @@ describe("software distribution contract", () => {
     expect(config.packages).toHaveLength(10);
     expect(config.artifacts).toHaveLength(6);
     expect(config.policy.externalActivation).toBe(false);
-    expect(config.identities.repository.value).toBeNull();
+    expect(config.identities.repository.value).toBe("planta7/tinta");
+    expect(config.identities.npmScope.value).toBe("@tinta-lang");
+    expect(config.identities.marketplacePublisher.value).toBe("planta7");
+    expect(config.identities.extensionName.value).toBe("tinta");
   });
 
   it("closes CLI, patched parser, Studio and embedded reader dependencies", () => {
@@ -232,7 +235,8 @@ describe("software distribution contract", () => {
     manifests["."].private = false;
     expect(() => validateConfig(config, manifests)).toThrow(/private/);
     manifests["."].private = true;
-    manifests["packages/cli"].dependencies["@tinta/reader"] = "workspace:*";
+    manifests["packages/cli"].dependencies["@tinta-lang/reader"] =
+      "workspace:*";
     expect(() => validateConfig(config, manifests)).toThrow(/dependencies/);
   });
 

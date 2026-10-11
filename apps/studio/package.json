@@ -1,5 +1,5 @@
 {
-  "name": "@tinta/studio",
+  "name": "@tinta-lang/studio",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,12 +10,12 @@
     }
   },
   "dependencies": {
-    "@tinta/types": "workspace:*",
-    "@tinta/syntax": "workspace:*",
-    "@tinta/engine": "workspace:*",
-    "@tinta/charts": "workspace:*",
-    "@tinta/reader": "workspace:*",
-    "@tinta/artifacts": "workspace:*",
+    "@tinta-lang/types": "workspace:*",
+    "@tinta-lang/syntax": "workspace:*",
+    "@tinta-lang/engine": "workspace:*",
+    "@tinta-lang/charts": "workspace:*",
+    "@tinta-lang/reader": "workspace:*",
+    "@tinta-lang/artifacts": "workspace:*",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "@codemirror/state": "6.7.6",

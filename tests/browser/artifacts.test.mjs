@@ -523,10 +523,13 @@ test("rebuilt runtime accepts only its coordinated implementation version", asyn
       {
         name: "test-implementation-version",
         setup(builder) {
-          builder.onResolve({ filter: /^@tinta\/types\/version$/ }, () => ({
-            path: "implementation-version",
-            namespace: "test-version",
-          }));
+          builder.onResolve(
+            { filter: /^@tinta-lang\/types\/version$/ },
+            () => ({
+              path: "implementation-version",
+              namespace: "test-version",
+            }),
+          );
           builder.onLoad({ filter: /.*/, namespace: "test-version" }, () => ({
             contents: `export const implementationVersion = ${JSON.stringify(alternate)};`,
             loader: "js",

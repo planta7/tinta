@@ -1,4 +1,4 @@
-import type { PreparedChart } from "@tinta/types";
+import type { PreparedChart } from "@tinta-lang/types";
 
 /** Viewport-independent presentation derivation; never changes document state. */
 export function numericDomain(

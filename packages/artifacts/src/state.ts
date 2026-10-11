@@ -4,8 +4,8 @@ import type {
   Result,
   Session,
   StateEnvelope,
-} from "@tinta/types";
-import { createSession } from "@tinta/engine";
+} from "@tinta-lang/types";
+import { createSession } from "@tinta-lang/engine";
 import { attempt, object, reject, strictJson, unwrap } from "./common.js";
 
 export function createStateSnapshot(session: Session): StateEnvelope {

@@ -1,4 +1,4 @@
-import { implementationVersion } from "@tinta/types/version";
+import { implementationVersion } from "@tinta-lang/types/version";
 import type {
   Artifact,
   AssetStore,
@@ -6,9 +6,9 @@ import type {
   ResolvedNode,
   Result,
   Session,
-} from "@tinta/types";
-import { createSession, encodeProgram } from "@tinta/engine";
-import { chartScene } from "@tinta/charts";
+} from "@tinta-lang/types";
+import { createSession, encodeProgram } from "@tinta-lang/engine";
+import { chartScene } from "@tinta-lang/charts";
 import {
   artifact,
   attempt,

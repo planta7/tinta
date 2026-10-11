@@ -13,17 +13,17 @@ import {
 
 describe("native editor capability boundaries", () => {
   for (const [owner, dependency] of [
-    ["language-service", "@tinta/engine"],
+    ["language-service", "@tinta-lang/engine"],
     ["language-server", "node:worker_threads"],
     ["local-files", "node:fs/promises"],
     ["vscode", "vscode"],
     ["vscode", "vscode-languageclient/node"],
     ["language-server", "vscode-languageserver/node"],
-    ["vscode", "@tinta/local-files"],
-    ["vscode-webview", "@tinta/reader"],
-    ["cli", "@tinta/local-files"],
-    ["vscode-artifacts", "@tinta/engine"],
-    ["vscode-artifacts", "@tinta/artifacts"],
+    ["vscode", "@tinta-lang/local-files"],
+    ["vscode-webview", "@tinta-lang/reader"],
+    ["cli", "@tinta-lang/local-files"],
+    ["vscode-artifacts", "@tinta-lang/engine"],
+    ["vscode-artifacts", "@tinta-lang/artifacts"],
     ["vscode", "node:worker_threads"],
   ])
     it(`permits ${owner} -> ${dependency}`, () => {
@@ -32,7 +32,7 @@ describe("native editor capability boundaries", () => {
 
   for (const [owner, dependency] of [
     ["vscode-artifacts", "node:fs"],
-    ["vscode-artifacts", "@tinta/local-files"],
+    ["vscode-artifacts", "@tinta-lang/local-files"],
     ["vscode-artifacts", "vscode"],
     ["language-service", "node:fs"],
     ["language-service", "vscode"],
@@ -44,8 +44,8 @@ describe("native editor capability boundaries", () => {
     ["vscode-webview", "node:crypto"],
     ["vscode-webview", "vscode"],
     ["vscode-webview", "react"],
-    ["vscode-webview", "@tinta/local-files"],
-    ["engine", "@tinta/local-files"],
+    ["vscode-webview", "@tinta-lang/local-files"],
+    ["engine", "@tinta-lang/local-files"],
     ["vscode-webview", "vscode-languageclient"],
   ])
     it(`rejects ${owner} -> ${dependency}`, () => {
@@ -87,7 +87,7 @@ describe("native editor capability boundaries", () => {
       mkdirSync(join(native, "src/webview"));
       const browser = join(native, "src/webview/index.mjs");
 
-      writeFileSync(browser, 'import "@tinta/reader";');
+      writeFileSync(browser, 'import "@tinta-lang/reader";');
       expect(checkWorkspace(root)).toBe(11);
 
       writeFileSync(browser, 'import "node:fs";');
@@ -96,7 +96,7 @@ describe("native editor capability boundaries", () => {
       writeFileSync(browser, 'import "../index.js";');
       expect(() => checkWorkspace(root)).toThrow("Cross-boundary");
 
-      writeFileSync(browser, 'import "@tinta/reader";');
+      writeFileSync(browser, 'import "@tinta-lang/reader";');
 
       rmSync(join(root, ownerPath("engine"), "package.json"));
       expect(() => checkWorkspace(root)).toThrow();

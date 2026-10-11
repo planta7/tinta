@@ -19,7 +19,7 @@ test("production helpers load in an offline classic file artifact", async ({
     const require = createRequire(manifest),
       pkg = JSON.parse(await readFile(manifest, "utf8"));
     for (const name of Object.keys(pkg.dependencies).filter(
-      (n) => !n.startsWith("@tinta/"),
+      (n) => !n.startsWith("@tinta-lang/"),
     )) {
       const specifier =
         name === "@noble/hashes" ? "@noble/hashes/sha2.js" : name;

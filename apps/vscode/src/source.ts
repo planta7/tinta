@@ -1,5 +1,5 @@
-import { decodeUtf8, encodeUtf8, hash, limits } from "@tinta/types/common";
-import type { SourceIdentity } from "@tinta/types/editor";
+import { decodeUtf8, encodeUtf8, hash, limits } from "@tinta-lang/types/common";
+import type { SourceIdentity } from "@tinta-lang/types/editor";
 
 interface Line {
   readonly start: number;

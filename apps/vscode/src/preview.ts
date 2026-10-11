@@ -1,16 +1,21 @@
 import * as vscode from "vscode";
 import { createHash, randomBytes } from "node:crypto";
-import { readOpenedSource } from "@tinta/local-files";
-import { encodeUtf8, limits } from "@tinta/types/common";
+import { readOpenedSource } from "@tinta-lang/local-files";
+import { encodeUtf8, limits } from "@tinta-lang/types/common";
 import {
   boundedJson,
   sameDocument,
   sameRevision,
   webviewMessage,
   type WebviewIdentity,
-} from "@tinta/types/webview";
-import type { AssetStore, ControlState, ProgramIR, Result } from "@tinta/types";
-import type { SourceIdentity } from "@tinta/types/editor";
+} from "@tinta-lang/types/webview";
+import type {
+  AssetStore,
+  ControlState,
+  ProgramIR,
+  Result,
+} from "@tinta-lang/types";
+import type { SourceIdentity } from "@tinta-lang/types/editor";
 import { acquireSource, editSource, type NativeSource } from "./source.js";
 import {
   previewHtml,

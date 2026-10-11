@@ -1,6 +1,6 @@
 # Portable syntax API
 
-`@tinta/syntax` exports `parse`, `parseRecovering`, `enrichMarkdown`, `decodeUtf8` and `encodeUtf8`. `@tinta/types` supplies the shared integration types. The syntax package accepts explicit `markdown` or `tinta` profiles and text or UTF-8 bytes using `SourceInput`.
+`@tinta-lang/syntax` exports `parse`, `parseRecovering`, `enrichMarkdown`, `decodeUtf8` and `encodeUtf8`. `@tinta-lang/types` supplies the shared integration types. The syntax package accepts explicit `markdown` or `tinta` profiles and text or UTF-8 bytes using `SourceInput`.
 
 - `parse(input, options?)` returns `Result<ParsedSource>`. Syntax errors make the result unsuccessful. Success confirms parsing only: names, types, control domains, static option values, evaluation and validated program IR require the engine.
 - `parseRecovering(input, options?)` retains recoverable error nodes and later syntax for editing. A successful result may contain error diagnostics; it must never be treated as a compilable program. Fatal encoding/resource failures return an unsuccessful result.

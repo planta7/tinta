@@ -1,4 +1,7 @@
-import { diagnostic, identifyInternalDiagnostic } from "@tinta/types/common";
+import {
+  diagnostic,
+  identifyInternalDiagnostic,
+} from "@tinta-lang/types/common";
 import { Drafts } from "./drafts.js";
 import { readRoute, writeRoute } from "./navigation.js";
 import { catalogDialog } from "./catalog.js";
@@ -9,8 +12,8 @@ import { Welcome } from "./welcome.js";
 import { WorkspaceHeader } from "./workspace-header.js";
 import { editorOffset, sourceOffset } from "./source-buffer.js";
 
-import { importCsv, importJson } from "@tinta/engine";
-import { enrichMarkdown } from "@tinta/syntax";
+import { importCsv, importJson } from "@tinta-lang/engine";
+import { enrichMarkdown } from "@tinta-lang/syntax";
 import {
   ArtifactFailure,
   createAsset,
@@ -24,7 +27,7 @@ import {
   packSource,
   unwrap,
   validateAssets,
-} from "@tinta/artifacts";
+} from "@tinta-lang/artifacts";
 import type {
   Asset,
   DataImport,
@@ -32,7 +35,7 @@ import type {
   ImportColumn,
   Session,
   SourceProfile,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import { CompilerHost, type Compilation } from "./compiler-host.js";
 import { SourceEditor, tokenEffect } from "./editor.js";
 import { PreviewHost } from "./preview-host.js";

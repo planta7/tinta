@@ -1,4 +1,4 @@
-import { createSession } from "@tinta/engine";
+import { createSession } from "@tinta-lang/engine";
 import { CompilerHost } from "./compiler-host.js";
 import { PreviewHost } from "./preview-host.js";
 import { workerCode } from "./studio-runtime.js";

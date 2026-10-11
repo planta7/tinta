@@ -1,5 +1,5 @@
 {
-  "name": "@tinta/artifacts",
+  "name": "@tinta-lang/artifacts",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,10 +10,10 @@
     }
   },
   "dependencies": {
-    "@tinta/types": "workspace:*",
-    "@tinta/syntax": "workspace:*",
-    "@tinta/engine": "workspace:*",
-    "@tinta/charts": "workspace:*",
+    "@tinta-lang/types": "workspace:*",
+    "@tinta-lang/syntax": "workspace:*",
+    "@tinta-lang/engine": "workspace:*",
+    "@tinta-lang/charts": "workspace:*",
     "fflate": "0.8.3",
     "@noble/hashes": "2.4.0",
     "ajv": "8.20.0",

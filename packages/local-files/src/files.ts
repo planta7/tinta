@@ -11,7 +11,7 @@ import {
 } from "node:fs/promises";
 import { dirname, resolve, relative, sep, basename, join } from "node:path";
 import { randomUUID } from "node:crypto";
-import type { Asset, AssetStore, Program } from "@tinta/types";
+import type { Asset, AssetStore, Program } from "@tinta-lang/types";
 import {
   ArtifactFailure,
   createAsset,
@@ -19,7 +19,7 @@ import {
   normalizeAssetPath,
   unwrap,
   limits,
-} from "@tinta/artifacts";
+} from "@tinta-lang/artifacts";
 
 export class HostFailure extends Error {
   constructor(

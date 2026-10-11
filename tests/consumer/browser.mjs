@@ -1,5 +1,5 @@
-import { compile, createSession } from "@tinta/engine";
-import { mountReader } from "@tinta/reader";
+import { compile, createSession } from "@tinta-lang/engine";
+import { mountReader } from "@tinta-lang/reader";
 
 export function mount(host, standalone) {
   const source = `@slider amount = 2 (min: 0, max: 10, step: 1, label: "Amount")

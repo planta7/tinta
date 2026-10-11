@@ -4,7 +4,7 @@ import type {
   Position,
   SourceInput,
   Span,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import { registry } from "./registry.js";
 
 export class SyntaxFailure extends Error {
@@ -13,8 +13,8 @@ export class SyntaxFailure extends Error {
   }
 }
 
-import { decodeUtf8, encodeUtf8 } from "@tinta/types/utf8";
-export { decodeUtf8, encodeUtf8 } from "@tinta/types/utf8";
+import { decodeUtf8, encodeUtf8 } from "@tinta-lang/types/utf8";
+export { decodeUtf8, encodeUtf8 } from "@tinta-lang/types/utf8";
 
 export class Source {
   readonly lexemes: {

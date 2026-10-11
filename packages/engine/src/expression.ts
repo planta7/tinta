@@ -6,7 +6,7 @@ import type {
   ScalarType,
   TableValue,
   Value,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import { Budget, fail, scalarType } from "./common.js";
 
 export type Type =

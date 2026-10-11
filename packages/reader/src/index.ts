@@ -11,12 +11,12 @@ import type {
   Scalar,
   Session,
   Span,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import { createChartView, type ChartView } from "./chart-view.js";
 import { validateNodes } from "./policy.js";
 
-import { normalizeAssetPath, validateAssets } from "@tinta/types/assets";
-import { base64, identifyInternalDiagnostic } from "@tinta/types/common";
+import { normalizeAssetPath, validateAssets } from "@tinta-lang/types/assets";
+import { base64, identifyInternalDiagnostic } from "@tinta-lang/types/common";
 
 const mounts = new WeakSet<HTMLElement>();
 const reservedHeadings = new WeakMap<Document, Set<string>>();

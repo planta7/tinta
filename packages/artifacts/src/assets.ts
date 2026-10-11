@@ -1,1 +1,1 @@
-export * from "@tinta/types/assets";
+export * from "@tinta-lang/types/assets";

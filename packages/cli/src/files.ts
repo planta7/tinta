@@ -6,4 +6,4 @@ export {
   resolveAssets,
   atomicWrite,
   unpackTree,
-} from "@tinta/local-files";
+} from "@tinta-lang/local-files";

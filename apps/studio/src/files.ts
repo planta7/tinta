@@ -1,4 +1,4 @@
-import { limits, encodeUtf8 } from "@tinta/artifacts";
+import { limits, encodeUtf8 } from "@tinta-lang/artifacts";
 import { safeFilename } from "./model.js";
 
 interface WritableFile {

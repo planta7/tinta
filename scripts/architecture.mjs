@@ -101,9 +101,9 @@ export function checkImport(owner, specifier) {
     );
 
   if (
-    specifier.startsWith("@tinta/") &&
+    specifier.startsWith("@tinta-lang/") &&
     !(edges[owner] ?? editorEdges[owner] ?? []).includes(
-      specifier.slice(7).split("/")[0],
+      specifier.slice("@tinta-lang/".length).split("/")[0],
     )
   )
     throw new Error(`Forbidden dependency: ${owner} -> ${specifier}`);

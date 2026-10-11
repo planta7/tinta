@@ -232,7 +232,7 @@
           "externalDependencies": {
             "type": "object",
             "propertyNames": {
-              "pattern": "^(?!@tinta/)(@[^/]+/)?[a-z0-9][a-z0-9._-]*$"
+              "pattern": "^(?!@tinta-lang/)(@[^/]+/)?[a-z0-9][a-z0-9._-]*$"
             },
             "additionalProperties": {
               "type": "string",

@@ -3,9 +3,12 @@ import type {
   ControlState,
   HistogramBin,
   PreparedChart,
-} from "@tinta/types";
-import { chartPresentation, legendKey } from "@tinta/engine/chart-presentation";
-import { chartScene, coordinate } from "@tinta/charts";
+} from "@tinta-lang/types";
+import {
+  chartPresentation,
+  legendKey,
+} from "@tinta-lang/engine/chart-presentation";
+import { chartScene, coordinate } from "@tinta-lang/charts";
 
 type Datum = ChartPoint | HistogramBin;
 

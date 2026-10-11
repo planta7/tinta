@@ -1,5 +1,5 @@
-import type { Diagnostic, Span } from "@tinta/types";
-import type { AnalysisSnapshot } from "@tinta/types/editor";
+import type { Diagnostic, Span } from "@tinta-lang/types";
+import type { AnalysisSnapshot } from "@tinta-lang/types/editor";
 import type {
   Diagnostic as LspDiagnostic,
   Range,

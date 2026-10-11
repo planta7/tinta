@@ -161,7 +161,7 @@ async function parserBundle(entries) {
     platform: "neutral",
     format: "esm",
     target: "es2022",
-    external: ["@tinta/*"],
+    external: ["@tinta-lang/*"],
     write: false,
     metafile: true,
     sourcemap: false,
@@ -256,7 +256,7 @@ export async function packageNpm(config, destination) {
         entries[`dist/${name}`] = await readFile(`apps/vscode/dist/${name}`);
       entries["README.md"] = Buffer.from(
         "# Tinta language server\n\n" +
-          "Resolve `@tinta/language-server/ipc` and launch it with Node's `fork` " +
+          "Resolve `@tinta-lang/language-server/ipc` and launch it with Node's `fork` " +
           "and an IPC channel. It speaks LSP over Node IPC, uses UTF-16 positions " +
           "and full document synchronization. The sibling `worker.mjs` must stay " +
           "beside the launcher. No stdio transport or root import is provided.\n",
@@ -316,7 +316,8 @@ export async function packageNpm(config, destination) {
       "--pack-destination",
       resolve(destination),
     ]);
-    const archive = `tinta-${id}-${config.versions.implementation}.tgz`;
+    const packageBasename = target.proposedName.slice(1).replace("/", "-");
+    const archive = `${packageBasename}-${config.versions.implementation}.tgz`;
     const bytes = await readFile(join(destination, archive));
     const packed = readTarball(bytes);
     const files = inspectNpm(packed, config, target, manifest, expected);

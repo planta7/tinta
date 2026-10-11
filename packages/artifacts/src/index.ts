@@ -19,4 +19,4 @@ export {
   ArtifactFailure,
   unwrap,
 } from "./common.js";
-export { enrichMarkdown } from "@tinta/syntax";
+export { enrichMarkdown } from "@tinta-lang/syntax";

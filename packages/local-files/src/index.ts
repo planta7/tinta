@@ -1,6 +1,6 @@
 import { constants } from "node:fs";
 import { lstat, open, realpath } from "node:fs/promises";
-import { ArtifactFailure, limits } from "@tinta/types/common";
+import { ArtifactFailure, limits } from "@tinta-lang/types/common";
 
 /** Exact host-selected open document only; no image-root or output authority. */
 export async function readOpenedSource(path: string): Promise<Uint8Array> {

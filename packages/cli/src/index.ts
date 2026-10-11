@@ -1,6 +1,6 @@
-import { implementationVersion } from "@tinta/types/version";
+import { implementationVersion } from "@tinta-lang/types/version";
 import { randomUUID } from "node:crypto";
-import { identifyInternalDiagnostic } from "@tinta/types/common";
+import { identifyInternalDiagnostic } from "@tinta-lang/types/common";
 import { dirname, extname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import type {
@@ -9,8 +9,13 @@ import type {
   Diagnostic,
   ImportColumn,
   SourceProfile,
-} from "@tinta/types";
-import { compile, createSession, importCsv, importJson } from "@tinta/engine";
+} from "@tinta-lang/types";
+import {
+  compile,
+  createSession,
+  importCsv,
+  importJson,
+} from "@tinta-lang/engine";
 import {
   artifact,
   ArtifactFailure,
@@ -27,7 +32,7 @@ import {
   unwrap,
   validateStateSnapshot,
   validatedBundleEntries,
-} from "@tinta/artifacts";
+} from "@tinta-lang/artifacts";
 import {
   assertOutput,
   atomicWrite,

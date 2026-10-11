@@ -173,7 +173,7 @@ function dependency(name, version) {
     !snapshot ||
     !record ||
     !lock.packages[base]?.resolution.integrity ||
-    name.startsWith("@tinta/")
+    name.startsWith("@tinta-lang/")
   )
     throw new Error(`Unapproved external dependency: ${key}`);
   closure.set(key, {
@@ -229,7 +229,7 @@ await writeFile(
       targets: reports,
       limitations: [
         "Local artifact inventory, not an attested or installed-consumer verification manifest.",
-        "Public identities remain proposed; repository metadata is omitted while its identity is unset.",
+        "Configured identities and repository metadata do not establish registry authentication or published availability.",
         "Native Linux/Windows and system-wide offline verification remain outstanding.",
       ],
     },

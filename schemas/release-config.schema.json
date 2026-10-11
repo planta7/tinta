@@ -34,7 +34,7 @@
               "type": "string",
               "minLength": 1,
               "maxLength": 128,
-              "pattern": "^@tinta$"
+              "pattern": "^@tinta-lang$"
             },
             "status": {
               "const": "proposed"
@@ -235,7 +235,7 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 512,
-            "pattern": "^@tinta/[a-z-]+$"
+            "pattern": "^@tinta-lang/[a-z-]+$"
           },
           "identityStatus": {
             "const": "proposed"
@@ -262,7 +262,7 @@
           "externalDependencies": {
             "type": "object",
             "propertyNames": {
-              "pattern": "^(?!@tinta/)(@[^/]+/)?[a-z0-9][a-z0-9._-]*$"
+              "pattern": "^(?!@tinta-lang/)(@[^/]+/)?[a-z0-9][a-z0-9._-]*$"
             },
             "additionalProperties": {
               "type": "string",
@@ -409,7 +409,7 @@
           "externalDependencies": {
             "type": "object",
             "propertyNames": {
-              "pattern": "^(?!@tinta/)(@[^/]+/)?[a-z0-9][a-z0-9._-]*$"
+              "pattern": "^(?!@tinta-lang/)(@[^/]+/)?[a-z0-9][a-z0-9._-]*$"
             },
             "additionalProperties": {
               "type": "string",

@@ -1,7 +1,7 @@
 import { createElement as h, type MouseEvent } from "react";
 import { filenameParts } from "./model.js";
 import { brand, button, menu } from "./controls.js";
-import type { SourceProfile } from "@tinta/types";
+import type { SourceProfile } from "@tinta-lang/types";
 
 export interface WorkspaceActions {
   filename: string;

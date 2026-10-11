@@ -1,6 +1,6 @@
 import { parentPort, type MessagePort } from "node:worker_threads";
 import { authoring } from "./authoring.js";
-import { analyze } from "@tinta/language-service";
+import { analyze } from "@tinta-lang/language-service";
 import type {
   AnalysisRequest,
   AnalysisReply,

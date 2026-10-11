@@ -37,5 +37,5 @@ export function checkParser({ parse, parseRecovering }) {
 }
 
 if (process.argv[2] === "--installed") {
-  checkParser(await import("@tinta/syntax"));
+  checkParser(await import("@tinta-lang/syntax"));
 }

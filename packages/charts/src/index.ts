@@ -1,5 +1,5 @@
-import type { ChartPoint, PreparedChart } from "@tinta/types";
-import { chartPresentation } from "@tinta/engine/chart-presentation";
+import type { ChartPoint, PreparedChart } from "@tinta-lang/types";
+import { chartPresentation } from "@tinta-lang/engine/chart-presentation";
 import { ticks } from "d3-array";
 import { scaleBand, scaleLinear, scalePoint } from "d3-scale";
 import {

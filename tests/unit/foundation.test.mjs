@@ -30,9 +30,9 @@ describe("workspace capability boundaries", () => {
     ["types", "fs"],
     ["reader", "react"],
     ["artifacts", "@codemirror/view"],
-    ["reader", "@tinta/studio"],
-    ["engine", "@tinta/reader/internal"],
-    ["types", "@tinta/engine"],
+    ["reader", "@tinta-lang/studio"],
+    ["engine", "@tinta-lang/reader/internal"],
+    ["types", "@tinta-lang/engine"],
   ])
     it(`rejects ${owner} -> ${dependency}`, () =>
       expect(() => checkImport(owner, dependency)).toThrow());
@@ -60,7 +60,7 @@ describe("workspace capability boundaries", () => {
 
   it("permits approved pure engine subpaths in the geometry adapter", () =>
     expect(() =>
-      checkImport("charts", "@tinta/engine/chart-presentation"),
+      checkImport("charts", "@tinta-lang/engine/chart-presentation"),
     ).not.toThrow());
 
   it("allows type-only local imports and pure calculations", () =>
@@ -195,7 +195,7 @@ describe("real dependencies and packaging", () => {
       const require = createRequire(join(process.cwd(), base));
 
       for (const name of Object.keys(json(base).dependencies).filter(
-        (n) => !n.startsWith("@tinta/"),
+        (n) => !n.startsWith("@tinta-lang/"),
       )) {
         const specifier =
           name === "@noble/hashes" ? "@noble/hashes/sha2.js" : name;

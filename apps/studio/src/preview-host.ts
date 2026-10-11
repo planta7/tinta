@@ -1,5 +1,5 @@
-import { encodeProgram } from "@tinta/engine";
-import type { AssetStore, ControlState, Program } from "@tinta/types";
+import { encodeProgram } from "@tinta-lang/engine";
+import type { AssetStore, ControlState, Program } from "@tinta-lang/types";
 import {
   base,
   baseKeys,

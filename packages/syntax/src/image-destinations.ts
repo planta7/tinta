@@ -1,5 +1,5 @@
 import { parse as tokenize, postprocess, preprocess } from "micromark";
-import type { SourceInput, Result, TextEdit } from "@tinta/types";
+import type { SourceInput, Result, TextEdit } from "@tinta-lang/types";
 import { parse } from "./parser.js";
 import { Source } from "./source.js";
 import { markdown, dialect } from "./markdown.js";

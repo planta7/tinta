@@ -1,6 +1,6 @@
 # CLI contract
 
-The command name is the internal executable `tinta`; no public npm-name availability or package publication is assumed. In a development workspace use `pnpm --filter @tinta/cli exec tinta ...` after building/linking the workspace. `--help` and `--version` are implemented before other commands. Version prints implementation semver, source-format version and IR ABI.
+The command name is the internal executable `tinta`; no public npm-name availability or package publication is assumed. In a development workspace use `pnpm --filter @tinta-lang/cli exec tinta ...` after building/linking the workspace. `--help` and `--version` are implemented before other commands. Version prints implementation semver, source-format version and IR ABI.
 
 ## Commands
 

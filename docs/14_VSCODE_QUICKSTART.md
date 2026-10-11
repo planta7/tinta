@@ -6,7 +6,7 @@ Write Markdown-first interactive documents locally with controls, formulas, tabl
 
 Use **Extensions: Install from VSIX…** and choose the downloaded `.vsix` file, then reload VS Code. Alternatively, run `code --install-extension /path/to/tinta.vsix`. The extension is not available on the Marketplace yet. Only macOS arm64 has native test observations; Linux and Windows remain unverified. Remote workspaces, containers, virtual filesystems and vscode.dev are unsupported.
 
-If you switch from the local `tinta-local.tinta` extension to `tinta.tinta`, disable or uninstall the local extension before enabling the new one to avoid duplicate language providers. Keep your documents and check your settings after switching; settings are not migrated automatically.
+If you switch from the local `tinta-local.tinta` extension to `planta7.tinta`, disable or uninstall the local extension before enabling the new one to avoid duplicate language providers. Keep your documents and check your settings after switching; settings are not migrated automatically.
 
 ## Create a document
 
@@ -62,6 +62,6 @@ Run **Tinta: Export Interactive HTML** or **Tinta: Export Static HTML**, choose 
 
 ## CLI and CI
 
-The extension does not install a global CLI. In a repository with the separately provisioned Tinta CLI, use `tinta check document.tinta --json` for source diagnostics; see the CLI documentation for asset-check options and exit-code usage. With the source workspace and pinned toolchain, the equivalent is `pnpm --filter @tinta/cli exec tinta check document.tinta --json`. CI should fail on the command's nonzero exit status. Never choose a workspace executable from authored document text.
+The extension does not install a global CLI. In a repository with the separately provisioned Tinta CLI, use `tinta check document.tinta --json` for source diagnostics; see the CLI documentation for asset-check options and exit-code usage. With the source workspace and pinned toolchain, the equivalent is `pnpm --filter @tinta-lang/cli exec tinta check document.tinta --json`. CI should fail on the command's nonzero exit status. Never choose a workspace executable from authored document text.
 
 The minimum and currently tested VS Code build are both 1.141.0, commit `2a59476c9bfcb90b3ddc372c36762471b7dfad1c`. Later desktop versions require fresh compatibility testing. Language draft changes can narrow accepted input; preserve original source files and inspect diagnostics before exporting.

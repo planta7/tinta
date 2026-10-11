@@ -64,9 +64,9 @@ commands.push({
 });
 assert.equal(typecheck.status, 0, typecheck.stdout + typecheck.stderr);
 groups.push("declarations:strict-node-next");
-checkParser(await import("@tinta/syntax"));
+checkParser(await import("@tinta-lang/syntax"));
 groups.push("parser:budget-depth-recovery-spans");
-const { compile, createSession } = await import("@tinta/engine");
+const { compile, createSession } = await import("@tinta-lang/engine");
 const source = `@slider amount = 2 (min: 0, max: 10, step: 1, label: "Amount")
 
 Value: {{ amount }}
@@ -86,7 +86,7 @@ assert.equal(session.value.getRevision().state.amount, 2);
 session.value.destroy();
 groups.push("engine:compile-evaluate");
 const { analyze, completion, definition } =
-  await import("@tinta/language-service");
+  await import("@tinta-lang/language-service");
 const analysis = analyze(input, {
   documentInstance: "a".repeat(32),
   editorVersion: 1,
@@ -103,7 +103,7 @@ assert.ok(
 );
 groups.push("language-service:queries");
 const child = fork(
-  fileURLToPath(import.meta.resolve("@tinta/language-server/ipc")),
+  fileURLToPath(import.meta.resolve("@tinta-lang/language-server/ipc")),
   [],
   {
     cwd: process.cwd(),
@@ -168,7 +168,7 @@ try {
 }
 groups.push("ipc:server-worker-handshake");
 await checkIpcWatchdog(
-  fileURLToPath(import.meta.resolve("@tinta/language-server/ipc")),
+  fileURLToPath(import.meta.resolve("@tinta-lang/language-server/ipc")),
   join(process.cwd(), "watchdog"),
 );
 groups.push("ipc:watchdog-restart-production-worker");
@@ -221,7 +221,8 @@ cli(["check", "unpacked/document.tinta", "--with-assets"]);
 cli(["studio", "--output", "tinta-studio.html"]);
 const located = cli(["studio"]);
 inside(await realpath(fileURLToPath(located.details.uri)));
-const { readOpenedSource, resolveAssets } = await import("@tinta/local-files");
+const { readOpenedSource, resolveAssets } =
+  await import("@tinta-lang/local-files");
 assert.equal(
   Buffer.from(await readOpenedSource("document.tinta")).toString(),
   source,

@@ -1,5 +1,8 @@
-import { implementationVersion } from "@tinta/types/version";
-import { restoreExportProgram, createSession } from "@tinta/engine/runtime";
+import { implementationVersion } from "@tinta-lang/types/version";
+import {
+  restoreExportProgram,
+  createSession,
+} from "@tinta-lang/engine/runtime";
 import { mountReader } from "./index.js";
 import {
   strictJson,
@@ -8,14 +11,14 @@ import {
   object,
   unwrap,
   base64,
-} from "@tinta/types/common";
+} from "@tinta-lang/types/common";
 import {
   createAsset,
   validateAssets,
   normalizeAssetPath,
   imageDestinations,
-} from "@tinta/types/assets";
-import type { Asset, ControlState } from "@tinta/types";
+} from "@tinta-lang/types/assets";
+import type { Asset, ControlState } from "@tinta-lang/types";
 
 /** The shell pins the exact validated payload, independently of the document source. */
 export function start(expectedHash: string): void {

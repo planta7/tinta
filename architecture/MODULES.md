@@ -4,22 +4,22 @@
 
 ```text
 packages/
-  types/          @tinta/types       spans, AST/IR, diagnostics, public DTOs
-  syntax/         @tinta/syntax      Markdown profile, Tinta tokens, expression parser
-  engine/         @tinta/engine      binding, types, DAG, evaluation, chart preparation
-  charts/         @tinta/charts      pure chart scene geometry, SVG-safe primitives
-  reader/         @tinta/reader      safe DOM mounting, focus, control and chart interaction
-  artifacts/      @tinta/artifacts   source bundles, snapshots, HTML serialization
-  cli/            @tinta/cli         filesystem adapters, command interface
+  types/          @tinta-lang/types       spans, AST/IR, diagnostics, public DTOs
+  syntax/         @tinta-lang/syntax      Markdown profile, Tinta tokens, expression parser
+  engine/         @tinta-lang/engine      binding, types, DAG, evaluation, chart preparation
+  charts/         @tinta-lang/charts      pure chart scene geometry, SVG-safe primitives
+  reader/         @tinta-lang/reader      safe DOM mounting, focus, control and chart interaction
+  artifacts/      @tinta-lang/artifacts   source bundles, snapshots, HTML serialization
+  cli/            @tinta-lang/cli         filesystem adapters, command interface
 apps/
-  studio/         @tinta/studio      local reference editor
+  studio/         @tinta-lang/studio      local reference editor
 conformance/                      inputs and expected semantics
 schemas/                          interchange envelope definitions
 ```
 
 Dependencies form a DAG: types → syntax → engine; types/engine → charts; engine/charts → reader; syntax/engine/charts → artifacts; artifacts/engine → cli; public packages → studio. Here an arrow means “is a prerequisite for”. `reader` may use shared serialization utilities from `artifacts` only if those utilities are moved into a separate leaf `types` helper; do not create a cycle. `artifacts` embeds the already-built reader IIFE as bytes, never imports React.
 
-Only the shared `@tinta/local-files` Node adapter may access granted author filesystem paths. The CLI may also locate its fixed bundled Studio artifact. CLI and the VS Code host supply explicit bounded file/root grants; Workspace Trust is never a directory grant. Studio sees only files chosen by the user. Pure packages receive text, bytes, typed records and explicit options; no ambient path, locale, clock, random values or network. Core never calls `fetch`, `localStorage`, IndexedDB or Node fs.
+Only the shared `@tinta-lang/local-files` Node adapter may access granted author filesystem paths. The CLI may also locate its fixed bundled Studio artifact. CLI and the VS Code host supply explicit bounded file/root grants; Workspace Trust is never a directory grant. Studio sees only files chosen by the user. Pure packages receive text, bytes, typed records and explicit options; no ambient path, locale, clock, random values or network. Core never calls `fetch`, `localStorage`, IndexedDB or Node fs.
 
 ## Pipeline
 
@@ -72,10 +72,10 @@ The [VS Code host contract](../docs/13_VSCODE.md) adds these separate owners:
 
 | Owner | Dependencies and authority |
 |---|---|
-| `@tinta/language-service` | types, syntax, engine; pure analysis and query DTOs, no host APIs. |
-| `@tinta/language-server` | types, language-service; local LSP scheduling and worker supervision, no asset/filesystem/network authority. |
-| `@tinta/local-files` | types, artifacts; explicit Node file capabilities shared by CLI and native host. |
-| `@tinta/vscode` | types, language-service, local-files, artifacts; local VS Code document adapter, client and grants. |
+| `@tinta-lang/language-service` | types, syntax, engine; pure analysis and query DTOs, no host APIs. |
+| `@tinta-lang/language-server` | types, language-service; local LSP scheduling and worker supervision, no asset/filesystem/network authority. |
+| `@tinta-lang/local-files` | types, artifacts; explicit Node file capabilities shared by CLI and native host. |
+| `@tinta-lang/vscode` | types, language-service, local-files, artifacts; local VS Code document adapter, client and grants. |
 | VS Code artifact worker | types, engine, artifacts and a fixed worker port; separate `src/artifact-worker` subtree, supplied bytes only, no filesystem or native editor APIs. |
 | VS Code browser entry | types, engine, reader, artifacts; separate `src/webview` subtree with no Node, VS Code API import, React or CodeMirror. |
 

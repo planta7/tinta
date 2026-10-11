@@ -1,9 +1,9 @@
 # Safe document reader API
 
-`@tinta/reader` exports the browser-only `mountReader(session, host, options)` function from the public contract. Create a session through the engine's validated compile/decode and session APIs before mounting. The reader does not compile source or accept serialized IR in place of a session.
+`@tinta-lang/reader` exports the browser-only `mountReader(session, host, options)` function from the public contract. Create a session through the engine's validated compile/decode and session APIs before mounting. The reader does not compile source or accept serialized IR in place of a session.
 
 ```ts
-import { mountReader } from "@tinta/reader";
+import { mountReader } from "@tinta-lang/reader";
 
 const mounted = mountReader(session, { nativeElement: container }, {
   assets: new Map(),
@@ -54,7 +54,7 @@ Clicking or using an inspected linked value writes its x scalar through the norm
 
 Legend buttons change only local series/category visibility. Hidden preferences survive filtering within the mounted program; tables continue to show hidden data. Pie/donut descriptions identify the visible total. Reset reading and `resetPresentation()` restore legend visibility, clear pins and close figure data disclosures. Chart controls are retained across answer updates; ResizeObserver changes only geometry. Destruction disconnects observers and removes listeners and pending announcements.
 
-`@tinta/charts` exports the portable `chartScene(preparedChart, width, hiddenKeys?, selectedX?)` adapter. It consumes validated prepared data and returns a closed primitive scene, with no DOM or filesystem operations. Use width 720 for the nominal static geometry; this does not itself provide an HTML exporter. The engine's pure `chartPresentation`, `legendKey` and `numericDomain` helpers derive viewport-independent visibility, domains and totals. Scene coordinates use at most three fractional digits. The locked D3 array/scale/shape modules provide ticks and geometry, without author-controlled chart grammar.
+`@tinta-lang/charts` exports the portable `chartScene(preparedChart, width, hiddenKeys?, selectedX?)` adapter. It consumes validated prepared data and returns a closed primitive scene, with no DOM or filesystem operations. Use width 720 for the nominal static geometry; this does not itself provide an HTML exporter. The engine's pure `chartPresentation`, `legendKey` and `numericDomain` helpers derive viewport-independent visibility, domains and totals. Scene coordinates use at most three fractional digits. The locked D3 array/scale/shape modules provide ticks and geometry, without author-controlled chart grammar.
 
 The charts TypeScript project includes DOM declarations because the locked D3 declarations reference `ImageData` in an unused image-blur API. This is a declaration dependency only: charts source has no DOM access; syntax and engine retain their ES-only compiler libraries. The standalone reader includes only the engine's pure chart-presentation helper, never compilation, evaluation, program decoding or a framework.
 

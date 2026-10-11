@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { FileController } from "./files.js";
 import { PreviewController } from "./preview.js";
-import { limits } from "@tinta/types/common";
+import { limits } from "@tinta-lang/types/common";
 import { randomBytes } from "node:crypto";
 import {
   LanguageClient,

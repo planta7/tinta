@@ -18,6 +18,6 @@ export type {
   EditorSymbol,
   EditorToken,
   EditorType,
-} from "@tinta/types/editor";
+} from "@tinta-lang/types/editor";
 export { preparePreview } from "./preview.js";
 export type { PreviewCompilation } from "./preview.js";

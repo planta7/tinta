@@ -27,7 +27,7 @@ for (const path of [
     ...manifest.dependencies,
     ...manifest.devDependencies,
   })) {
-    if (name.startsWith("@tinta/")) continue;
+    if (name.startsWith("@tinta-lang/")) continue;
     if (!semver.valid(version)) throw new Error(`Not exact: ${name}`);
     const record = records.find(
       (r) => r.name === name && r.version === version,

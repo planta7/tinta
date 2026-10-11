@@ -541,7 +541,7 @@ export interface MountOptions {
   readonly onDiagnostic?: (diagnostic: Diagnostic) => void;
   readonly assets: AssetStore;
 }
-/** Browser-only export from @tinta/reader; HTMLElement is not imported by core packages. */
+/** Browser-only export from @tinta-lang/reader; HTMLElement is not imported by core packages. */
 
 export interface ReaderHost {
   readonly nativeElement: unknown;

@@ -1,4 +1,4 @@
-import { compile, createSession } from "@tinta/engine";
+import { compile, createSession } from "@tinta-lang/engine";
 import {
   ArtifactFailure,
   enrichMarkdown,
@@ -7,7 +7,7 @@ import {
   openBundle,
   packSource,
   unwrap,
-} from "@tinta/artifacts";
+} from "@tinta-lang/artifacts";
 import type { ArtifactReply, ArtifactRequest } from "../artifact-protocol.js";
 
 /** Supplied bytes only. The worker has no file grants or native editor API. */

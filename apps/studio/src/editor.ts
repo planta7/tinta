@@ -32,7 +32,7 @@ import {
 import { searchKeymap, highlightSelectionMatches } from "@codemirror/search";
 import { autocompletion, snippetCompletion } from "@codemirror/autocomplete";
 import { markdown } from "@codemirror/lang-markdown";
-import type { AssetStore, SourceProfile, TextEdit } from "@tinta/types";
+import type { AssetStore, SourceProfile, TextEdit } from "@tinta-lang/types";
 import { snippets } from "./studio-runtime.js";
 
 export const assetEffect = StateEffect.define<AssetStore>();

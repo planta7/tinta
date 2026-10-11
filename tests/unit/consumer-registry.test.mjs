@@ -86,7 +86,7 @@ describe("sealed consumer registry", () => {
       {
         bytes,
         manifest: {
-          name: "@tinta/fixture",
+          name: "@tinta-lang/fixture",
           version: "1.0.0",
           dependencies: { exact: "2.0.0" },
         },
@@ -94,7 +94,7 @@ describe("sealed consumer registry", () => {
     ]);
     try {
       const metadata = await (
-        await fetch(`${registry.origin}/@tinta%2ffixture`)
+        await fetch(`${registry.origin}/@tinta-lang%2ffixture`)
       ).json();
       const version = metadata.versions["1.0.0"];
       expect(version.dependencies).toEqual({ exact: "2.0.0" });
@@ -106,7 +106,7 @@ describe("sealed consumer registry", () => {
       expect((await fetch(`${registry.origin}/%invalid`)).status).toBe(400);
       expect(
         (
-          await fetch(`${registry.origin}/@tinta%2ffixture`, {
+          await fetch(`${registry.origin}/@tinta-lang%2ffixture`, {
             method: "PUT",
             body: "{}",
           })
@@ -114,7 +114,7 @@ describe("sealed consumer registry", () => {
       ).toBe(403);
       expect(
         (
-          await fetch(`${registry.origin}/@tinta%2ffixture`, {
+          await fetch(`${registry.origin}/@tinta-lang%2ffixture`, {
             headers: { authorization: "Bearer fixture" },
           })
         ).status,

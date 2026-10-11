@@ -1,18 +1,18 @@
-import { analyzeProgram, compile, createSession } from "@tinta/engine";
+import { analyzeProgram, compile, createSession } from "@tinta-lang/engine";
 import {
   parseRecovering,
   expressionLexemes,
   type ParsedSource,
   type SyntaxNode,
-} from "@tinta/syntax";
-import { hash } from "@tinta/types/common";
+} from "@tinta-lang/syntax";
+import { hash } from "@tinta-lang/types/common";
 import type {
   CompilerOptions,
   Expr,
   Result,
   SourceInput,
   Span,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import type {
   AnalysisSnapshot,
   EditorReference,
@@ -20,7 +20,7 @@ import type {
   EditorToken,
   EditorType,
   SourceIdentity,
-} from "@tinta/types/editor";
+} from "@tinta-lang/types/editor";
 
 export type AnalysisVersion = Pick<
   SourceIdentity,

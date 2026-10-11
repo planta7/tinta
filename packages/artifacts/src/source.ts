@@ -1,6 +1,6 @@
-import type { AssetStore, Program } from "@tinta/types";
-import { compile, createSession } from "@tinta/engine";
-import { imageDestinationEdits } from "@tinta/syntax";
+import type { AssetStore, Program } from "@tinta-lang/types";
+import { compile, createSession } from "@tinta-lang/engine";
+import { imageDestinationEdits } from "@tinta-lang/syntax";
 import { requiredAssets } from "./assets.js";
 import { normalizeAssetPath } from "./assets.js";
 import { reject, unwrap } from "./common.js";

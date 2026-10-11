@@ -1,4 +1,4 @@
-import type { ResolvedNode } from "@tinta/types";
+import type { ResolvedNode } from "@tinta-lang/types";
 
 const tags = new Set([
   "article",

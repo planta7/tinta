@@ -3,7 +3,7 @@ import type {
   Builtin,
   Expr,
   UnaryOperator,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import { Source } from "./source.js";
 import { registry } from "./registry.js";
 

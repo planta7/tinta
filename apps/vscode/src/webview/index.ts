@@ -1,6 +1,10 @@
-import { createSession, decodeProgram, encodeProgram } from "@tinta/engine";
-import { validateAssets } from "@tinta/artifacts";
-import { diagnostic, limits } from "@tinta/types/common";
+import {
+  createSession,
+  decodeProgram,
+  encodeProgram,
+} from "@tinta-lang/engine";
+import { validateAssets } from "@tinta-lang/artifacts";
+import { diagnostic, limits } from "@tinta-lang/types/common";
 import {
   boundedJson,
   controlState,
@@ -12,8 +16,8 @@ import {
   unsigned,
   type ExtensionToWebview,
   type WebviewIdentity,
-} from "@tinta/types/webview";
-import type { Asset, ControlDefinition, Session } from "@tinta/types";
+} from "@tinta-lang/types/webview";
+import type { Asset, ControlDefinition, Session } from "@tinta-lang/types";
 
 declare const acquireVsCodeApi: () => { postMessage(message: unknown): void };
 declare const tintaBootstrap: {

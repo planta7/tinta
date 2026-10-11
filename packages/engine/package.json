@@ -1,5 +1,5 @@
 {
-  "name": "@tinta/engine",
+  "name": "@tinta-lang/engine",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -18,8 +18,8 @@
     }
   },
   "dependencies": {
-    "@tinta/types": "workspace:*",
-    "@tinta/syntax": "workspace:*",
+    "@tinta-lang/types": "workspace:*",
+    "@tinta-lang/syntax": "workspace:*",
     "@noble/hashes": "2.4.0"
   },
   "files": [

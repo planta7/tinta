@@ -1,4 +1,4 @@
-import { decodeUtf8, encodeUtf8, parse } from "@tinta/syntax";
+import { decodeUtf8, encodeUtf8, parse } from "@tinta-lang/syntax";
 import type {
   DataImport,
   DataImportOptions,
@@ -6,7 +6,7 @@ import type {
   Result,
   Scalar,
   ScalarType,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import { attempt, Budget, Failure, fail, scalarType } from "./common.js";
 import { registry } from "./registry.js";
 

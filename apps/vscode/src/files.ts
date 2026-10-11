@@ -8,15 +8,15 @@ import {
   readAssets,
   readBounded,
   HostFailure,
-} from "@tinta/local-files";
+} from "@tinta-lang/local-files";
 import {
   ArtifactFailure,
   decodeUtf8,
   encodeUtf8,
   limits,
-} from "@tinta/types/common";
-import { validateAssets } from "@tinta/artifacts";
-import type { Asset, AssetStore, ControlState } from "@tinta/types";
+} from "@tinta-lang/types/common";
+import { validateAssets } from "@tinta-lang/artifacts";
+import type { Asset, AssetStore, ControlState } from "@tinta-lang/types";
 import { runArtifact } from "./artifacts.js";
 import type { ArtifactRequest, ArtifactReply } from "./artifact-protocol.js";
 import type { PreviewController } from "./preview.js";

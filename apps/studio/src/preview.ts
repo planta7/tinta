@@ -1,7 +1,12 @@
-import { createSession, decodeProgram } from "@tinta/engine";
-import { mountReader } from "@tinta/reader";
-import { validateAssets } from "@tinta/artifacts";
-import type { Asset, ControlState, ReaderHandle, Session } from "@tinta/types";
+import { createSession, decodeProgram } from "@tinta-lang/engine";
+import { mountReader } from "@tinta-lang/reader";
+import { validateAssets } from "@tinta-lang/artifacts";
+import type {
+  Asset,
+  ControlState,
+  ReaderHandle,
+  Session,
+} from "@tinta-lang/types";
 import {
   base,
   baseKeys,

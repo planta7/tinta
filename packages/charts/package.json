@@ -1,5 +1,5 @@
 {
-  "name": "@tinta/charts",
+  "name": "@tinta-lang/charts",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,8 +10,8 @@
     }
   },
   "dependencies": {
-    "@tinta/types": "workspace:*",
-    "@tinta/engine": "workspace:*",
+    "@tinta-lang/types": "workspace:*",
+    "@tinta-lang/engine": "workspace:*",
     "d3-array": "3.2.4",
     "d3-scale": "4.0.2",
     "d3-shape": "3.2.0"

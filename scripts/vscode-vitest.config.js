@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 export default defineConfig({
   resolve: {
     alias: {
-      "@tinta/local-files": resolve("packages/local-files/dist/index.js"),
+      "@tinta-lang/local-files": resolve("packages/local-files/dist/index.js"),
       vscode: resolve("tests/vscode/api-stub.mjs"),
       "vscode-languageclient/node": resolve("tests/vscode/client-stub.mjs"),
       "vscode-languageserver/node": resolve("tests/vscode/server-stub.mjs"),

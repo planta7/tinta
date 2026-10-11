@@ -22,7 +22,7 @@ Status: normative scope and implementation baseline, 8 October 2026.
 | ID | Decision | Rationale |
 |---|---|---|
 | DES-01 | Accept `.tinta` as plain text; `.tinta.zip` is a separate portable container. | Keep source readable and diffable, even when a document has images. |
-| DES-02 | Working repository `tinta`, CLI `tinta`, internal packages `@tinta/*`. No public name registration. | Internal workspace identifiers do not claim ownership of a public namespace. |
+| DES-02 | Repository `planta7/tinta`, CLI `tinta`, workspace and npm packages `@tinta-lang/*`, Marketplace extension `planta7.tinta`. | Workspace and distribution names agree; configured identities do not imply published availability. |
 | DES-03 | Language target `1.0`, contract revision `1.0-draft.3`; no stable release claim. | Separate the intended format from implementation maturity. |
 | DES-04 | CommonMark 0.31.2 base with exactly GFM tables, task lists and double-tilde strikethrough. | Explicit, testable Markdown scope. |
 | DES-05 | `{{ expression }}`, option groups `(key: value, ...)`, `@end` blocks and explicit `row.field`. | Reduce literal-text collisions, multiline friction and row-name ambiguity. |

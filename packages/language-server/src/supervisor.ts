@@ -4,8 +4,8 @@ import {
   diagnostic,
   identifyInternalDiagnostic,
   limits,
-} from "@tinta/types/common";
-import type { AnalysisSnapshot } from "@tinta/types/editor";
+} from "@tinta-lang/types/common";
+import type { AnalysisSnapshot } from "@tinta-lang/types/editor";
 import type {
   AnalysisRequest,
   AnalysisReply,

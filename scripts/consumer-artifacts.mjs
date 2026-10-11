@@ -169,7 +169,7 @@ try {
   registry = await startRegistry(packages);
   loopbackRegistry(registry.origin);
   const manifests = packages
-    .filter((item) => item.manifest.name.startsWith("@tinta/"))
+    .filter((item) => item.manifest.name.startsWith("@tinta-lang/"))
     .map((item) => item.manifest);
   const downloads = join(temporary, "downloads");
   for (const target of inventory.targets.filter((item) =>
@@ -215,7 +215,7 @@ try {
     };
     await writeFile(
       join(directory, ".npmrc"),
-      `registry=${registry.origin}/\n@tinta:registry=${registry.origin}/\nignore-scripts=true\naudit=false\nfund=false\n`,
+      `registry=${registry.origin}/\n@tinta-lang:registry=${registry.origin}/\nignore-scripts=true\naudit=false\nfund=false\n`,
     );
     await writeFile(
       join(directory, "package.json"),
@@ -315,7 +315,7 @@ try {
       await readFile(join(directory, "probe-result.json")),
     );
     const syntax = await realpath(
-      join(directory, "node_modules/@tinta/syntax/dist/index.js"),
+      join(directory, "node_modules/@tinta-lang/syntax/dist/index.js"),
     );
     const original = await readFile(syntax, "utf8");
     const hooks = original.match(/observeTokenizer\?\.\([^;]+;/g);
@@ -345,7 +345,7 @@ try {
       item.archive.endsWith(".tgz"),
     )) {
       const root = await realpath(
-        join(directory, "node_modules/@tinta", target.id),
+        join(directory, "node_modules/@tinta-lang", target.id),
       );
       assert.ok(isInsideDirectory(directory, root));
       for (const file of target.files)

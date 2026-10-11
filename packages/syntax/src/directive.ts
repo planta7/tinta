@@ -1,4 +1,4 @@
-import type { Column, Expr, Scalar, Span } from "@tinta/types";
+import type { Column, Expr, Scalar, Span } from "@tinta-lang/types";
 import {
   ExpressionParser,
   identifier,

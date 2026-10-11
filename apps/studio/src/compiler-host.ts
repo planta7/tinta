@@ -1,7 +1,7 @@
-import { identifyInternalDiagnostic } from "@tinta/types/common";
-import { decodeProgram } from "@tinta/engine";
-import { encodeUtf8, limits } from "@tinta/artifacts";
-import type { Diagnostic, Program, SourceProfile } from "@tinta/types";
+import { identifyInternalDiagnostic } from "@tinta-lang/types/common";
+import { decodeProgram } from "@tinta-lang/engine";
+import { encodeUtf8, limits } from "@tinta-lang/artifacts";
+import type { Diagnostic, Program, SourceProfile } from "@tinta-lang/types";
 import {
   base,
   baseKeys,

@@ -5,7 +5,7 @@ import type {
   Enrichment,
   OpenedBundle,
   SourceInput,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 
 export type ArtifactRequest =
   | { readonly kind: "open"; readonly bytes: Uint8Array }

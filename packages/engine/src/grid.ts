@@ -1,4 +1,8 @@
-import type { ControlDefinition, SliderDefinition, Span } from "@tinta/types";
+import type {
+  ControlDefinition,
+  SliderDefinition,
+  Span,
+} from "@tinta-lang/types";
 import { fail } from "./common.js";
 
 /** Decimal tokens become exact millionths before any binary64 grid arithmetic. */

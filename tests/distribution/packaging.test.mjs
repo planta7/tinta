@@ -43,7 +43,7 @@ async function extracted(ids, operation) {
         await readFile(`build/distribution/${report.archive}`),
       );
       for (const [path, bytes] of Object.entries(entries)) {
-        const output = join(directory, "node_modules", "@tinta", id, path);
+        const output = join(directory, "node_modules", "@tinta-lang", id, path);
         await mkdir(dirname(output), { recursive: true });
         await writeFile(output, bytes);
       }
@@ -171,7 +171,7 @@ describe("portable distribution payloads", () => {
     "rejects inconsistent internal version %s",
     (version) => {
       const manifest = structuredClone(syntaxManifest);
-      manifest.dependencies["@tinta/types"] = version;
+      manifest.dependencies["@tinta-lang/types"] = version;
       const entries = {
         ...syntax,
         "package.json": Buffer.from(JSON.stringify(manifest)),
@@ -274,7 +274,7 @@ describe("portable distribution payloads", () => {
     await extracted(["types", "syntax"], async (directory) => {
       const { parse, parseRecovering } = await import(
         pathToFileURL(
-          join(directory, "node_modules/@tinta/syntax/dist/index.js"),
+          join(directory, "node_modules/@tinta-lang/syntax/dist/index.js"),
         ).href
       );
       const result = parse(
@@ -323,7 +323,10 @@ describe("portable distribution payloads", () => {
   it("runs the packaged IPC launcher and its sibling worker", async () => {
     await extracted(["language-server"], async (directory) => {
       const child = fork(
-        join(directory, "node_modules/@tinta/language-server/dist/server.mjs"),
+        join(
+          directory,
+          "node_modules/@tinta-lang/language-server/dist/server.mjs",
+        ),
         [],
         {
           cwd: directory,

@@ -5,7 +5,7 @@ import type {
   Result,
   SourceInput,
   Span,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import type { CompileContext } from "mdast-util-from-markdown";
 import { markdown } from "./markdown.js";
 import { parseDirective, type DirectiveSyntax } from "./directive.js";

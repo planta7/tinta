@@ -1,4 +1,4 @@
-import { limits } from "@tinta/artifacts";
+import { limits } from "@tinta-lang/artifacts";
 
 export interface Base {
   protocol: "tinta-host-1";

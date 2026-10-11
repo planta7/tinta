@@ -8,7 +8,7 @@ const io = vi.hoisted(() => ({
   bytes: new TextEncoder().encode("# Source"),
   fail: false,
 }));
-vi.mock("@tinta/local-files", () => ({
+vi.mock("@tinta-lang/local-files", () => ({
   readOpenedSource: async () => {
     if (io.fail) throw new Error("Secret path");
     return io.bytes;

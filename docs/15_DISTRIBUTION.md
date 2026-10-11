@@ -6,26 +6,26 @@ The machine-readable inputs are [release configuration](../toolchain/release.jso
 
 ## Names and destinations
 
-All npm names below, the `@tinta` scope and proposed Marketplace identity `tinta.tinta` are proposals. Availability and ownership are unverified. The public repository owner/name is unset (`null`), rather than an invented account. Downloads would belong to releases of that repository. Changing a proposed identity requires updating the configuration, package mappings and metadata together. The CLI command and source profile remain `tinta`; ordinary Markdown remains `markdown`.
+The npm packages use the `@tinta-lang` scope. Source and downloads belong to `planta7/tinta` on GitHub, and the Marketplace extension ID is `planta7.tinta`. The CLI command and source profile remain `tinta`; ordinary Markdown remains `markdown`. Package and extension availability is independent of these configured identities.
 
-Root, Studio, VS Code and every package's **source** manifest stay private, with their existing development versions. The only npm privacy exception is a generated manifest for one of the ten allowlisted npm targets, inside a clean `build/release-staging` output tree. It may have `private: false`, explicit public npm access, the selected implementation version and exact internal dependency versions. It must not contain workspace/file/link references, install scripts, credentials or unapproved dependencies. No source-manifest mutation, recursive directory discovery or blanket architecture-check bypass is permitted. The generated VSIX extension manifest is a separate non-npm artifact; it never makes `@tinta/vscode` publishable.
+Root, Studio, VS Code and every package's **source** manifest stay private, with their existing development versions. The only npm privacy exception is a generated manifest for one of the ten allowlisted npm targets, inside a clean `build/release-staging` output tree. It may have `private: false`, explicit public npm access, the selected implementation version and exact internal dependency versions. It must not contain workspace/file/link references, install scripts, credentials or unapproved dependencies. No source-manifest mutation, recursive directory discovery or blanket architecture-check bypass is permitted. The generated VSIX extension manifest is a separate non-npm artifact; it never makes `@tinta-lang/vscode` publishable.
 
 ## Package inventory
 
 Every package is ESM. Portable libraries include TypeScript declarations and documented exports; resource and Node packages also include the resources required by their supported entry points. Every payload carries `LICENSE` and `THIRD_PARTY_NOTICES.txt`. External direct dependency pins are listed in the configuration; their transitive closure, integrity and licenses come from the frozen lockfile and notice inventory.
 
-| Proposed npm name | Direct internal dependencies | Additional distribution content | Environment requirements |
+| npm name | Direct internal dependencies | Additional distribution content | Environment requirements |
 | --- | --- | --- | --- |
-| `@tinta/types` | None | Public DTOs and documented helper subpaths | Node and browsers |
-| `@tinta/syntax` | types | Bundled patched parser graph, provenance and notices | Node and browsers |
-| `@tinta/engine` | types, syntax | Runtime and chart-presentation subpaths | Node and browsers |
-| `@tinta/charts` | types, engine | Approved geometry helpers | Node and browsers |
-| `@tinta/reader` | types, engine, charts | Browser API, reader styles | Node import/types and browser DOM |
-| `@tinta/artifacts` | types, syntax, engine, charts | Embedded reader runtime and styles | Node and browsers |
-| `@tinta/local-files` | types, artifacts | Explicit Node filesystem capabilities | Native Node |
-| `@tinta/cli` | types, engine, artifacts, local-files | Installed `tinta` bin and standalone Studio resource | Native Node |
-| `@tinta/language-service` | types, syntax, engine | Portable analysis and query API | Node and browser workers |
-| `@tinta/language-server` | types, language-service | Fixed Node IPC server and sibling worker bundles | Native Node |
+| `@tinta-lang/types` | None | Public DTOs and documented helper subpaths | Node and browsers |
+| `@tinta-lang/syntax` | types | Bundled patched parser graph, provenance and notices | Node and browsers |
+| `@tinta-lang/engine` | types, syntax | Runtime and chart-presentation subpaths | Node and browsers |
+| `@tinta-lang/charts` | types, engine | Approved geometry helpers | Node and browsers |
+| `@tinta-lang/reader` | types, engine, charts | Browser API, reader styles | Node import/types and browser DOM |
+| `@tinta-lang/artifacts` | types, syntax, engine, charts | Embedded reader runtime and styles | Node and browsers |
+| `@tinta-lang/local-files` | types, artifacts | Explicit Node filesystem capabilities | Native Node |
+| `@tinta-lang/cli` | types, engine, artifacts, local-files | Installed `tinta` bin and standalone Studio resource | Native Node |
+| `@tinta-lang/language-service` | types, syntax, engine | Portable analysis and query API | Node and browser workers |
+| `@tinta-lang/language-server` | types, language-service | Fixed Node IPC server and sibling worker bundles | Native Node |
 
 The server has no advertised stdio executable or generic `index` export. Its package must expose the supported IPC launcher and fixed `.mjs` worker layout. Transport semantics remain those of the [native host contract](13_VSCODE.md).
 
@@ -88,9 +88,9 @@ Run `node scripts/release-contract.mjs` for the local configuration/source depen
 
 ## Local package construction
 
-The implementation version is generated into `@tinta/types/version` after TypeScript compilation and before runtime bundling. The CLI, artifact writer, embedded reader, Studio and extension build identity consume that input. Interactive envelopes retain an exact implementation-version equality check. Source-format and protocol identifiers are independent of implementation versions.
+The implementation version is generated into `@tinta-lang/types/version` after TypeScript compilation and before runtime bundling. The CLI, artifact writer, embedded reader, Studio and extension build identity consume that input. Interactive envelopes retain an exact implementation-version equality check. Source-format and protocol identifiers are independent of implementation versions.
 
-The npm staging manifests provide ESM exports and declarations, an exact internal dependency graph and Node engine constraints. `@tinta/reader/reader.css` exposes the required reader stylesheet. The CLI carries its bin launcher and standalone Studio resource. The language-server package exposes only `@tinta/language-server/ipc`: resolve this path and launch it with Node `fork` and an IPC channel. Preserve the sibling `dist/worker.mjs`. It uses UTF-16 positions and full document synchronization; there is no stdio executable or root import.
+The npm staging manifests provide ESM exports and declarations, an exact internal dependency graph and Node engine constraints. `@tinta-lang/reader/reader.css` exposes the required reader stylesheet. The CLI carries its bin launcher and standalone Studio resource. The language-server package exposes only `@tinta-lang/language-server/ipc`: resolve this path and launch it with Node `fork` and an IPC channel. Preserve the sibling `dist/worker.mjs`. It uses UTF-16 positions and full document synchronization; there is no stdio executable or root import.
 
 `toolchain/distribution-source.json` is the exact source-file allowlist. Packaging rejects missing, additional or symbolic-link source entries, and source bytes must remain unchanged throughout the build. Content inspections reject private paths, credentials and source maps. The narrow source-test exceptions in `toolchain/distribution-source-exceptions.json` are exact line digests for deliberately hostile fixtures and detector expressions; they do not exempt whole source files. Every npm and download payload carries its own license and third-party notices.
 

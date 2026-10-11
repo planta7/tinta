@@ -1,5 +1,5 @@
 import { Worker } from "node:worker_threads";
-import { ArtifactFailure } from "@tinta/types/common";
+import { ArtifactFailure } from "@tinta-lang/types/common";
 import type { ArtifactReply, ArtifactRequest } from "./artifact-protocol.js";
 
 /** One fixed, disposable worker per bounded operation; author text selects no code. */

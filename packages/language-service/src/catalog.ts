@@ -1,4 +1,4 @@
-import { editorNames } from "@tinta/syntax";
+import { editorNames } from "@tinta-lang/syntax";
 
 export const catalog = Object.freeze({
   ...editorNames,

@@ -1,9 +1,9 @@
 # Portable engine API
 
-`@tinta/engine` exports `compile`, `createSession`, `encodeProgram`, `decodeProgram`, `importCsv` and `importJson`. Inputs, results and immutable values follow [the public contract](../contracts/public-api.d.ts).
+`@tinta-lang/engine` exports `compile`, `createSession`, `encodeProgram`, `decodeProgram`, `importCsv` and `importJson`. Inputs, results and immutable values follow [the public contract](../contracts/public-api.d.ts).
 
 ```ts
-import { compile, createSession } from "@tinta/engine";
+import { compile, createSession } from "@tinta-lang/engine";
 
 const compiled = compile({
   uri: "tinta:example",

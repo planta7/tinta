@@ -1,5 +1,5 @@
 {
-  "name": "@tinta/local-files",
+  "name": "@tinta-lang/local-files",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,8 +10,8 @@
     }
   },
   "dependencies": {
-    "@tinta/types": "workspace:*",
-    "@tinta/artifacts": "workspace:*"
+    "@tinta-lang/types": "workspace:*",
+    "@tinta-lang/artifacts": "workspace:*"
   },
   "files": [
     "dist"

@@ -20,7 +20,7 @@ Static options use ungrouped literals and selection uses a bare identifier. Cont
 
 ## Draft 2 identifier revision
 
-The project is Tinta, with `.tinta` source, `.tinta.zip` bundles, the `tinta` profile and CLI, and `@tinta/*` internal workspace identities. Envelope discriminators, IR ABI and host protocol use the `tinta-` prefix. Source and envelope format versions remain 1.0; language semantics are unchanged.
+The project is Tinta, with `.tinta` source, `.tinta.zip` bundles, the `tinta` profile and CLI, and `@tinta-lang/*` internal workspace identities. Envelope discriminators, IR ABI and host protocol use the `tinta-` prefix. Source and envelope format versions remain 1.0; language semantics are unchanged.
 
 ## License and commercial separation
 
@@ -36,7 +36,7 @@ The [VS Code host](13_VSCODE.md) introduces portable editor-analysis DTOs and an
 
 ## Local extension artifact identity
 
-The local VSIX uses development version `0.1.0-dev.0` and the internal installation identity `tinta-local.tinta`. Its generated manifest is separate from the private `@tinta/vscode` workspace package. Workspace source versions remain `0.0.0`. Builds generate the embedded implementation version from `toolchain/release.json`, and interactive envelopes must exactly match their embedded reader. The build identity records both versions, contract revision, source hash, commit/dirty state and payload hashes. Repeated local builds retain the development version and are distinguished by hashes. No intentional distribution, version increment, Marketplace identity or publication is implied by creating or testing a local archive.
+The local VSIX uses development version `0.1.0-dev.0` and the internal installation identity `tinta-local.tinta`. Its generated manifest is separate from the private `@tinta-lang/vscode` workspace package. Workspace source versions remain `0.0.0`. Builds generate the embedded implementation version from `toolchain/release.json`, and interactive envelopes must exactly match their embedded reader. The build identity records both versions, contract revision, source hash, commit/dirty state and payload hashes. Repeated local builds retain the development version and are distinguished by hashes. No intentional distribution, version increment, Marketplace identity or publication is implied by creating or testing a local archive.
 
 ## Coordinated software distribution
 

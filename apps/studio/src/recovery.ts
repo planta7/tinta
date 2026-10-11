@@ -1,10 +1,10 @@
-import type { Asset, SourceProfile } from "@tinta/types";
+import type { Asset, SourceProfile } from "@tinta-lang/types";
 import {
   decodeUtf8,
   encodeUtf8,
   limits,
   validateAssets,
-} from "@tinta/artifacts";
+} from "@tinta-lang/artifacts";
 import { exact, record } from "./protocol.js";
 
 export interface Recovery {

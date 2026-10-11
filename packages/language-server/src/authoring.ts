@@ -8,9 +8,12 @@ import {
   help,
   references,
   signatureHelp,
-} from "@tinta/language-service";
-import type { Span } from "@tinta/types";
-import type { SourceIdentity, AnalysisSnapshot } from "@tinta/types/editor";
+} from "@tinta-lang/language-service";
+import type { Span } from "@tinta-lang/types";
+import type {
+  SourceIdentity,
+  AnalysisSnapshot,
+} from "@tinta-lang/types/editor";
 import type {
   CompletionItem,
   DocumentSymbol,

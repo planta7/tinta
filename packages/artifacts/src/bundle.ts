@@ -5,8 +5,8 @@ import type {
   OpenedBundle,
   Program,
   Result,
-} from "@tinta/types";
-import { compile, createSession } from "@tinta/engine";
+} from "@tinta-lang/types";
+import { compile, createSession } from "@tinta-lang/engine";
 import {
   artifact,
   attempt,

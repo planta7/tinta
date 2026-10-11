@@ -7,7 +7,7 @@ import type {
   Expr,
   ProgramIR,
   Span,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import { Budget, Failure, fail } from "./common.js";
 import { evaluate, infer, type RuntimeValue, type Type } from "./expression.js";
 

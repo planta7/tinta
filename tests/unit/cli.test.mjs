@@ -32,7 +32,7 @@ const json = async (args) => {
 describe("command arguments", () => {
   test("help, version and actual workspace bin", () => {
     for (const arg of ["--help", "--version"]) {
-      const args = ["--filter", "@tinta/cli", "exec", "tinta", arg];
+      const args = ["--filter", "@tinta-lang/cli", "exec", "tinta", arg];
       const result =
         process.platform === "win32"
           ? spawnSync("cmd.exe", ["/d", "/s", "/c", `pnpm ${args.join(" ")}`], {

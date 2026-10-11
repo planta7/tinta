@@ -6,7 +6,7 @@ import type {
   PreparedChart,
   Scalar,
   TableValue,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import { fail, label } from "./common.js";
 import { evaluate, type Environment } from "./expression.js";
 import { inDomain } from "./grid.js";

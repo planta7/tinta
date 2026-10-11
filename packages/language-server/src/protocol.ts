@@ -1,6 +1,6 @@
 import type { AuthoringQuery, AuthoringResult } from "./authoring.js";
-import type { Diagnostic, Result } from "@tinta/types";
-import type { AnalysisSnapshot } from "@tinta/types/editor";
+import type { Diagnostic, Result } from "@tinta-lang/types";
+import type { AnalysisSnapshot } from "@tinta-lang/types/editor";
 
 export interface AnalysisRequest {
   readonly uri: string;

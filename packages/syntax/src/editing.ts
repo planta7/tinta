@@ -1,4 +1,4 @@
-import type { Span } from "@tinta/types";
+import type { Span } from "@tinta-lang/types";
 import type { EditingRegion, ParsedSource, SyntaxNode } from "./parser.js";
 import { ExpressionParser, numberPattern, type Lexeme } from "./expression.js";
 import { optionKeys } from "./directive.js";

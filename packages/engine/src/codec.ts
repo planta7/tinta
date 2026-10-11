@@ -4,7 +4,7 @@ import type {
   ProgramIR,
   Result,
   Span,
-} from "@tinta/types";
+} from "@tinta-lang/types";
 import { attempt, Budget, fail } from "./common.js";
 import { compile, programs } from "./compiler.js";
 import validate from "./program-validator.js";

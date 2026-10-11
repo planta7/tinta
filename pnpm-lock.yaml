@@ -22,7 +22,7 @@ importers:
       '@playwright/test':
         specifier: 1.64.0
         version: 1.64.0
-      '@tinta/cli':
+      '@tinta-lang/cli':
         specifier: workspace:*
         version: link:packages/cli
       '@types/d3-array':
@@ -112,22 +112,22 @@ importers:
       '@codemirror/view':
         specifier: 6.43.14
         version: 6.43.14
-      '@tinta/artifacts':
+      '@tinta-lang/artifacts':
         specifier: workspace:*
         version: link:../../packages/artifacts
-      '@tinta/charts':
+      '@tinta-lang/charts':
         specifier: workspace:*
         version: link:../../packages/charts
-      '@tinta/engine':
+      '@tinta-lang/engine':
         specifier: workspace:*
         version: link:../../packages/engine
-      '@tinta/reader':
+      '@tinta-lang/reader':
         specifier: workspace:*
         version: link:../../packages/reader
-      '@tinta/syntax':
+      '@tinta-lang/syntax':
         specifier: workspace:*
         version: link:../../packages/syntax
-      '@tinta/types':
+      '@tinta-lang/types':
         specifier: workspace:*
         version: link:../../packages/types
       react:
@@ -139,20 +139,20 @@ importers:
 
   apps/vscode:
     dependencies:
-      '@tinta/artifacts':
+      '@tinta-lang/artifacts':
         specifier: workspace:*
         version: link:../../packages/artifacts
-      '@tinta/local-files':
+      '@tinta-lang/local-files':
         specifier: workspace:*
         version: link:../../packages/local-files
-      '@tinta/types':
+      '@tinta-lang/types':
         specifier: workspace:*
         version: link:../../packages/types
       vscode-languageclient:
         specifier: 10.1.2
         version: 10.1.2
     devDependencies:
-      '@tinta/engine':
+      '@tinta-lang/engine':
         specifier: workspace:*
         version: link:../../packages/engine
       '@types/vscode':
@@ -164,16 +164,16 @@ importers:
       '@noble/hashes':
         specifier: 2.4.0
         version: 2.4.0
-      '@tinta/charts':
+      '@tinta-lang/charts':
         specifier: workspace:*
         version: link:../charts
-      '@tinta/engine':
+      '@tinta-lang/engine':
         specifier: workspace:*
         version: link:../engine
-      '@tinta/syntax':
+      '@tinta-lang/syntax':
         specifier: workspace:*
         version: link:../syntax
-      '@tinta/types':
+      '@tinta-lang/types':
         specifier: workspace:*
         version: link:../types
       ajv:
@@ -188,10 +188,10 @@ importers:
 
   packages/charts:
     dependencies:
-      '@tinta/engine':
+      '@tinta-lang/engine':
         specifier: workspace:*
         version: link:../engine
-      '@tinta/types':
+      '@tinta-lang/types':
         specifier: workspace:*
         version: link:../types
       d3-array:
@@ -206,16 +206,16 @@ importers:
 
   packages/cli:
     dependencies:
-      '@tinta/artifacts':
+      '@tinta-lang/artifacts':
         specifier: workspace:*
         version: link:../artifacts
-      '@tinta/engine':
+      '@tinta-lang/engine':
         specifier: workspace:*
         version: link:../engine
-      '@tinta/local-files':
+      '@tinta-lang/local-files':
         specifier: workspace:*
         version: link:../local-files
-      '@tinta/types':
+      '@tinta-lang/types':
         specifier: workspace:*
         version: link:../types
 
@@ -224,19 +224,19 @@ importers:
       '@noble/hashes':
         specifier: 2.4.0
         version: 2.4.0
-      '@tinta/syntax':
+      '@tinta-lang/syntax':
         specifier: workspace:*
         version: link:../syntax
-      '@tinta/types':
+      '@tinta-lang/types':
         specifier: workspace:*
         version: link:../types
 
   packages/language-server:
     dependencies:
-      '@tinta/language-service':
+      '@tinta-lang/language-service':
         specifier: workspace:*
         version: link:../language-service
-      '@tinta/types':
+      '@tinta-lang/types':
         specifier: workspace:*
         version: link:../types
       vscode-languageserver:
@@ -245,34 +245,34 @@ importers:
 
   packages/language-service:
     dependencies:
-      '@tinta/engine':
+      '@tinta-lang/engine':
         specifier: workspace:*
         version: link:../engine
-      '@tinta/syntax':
+      '@tinta-lang/syntax':
         specifier: workspace:*
         version: link:../syntax
-      '@tinta/types':
+      '@tinta-lang/types':
         specifier: workspace:*
         version: link:../types
 
   packages/local-files:
     dependencies:
-      '@tinta/artifacts':
+      '@tinta-lang/artifacts':
         specifier: workspace:*
         version: link:../artifacts
-      '@tinta/types':
+      '@tinta-lang/types':
         specifier: workspace:*
         version: link:../types
 
   packages/reader:
     dependencies:
-      '@tinta/charts':
+      '@tinta-lang/charts':
         specifier: workspace:*
         version: link:../charts
-      '@tinta/engine':
+      '@tinta-lang/engine':
         specifier: workspace:*
         version: link:../engine
-      '@tinta/types':
+      '@tinta-lang/types':
         specifier: workspace:*
         version: link:../types
 
@@ -281,7 +281,7 @@ importers:
       '@noble/hashes':
         specifier: 2.4.0
         version: 2.4.0
-      '@tinta/types':
+      '@tinta-lang/types':
         specifier: workspace:*
         version: link:../types
       mdast-util-from-markdown:

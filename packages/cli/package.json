@@ -1,5 +1,5 @@
 {
-  "name": "@tinta/cli",
+  "name": "@tinta-lang/cli",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,10 +10,10 @@
     }
   },
   "dependencies": {
-    "@tinta/types": "workspace:*",
-    "@tinta/engine": "workspace:*",
-    "@tinta/artifacts": "workspace:*",
-    "@tinta/local-files": "workspace:*"
+    "@tinta-lang/types": "workspace:*",
+    "@tinta-lang/engine": "workspace:*",
+    "@tinta-lang/artifacts": "workspace:*",
+    "@tinta-lang/local-files": "workspace:*"
   },
   "bin": {
     "tinta": "./bin.mjs"

@@ -1,6 +1,6 @@
-import { parseRecovering } from "@tinta/syntax";
-import { compile, createSession, encodeProgram } from "@tinta/engine";
-import { limits } from "@tinta/artifacts";
+import { parseRecovering } from "@tinta-lang/syntax";
+import { compile, createSession, encodeProgram } from "@tinta-lang/engine";
+import { limits } from "@tinta-lang/artifacts";
 import { base, baseKeys, exact, integer } from "./protocol.js";
 
 let revision = -1;
