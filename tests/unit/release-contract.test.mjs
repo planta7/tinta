@@ -100,7 +100,7 @@ describe("software distribution contract", () => {
   it("matches all ten private source package dependency sets", () => {
     expect(config.packages).toHaveLength(10);
     expect(config.artifacts).toHaveLength(6);
-    expect(config.policy.externalActivation).toBe(false);
+    expect(config.policy.externalActivation).toBe(true);
     expect(config.identities.repository.value).toBe("planta7/tinta");
     expect(config.identities.npmScope.value).toBe("@tinta-lang");
     expect(config.identities.marketplacePublisher.value).toBe("planta7");
@@ -188,9 +188,10 @@ describe("software distribution contract", () => {
       },
     ],
     [
-      "external activation",
+      "external activation with an unverified identity",
       (c) => {
         c.policy.externalActivation = true;
+        c.identities.npmScope.status = "proposed";
       },
     ],
     [
@@ -205,14 +206,28 @@ describe("software distribution contract", () => {
     expect(() => validateConfig(candidate)).toThrow();
   });
 
-  it("rejects an unset publisher or an invented ownership claim", () => {
+  it("rejects an unset publisher or an unsupported ownership state", () => {
     const candidate = structuredClone(config);
     candidate.identities.marketplacePublisher.value = null;
     expect(() => validateConfig(candidate)).toThrow();
     candidate.identities.marketplacePublisher.value = "tinta";
-    candidate.identities.marketplacePublisher.status = "verified";
+    candidate.identities.marketplacePublisher.status = "claimed";
     expect(() => validateConfig(candidate)).toThrow();
   });
+
+  it.each(["identities", "packages", "artifacts"])(
+    "requires every %s identity for external activation",
+    (group) => {
+      for (const key of Object.keys(config[group])) {
+        const candidate = structuredClone(config);
+        const field = group === "identities" ? "status" : "identityStatus";
+        candidate[group][key][field] = "proposed";
+        expect(() => validateConfig(candidate)).toThrow(/Unverified/);
+        candidate.policy.externalActivation = false;
+        expect(validateConfig(candidate)).toBe(candidate);
+      }
+    },
+  );
 
   it("rejects a reduced target environment matrix", () => {
     const candidate = structuredClone(config);
@@ -242,6 +257,7 @@ describe("software distribution contract", () => {
 
   it("accepts a future stable version mapping without authorizing activation", () => {
     const candidate = structuredClone(config);
+    candidate.policy.externalActivation = false;
     candidate.versions.implementation = "0.2.0";
     candidate.versions.npmChannel = "latest";
     candidate.versions.extension = "0.2.0";

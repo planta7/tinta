@@ -37,7 +37,7 @@
               "pattern": "^@tinta-lang$"
             },
             "status": {
-              "const": "proposed"
+              "enum": ["proposed", "verified"]
             }
           }
         },
@@ -59,7 +59,7 @@
               ]
             },
             "status": {
-              "const": "proposed"
+              "enum": ["proposed", "verified"]
             }
           }
         },
@@ -75,7 +75,7 @@
               "pattern": "^[a-z0-9][a-z0-9-]*$"
             },
             "status": {
-              "const": "proposed"
+              "enum": ["proposed", "verified"]
             }
           }
         },
@@ -91,7 +91,7 @@
               "pattern": "^[a-z0-9][a-z0-9-]*$"
             },
             "status": {
-              "const": "proposed"
+              "enum": ["proposed", "verified"]
             }
           }
         }
@@ -191,7 +191,7 @@
           "const": "bundle-patched-graph"
         },
         "externalActivation": {
-          "const": false
+          "type": "boolean"
         }
       }
     },
@@ -238,7 +238,7 @@
             "pattern": "^@tinta-lang/[a-z-]+$"
           },
           "identityStatus": {
-            "const": "proposed"
+            "enum": ["proposed", "verified"]
           },
           "dependencies": {
             "type": "array",
@@ -350,7 +350,7 @@
             "enum": ["marketplace-and-download", "release-download"]
           },
           "identityStatus": {
-            "const": "proposed"
+            "enum": ["proposed", "verified"]
           },
           "dependencies": {
             "type": "array",
