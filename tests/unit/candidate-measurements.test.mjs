@@ -1,9 +1,18 @@
 import { describe, expect, it, vi } from "vitest";
-import { mkdtempSync, writeFileSync, readFileSync, rmSync } from "node:fs";
+import {
+  mkdtempSync,
+  mkdirSync,
+  writeFileSync,
+  readFileSync,
+  rmSync,
+} from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { residentBytes } from "../vscode/resident-memory.mjs";
-import { runNativeMode } from "../../scripts/candidate-native.mjs";
+import {
+  runNativeMode,
+  runNativeModes,
+} from "../../scripts/candidate-native.mjs";
 
 const processes = [
   { ProcessId: 40, ParentProcessId: 30, WorkingSetSize: "4096" },
@@ -80,6 +89,10 @@ describe("native failure evidence", () => {
         const result = { status: "FAIL", performance: { loopMaxMs: 101 } };
         const execute = () => {
           writeFileSync(join(root, "result.json"), JSON.stringify(result));
+          const logs = join(root, "portable/user-data/logs/session");
+          mkdirSync(logs, { recursive: true });
+          writeFileSync(join(logs, "main.log"), "desktop diagnostics");
+          writeFileSync(join(root, "ui-request.json"), '{"id":1}');
           throw new Error("host budgets failed");
         };
         const evidence = join(root, "retained.json");
@@ -91,9 +104,28 @@ describe("native failure evidence", () => {
           }),
         ).toThrow("host budgets failed");
         expect(JSON.parse(readFileSync(evidence))).toEqual(result);
+        expect(
+          readFileSync(`${evidence}.diagnostics/logs/session/main.log`, "utf8"),
+        ).toBe("desktop diagnostics");
+        expect(
+          JSON.parse(readFileSync(`${evidence}.diagnostics/ui-request.json`)),
+        ).toEqual({ id: 1 });
       } finally {
         rmSync(root, { recursive: true, force: true });
       }
     },
   );
+});
+
+describe("independent native checks", () => {
+  it("executes offline checks after an earlier failure and still fails the gate", () => {
+    const observed = [];
+    expect(() =>
+      runNativeModes(["performance", "os-offline"], (mode) => {
+        observed.push(mode);
+        if (mode === "performance") throw new Error("host budgets failed");
+      }),
+    ).toThrow(AggregateError);
+    expect(observed).toEqual(["performance", "os-offline"]);
+  });
 });

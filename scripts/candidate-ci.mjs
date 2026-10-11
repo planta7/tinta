@@ -9,7 +9,7 @@ import {
 import { join, resolve } from "node:path";
 import { tmpdir, release } from "node:os";
 import { chromium, firefox, webkit } from "@playwright/test";
-import { runNativeMode } from "./candidate-native.mjs";
+import { runNativeMode, runNativeModes } from "./candidate-native.mjs";
 import { captureCandidate } from "./candidate.mjs";
 import { requireCommandSync, runCommandSync } from "./commands.mjs";
 import { loadReleaseConfig } from "./release-contract.mjs";
@@ -264,7 +264,7 @@ if (command === "build") {
       directory,
       inventory.targets.find((t) => t.id === "vscode").archive,
     );
-    for (const mode of nativeModes) {
+    runNativeModes(nativeModes, (mode) => {
       const root = join(temporary, mode);
       const invocation = [
         process.execPath,
@@ -282,7 +282,7 @@ if (command === "build") {
       const result = read(join(root, "result.json"));
       report.modes.push({ mode, ...result });
       save(reportPath, report);
-    }
+    });
     checkInventory(directory, config, { clean: true });
     report.status = "PASS";
   } finally {

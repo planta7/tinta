@@ -93,6 +93,14 @@ await build({
   external: ["vscode"],
   sourcemap: false,
 });
+await build({
+  entryPoints: ["tests/vscode/resident-sampler-worker.mjs"],
+  outfile: join(root, "resident-sampler.mjs"),
+  bundle: true,
+  platform: "node",
+  format: "esm",
+  sourcemap: false,
+});
 const env = {
   ...process.env,
   NODE_PATH: "",
@@ -146,7 +154,11 @@ async function run(binary, args, timeout) {
     if (process.platform === "win32") child.kill("SIGKILL");
     else if (child.pid) process.kill(-child.pid, "SIGKILL");
   };
-  const timer = setTimeout(stop, timeout);
+  let timedOut = false;
+  const timer = setTimeout(() => {
+    timedOut = true;
+    stop();
+  }, timeout);
   const controller = new AbortController();
   const ui =
     workflow && binary === executable
@@ -156,10 +168,16 @@ async function run(binary, args, timeout) {
   try {
     return await new Promise((accept, reject) => {
       child.once("error", reject);
-      child.once("exit", (code) =>
+      child.once("exit", (code, signal) =>
         code === 0
           ? accept(code)
-          : reject(new Error(`Desktop exited ${code}.`)),
+          : reject(
+              new Error(
+                timedOut
+                  ? `Desktop timed out after ${timeout} ms.`
+                  : `Desktop exited with code ${code}, signal ${signal}.`,
+              ),
+            ),
       );
     });
   } finally {
