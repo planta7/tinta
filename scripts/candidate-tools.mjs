@@ -6,15 +6,23 @@ import {
   mkdirSync,
   writeFileSync,
 } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { join } from "node:path";
 import { requireCommandSync } from "./commands.mjs";
 import { digest } from "./distribution-archive.mjs";
 
-const pnpm = process.env.npm_execpath;
-assert.ok(pnpm && /pnpm\.(?:c?js|mjs)$/.test(pnpm), "Invoke through pnpm exec");
-const npm = resolve(dirname(pnpm), "../../npm/bin/npm-cli.js");
-assert.ok(existsSync(npm), "Pinned global npm CLI missing");
-const values = { TINTA_CONSUMER_PNPM: pnpm, TINTA_NPM_CLI: npm };
+const globalModules = process.env.TINTA_GLOBAL_MODULES;
+assert.ok(globalModules, "Global module directory required");
+const pnpm = join(globalModules, "pnpm/bin/pnpm.cjs");
+const npm = join(globalModules, "npm/bin/npm-cli.js");
+assert.ok(
+  existsSync(pnpm) && existsSync(npm),
+  "Pinned global package managers missing",
+);
+const values = {
+  TINTA_CONSUMER_PNPM: pnpm,
+  TINTA_NPM_CLI: npm,
+  npm_execpath: pnpm,
+};
 if (process.argv.includes("--desktop")) {
   const cell = `${process.platform}-${process.arch}`;
   const key = cell === "win32-x64" ? "win32-x64-archive" : cell;

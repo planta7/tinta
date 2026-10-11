@@ -16,7 +16,26 @@ concurrency:
   group: release-candidate
   cancel-in-progress: false
 jobs:
+  provenance-capability:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Check signing service before spending time on the matrix
+        uses: actions/attest@c32b4b8b198b65d0bd9d63490e847ff7b53989d4
+        with:
+          subject-path: toolchain/release.json
+          create-storage-record: false
   build:
+    needs: provenance-capability
     if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-24.04
     timeout-minutes: 60
@@ -34,6 +53,9 @@ jobs:
           package-manager-cache: false
       - run: npm install --global npm@11.19.0 pnpm@10.34.6
       - run: pnpm install --frozen-lockfile
+      - name: Locate pinned global tools
+        shell: bash
+        run: echo "TINTA_GLOBAL_MODULES=$(npm root --global)" >> "$GITHUB_ENV"
       - run: pnpm exec node scripts/candidate-tools.mjs
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm exec node scripts/candidate-ci.mjs build
@@ -73,6 +95,9 @@ jobs:
           package-manager-cache: false
       - run: npm install --global npm@11.19.0 pnpm@10.34.6
       - run: pnpm install --frozen-lockfile
+      - name: Locate pinned global tools
+        shell: bash
+        run: echo "TINTA_GLOBAL_MODULES=$(npm root --global)" >> "$GITHUB_ENV"
       - run: pnpm exec node scripts/candidate-tools.mjs --desktop
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
@@ -112,6 +137,9 @@ jobs:
           package-manager-cache: false
       - run: npm install --global npm@11.19.0 pnpm@10.34.6
       - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Locate pinned global tools
+        shell: bash
+        run: echo "TINTA_GLOBAL_MODULES=$(npm root --global)" >> "$GITHUB_ENV"
       - run: pnpm exec node scripts/candidate-tools.mjs
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:

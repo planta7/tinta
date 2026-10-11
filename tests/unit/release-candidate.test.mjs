@@ -485,6 +485,10 @@ describe("candidate workflow security topology", () => {
     const workflow = parse(readFileSync(candidateWorkflow, "utf8"));
     expect(Object.keys(workflow.on)).toEqual(["workflow_dispatch"]);
     expect(workflow.permissions).toEqual({ contents: "read" });
+    expect(workflow.jobs.build.needs).toBe("provenance-capability");
+    expect(
+      workflow.jobs["provenance-capability"].steps.every((s) => !s.run),
+    ).toBe(true);
     expect(workflow.jobs.attest.needs).toEqual(["build", "installed"]);
     expect(workflow.jobs.attest.permissions).toEqual({
       contents: "read",
@@ -620,6 +624,41 @@ it("refuses an actual dirty Git checkout before building a candidate", async () 
     );
     expect(result.status).toBe(1);
     expect(result.stderr).toContain("Clean committed source required");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+it("locates global package managers without a pnpm exec environment variable", async () => {
+  const { mkdtempSync, mkdirSync, writeFileSync, rmSync } =
+    await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { join, resolve } = await import("node:path");
+  const { spawnSync } = await import("node:child_process");
+  const root = mkdtempSync(join(tmpdir(), "tinta tools fixture "));
+  try {
+    for (const name of ["pnpm", "npm"])
+      mkdirSync(join(root, name, "bin"), { recursive: true });
+    writeFileSync(join(root, "pnpm/bin/pnpm.cjs"), "fixture");
+    writeFileSync(join(root, "npm/bin/npm-cli.js"), "fixture");
+    const envFile = join(root, "environment.txt");
+    const env = {
+      ...process.env,
+      TINTA_GLOBAL_MODULES: root,
+      GITHUB_ENV: envFile,
+    };
+    delete env.npm_execpath;
+    const result = spawnSync(
+      process.execPath,
+      [resolve("scripts/candidate-tools.mjs")],
+      { env, encoding: "utf8" },
+    );
+    expect(result.status, result.stderr).toBe(0);
+    const output = readFileSync(envFile, "utf8");
+    expect(output).toContain(
+      `TINTA_NPM_CLI=${join(root, "npm/bin/npm-cli.js")}`,
+    );
+    expect(output).toContain(`npm_execpath=${join(root, "pnpm/bin/pnpm.cjs")}`);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
