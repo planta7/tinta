@@ -4,7 +4,7 @@ Write Markdown-first interactive documents locally with controls, formulas, tabl
 
 ## Install offline
 
-Use **Extensions: Install from VSIX…** and choose the downloaded `.vsix` file, then reload VS Code. Alternatively, run `code --install-extension /path/to/tinta.vsix`. The extension is not available on the Marketplace yet. Only macOS arm64 has native test observations; Linux and Windows remain unverified. Remote workspaces, containers, virtual filesystems and vscode.dev are unsupported.
+Use **Extensions: Install from VSIX…** and choose the downloaded `.vsix` file, then reload VS Code. Alternatively, run `code --install-extension /path/to/tinta.vsix`. Supported desktop platforms are macOS arm64, Linux arm64 and Windows x64. Remote workspaces, containers, virtual filesystems and vscode.dev are unsupported.
 
 If you switch from the local `tinta-local.tinta` extension to `planta7.tinta`, disable or uninstall the local extension before enabling the new one to avoid duplicate language providers. Keep your documents and check your settings after switching; settings are not migrated automatically.
 
