@@ -3,19 +3,19 @@
   "identities": {
     "npmScope": {
       "value": "@tinta-lang",
-      "status": "proposed"
+      "status": "verified"
     },
     "repository": {
       "value": "planta7/tinta",
-      "status": "proposed"
+      "status": "verified"
     },
     "marketplacePublisher": {
       "value": "planta7",
-      "status": "proposed"
+      "status": "verified"
     },
     "extensionName": {
       "value": "tinta",
-      "status": "proposed"
+      "status": "verified"
     }
   },
   "versions": {
@@ -39,14 +39,14 @@
     "nodeRange": ">=24.21.0 <25",
     "vscodeRange": "^1.141.0",
     "parserDistribution": "bundle-patched-graph",
-    "externalActivation": false
+    "externalActivation": true
   },
   "packages": [
     {
       "id": "types",
       "source": "packages/types",
       "proposedName": "@tinta-lang/types",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": [],
       "externalDependencies": {
         "@noble/hashes": "2.4.0",
@@ -66,7 +66,7 @@
       "id": "syntax",
       "source": "packages/syntax",
       "proposedName": "@tinta-lang/syntax",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": ["types"],
       "externalDependencies": {
         "micromark": "4.0.3",
@@ -93,7 +93,7 @@
       "id": "engine",
       "source": "packages/engine",
       "proposedName": "@tinta-lang/engine",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": ["types", "syntax"],
       "externalDependencies": {
         "@noble/hashes": "2.4.0"
@@ -112,7 +112,7 @@
       "id": "charts",
       "source": "packages/charts",
       "proposedName": "@tinta-lang/charts",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": ["types", "engine"],
       "externalDependencies": {
         "d3-array": "3.2.4",
@@ -133,7 +133,7 @@
       "id": "reader",
       "source": "packages/reader",
       "proposedName": "@tinta-lang/reader",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": ["types", "engine", "charts"],
       "externalDependencies": {},
       "embeddedTargets": [],
@@ -150,7 +150,7 @@
       "id": "artifacts",
       "source": "packages/artifacts",
       "proposedName": "@tinta-lang/artifacts",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": ["types", "syntax", "engine", "charts"],
       "externalDependencies": {
         "fflate": "0.8.3",
@@ -172,7 +172,7 @@
       "id": "local-files",
       "source": "packages/local-files",
       "proposedName": "@tinta-lang/local-files",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": ["types", "artifacts"],
       "externalDependencies": {},
       "embeddedTargets": [],
@@ -186,7 +186,7 @@
       "id": "cli",
       "source": "packages/cli",
       "proposedName": "@tinta-lang/cli",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": ["types", "engine", "artifacts", "local-files"],
       "externalDependencies": {},
       "embeddedTargets": ["studio-standalone"],
@@ -200,7 +200,7 @@
       "id": "language-service",
       "source": "packages/language-service",
       "proposedName": "@tinta-lang/language-service",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": ["types", "syntax", "engine"],
       "externalDependencies": {},
       "embeddedTargets": [],
@@ -217,7 +217,7 @@
       "id": "language-server",
       "source": "packages/language-server",
       "proposedName": "@tinta-lang/language-server",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": ["types", "language-service"],
       "externalDependencies": {
         "vscode-languageserver": "10.1.2"
@@ -236,7 +236,7 @@
       "kind": "vsix",
       "source": "apps/vscode",
       "destination": "marketplace-and-download",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": [
         "types",
         "local-files",
@@ -274,7 +274,7 @@
       "kind": "zip",
       "source": "apps/studio",
       "destination": "release-download",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": [
         "types",
         "syntax",
@@ -314,7 +314,7 @@
       "kind": "zip",
       "source": "apps/studio",
       "destination": "release-download",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": [
         "types",
         "syntax",
@@ -348,7 +348,7 @@
       "kind": "zip",
       "source": "packages/reader",
       "destination": "release-download",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": ["types", "engine", "charts"],
       "embeddedTargets": [],
       "environments": [
@@ -369,7 +369,7 @@
       "kind": "zip",
       "source": null,
       "destination": "release-download",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": [],
       "embeddedTargets": [],
       "environments": ["source-inventory"],
@@ -390,7 +390,7 @@
       "kind": "zip",
       "source": "examples",
       "destination": "release-download",
-      "identityStatus": "proposed",
+      "identityStatus": "verified",
       "dependencies": ["artifacts"],
       "embeddedTargets": [],
       "environments": [

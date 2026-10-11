@@ -162,9 +162,18 @@ describe("credential and dispatch boundaries", () => {
       expect(() => dispatchInputs({ ...env, ...patch })).toThrow();
     }
   });
-  it("ships disabled and requires all configured bindings before activation", () => {
+  it("rejects disabled policies and requires every activation binding", () => {
     const policy = JSON.parse(readFileSync("toolchain/publication.json"));
     const config = loadReleaseConfig();
+    policy.enabled = false;
+    config.policy.externalActivation = false;
+    for (const key of [
+      "publishPermission",
+      "distTagPermission",
+      "bootstrapComplete",
+    ]) {
+      policy.npm[key] = false;
+    }
     expect(() => activationPolicy(policy, config, env)).toThrow("disabled");
     policy.enabled = true;
     expect(() => activationPolicy(policy, config, env)).toThrow("disabled");

@@ -88,6 +88,20 @@ export function validateConfig(config, manifests) {
   shape(configShape, config);
   versionPolicy(config.versions);
   const targets = [...config.packages, ...config.artifacts];
+  if (config.policy.externalActivation) {
+    for (const [name, identity] of Object.entries(config.identities)) {
+      requireValue(
+        identity.status === "verified" && identity.value !== null,
+        `Unverified distribution identity: ${name}`,
+      );
+    }
+    for (const target of targets) {
+      requireValue(
+        target.identityStatus === "verified",
+        `Unverified target identity: ${target.id}`,
+      );
+    }
+  }
   unique(
     targets.map((target) => target.id),
     "target",
@@ -124,7 +138,7 @@ export function validateConfig(config, manifests) {
         : `${environment.runtime}-${environment.platform}-${environment.architecture}`;
     same(environment.id, id, "environment identity");
   }
-  same(config.identities.npmScope.value, "@tinta-lang", "proposed scope");
+  same(config.identities.npmScope.value, "@tinta-lang", "npm scope");
   for (const target of targets) {
     const requiredRuntimes = config.packages.includes(target)
       ? ["node"]
@@ -386,7 +400,10 @@ if (
   import.meta.url === pathToFileURL(resolve(process.argv[1])).href
 ) {
   const config = loadReleaseConfig();
+  const activation = config.policy.externalActivation ? "enabled" : "disabled";
   console.log(
-    `Release contract valid: ${config.packages.length} npm targets, ${config.artifacts.length} artifact targets; identities proposed, external activation disabled.`,
+    `Release contract valid: ${config.packages.length} npm targets, ` +
+      `${config.artifacts.length} artifact targets; ` +
+      `external activation ${activation}.`,
   );
 }
