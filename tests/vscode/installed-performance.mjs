@@ -5,7 +5,7 @@ import { monitorEventLoopDelay, performance } from "node:perf_hooks";
 import { join } from "node:path";
 import { setFlagsFromString } from "node:v8";
 import { runInNewContext } from "node:vm";
-import { residentBytes } from "./resident-memory.mjs";
+import { startResidentSampler } from "./resident-sampler.mjs";
 
 const percentile = (values, fraction) =>
   [...values].sort((a, b) => a - b)[Math.ceil(values.length * fraction) - 1];
@@ -39,26 +39,11 @@ export async function measureInstalled(open) {
         text,
       });
     });
-  const baselineRss = await residentBytes();
-  let peakRss = baselineRss;
-  let sampling = false;
-  let pendingSample = Promise.resolve();
-  let samplingError;
-  const sampler = setInterval(() => {
-    if (sampling) return;
-    sampling = true;
-    pendingSample = residentBytes()
-      .then((rss) => {
-        peakRss = Math.max(peakRss, rss);
-      })
-      .catch((error) => {
-        samplingError ??= error;
-      })
-      .finally(() => {
-        sampling = false;
-      });
-  }, 100);
+  const sampler = startResidentSampler(
+    join(process.env.TINTA_INSTALLED_ROOT, "resident-sampler.mjs"),
+  );
   try {
+    await sampler.ready;
     loop.enable();
     for (const [bytes, budgetMs] of [
       [10240, 200],
@@ -134,9 +119,7 @@ export async function measureInstalled(open) {
       assert.equal(definitions.length, 1);
     }
     loop.disable();
-    clearInterval(sampler);
-    await pendingSample;
-    if (samplingError) throw samplingError;
+    const { baselineRss, peakRss } = await sampler.stop();
     await vscode.commands.executeCommand("workbench.action.closeAllEditors");
     setFlagsFromString("--expose-gc");
     const collect = runInNewContext("gc");
@@ -189,12 +172,12 @@ export async function measureInstalled(open) {
         "Corpus: one expression plus bounded reference listings (each below " +
         "textValueUnits); all sizes must compile and initially evaluate. " +
         "Installed analysis worker round trips exclude debounce; completion " +
-        "through native provider; RSS collection is asynchronous without " +
-        "overlapping samplers; post-GC heap is extension host only; RSS sums host " +
+        "through native provider; RSS collection runs in a dedicated worker " +
+        "without overlapping samples; post-GC heap is extension host only; RSS sums host " +
         "descendants including server and worker threads in their owner process.",
     };
   } finally {
-    clearInterval(sampler);
+    await sampler.dispose();
     loop.disable();
     await worker.terminate();
   }
