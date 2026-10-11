@@ -73,14 +73,24 @@ jobs:
               { headers: { Authorization: `Bearer ${token.access_token}` } },
             );
             assert.match(profile.id, /^[a-f0-9-]{36}$/i);
+            const publisher = await request(
+              'Marketplace publisher access',
+              'https://marketplace.visualstudio.com/_apis/gallery/publishers/planta7?api-version=7.2-preview.1',
+              { headers: { Authorization: `Bearer ${token.access_token}` } },
+            );
+            assert.equal(
+              publisher.publisherId,
+              'd5a3d449-d8c6-482b-b95c-db2716610389',
+            );
             console.log(JSON.stringify({
               tenant,
               client,
               marketplaceProfileId: profile.id,
+              publisherId: publisher.publisherId,
               publicationPerformed: false,
             }, null, 2));
           } catch (error) {
-            const safeStatus = /^(GitHub OIDC|Entra token exchange|Marketplace identity profile): HTTP \d{3}$/;
+            const safeStatus = /^(GitHub OIDC|Entra token exchange|Marketplace identity profile|Marketplace publisher access): HTTP \d{3}$/;
             console.error(
               safeStatus.test(error.message)
                 ? error.message
