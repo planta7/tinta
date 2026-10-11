@@ -9,7 +9,7 @@ import {
 import { join, resolve } from "node:path";
 import { tmpdir, release } from "node:os";
 import { chromium, firefox, webkit } from "@playwright/test";
-import { offlineInstalled } from "./candidate-offline.mjs";
+import { runNativeMode } from "./candidate-native.mjs";
 import { captureCandidate } from "./candidate.mjs";
 import { requireCommandSync, runCommandSync } from "./commands.mjs";
 import { loadReleaseConfig } from "./release-contract.mjs";
@@ -276,8 +276,9 @@ if (command === "build") {
         "--release",
         `--${mode}`,
       ];
-      if (mode === "os-offline") offlineInstalled(invocation);
-      else requireCommandSync(invocation, { stdio: "inherit" });
+      runNativeMode(invocation, root, join(output, `native-${mode}.json`), {
+        offline: mode === "os-offline",
+      });
       const result = read(join(root, "result.json"));
       report.modes.push({ mode, ...result });
       save(reportPath, report);

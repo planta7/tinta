@@ -9,7 +9,7 @@ import {
   copyFile,
 } from "node:fs/promises";
 import { tmpdir, platform, arch, release, homedir } from "node:os";
-import { dirname, join, resolve, relative, sep } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 import {
@@ -26,6 +26,7 @@ import {
   verifyIntegrity,
 } from "./consumer-registry.mjs";
 import { testConsumerBrowsers } from "./consumer-browsers.mjs";
+import { isInsideDirectory } from "./consumer-paths.mjs";
 
 const [inventoryFile, dependencyDirectory, reportFile] = process.argv.slice(2);
 if (!reportFile)
@@ -39,9 +40,8 @@ const workspace = await realpath(fileURLToPath(new URL("..", import.meta.url)));
 const temporary = await realpath(
   await mkdtemp(join(tmpdir(), "tinta-consumer-")),
 );
-const location = relative(workspace, temporary);
 assert.ok(
-  location.startsWith(`..${sep}`),
+  !isInsideDirectory(workspace, temporary),
   "Consumer must be outside the workspace",
 );
 const corepackHome =
@@ -347,8 +347,7 @@ try {
       const root = await realpath(
         join(directory, "node_modules/@tinta", target.id),
       );
-      const relativeRoot = relative(directory, root);
-      assert.ok(!relativeRoot.startsWith(`..${sep}`));
+      assert.ok(isInsideDirectory(directory, root));
       for (const file of target.files)
         assert.equal(
           digest(await readFile(join(root, file.path))),

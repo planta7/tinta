@@ -71,7 +71,7 @@ if (process.argv.includes("--desktop")) {
       ? join(root, "Visual Studio Code.app/Contents/Resources/app")
       : process.platform === "linux"
         ? join(root, "VSCode-linux-arm64/resources/app")
-        : join(root, "resources/app");
+        : join(root, pin.version.slice(0, 10), "resources/app");
   values.TINTA_VSCODE_EXECUTABLE =
     process.platform === "darwin"
       ? join(root, "Visual Studio Code.app/Contents/MacOS", macExecutable)

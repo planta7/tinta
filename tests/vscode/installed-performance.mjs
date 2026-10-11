@@ -5,26 +5,10 @@ import { monitorEventLoopDelay, performance } from "node:perf_hooks";
 import { join } from "node:path";
 import { setFlagsFromString } from "node:v8";
 import { runInNewContext } from "node:vm";
-import { execFileSync } from "node:child_process";
+import { residentBytes } from "./resident-memory.mjs";
 
 const percentile = (values, fraction) =>
   [...values].sort((a, b) => a - b)[Math.ceil(values.length * fraction) - 1];
-function residentBytes() {
-  if (process.platform === "win32") return null;
-  const rows = execFileSync("ps", ["-axo", "pid=,ppid=,rss="], {
-    encoding: "utf8",
-  })
-    .trim()
-    .split("\n")
-    .map((line) => line.trim().split(/\s+/).map(Number));
-  const descendants = new Set([process.pid]);
-  for (let index = 0; index < rows.length; index++)
-    for (const [pid, parent] of rows)
-      if (descendants.has(parent)) descendants.add(pid);
-  return rows
-    .filter(([pid]) => descendants.has(pid))
-    .reduce((sum, row) => sum + row[2] * 1024, 0);
-}
 export async function measureInstalled(open) {
   const extension = vscode.extensions.getExtension(
     process.env.TINTA_INSTALLED_ID,
@@ -55,11 +39,24 @@ export async function measureInstalled(open) {
         text,
       });
     });
-  const baselineRss = residentBytes();
+  const baselineRss = await residentBytes();
   let peakRss = baselineRss;
+  let sampling = false;
+  let pendingSample = Promise.resolve();
+  let samplingError;
   const sampler = setInterval(() => {
-    const rss = residentBytes();
-    if (rss !== null) peakRss = Math.max(peakRss ?? 0, rss);
+    if (sampling) return;
+    sampling = true;
+    pendingSample = residentBytes()
+      .then((rss) => {
+        peakRss = Math.max(peakRss, rss);
+      })
+      .catch((error) => {
+        samplingError ??= error;
+      })
+      .finally(() => {
+        sampling = false;
+      });
   }, 100);
   try {
     loop.enable();
@@ -138,6 +135,8 @@ export async function measureInstalled(open) {
     }
     loop.disable();
     clearInterval(sampler);
+    await pendingSample;
+    if (samplingError) throw samplingError;
     await vscode.commands.executeCommand("workbench.action.closeAllEditors");
     setFlagsFromString("--expose-gc");
     const collect = runInNewContext("gc");
@@ -190,8 +189,8 @@ export async function measureInstalled(open) {
         "Corpus: one expression plus bounded reference listings (each below " +
         "textValueUnits); all sizes must compile and initially evaluate. " +
         "Installed analysis worker round trips exclude debounce; completion " +
-        "through native provider; event-loop samples include RSS sampler " +
-        "overhead; post-GC heap is extension host only; RSS sums host " +
+        "through native provider; RSS collection is asynchronous without " +
+        "overlapping samplers; post-GC heap is extension host only; RSS sums host " +
         "descendants including server and worker threads in their owner process.",
     };
   } finally {
