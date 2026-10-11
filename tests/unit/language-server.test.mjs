@@ -422,6 +422,34 @@ it("bundled worker agrees with CLI validation under equal source/options", async
   }
 });
 
+it("shares overlapping symbol requests for the same document version", async () => {
+  const { supervisor, workers } = harness();
+  supervisor.update("untitled:a", 1, "@let amount = 2");
+  const first = supervisor.query("untitled:a", { kind: "symbols" });
+  const second = supervisor.query("untitled:a", { kind: "symbols" });
+  expect(second).toBe(first);
+  expect(workers).toHaveLength(1);
+  expect(workers[0].terminated).toBe(false);
+  const request = workers[0].requests[0];
+  const result = analyze(
+    { uri: request.uri, profile: "tinta", text: request.text },
+    {
+      documentInstance: request.instance,
+      editorVersion: request.version,
+      sourceRevision: request.version,
+    },
+  );
+  const symbols = [{ name: "amount" }];
+  workers[0].emit("message", { request, result, authoring: symbols });
+  expect(await first).toEqual(symbols);
+  expect(await second).toEqual(symbols);
+  const pending = supervisor.query("untitled:a", { kind: "symbols" });
+  const duplicate = supervisor.query("untitled:a", { kind: "symbols" });
+  supervisor.update("untitled:a", 2, "@let amount = 3");
+  expect(await pending).toBeNull();
+  expect(await duplicate).toBeNull();
+});
+
 it("queries immediately, coalesces requests and releases replies on edits, close and timeout", async () => {
   const { supervisor, workers } = harness();
   expect(
