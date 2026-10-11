@@ -22,9 +22,19 @@ export async function testAuthoring(open, results) {
   );
   assert.ok(references.some((item) => item.range.start.line === 2));
   assert.ok(references.every((item) => [0, 2].includes(item.range.start.line)));
-  const symbols = await vscode.commands.executeCommand(
-    "vscode.executeDocumentSymbolProvider",
-    source.uri,
+  const [symbols, overlappingSymbols] = await Promise.all([
+    vscode.commands.executeCommand(
+      "vscode.executeDocumentSymbolProvider",
+      source.uri,
+    ),
+    vscode.commands.executeCommand(
+      "vscode.executeDocumentSymbolProvider",
+      source.uri,
+    ),
+  ]);
+  assert.deepEqual(
+    overlappingSymbols.map((item) => item.name),
+    ["amount", "😀 Heading"],
   );
   assert.deepEqual(
     symbols.map((item) => item.name),

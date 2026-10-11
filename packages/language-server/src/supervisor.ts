@@ -36,6 +36,7 @@ export class Supervisor {
     string,
     (result: AuthoringResult) => void
   >();
+  private readonly symbolQueries = new Map<string, Promise<AuthoringResult>>();
   private nextQuery = 0;
   private sourceBytes = 0;
   private analysisBytes = 0;
@@ -114,6 +115,9 @@ export class Supervisor {
   query(uri: string, params: AuthoringQuery): Promise<AuthoringResult> {
     const state = this.documents.get(uri);
     if (!state || state.blocked || this.disposed) return Promise.resolve(null);
+    const shared =
+      params.kind === "symbols" ? this.symbolQueries.get(uri) : undefined;
+    if (shared) return shared;
     this.finishQuery(uri, null);
     if (state.timer) clearTimeout(state.timer);
     delete state.timer;
@@ -122,16 +126,19 @@ export class Supervisor {
       query: { id: ++this.nextQuery, params },
     };
     if (this.active?.uri === uri) this.stopWorker();
-    return new Promise((resolve) => {
+    const result = new Promise<AuthoringResult>((resolve) => {
       this.queries.set(uri, resolve);
-      this.pending.set(uri, state.request);
-      this.pump();
     });
+    if (params.kind === "symbols") this.symbolQueries.set(uri, result);
+    this.pending.set(uri, state.request);
+    this.pump();
+    return result;
   }
 
   private finishQuery(uri: string, result: AuthoringResult): void {
     this.queries.get(uri)?.(result);
     this.queries.delete(uri);
+    this.symbolQueries.delete(uri);
   }
 
   has(uri: string): boolean {
