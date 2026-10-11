@@ -104,7 +104,7 @@ export function validateConfig(config, manifests) {
   const expectedEnvironments = [
     ...["node", "vscode"].flatMap((runtime) => [
       `${runtime}-darwin-arm64`,
-      `${runtime}-linux-x64`,
+      `${runtime}-linux-arm64`,
       `${runtime}-win32-x64`,
     ]),
     "chromium-darwin-arm64",

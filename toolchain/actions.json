@@ -30,5 +30,27 @@
     "actionDefinitionSha256": "e6dc8046c02bd3c9f7bf2fea6ba2e59b4e83c7de2b26ec2149a1627f5d66f96c",
     "review": "Official action definition inspected at the pinned release. Node 24 runtime. Exact CPython 3.13.7 for Linux x64, macOS arm64 and Windows x64; no pip dependencies or cache.",
     "resolvedAtUTC": "2026-10-09T13:10:02.688886+00:00"
+  },
+  {
+    "repository": "https://github.com/actions/download-artifact",
+    "ref": "refs/tags/v7.0.0",
+    "commit": "37930b1c2abaa49bbe596cd826c3c89aef350131",
+    "actionDefinitionSha256": "834f2e0884ebc4b61150ecb61b3538786ee2f9e9910740a74463246268db3bd2",
+    "resolvedAtUTC": "2026-10-11T06:15:03.546979+00:00",
+    "review": "Pinned official Node 24 action; candidate storage or provenance only, no package publication.",
+    "license": "MIT",
+    "licenseUrl": "https://raw.githubusercontent.com/actions/download-artifact/37930b1c2abaa49bbe596cd826c3c89aef350131/LICENSE",
+    "licenseSha256": "3e855ffa704114a51628ef8f0bf3aeb41728adf9d9070e263bf58aa5640b0eb5"
+  },
+  {
+    "repository": "https://github.com/actions/attest",
+    "ref": "refs/tags/v4.0.0",
+    "commit": "c32b4b8b198b65d0bd9d63490e847ff7b53989d4",
+    "actionDefinitionSha256": "0dec6807573e709d84cceb8bc393d5bed1bc60100c1639716559f8bd95027b2e",
+    "resolvedAtUTC": "2026-10-11T06:15:04.197612+00:00",
+    "review": "Pinned official Node 24 action; candidate storage or provenance only, no package publication.",
+    "license": "MIT",
+    "licenseUrl": "https://raw.githubusercontent.com/actions/attest/c32b4b8b198b65d0bd9d63490e847ff7b53989d4/LICENSE",
+    "licenseSha256": "32d0bae2419f014f5066af5915264c966efdb7b6e7fe8f90cf87dc75c5a8d6d0"
   }
 ]

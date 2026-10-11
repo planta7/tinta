@@ -55,7 +55,7 @@
       "embeddedTargets": [],
       "environments": [
         "node-darwin-arm64",
-        "node-linux-x64",
+        "node-linux-arm64",
         "node-win32-x64",
         "chromium-darwin-arm64",
         "firefox-darwin-arm64",
@@ -82,7 +82,7 @@
       "embeddedTargets": [],
       "environments": [
         "node-darwin-arm64",
-        "node-linux-x64",
+        "node-linux-arm64",
         "node-win32-x64",
         "chromium-darwin-arm64",
         "firefox-darwin-arm64",
@@ -101,7 +101,7 @@
       "embeddedTargets": [],
       "environments": [
         "node-darwin-arm64",
-        "node-linux-x64",
+        "node-linux-arm64",
         "node-win32-x64",
         "chromium-darwin-arm64",
         "firefox-darwin-arm64",
@@ -122,7 +122,7 @@
       "embeddedTargets": [],
       "environments": [
         "node-darwin-arm64",
-        "node-linux-x64",
+        "node-linux-arm64",
         "node-win32-x64",
         "chromium-darwin-arm64",
         "firefox-darwin-arm64",
@@ -139,7 +139,7 @@
       "embeddedTargets": [],
       "environments": [
         "node-darwin-arm64",
-        "node-linux-x64",
+        "node-linux-arm64",
         "node-win32-x64",
         "chromium-darwin-arm64",
         "firefox-darwin-arm64",
@@ -161,7 +161,7 @@
       "embeddedTargets": ["reader-runtime"],
       "environments": [
         "node-darwin-arm64",
-        "node-linux-x64",
+        "node-linux-arm64",
         "node-win32-x64",
         "chromium-darwin-arm64",
         "firefox-darwin-arm64",
@@ -176,7 +176,11 @@
       "dependencies": ["types", "artifacts"],
       "externalDependencies": {},
       "embeddedTargets": [],
-      "environments": ["node-darwin-arm64", "node-linux-x64", "node-win32-x64"]
+      "environments": [
+        "node-darwin-arm64",
+        "node-linux-arm64",
+        "node-win32-x64"
+      ]
     },
     {
       "id": "cli",
@@ -186,7 +190,11 @@
       "dependencies": ["types", "engine", "artifacts", "local-files"],
       "externalDependencies": {},
       "embeddedTargets": ["studio-standalone"],
-      "environments": ["node-darwin-arm64", "node-linux-x64", "node-win32-x64"]
+      "environments": [
+        "node-darwin-arm64",
+        "node-linux-arm64",
+        "node-win32-x64"
+      ]
     },
     {
       "id": "language-service",
@@ -198,7 +206,7 @@
       "embeddedTargets": [],
       "environments": [
         "node-darwin-arm64",
-        "node-linux-x64",
+        "node-linux-arm64",
         "node-win32-x64",
         "chromium-darwin-arm64",
         "firefox-darwin-arm64",
@@ -215,7 +223,11 @@
         "vscode-languageserver": "10.1.2"
       },
       "embeddedTargets": [],
-      "environments": ["node-darwin-arm64", "node-linux-x64", "node-win32-x64"]
+      "environments": [
+        "node-darwin-arm64",
+        "node-linux-arm64",
+        "node-win32-x64"
+      ]
     }
   ],
   "artifacts": [
@@ -237,7 +249,7 @@
       "embeddedTargets": [],
       "environments": [
         "vscode-darwin-arm64",
-        "vscode-linux-x64",
+        "vscode-linux-arm64",
         "vscode-win32-x64"
       ],
       "contents": [
@@ -407,11 +419,11 @@
       "architecture": "arm64"
     },
     {
-      "id": "node-linux-x64",
+      "id": "node-linux-arm64",
       "runtime": "node",
       "version": "24.21.0",
       "platform": "linux",
-      "architecture": "x64"
+      "architecture": "arm64"
     },
     {
       "id": "node-win32-x64",
@@ -428,11 +440,11 @@
       "architecture": "arm64"
     },
     {
-      "id": "vscode-linux-x64",
+      "id": "vscode-linux-arm64",
       "runtime": "vscode",
       "version": "1.141.0",
       "platform": "linux",
-      "architecture": "x64"
+      "architecture": "arm64"
     },
     {
       "id": "vscode-win32-x64",

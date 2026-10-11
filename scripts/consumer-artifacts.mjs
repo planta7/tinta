@@ -256,7 +256,11 @@ try {
     assert.ok(image, "Examples must contain a raster resource");
     await writeFile(join(directory, "photo.png"), image[1]);
     const managerCommand =
-      manager === "pnpm" ? [process.execPath, pnpmCli] : ["npm"];
+      manager === "pnpm"
+        ? [process.execPath, pnpmCli]
+        : process.env.TINTA_NPM_CLI
+          ? [process.execPath, process.env.TINTA_NPM_CLI]
+          : ["npm"];
     const version = await run([...managerCommand, "--version"], directory, env);
     assert.equal(
       version.stdout.trim(),

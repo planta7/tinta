@@ -60,3 +60,5 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: node scripts/validate-release-preparation.mjs
+      - run: pnpm exec vitest run tests/unit/release-candidate.test.mjs
+      - run: node scripts/check-release-artifacts.mjs build/distribution

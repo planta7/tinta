@@ -1,0 +1,32 @@
+{
+  "darwin-arm64": {
+    "url": "https://vscode.download.prss.microsoft.com/dbazure/download/stable/2a59476c9bfcb90b3ddc372c36762471b7dfad1c/VSCode-darwin-arm64.zip",
+    "name": "1.141.0",
+    "version": "2a59476c9bfcb90b3ddc372c36762471b7dfad1c",
+    "productVersion": "1.141.0",
+    "hash": "9437894adfdd9ebf6003174aad5d15cb5c672809",
+    "timestamp": 1791275621288,
+    "sha256hash": "9b4ae386e3cf738d7ba990237ddf0a18092c924a1bcae465ed4697964745f42d",
+    "supportsFastUpdate": true
+  },
+  "linux-arm64": {
+    "url": "https://vscode.download.prss.microsoft.com/dbazure/download/stable/2a59476c9bfcb90b3ddc372c36762471b7dfad1c/code-stable-arm64-1791276594.tar.gz",
+    "name": "1.141.0",
+    "version": "2a59476c9bfcb90b3ddc372c36762471b7dfad1c",
+    "productVersion": "1.141.0",
+    "hash": "62ad873d2cd566cb82792fb50b8e77ba0d59a742",
+    "timestamp": 1791275621288,
+    "sha256hash": "3b6ea238a2aa9000bab0137c19f06d4e8edcb5587438a3afc9dc9739e793e934",
+    "supportsFastUpdate": true
+  },
+  "win32-x64-archive": {
+    "url": "https://vscode.download.prss.microsoft.com/dbazure/download/stable/2a59476c9bfcb90b3ddc372c36762471b7dfad1c/VSCode-win32-x64-1.141.0.zip",
+    "name": "1.141.0",
+    "version": "2a59476c9bfcb90b3ddc372c36762471b7dfad1c",
+    "productVersion": "1.141.0",
+    "hash": "afea547987a1de9de74d654aa4b0b6a1b396c231",
+    "timestamp": 1791275621288,
+    "sha256hash": "30ef5f55c377452af33009d0a8ac29a15cf8f770782bff42fe987c30da272223",
+    "supportsFastUpdate": true
+  }
+}

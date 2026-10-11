@@ -1,0 +1,153 @@
+name: Release candidate
+on:
+  workflow_dispatch:
+    inputs:
+      source_sha:
+        description: Full merged default-branch SHA, equal to the selected workflow revision
+        required: true
+        type: string
+      config_sha256:
+        description: Reviewed SHA-256 of toolchain/release.json at that revision
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: release-candidate
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    outputs:
+      payload_id: ${{ steps.payload.outputs.artifact-id }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - run: npm install --global npm@11.19.0 pnpm@10.34.6
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec node scripts/candidate-tools.mjs
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - run: pnpm exec node scripts/candidate-ci.mjs build
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        id: payload
+        with:
+          name: payloads-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/distribution/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+  installed:
+    needs: build
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - cell: darwin-arm64
+            os: macos-15
+          - cell: linux-arm64
+            os: ubuntu-24.04-arm
+          - cell: win32-x64
+            os: windows-2022
+    runs-on: ${{ matrix.os }}
+    env:
+      TINTA_MATRIX_CELL: ${{ matrix.cell }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - run: npm install --global npm@11.19.0 pnpm@10.34.6
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec node scripts/candidate-tools.mjs --desktop
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          artifact-ids: ${{ needs.build.outputs.payload_id }}
+          path: build/supplied
+          merge-multiple: true
+      - if: runner.os == 'Linux'
+        run: xvfb-run --auto-servernum pnpm exec node scripts/candidate-ci.mjs matrix
+      - if: runner.os != 'Linux'
+        run: pnpm exec node scripts/candidate-ci.mjs matrix
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        if: always()
+        with:
+          name: results-${{ matrix.cell }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: reports/candidate/
+          if-no-files-found: error
+          retention-days: 30
+  attest:
+    needs: [build, installed]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      actions: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - run: npm install --global npm@11.19.0 pnpm@10.34.6
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm exec node scripts/candidate-tools.mjs
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          artifact-ids: ${{ needs.build.outputs.payload_id }}
+          path: build/supplied
+          merge-multiple: true
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: results-darwin-arm64-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/results/darwin-arm64
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: results-linux-arm64-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/results/linux-arm64
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          name: results-win32-x64-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/results/win32-x64
+      - run: pnpm exec node scripts/candidate-ci.mjs assemble
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          TINTA_PAYLOAD_ID: ${{ needs.build.outputs.payload_id }}
+      - uses: actions/attest@c32b4b8b198b65d0bd9d63490e847ff7b53989d4
+        id: provenance
+        with:
+          subject-path: build/supplied/candidate-index.json
+          create-storage-record: false
+      - name: Preserve verification bundle
+        shell: bash
+        run: cp "$ATTESTATION_BUNDLE" build/supplied/attestation.sigstore.json
+        env:
+          ATTESTATION_BUNDLE: ${{ steps.provenance.outputs.bundle-path }}
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        with:
+          name: candidate-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/supplied/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0

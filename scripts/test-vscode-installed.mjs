@@ -2,6 +2,8 @@ import { build } from "esbuild";
 import { mkdir, writeFile, readFile, copyFile } from "node:fs/promises";
 import { resolve, join } from "node:path";
 import { spawn } from "node:child_process";
+import { networkInterfaces } from "node:os";
+import assert from "node:assert/strict";
 import { driveInstalledUI } from "./vscode-installed-ui.mjs";
 import { inspectPackage } from "./vscode-package.mjs";
 
@@ -15,7 +17,18 @@ const restricted = flags.includes("--restricted");
 const performance = flags.includes("--performance");
 const workflow = flags.includes("--workflow");
 const osOffline = flags.includes("--os-offline");
-if (osOffline && process.platform !== "darwin")
+const hostedOffline = osOffline && process.env.TINTA_CANDIDATE_OFFLINE;
+if (hostedOffline) {
+  assert.equal(process.env.GITHUB_ACTIONS, "true");
+  assert.equal(process.env.RUNNER_ENVIRONMENT, "github-hosted");
+  assert.ok(
+    Object.values(networkInterfaces())
+      .flat()
+      .every((address) => address.internal),
+    "External network interface remains active",
+  );
+}
+if (osOffline && !hostedOffline && process.platform !== "darwin")
   throw new Error("OS network isolation is unavailable on this platform.");
 const port = Number(process.env.TINTA_TEST_DEBUG_PORT ?? 9338);
 const release = flags.includes("--release");
@@ -102,18 +115,28 @@ const profile = [
   join(root, "extensions"),
 ];
 async function run(binary, args, timeout) {
-  const program = osOffline ? "/usr/bin/sandbox-exec" : binary;
-  const parameters = osOffline
-    ? [
-        "-p",
-        '(version 1)(allow default)(deny network-outbound)(allow network-outbound (remote ip "localhost:*") (remote unix-socket))',
-        binary,
-        ...args,
-      ]
-    : args;
+  const windowsCli =
+    process.platform === "win32" && binary === cli && cli.endsWith(".js");
+  const program =
+    osOffline && !hostedOffline
+      ? "/usr/bin/sandbox-exec"
+      : windowsCli
+        ? executable
+        : binary;
+  const parameters =
+    osOffline && !hostedOffline
+      ? [
+          "-p",
+          '(version 1)(allow default)(deny network-outbound)(allow network-outbound (remote ip "localhost:*") (remote unix-socket))',
+          binary,
+          ...args,
+        ]
+      : windowsCli
+        ? [cli, ...args]
+        : args;
   const child = spawn(program, parameters, {
     cwd: root,
-    env,
+    env: windowsCli ? { ...env, ELECTRON_RUN_AS_NODE: "1" } : env,
     stdio: "inherit",
     shell: false,
     detached: process.platform !== "win32",
@@ -170,11 +193,21 @@ await run(
   ],
   performance ? 600000 : 120000,
 );
+if (hostedOffline) {
+  assert.ok(
+    Object.values(networkInterfaces())
+      .flat()
+      .every((address) => address.internal),
+    "Network isolation ended before the test completed",
+  );
+}
 const report = JSON.parse(await readFile(join(root, "result.json"), "utf8"));
 report.archiveSha256 = inspection.sha256;
-report.networkIsolation = osOffline
-  ? "OS sandbox denies non-loopback outbound connections for desktop and descendants"
-  : "Renderer DNS/proxy denial; exported HTML uses offline browser contexts. No OS-wide offline claim.";
+report.networkIsolation = hostedOffline
+  ? `Disposable hosted isolation: ${hostedOffline}; external interfaces absent`
+  : osOffline
+    ? "OS sandbox denies non-loopback outbound connections for desktop and descendants"
+    : "Renderer DNS/proxy denial; exported HTML uses offline browser contexts. No OS-wide offline claim.";
 await writeFile(
   join(root, "result.json"),
   JSON.stringify(report, null, 2) + "\n",
