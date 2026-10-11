@@ -2,6 +2,7 @@
   ".github/workflows/prepare-release.yml",
   ".github/workflows/publish-release.yml",
   ".github/workflows/release-candidate.yml",
+  ".github/workflows/verify-marketplace-identity.yml",
   ".github/workflows/verify.yml",
   ".gitignore",
   ".node-version",
