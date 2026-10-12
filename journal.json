@@ -120,6 +120,10 @@
             "submittedSha256": "90c54ced65b983343e7bd376303e35199bef9d8627dab686be03df62b1d7fea7",
             "registeredSha256": "90c54ced65b983343e7bd376303e35199bef9d8627dab686be03df62b1d7fea7"
           }
+        },
+        "marketplace:visibility": {
+          "status": "pending",
+          "attempts": 0
         }
       }
     }
