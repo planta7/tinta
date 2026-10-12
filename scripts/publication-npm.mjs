@@ -3,6 +3,7 @@ import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
+import semver from "semver";
 import { readTarball, digest } from "./distribution-archive.mjs";
 import { checkFile } from "./release-candidate.mjs";
 
@@ -200,20 +201,37 @@ export function npmAdapter({
       return (await metadata(target))?.["dist-tags"]?.[target.channel] ?? null;
     },
     promote(target, previous) {
+      const prerelease =
+        target.channel !== "latest" &&
+        semver.prerelease(target.version) !== null;
+      const tags = async () => (await metadata(target))?.["dist-tags"] ?? {};
       return {
         retryAbsent: true,
         read: async () => {
-          const current = await this.channel(target);
-          if (current === target.version) return current;
+          const observed = await tags();
+          const current = observed[target.channel] ?? null;
+          if (current === target.version) {
+            return prerelease && observed.latest === target.version
+              ? null
+              : current;
+          }
           assert.equal(current, previous, "Channel changed concurrently");
           return null;
         },
         write: async () => {
-          assert.equal(
-            await this.channel(target),
-            previous,
+          const observed = await tags();
+          const current = observed[target.channel] ?? null;
+          assert.ok(
+            current === previous || current === target.version,
             "Channel changed concurrently",
           );
+          if (prerelease && observed.latest === target.version) {
+            runner.run(
+              ["dist-tag", "rm", target.name, "latest", "--registry", base],
+              true,
+            );
+          }
+          if (current === target.version) return;
           runner.run(
             [
               "dist-tag",
@@ -228,6 +246,13 @@ export function npmAdapter({
         },
         verify: async (current) => {
           assert.equal(current, target.version);
+          if (prerelease) {
+            assert.notEqual(
+              (await tags()).latest,
+              target.version,
+              "Prerelease remains on the stable channel",
+            );
+          }
           return {
             name: target.name,
             channel: target.channel,

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "enabled": false,
+  "enabled": true,
   "repository": "planta7/tinta",
   "repositoryId": "1410906994",
   "environment": "release",
@@ -10,9 +10,9 @@
     "integrity": "sha512-Zov8KhamNneiLdELtj5YALtNmJW4L4fCLTzjfpzXG2w6MSHcf0UxgdlK5uloCuksWT+7mGUU7wi79cO6RqivPg==",
     "license": "Artistic-2.0",
     "repository": "git+https://github.com/npm/cli.git",
-    "publishPermission": false,
-    "distTagPermission": false,
-    "bootstrapComplete": false
+    "publishPermission": true,
+    "distTagPermission": true,
+    "bootstrapComplete": true
   },
   "marketplace": {
     "tenant": "965b4876-de8a-43b7-b14d-6561c23374b3",

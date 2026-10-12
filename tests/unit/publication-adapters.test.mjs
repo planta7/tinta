@@ -287,6 +287,104 @@ describe("npm destination", () => {
       }),
     ).rejects.toThrow("bootstrap");
   });
+  it.each([null, "0.1.0-dev.0"])(
+    "removes an unintended stable tag before completing prerelease promotion from %s",
+    async (previous) => {
+      const target = {
+        name: "@fixture/package",
+        channel: "next",
+        version: "0.1.0-dev.0",
+      };
+      const tags = { latest: target.version };
+      if (previous) tags.next = previous;
+      const commands = [];
+      const adapter = npmAdapter({
+        directory: ".",
+        request: async () => ({ "dist-tags": { ...tags } }),
+        runner: {
+          run(args, authenticated) {
+            expect(authenticated).toBe(true);
+            commands.push(args);
+            if (args[1] === "rm") delete tags.latest;
+            else tags.next = target.version;
+          },
+        },
+      });
+      const operation = adapter.promote(target, previous);
+      expect(await operation.read()).toBeNull();
+      await expect(operation.verify(target.version)).rejects.toThrow(
+        "stable channel",
+      );
+      await operation.write();
+      expect(tags).toEqual({ next: target.version });
+      expect(commands[0].slice(0, 4)).toEqual([
+        "dist-tag",
+        "rm",
+        target.name,
+        "latest",
+      ]);
+      expect(commands).toHaveLength(previous ? 1 : 2);
+      expect(await operation.read()).toBe(target.version);
+      expect((await operation.verify(await operation.read())).new).toBe(
+        target.version,
+      );
+    },
+  );
+  it("preserves a different stable version during prerelease promotion", async () => {
+    const tags = { latest: "0.0.9" };
+    const target = {
+      name: "@fixture/package",
+      channel: "next",
+      version: "0.1.0-dev.0",
+    };
+    const adapter = npmAdapter({
+      directory: ".",
+      request: async () => ({ "dist-tags": { ...tags } }),
+      runner: {
+        run(args) {
+          expect(args[1]).toBe("add");
+          tags.next = target.version;
+        },
+      },
+    });
+    const operation = adapter.promote(target, null);
+    await operation.write();
+    await operation.verify(await operation.read());
+    expect(tags.latest).toBe("0.0.9");
+  });
+  it("resumes when channel promotion fails after removing the unintended tag", async () => {
+    const target = {
+      name: "@fixture/package",
+      channel: "next",
+      version: "0.1.0-dev.0",
+    };
+    const tags = { latest: target.version };
+    let failPromotion = true;
+    const adapter = npmAdapter({
+      directory: ".",
+      request: async () => ({ "dist-tags": { ...tags } }),
+      runner: {
+        run(args) {
+          if (args[1] === "rm") {
+            expect(tags.latest).toBe(target.version);
+            delete tags.latest;
+          } else if (failPromotion) {
+            throw new Error("Interrupted promotion");
+          } else {
+            tags.next = target.version;
+          }
+        },
+      },
+    });
+    const operation = adapter.promote(target, null);
+    await expect(operation.write()).rejects.toThrow("Interrupted promotion");
+    expect(tags).toEqual({});
+    expect(await operation.read()).toBeNull();
+    failPromotion = false;
+    await operation.write();
+    await operation.verify(await operation.read());
+    expect(tags).toEqual({ next: target.version });
+  });
 });
 
 describe("Marketplace destination", () => {
