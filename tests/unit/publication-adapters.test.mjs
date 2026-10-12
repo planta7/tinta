@@ -347,6 +347,46 @@ describe("npm destination", () => {
       );
     },
   );
+  it.each([
+    ["0.1.0-dev.0", "next", false],
+    ["0.1.0-dev.1", "next", true],
+    ["0.1.0-dev.0", "beta", true],
+  ])(
+    "limits the initial latest exception to its exact version and next channel: %s %s",
+    async (version, channel, removesLatest) => {
+      const target = { name: "@fixture/package", version, channel };
+      const tags = { latest: version };
+      const commands = [];
+      const adapter = npmAdapter({
+        directory: ".",
+        retainInitialLatestVersion: "0.1.0-dev.0",
+        request: async () => ({ "dist-tags": { ...tags } }),
+        runner: {
+          run(args, authenticated) {
+            expect(authenticated).toBe(true);
+            commands.push(args);
+            if (args[1] === "rm") delete tags.latest;
+            else tags[channel] = version;
+          },
+        },
+      });
+      const operation = adapter.promote(target, null);
+      expect(await operation.read()).toBeNull();
+      await operation.write();
+      expect(commands.some((args) => args[1] === "rm")).toBe(removesLatest);
+      expect(tags.latest).toBe(removesLatest ? undefined : version);
+      expect(tags[channel]).toBe(version);
+      expect(await operation.read()).toBe(version);
+      expect((await operation.verify(version)).new).toBe(version);
+      await operation.write();
+      expect(commands).toHaveLength(removesLatest ? 2 : 1);
+    },
+  );
+  it("rejects a stable version as the initial latest exception", () => {
+    expect(() => npmAdapter({ retainInitialLatestVersion: "0.1.0" })).toThrow(
+      "must name a prerelease",
+    );
+  });
   it("preserves a different stable version during prerelease promotion", async () => {
     const tags = { latest: "0.0.9" };
     const target = {

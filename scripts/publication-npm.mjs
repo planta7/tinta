@@ -80,7 +80,14 @@ export function npmAdapter({
   runner,
   directory,
   registry = "https://registry.npmjs.org",
+  retainInitialLatestVersion = null,
 }) {
+  assert.ok(
+    retainInitialLatestVersion === null ||
+      (semver.valid(retainInitialLatestVersion) &&
+        semver.prerelease(retainInitialLatestVersion) !== null),
+    "Initial latest exception must name a prerelease version",
+  );
   const url = new URL(registry);
   assert.ok(
     url.href === "https://registry.npmjs.org/" ||
@@ -204,6 +211,12 @@ export function npmAdapter({
       const prerelease =
         target.channel !== "latest" &&
         semver.prerelease(target.version) !== null;
+      const removePrereleaseLatest =
+        prerelease &&
+        !(
+          target.channel === "next" &&
+          target.version === retainInitialLatestVersion
+        );
       const tags = async () => (await metadata(target))?.["dist-tags"] ?? {};
       return {
         retryAbsent: true,
@@ -211,7 +224,7 @@ export function npmAdapter({
           const observed = await tags();
           const current = observed[target.channel] ?? null;
           if (current === target.version) {
-            return prerelease && observed.latest === target.version
+            return removePrereleaseLatest && observed.latest === target.version
               ? null
               : current;
           }
@@ -225,7 +238,7 @@ export function npmAdapter({
             current === previous || current === target.version,
             "Channel changed concurrently",
           );
-          if (prerelease && observed.latest === target.version) {
+          if (removePrereleaseLatest && observed.latest === target.version) {
             runner.run(
               ["dist-tag", "rm", target.name, "latest", "--registry", base],
               true,
@@ -246,7 +259,7 @@ export function npmAdapter({
         },
         verify: async (current) => {
           assert.equal(current, target.version);
-          if (prerelease) {
+          if (removePrereleaseLatest) {
             assert.notEqual(
               (await tags()).latest,
               target.version,

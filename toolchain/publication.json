@@ -12,7 +12,8 @@
     "repository": "git+https://github.com/npm/cli.git",
     "publishPermission": true,
     "distTagPermission": true,
-    "bootstrapComplete": true
+    "bootstrapComplete": true,
+    "retainInitialLatestVersion": "0.1.0-dev.0"
   },
   "marketplace": {
     "tenant": "965b4876-de8a-43b7-b14d-6561c23374b3",
