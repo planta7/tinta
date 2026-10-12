@@ -195,6 +195,32 @@
             }
           }
         }
+      },
+      "promotion": {
+        "observed": {
+          "@tinta-lang/types": null,
+          "@tinta-lang/syntax": null,
+          "@tinta-lang/engine": null,
+          "@tinta-lang/charts": null,
+          "@tinta-lang/reader": null,
+          "@tinta-lang/artifacts": null,
+          "@tinta-lang/local-files": null,
+          "@tinta-lang/cli": null,
+          "@tinta-lang/language-service": null,
+          "@tinta-lang/language-server": null
+        },
+        "desired": {
+          "@tinta-lang/types": "0.1.0-dev.0",
+          "@tinta-lang/syntax": "0.1.0-dev.0",
+          "@tinta-lang/engine": "0.1.0-dev.0",
+          "@tinta-lang/charts": "0.1.0-dev.0",
+          "@tinta-lang/reader": "0.1.0-dev.0",
+          "@tinta-lang/artifacts": "0.1.0-dev.0",
+          "@tinta-lang/local-files": "0.1.0-dev.0",
+          "@tinta-lang/cli": "0.1.0-dev.0",
+          "@tinta-lang/language-service": "0.1.0-dev.0",
+          "@tinta-lang/language-server": "0.1.0-dev.0"
+        }
       }
     }
   }
