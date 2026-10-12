@@ -104,6 +104,11 @@ export function npmAdapter({
   const base = url.origin;
   const metadata = (target) =>
     request(`${base}/${encodeURIComponent(target.name)}`, { missing: true });
+  const channelTags = async (target) =>
+    (await request(
+      `${base}/-/package/${encodeURIComponent(target.name)}/dist-tags`,
+      { headers: { "Cache-Control": "no-cache" } },
+    )) ?? {};
   const version = async (target) =>
     (await metadata(target))?.versions?.[target.version] ?? null;
   const verify = async (target, remote) => {
@@ -205,7 +210,7 @@ export function npmAdapter({
       }
     },
     async channel(target) {
-      return (await metadata(target))?.["dist-tags"]?.[target.channel] ?? null;
+      return (await channelTags(target))[target.channel] ?? null;
     },
     promote(target, previous) {
       const prerelease =
@@ -217,7 +222,7 @@ export function npmAdapter({
           target.channel === "next" &&
           target.version === retainInitialLatestVersion
         );
-      const tags = async () => (await metadata(target))?.["dist-tags"] ?? {};
+      const tags = () => channelTags(target);
       return {
         retryAbsent: true,
         read: async () => {
