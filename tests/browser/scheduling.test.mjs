@@ -38,6 +38,9 @@ test("editor and recovery debounce at their exact idle boundaries and cancel old
   await page
     .getByRole("button", { name: "Close dialog", exact: true })
     .click({ force: true });
+  await expect
+    .poll(() => page.evaluate(() => globalThis.schedulingEvidence.saves))
+    .toEqual([""]);
   const editor = page.getByRole("textbox", { name: "Document source" });
   await editor.press("ControlOrMeta+End");
   await page.keyboard.insertText("\n\nFirst boundary");
