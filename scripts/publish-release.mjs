@@ -214,6 +214,11 @@ async function main(mode, env) {
     policy.npm,
     readCandidateJson(readFileSync("toolchain/publication-npm-lock.json")),
   );
+  const journal = githubJournal(
+    api,
+    policy.repository,
+    `${env.GITHUB_RUN_ID}/${env.GITHUB_RUN_ATTEMPT}`,
+  );
   const adapters = {
     npm: npmAdapter({
       request,
@@ -231,13 +236,9 @@ async function main(mode, env) {
       request,
       token: env.GITHUB_TOKEN,
       directory,
+      journal,
     }),
   };
-  const journal = githubJournal(
-    api,
-    policy.repository,
-    `${env.GITHUB_RUN_ID}/${env.GITHUB_RUN_ATTEMPT}`,
-  );
   const result = await publishRelease({
     gate,
     journal,
