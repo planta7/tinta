@@ -223,6 +223,7 @@ async function main(mode, env) {
     npm: npmAdapter({
       request,
       runner: npmRunner("build/publication/npm/bin/npm-cli.js"),
+      retainInitialLatestVersion: policy.npm.retainInitialLatestVersion,
       directory,
     }),
     marketplace: marketplaceAdapter({
