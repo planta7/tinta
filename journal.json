@@ -196,9 +196,9 @@
           }
         },
         "channel:@tinta-lang/types": {
-          "status": "submitted",
+          "status": "failed",
           "attempts": 2,
-          "error": "submission-outcome-unknown"
+          "error": "verification-failed"
         }
       },
       "promotion": {
