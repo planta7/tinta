@@ -296,8 +296,12 @@
           }
         },
         "github:tag": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "tag": "tinta-v0.1.0-dev.0-vscode-0.1.0-pre-release",
+            "sourceSha": "8c97c54dda80bc7ed8220d740e664c0e4bdf53e5"
+          }
         }
       },
       "promotion": {
