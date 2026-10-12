@@ -8,8 +8,14 @@
       "status": "pending",
       "items": {
         "npm:@tinta-lang/types": {
-          "status": "pending",
-          "attempts": 0
+          "status": "verified",
+          "attempts": 0,
+          "receipt": {
+            "name": "@tinta-lang/types",
+            "version": "0.1.0-dev.0",
+            "integrity": "sha512-xgihsahtTGg02fL2jXqL0pS9SnVEQ/QcvZGAEk+FT/UyC0CVIJFfAFJCojwu0c0xySSa5liCE02BekjgI71raQ==",
+            "sha256": "96747ca9df303b6db2775b63e511ceba282194e80cdd9970b38f6444f6ac38ee"
+          }
         }
       }
     }
