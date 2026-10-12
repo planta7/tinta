@@ -108,8 +108,9 @@
           }
         },
         "marketplace": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "failed",
+          "attempts": 1,
+          "error": "verification-failed"
         }
       }
     }
