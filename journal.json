@@ -196,9 +196,14 @@
           }
         },
         "channel:@tinta-lang/types": {
-          "status": "failed",
+          "status": "promoted",
           "attempts": 2,
-          "error": "verification-failed"
+          "receipt": {
+            "name": "@tinta-lang/types",
+            "channel": "next",
+            "old": "0.1.0-dev.0",
+            "new": "0.1.0-dev.0"
+          }
         }
       },
       "promotion": {
