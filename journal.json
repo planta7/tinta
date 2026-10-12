@@ -5,7 +5,7 @@
     "c5bce814ae649782e17caa45dfded574df9aaff640ed735e107764a83bbdaf72": {
       "candidate": "c5bce814ae649782e17caa45dfded574df9aaff640ed735e107764a83bbdaf72",
       "releaseId": "tinta-0.1.0-dev.0-vscode-0.1.0-pre-release",
-      "status": "pending",
+      "status": "reconciliation-required",
       "items": {
         "npm:@tinta-lang/types": {
           "status": "verified",
@@ -238,10 +238,10 @@
         }
       },
       "reconciliation": {
-        "digest": "f87cb3ef1596f2dc0a8f399755ca26a749d732352a0623602651693dd43f1d9b",
+        "digest": "c3f6b066e02952aea5ecb3debf88d532126cf52b92bda9d854940c8dec36defa",
         "observed": {
           "@tinta-lang/types": "0.1.0-dev.0",
-          "@tinta-lang/syntax": null,
+          "@tinta-lang/syntax": "0.1.0-dev.0",
           "@tinta-lang/engine": null,
           "@tinta-lang/charts": null,
           "@tinta-lang/reader": null,
