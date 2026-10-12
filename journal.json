@@ -196,8 +196,8 @@
           }
         },
         "channel:@tinta-lang/types": {
-          "status": "unknown",
-          "attempts": 1,
+          "status": "submitted",
+          "attempts": 2,
           "error": "submission-outcome-unknown"
         }
       },
