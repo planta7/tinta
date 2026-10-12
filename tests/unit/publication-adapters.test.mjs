@@ -276,7 +276,7 @@ describe("npm destination", () => {
   });
   it("rejects changed channels and production-like registry overrides", async () => {
     const adapter = npmAdapter({
-      request: async () => ({ "dist-tags": { latest: "2.0.0" } }),
+      request: async () => ({ latest: "2.0.0" }),
       runner: {},
       directory: ".",
     });
@@ -291,6 +291,50 @@ describe("npm destination", () => {
     expect(() =>
       npmAdapter({ registry: "https://registry.npmjs.org.evil.invalid" }),
     ).toThrow();
+  });
+  it("reads channel changes from the tag endpoint instead of cached package metadata", async () => {
+    const target = {
+      name: "@fixture/package",
+      version: "0.1.0-dev.0",
+      channel: "next",
+    };
+    const tags = {};
+    const requests = [];
+    const adapter = npmAdapter({
+      directory: ".",
+      request: async (url, options) => {
+        requests.push(url);
+        if (url.endsWith("/dist-tags")) {
+          expect(options.headers["Cache-Control"]).toBe("no-cache");
+          return { ...tags };
+        }
+        return { "dist-tags": {} };
+      },
+      runner: {
+        run(args) {
+          expect(args.slice(0, 4)).toEqual([
+            "dist-tag",
+            "add",
+            "@fixture/package@0.1.0-dev.0",
+            "next",
+          ]);
+          tags.next = target.version;
+        },
+      },
+    });
+    expect(await adapter.channel(target)).toBeNull();
+    const operation = adapter.promote(target, null);
+    await operation.write();
+    expect(await operation.read()).toBe(target.version);
+    await operation.verify(await operation.read());
+    expect(await adapter.channel(target)).toBe(target.version);
+    expect(
+      requests.every(
+        (url) =>
+          url ===
+          "https://registry.npmjs.org/-/package/%40fixture%2Fpackage/dist-tags",
+      ),
+    ).toBe(true);
   });
   it("blocks missing package bootstrap instead of falling back to a token", async () => {
     const adapter = npmAdapter({
@@ -317,7 +361,7 @@ describe("npm destination", () => {
       const commands = [];
       const adapter = npmAdapter({
         directory: ".",
-        request: async () => ({ "dist-tags": { ...tags } }),
+        request: async () => ({ ...tags }),
         runner: {
           run(args, authenticated) {
             expect(authenticated).toBe(true);
@@ -360,7 +404,7 @@ describe("npm destination", () => {
       const adapter = npmAdapter({
         directory: ".",
         retainInitialLatestVersion: "0.1.0-dev.0",
-        request: async () => ({ "dist-tags": { ...tags } }),
+        request: async () => ({ ...tags }),
         runner: {
           run(args, authenticated) {
             expect(authenticated).toBe(true);
@@ -396,7 +440,7 @@ describe("npm destination", () => {
     };
     const adapter = npmAdapter({
       directory: ".",
-      request: async () => ({ "dist-tags": { ...tags } }),
+      request: async () => ({ ...tags }),
       runner: {
         run(args) {
           expect(args[1]).toBe("add");
@@ -419,7 +463,7 @@ describe("npm destination", () => {
     let failPromotion = true;
     const adapter = npmAdapter({
       directory: ".",
-      request: async () => ({ "dist-tags": { ...tags } }),
+      request: async () => ({ ...tags }),
       runner: {
         run(args) {
           if (args[1] === "rm") {
