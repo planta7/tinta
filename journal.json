@@ -108,9 +108,18 @@
           }
         },
         "marketplace": {
-          "status": "failed",
+          "status": "verified",
           "attempts": 1,
-          "error": "verification-failed"
+          "receipt": {
+            "publisher": "planta7",
+            "publisherId": "d5a3d449-d8c6-482b-b95c-db2716610389",
+            "extensionId": "17af3710-cac9-42d4-9c2f-c6cc18e8f9d0",
+            "version": "0.1.0",
+            "channel": "pre-release",
+            "targetPlatform": "universal",
+            "submittedSha256": "90c54ced65b983343e7bd376303e35199bef9d8627dab686be03df62b1d7fea7",
+            "registeredSha256": "90c54ced65b983343e7bd376303e35199bef9d8627dab686be03df62b1d7fea7"
+          }
         }
       }
     }
