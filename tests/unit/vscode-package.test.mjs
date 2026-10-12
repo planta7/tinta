@@ -18,11 +18,13 @@ const { unzipSync, zipSync } = require("fflate");
 const path = `build/vscode/tinta-${extensionVersion}.vsix`;
 
 describe("local extension archive", () => {
+  let releaseManifest;
+
   beforeAll(async () => {
     await packageExtension();
   });
 
-  it("marks release archives public while retaining their prerelease channel", async () => {
+  beforeAll(async () => {
     const directory = await mkdtemp(join(tmpdir(), "tinta-release-flags-"));
     try {
       const report = await packageExtension({
@@ -34,18 +36,25 @@ describe("local extension archive", () => {
           join(directory, `tinta-${report.identity.extensionVersion}.vsix`),
         ),
       );
-      const xml = Buffer.from(entries["extension.vsixmanifest"]).toString();
-      expect(xml).toContain("<GalleryFlags>Public Preview</GalleryFlags>");
-      expect(xml).toContain(
-        '<Property Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"/>',
-      );
-      const local = unzipSync(await readFile(path));
-      expect(Buffer.from(local["extension.vsixmanifest"]).toString()).toContain(
-        "<GalleryFlags>Preview</GalleryFlags>",
-      );
+      releaseManifest = Buffer.from(
+        entries["extension.vsixmanifest"],
+      ).toString();
     } finally {
       await rm(directory, { recursive: true, force: true });
     }
+  });
+
+  it("marks release archives public while retaining their prerelease channel", async () => {
+    expect(releaseManifest).toContain(
+      "<GalleryFlags>Public Preview</GalleryFlags>",
+    );
+    expect(releaseManifest).toContain(
+      '<Property Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"/>',
+    );
+    const local = unzipSync(await readFile(path));
+    expect(Buffer.from(local["extension.vsixmanifest"]).toString()).toContain(
+      "<GalleryFlags>Preview</GalleryFlags>",
+    );
   });
 
   it("provides independently valid quickstart examples", async () => {
