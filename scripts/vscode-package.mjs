@@ -200,7 +200,7 @@ export async function packageExtension({
     <Description xml:space="preserve">Local Tinta authoring, preview and export</Description>
     <Tags>markdown</Tags>
     <Categories>Programming Languages</Categories>
-    <GalleryFlags>Preview</GalleryFlags>
+    <GalleryFlags>${release ? "Public Preview" : "Preview"}</GalleryFlags>
     <Properties>
       <Property Id="Microsoft.VisualStudio.Code.Engine" Value="^1.141.0"/>
       <Property Id="Microsoft.VisualStudio.Code.ExtensionKind" Value="workspace"/>
