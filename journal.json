@@ -56,6 +56,10 @@
             "integrity": "sha512-u0DTiGeF1nMz0ciDjptRD4+8X7EqNqGVmT9D4+ObaxK4eQwiwi9Pouo12kD8f79QIfz2I0YAxHay22BcVUbxDw==",
             "sha256": "a145007e804479d9d7e6f361eb1d338c61610147f545697a1ab63b084b85080c"
           }
+        },
+        "npm:@tinta-lang/artifacts": {
+          "status": "pending",
+          "attempts": 0
         }
       }
     }
