@@ -6,7 +6,12 @@
       "candidate": "c5bce814ae649782e17caa45dfded574df9aaff640ed735e107764a83bbdaf72",
       "releaseId": "tinta-0.1.0-dev.0-vscode-0.1.0-pre-release",
       "status": "pending",
-      "items": {}
+      "items": {
+        "npm:@tinta-lang/types": {
+          "status": "pending",
+          "attempts": 0
+        }
+      }
     }
   }
 }
