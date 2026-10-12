@@ -433,17 +433,19 @@ describe("Marketplace destination", () => {
     try {
       const calls = [];
       let uploaded = false;
+      let validationWaits = 0;
+      let publicBytes = w.bytes;
       const publisherId = "fixture-publisher-id";
       const remote = {
         extensionName: "extension",
         extensionId: "fixture-extension-id",
+        flags: "validated, preview",
         publisher: { publisherName: "fixture", publisherId },
         versions: [
           {
             version: "0.1.0",
-            properties: [
-              { key: "Microsoft.VisualStudio.Code.PreRelease", value: "true" },
-            ],
+            flags: "none",
+            properties: [],
           },
         ],
       };
@@ -453,7 +455,14 @@ describe("Marketplace destination", () => {
           uploaded = true;
           return remote;
         }
-        if (options.binary) return w.bytes;
+        if (options.method === "PATCH") {
+          expect(url).toContain("flags=2304&api-version=7.2-preview.2");
+          expect(options.body).toBeUndefined();
+          remote.flags = "validated, public, preview";
+          return remote;
+        }
+        if (options.binary)
+          return url.includes("/_apis/public/") ? publicBytes : w.bytes;
         if (url.includes("/extensions/")) return uploaded ? remote : null;
         return { publisherId, publisherName: "fixture" };
       };
@@ -462,6 +471,13 @@ describe("Marketplace destination", () => {
         credential: async () => "fixture-access",
         directory: w.directory,
         publisherId,
+        wait: async () => {
+          validationWaits += 1;
+          remote.versions[0].flags = "validated";
+          remote.versions[0].properties = [
+            { key: "Microsoft.VisualStudio.Code.PreRelease", value: "true" },
+          ];
+        },
       });
       const target = {
         kind: "vsix",
@@ -479,6 +495,7 @@ describe("Marketplace destination", () => {
         "Bearer fixture-access",
       );
       const receipt = await op.verify(await op.read());
+      expect(validationWaits).toBe(1);
       expect(receipt).toMatchObject({
         publisher: "fixture",
         publisherId,
@@ -489,12 +506,98 @@ describe("Marketplace destination", () => {
       });
       expect(JSON.stringify(receipt)).not.toContain("fixture-access");
       await expect(op.write()).rejects.toThrow("already exists");
+      const visibility = adapter.visibility(target);
+      expect(await visibility.read()).toBeNull();
+      await visibility.write();
+      publicBytes = zipEntries({ "unexpected.js": Buffer.from("changed") });
+      await expect(visibility.verify(await visibility.read())).rejects.toThrow(
+        "Unexpected Marketplace payload entries",
+      );
+      publicBytes = w.bytes;
+      const visible = await visibility.verify(await visibility.read());
+      expect(visible.visibility).toBe("public");
+      expect(visible.publicDownload.byteIdentical).toBe(true);
+      const publicRead = calls.find((call) =>
+        call.url.includes("/_apis/public/"),
+      );
+      expect(publicRead.options.headers).toBeUndefined();
+      await visibility.write();
+      expect(
+        calls.filter((call) => call.options.method === "PATCH"),
+      ).toHaveLength(1);
+      expect(
+        calls.filter((call) => call.options.method === "POST"),
+      ).toHaveLength(1);
       target.channel = "stable";
       await expect(op.verify(await op.read())).rejects.toThrow("channel");
     } finally {
       w.close();
     }
   });
+  it.each(["pending", "rejected", "validated", "tampered", "locked"])(
+    "waits for validation without publishing %s content",
+    async (state) => {
+      const w = workspace();
+      try {
+        let waits = 0;
+        const mutations = [];
+        const version = {
+          version: "0.1.0",
+          flags: ["validated", "tampered", "locked"].includes(state)
+            ? "validated"
+            : "none",
+          properties: ["tampered", "locked"].includes(state)
+            ? [{ key: "Microsoft.VisualStudio.Code.PreRelease", value: "true" }]
+            : [],
+          ...(state === "rejected"
+            ? { validationResultMessage: "Rejected" }
+            : {}),
+        };
+        const remote = {
+          publisher: { publisherName: "fixture", publisherId: "fixture-id" },
+          extensionName: "extension",
+          extensionId: "extension-id",
+          flags: state === "locked" ? "validated, preview, locked" : "preview",
+          versions: [version],
+        };
+        const target = {
+          name: "fixture.extension",
+          version: "0.1.0",
+          channel: "pre-release",
+          archive: w.archive,
+        };
+        const adapter = marketplaceAdapter({
+          directory: w.directory,
+          publisherId: "fixture-id",
+          wait: async () => {
+            waits += 1;
+          },
+          request: async (_url, options) => {
+            if (options?.method) mutations.push(options.method);
+            if (options?.binary)
+              return state === "tampered"
+                ? zipEntries({ "unexpected.js": Buffer.from("changed") })
+                : w.bytes;
+            return remote;
+          },
+        });
+        const failures = {
+          pending: "still pending",
+          rejected: "validation failed",
+          validated: "channel collision",
+          tampered: "Unexpected Marketplace payload entries",
+          locked: "Unexpected Marketplace visibility flags",
+        };
+        await expect(adapter.visibility(target).write()).rejects.toThrow(
+          failures[state],
+        );
+        expect(waits).toBe(state === "pending" ? 12 : 0);
+        expect(mutations).toEqual([]);
+      } finally {
+        w.close();
+      }
+    },
+  );
 });
 
 it("uploads immutable GitHub assets, detects collisions and finalizes only the full set", async () => {

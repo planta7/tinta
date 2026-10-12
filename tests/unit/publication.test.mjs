@@ -119,6 +119,7 @@ function fixture() {
     marketplace: {
       preflight: async () => {},
       upload: () => operation("vsix", false),
+      visibility: () => operation("visibility"),
     },
     github: {
       preflight: async () => {},
@@ -164,6 +165,7 @@ describe("resumable coordinated publication", () => {
       "@fixture/a",
       "@fixture/b",
       "vsix",
+      "visibility",
       "tag:@fixture/a",
       "tag:@fixture/b",
       "github:tag",
@@ -172,12 +174,13 @@ describe("resumable coordinated publication", () => {
       "github:publish",
     ]);
     await f.run();
-    expect(f.writes).toHaveLength(9);
+    expect(f.writes).toHaveLength(10);
   });
   for (const key of [
     "@fixture/a",
     "@fixture/b",
     "vsix",
+    "visibility",
     "tag:@fixture/a",
     "tag:@fixture/b",
     "github:tag",
@@ -230,7 +233,7 @@ describe("resumable coordinated publication", () => {
     await f.run();
     f.lose();
     await f.run();
-    expect(f.writes).toHaveLength(9);
+    expect(f.writes).toHaveLength(10);
   });
   it("rejects content collisions without overwrite", async () => {
     const f = fixture();
@@ -256,7 +259,7 @@ describe("resumable coordinated publication", () => {
     const f = fixture();
     const results = await Promise.allSettled([f.run(), f.run()]);
     expect(results.filter((r) => r.status === "rejected")).toHaveLength(1);
-    expect(f.writes).toHaveLength(9);
+    expect(f.writes).toHaveLength(10);
   });
   it("requires every preflight before the first package upload", async () => {
     const f = fixture();
@@ -305,7 +308,7 @@ describe("resumable coordinated publication", () => {
     await expect(f.run({ phase: "marketplace" })).rejects.toThrow("incomplete");
     for (const phase of ["npm", "marketplace", "promote", "github"])
       await f.run({ phase });
-    expect(f.writes).toHaveLength(9);
+    expect(f.writes).toHaveLength(10);
   });
   it("rejects missing dependency closure and cycles", () => {
     expect(() =>

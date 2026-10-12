@@ -120,7 +120,7 @@ export async function publishRelease({
       if (remote === null) {
         const destination = key.startsWith("npm:")
           ? "npm"
-          : key === "marketplace"
+          : key === "marketplace" || key.startsWith("marketplace:")
             ? "marketplace"
             : key.startsWith("channel:")
               ? "promote"
@@ -192,6 +192,12 @@ export async function publishRelease({
       adapters.marketplace.upload(
         plan.targets.find((t) => t.kind === "vsix"),
         plan,
+      ),
+    );
+    await step(
+      "marketplace:visibility",
+      adapters.marketplace.visibility(
+        plan.targets.find((t) => t.kind === "vsix"),
       ),
     );
     if (phase === "marketplace") return structuredClone(record);
