@@ -16,6 +16,10 @@
             "integrity": "sha512-xgihsahtTGg02fL2jXqL0pS9SnVEQ/QcvZGAEk+FT/UyC0CVIJFfAFJCojwu0c0xySSa5liCE02BekjgI71raQ==",
             "sha256": "96747ca9df303b6db2775b63e511ceba282194e80cdd9970b38f6444f6ac38ee"
           }
+        },
+        "npm:@tinta-lang/syntax": {
+          "status": "pending",
+          "attempts": 0
         }
       }
     }
