@@ -427,6 +427,28 @@ it("prevents concurrent Git journal acquisition by non-fast-forward CAS", async 
   );
 });
 
+it("proves write access only after acquiring the same repository journal", async () => {
+  const service = gitService();
+  const journal = githubJournal(service.api, "fixture/repo", "1/1");
+  expect(() => journal.assertWriteAccess("fixture/repo")).toThrow("unverified");
+  await journal.acquire();
+  expect(() => journal.assertWriteAccess("fixture/repo")).not.toThrow();
+  expect(() => journal.assertWriteAccess("another/repo")).toThrow();
+  await journal.release();
+  expect(() => journal.assertWriteAccess("fixture/repo")).toThrow("unverified");
+
+  const denied = githubJournal(
+    async (method, path, body) => {
+      if (method !== "GET") throw new Error("Permission denied");
+      return service.api(method, path, body);
+    },
+    "fixture/repo",
+    "2/1",
+  );
+  await expect(denied.acquire()).rejects.toThrow("Permission denied");
+  expect(() => denied.assertWriteAccess("fixture/repo")).toThrow("unverified");
+});
+
 it("does not steal a durable lease from a running workflow attempt", async () => {
   const service = gitService();
   const api = (method, path, body) =>

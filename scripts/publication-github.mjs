@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { checkFile } from "./release-candidate.mjs";
 import { digest } from "./distribution-archive.mjs";
 
-export function releaseAdapter({ api, request, token, directory }) {
+export function releaseAdapter({ api, request, token, directory, journal }) {
   let repository;
   const root = () => `/repos/${repository}`;
   const readRelease = (plan) =>
@@ -25,14 +25,11 @@ export function releaseAdapter({ api, request, token, directory }) {
   return {
     async preflight(plan) {
       repository = plan.repository;
+      // The journal ref update proves Contents write using the same credential.
+      journal.assertWriteAccess(repository);
       const repo = await api("GET", root());
       assert.equal(repo.full_name, repository);
       assert.equal(repo.private, false, "Public release repository required");
-      assert.equal(
-        repo.permissions?.push,
-        true,
-        "Release write permission required",
-      );
       const tag = await api(
         "GET",
         `${root()}/git/ref/tags/${encodeURIComponent(plan.tag)}`,

@@ -63,6 +63,7 @@ export function githubJournal(api, repository, owner) {
   const branch = "publication-journal";
   let head;
   let state;
+  let acquired = false;
   async function read() {
     const ref = await api("GET", `${base}/git/ref/heads/${branch}`);
     head = ref?.object.sha ?? null;
@@ -121,7 +122,13 @@ export function githubJournal(api, repository, owner) {
     state = structuredClone(next);
   }
   return {
+    assertWriteAccess(targetRepository) {
+      assert.equal(targetRepository, repository);
+      assert.equal(acquired, true, "Journal write access is unverified");
+      assert.equal(state.owner, owner);
+    },
     async acquire() {
+      acquired = false;
       state = await read();
       if (state.owner && state.owner !== owner) {
         assert.match(state.owner, /^[1-9][0-9]*\/[1-9][0-9]*$/);
@@ -137,9 +144,11 @@ export function githubJournal(api, repository, owner) {
         );
       }
       await save({ ...state, owner });
+      acquired = true;
     },
     async release() {
       assert.equal(state.owner, owner);
+      acquired = false;
       await save({ ...state, owner: null });
     },
     async read() {

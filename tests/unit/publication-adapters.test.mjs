@@ -519,7 +519,6 @@ it("uploads immutable GitHub assets, detects collisions and finalizes only the f
         return {
           full_name: plan.repository,
           private: false,
-          permissions: { push: true },
         };
       if (path.includes("/git/ref/")) return tag;
       if (path.endsWith("/git/refs")) {
@@ -548,12 +547,23 @@ it("uploads immutable GitHub assets, detects collisions and finalizes only the f
         digest: `sha256:${digest(options.body)}`,
       });
     };
+    let writeAccess = false;
     const adapter = releaseAdapter({
       api,
       request,
       token: "fixture-token",
       directory: w.directory,
+      journal: {
+        assertWriteAccess(repository) {
+          expect(repository).toBe(plan.repository);
+          if (!writeAccess)
+            throw new Error("Journal write access is unverified");
+        },
+      },
     });
+    await expect(adapter.preflight(plan)).rejects.toThrow("unverified");
+    expect(mutations).toEqual([]);
+    writeAccess = true;
     await adapter.preflight(plan);
     for await (const op of adapter.operations(plan)) {
       if (!(await op.read())) await op.write();
