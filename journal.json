@@ -38,8 +38,14 @@
           }
         },
         "npm:@tinta-lang/charts": {
-          "status": "pending",
-          "attempts": 0
+          "status": "verified",
+          "attempts": 0,
+          "receipt": {
+            "name": "@tinta-lang/charts",
+            "version": "0.1.0-dev.0",
+            "integrity": "sha512-VKo57M3g9EnyDyZV/5oU+s6f2eNST1767uHqEdj0ZFZLt7xSzkM3AUirNrJY5Ev+PY6tViPgBjkTaD8TcOaTpA==",
+            "sha256": "4bac6c81de3135d9cceddd7008eae68f0c0f46b541697304197f9dc783f33832"
+          }
         }
       }
     }
