@@ -82,15 +82,33 @@ jobs:
               publisher.publisherId,
               'd5a3d449-d8c6-482b-b95c-db2716610389',
             );
+            const extension = await request(
+              'Marketplace extension status',
+              'https://marketplace.visualstudio.com/_apis/gallery/publishers/planta7/extensions/tinta?flags=145&api-version=7.2-preview.2',
+              { headers: { Authorization: `Bearer ${token.access_token}` } },
+            );
+            assert.equal(extension.publisher.publisherId, publisher.publisherId);
+            assert.equal(extension.extensionName, 'tinta');
             console.log(JSON.stringify({
               tenant,
               client,
               marketplaceProfileId: profile.id,
               publisherId: publisher.publisherId,
+              extension: {
+                extensionId: extension.extensionId,
+                flags: extension.flags,
+                versions: extension.versions.map((version) => ({
+                  version: version.version,
+                  targetPlatform: version.targetPlatform,
+                  flags: version.flags,
+                  validationResultMessage: version.validationResultMessage,
+                  properties: version.properties,
+                })),
+              },
               publicationPerformed: false,
             }, null, 2));
           } catch (error) {
-            const safeStatus = /^(GitHub OIDC|Entra token exchange|Marketplace identity profile|Marketplace publisher access): HTTP \d{3}$/;
+            const safeStatus = /^(GitHub OIDC|Entra token exchange|Marketplace identity profile|Marketplace publisher access|Marketplace extension status): HTTP \d{3}$/;
             console.error(
               safeStatus.test(error.message)
                 ? error.message
