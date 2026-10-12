@@ -29,6 +29,27 @@ import { releaseAdapter } from "./publication-github.mjs";
 import { publishRelease } from "./publication.mjs";
 import { verifyPublishingTool } from "./publication-tools.mjs";
 
+export function publicationFailure(error) {
+  const codes = new Set([
+    "ERR_ASSERTION",
+    "CREDENTIAL_EXPIRED",
+    "DESTINATION_ERROR",
+  ]);
+  const code = codes.has(error?.code) ? error.code : "OPERATION_FAILED";
+  const frames = String(error?.stack ?? "")
+    .split("\n")
+    .filter((line) => /^\s+at /.test(line))
+    .map(
+      (line) =>
+        line.match(
+          /\/scripts\/((?:publication[\w-]*|publish-release)\.mjs:\d+:\d+)/,
+        )?.[1],
+    )
+    .filter(Boolean)
+    .slice(0, 5);
+  return `${code}${frames.length ? ` at ${frames.join(", ")}` : ""}`;
+}
+
 export async function acquireCandidate(api, inputs, repository, download) {
   const base = `/repos/${repository}`;
   const repo = await api("GET", base);
@@ -237,9 +258,10 @@ if (
   process.argv[1] &&
   import.meta.url === pathToFileURL(resolve(process.argv[1])).href
 ) {
-  main(process.argv[2], process.env).catch(() => {
+  main(process.argv[2], process.env).catch((error) => {
     console.error(
-      "Publication stopped. Consult the durable journal; do not repeat unknown writes.",
+      `Publication stopped: ${publicationFailure(error)}. ` +
+        "Consult the durable journal; do not repeat unknown writes.",
     );
     process.exitCode = 1;
   });

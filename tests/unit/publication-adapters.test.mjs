@@ -20,7 +20,10 @@ import {
   activationPolicy,
 } from "../../scripts/publication-gate.mjs";
 import { loadReleaseConfig } from "../../scripts/release-contract.mjs";
-import { acquireCandidate } from "../../scripts/publish-release.mjs";
+import {
+  acquireCandidate,
+  publicationFailure,
+} from "../../scripts/publish-release.mjs";
 
 function workspace() {
   const directory = mkdtempSync(join(tmpdir(), "publication-adapter-"));
@@ -60,6 +63,20 @@ const env = {
 };
 
 describe("credential and dispatch boundaries", () => {
+  it("reports failure locations without assertion values, tokens or private paths", () => {
+    const error = new Error("Bearer fixture-secret; expected fixture-secret");
+    error.code = "ERR_ASSERTION";
+    error.stack +=
+      "\n    at preflight (file:///private/work/scripts/publication-github.mjs:35:14)";
+    expect(publicationFailure(error)).toBe(
+      "ERR_ASSERTION at publication-github.mjs:35:14",
+    );
+    expect(
+      publicationFailure({ code: "fixture-secret", stack: "fixture-secret" }),
+    ).toBe("OPERATION_FAILED");
+    expect(publicationFailure(null)).toBe("OPERATION_FAILED");
+  });
+
   it("binds GitHub OIDC audience to the Entra client assertion flow", async () => {
     const calls = [];
     const result = await entraCredential(
