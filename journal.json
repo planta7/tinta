@@ -244,6 +244,10 @@
             "old": null,
             "new": "0.1.0-dev.0"
           }
+        },
+        "channel:@tinta-lang/artifacts": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
