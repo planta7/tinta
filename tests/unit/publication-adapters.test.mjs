@@ -461,8 +461,10 @@ describe("Marketplace destination", () => {
           remote.flags = "validated, public, preview";
           return remote;
         }
-        if (options.binary)
-          return url.includes("/_apis/public/") ? publicBytes : w.bytes;
+        if (options.binary) {
+          expect(url).toContain("/_apis/public/");
+          return publicBytes;
+        }
         if (url.includes("/extensions/")) return uploaded ? remote : null;
         return { publisherId, publisherName: "fixture" };
       };
@@ -476,6 +478,10 @@ describe("Marketplace destination", () => {
           remote.versions[0].flags = "validated";
           remote.versions[0].properties = [
             { key: "Microsoft.VisualStudio.Code.PreRelease", value: "true" },
+            {
+              key: "Microsoft.VisualStudio.Services.VsixSha256",
+              value: w.archive.sha256,
+            },
           ];
         },
       });
@@ -503,6 +509,7 @@ describe("Marketplace destination", () => {
         channel: "pre-release",
         targetPlatform: "universal",
         submittedSha256: w.archive.sha256,
+        registeredSha256: w.archive.sha256,
       });
       expect(JSON.stringify(receipt)).not.toContain("fixture-access");
       await expect(op.write()).rejects.toThrow("already exists");
@@ -534,70 +541,88 @@ describe("Marketplace destination", () => {
       w.close();
     }
   });
-  it.each(["pending", "rejected", "validated", "tampered", "locked"])(
-    "waits for validation without publishing %s content",
-    async (state) => {
-      const w = workspace();
-      try {
-        let waits = 0;
-        const mutations = [];
-        const version = {
-          version: "0.1.0",
-          flags: ["validated", "tampered", "locked"].includes(state)
-            ? "validated"
-            : "none",
-          properties: ["tampered", "locked"].includes(state)
-            ? [{ key: "Microsoft.VisualStudio.Code.PreRelease", value: "true" }]
-            : [],
-          ...(state === "rejected"
-            ? { validationResultMessage: "Rejected" }
-            : {}),
-        };
-        const remote = {
-          publisher: { publisherName: "fixture", publisherId: "fixture-id" },
-          extensionName: "extension",
-          extensionId: "extension-id",
-          flags: state === "locked" ? "validated, preview, locked" : "preview",
-          versions: [version],
-        };
-        const target = {
-          name: "fixture.extension",
-          version: "0.1.0",
-          channel: "pre-release",
-          archive: w.archive,
-        };
-        const adapter = marketplaceAdapter({
-          directory: w.directory,
-          publisherId: "fixture-id",
-          wait: async () => {
-            waits += 1;
-          },
-          request: async (_url, options) => {
-            if (options?.method) mutations.push(options.method);
-            if (options?.binary)
-              return state === "tampered"
-                ? zipEntries({ "unexpected.js": Buffer.from("changed") })
-                : w.bytes;
-            return remote;
-          },
-        });
-        const failures = {
-          pending: "still pending",
-          rejected: "validation failed",
-          validated: "channel collision",
-          tampered: "Unexpected Marketplace payload entries",
-          locked: "Unexpected Marketplace visibility flags",
-        };
-        await expect(adapter.visibility(target).write()).rejects.toThrow(
-          failures[state],
-        );
-        expect(waits).toBe(state === "pending" ? 12 : 0);
-        expect(mutations).toEqual([]);
-      } finally {
-        w.close();
-      }
-    },
-  );
+  it.each([
+    "pending",
+    "rejected",
+    "validated",
+    "tampered",
+    "missing-digest",
+    "locked",
+  ])("waits for validation without publishing %s content", async (state) => {
+    const w = workspace();
+    try {
+      let waits = 0;
+      const mutations = [];
+      const version = {
+        version: "0.1.0",
+        flags: ["validated", "tampered", "missing-digest", "locked"].includes(
+          state,
+        )
+          ? "validated"
+          : "none",
+        properties: ["tampered", "missing-digest", "locked"].includes(state)
+          ? [
+              { key: "Microsoft.VisualStudio.Code.PreRelease", value: "true" },
+              {
+                key: "Microsoft.VisualStudio.Services.VsixSha256",
+                value:
+                  state === "missing-digest"
+                    ? undefined
+                    : state === "tampered"
+                      ? "0".repeat(64)
+                      : w.archive.sha256,
+              },
+            ]
+          : [],
+        ...(state === "rejected"
+          ? { validationResultMessage: "Rejected" }
+          : {}),
+      };
+      const remote = {
+        publisher: { publisherName: "fixture", publisherId: "fixture-id" },
+        extensionName: "extension",
+        extensionId: "extension-id",
+        flags: state === "locked" ? "validated, preview, locked" : "preview",
+        versions: [version],
+      };
+      const target = {
+        name: "fixture.extension",
+        version: "0.1.0",
+        channel: "pre-release",
+        archive: w.archive,
+      };
+      const adapter = marketplaceAdapter({
+        directory: w.directory,
+        publisherId: "fixture-id",
+        wait: async () => {
+          waits += 1;
+        },
+        request: async (_url, options) => {
+          if (options?.method) mutations.push(options.method);
+          if (options?.binary)
+            return state === "tampered"
+              ? zipEntries({ "unexpected.js": Buffer.from("changed") })
+              : w.bytes;
+          return remote;
+        },
+      });
+      const failures = {
+        pending: "still pending",
+        rejected: "validation failed",
+        validated: "channel collision",
+        tampered: "registered archive collision",
+        "missing-digest": "registered archive collision",
+        locked: "Unexpected Marketplace visibility flags",
+      };
+      await expect(adapter.visibility(target).write()).rejects.toThrow(
+        failures[state],
+      );
+      expect(waits).toBe(state === "pending" ? 12 : 0);
+      expect(mutations).toEqual([]);
+    } finally {
+      w.close();
+    }
+  });
 });
 
 it("uploads immutable GitHub assets, detects collisions and finalizes only the full set", async () => {

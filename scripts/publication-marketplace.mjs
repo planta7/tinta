@@ -150,9 +150,15 @@ export function marketplaceAdapter({
             target.channel === "pre-release",
             "Extension channel collision",
           );
-          const downloaded = await call(
-            `/_apis/gallery/publisher/${publisher}/extension/${extension}/${target.version}/assets/Microsoft.VisualStudio.Services.VSIXPackage?api-version=7.2-preview.1`,
-            { binary: true },
+          const registeredSha256 = remote.version.properties?.find(
+            (property) =>
+              property.key === "Microsoft.VisualStudio.Services.VsixSha256",
+          )?.value;
+          const submittedSha256 = digest(checkFile(directory, target.archive));
+          assert.equal(
+            registeredSha256,
+            submittedSha256,
+            "Marketplace registered archive collision",
           );
           return {
             publisher,
@@ -161,10 +167,8 @@ export function marketplaceAdapter({
             version: target.version,
             channel: target.channel,
             targetPlatform: "universal",
-            ...verifyMarketplacePayload(
-              checkFile(directory, target.archive),
-              downloaded,
-            ),
+            submittedSha256,
+            registeredSha256,
           };
         },
       };
