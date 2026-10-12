@@ -68,8 +68,14 @@
           }
         },
         "npm:@tinta-lang/local-files": {
-          "status": "pending",
-          "attempts": 0
+          "status": "verified",
+          "attempts": 0,
+          "receipt": {
+            "name": "@tinta-lang/local-files",
+            "version": "0.1.0-dev.0",
+            "integrity": "sha512-bBr+1d7Q4EK50ty9LBmIM3A28wjlaXT9krvIFLalR/pZLu/MKHtntg81cCBz1OpubwYyfytRS6Ud0jmkmyqSMg==",
+            "sha256": "c3322877015168a9708927df40c9810ff7f92a05b25ef63cc4b5f862580e47d1"
+          }
         }
       }
     }
