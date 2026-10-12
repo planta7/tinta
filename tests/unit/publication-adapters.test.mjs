@@ -336,6 +336,48 @@ describe("npm destination", () => {
       ),
     ).toBe(true);
   });
+  it.each([false, true])(
+    "bounds delayed channel visibility without repeating writes: %s",
+    async (neverVisible) => {
+      let written = false;
+      let readsAfterWrite = 0;
+      let writes = 0;
+      let waits = 0;
+      const target = {
+        name: "@fixture/package",
+        version: "0.1.0-dev.0",
+        channel: "next",
+      };
+      const adapter = npmAdapter({
+        directory: ".",
+        request: async () => {
+          if (!written) return {};
+          readsAfterWrite += 1;
+          return !neverVisible && readsAfterWrite >= 3
+            ? { next: target.version }
+            : {};
+        },
+        runner: {
+          run() {
+            written = true;
+            writes += 1;
+          },
+        },
+        wait: async (milliseconds) => {
+          expect(milliseconds).toBe(5000);
+          waits += 1;
+        },
+      });
+      const operation = adapter.promote(target, null);
+      expect(await operation.read()).toBeNull();
+      expect(waits).toBe(0);
+      await operation.write();
+      expect(await operation.read()).toBe(neverVisible ? null : target.version);
+      expect(writes).toBe(1);
+      expect(readsAfterWrite).toBe(neverVisible ? 13 : 3);
+      expect(waits).toBe(neverVisible ? 12 : 2);
+    },
+  );
   it("blocks missing package bootstrap instead of falling back to a token", async () => {
     const adapter = npmAdapter({
       request: async () => null,
@@ -463,6 +505,7 @@ describe("npm destination", () => {
     let failPromotion = true;
     const adapter = npmAdapter({
       directory: ".",
+      wait: async () => {},
       request: async () => ({ ...tags }),
       runner: {
         run(args) {

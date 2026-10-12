@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { spawnSync } from "node:child_process";
 import semver from "semver";
+import { setTimeout } from "node:timers/promises";
 import { readTarball, digest } from "./distribution-archive.mjs";
 import { checkFile } from "./release-candidate.mjs";
 
@@ -81,6 +82,7 @@ export function npmAdapter({
   directory,
   registry = "https://registry.npmjs.org",
   retainInitialLatestVersion = null,
+  wait = setTimeout,
 }) {
   assert.ok(
     retainInitialLatestVersion === null ||
@@ -223,17 +225,26 @@ export function npmAdapter({
           target.version === retainInitialLatestVersion
         );
       const tags = () => channelTags(target);
+      let submissionStarted = false;
       return {
         retryAbsent: true,
         read: async () => {
-          const observed = await tags();
-          const current = observed[target.channel] ?? null;
-          if (current === target.version) {
-            return removePrereleaseLatest && observed.latest === target.version
-              ? null
-              : current;
+          const attempts = submissionStarted ? 13 : 1;
+          for (let attempt = 0; attempt < attempts; attempt += 1) {
+            const observed = await tags();
+            const current = observed[target.channel] ?? null;
+            if (current === target.version) {
+              if (
+                !removePrereleaseLatest ||
+                observed.latest !== target.version
+              ) {
+                return current;
+              }
+            } else {
+              assert.equal(current, previous, "Channel changed concurrently");
+            }
+            if (attempt + 1 < attempts) await wait(5000);
           }
-          assert.equal(current, previous, "Channel changed concurrently");
           return null;
         },
         write: async () => {
@@ -243,6 +254,7 @@ export function npmAdapter({
             current === previous || current === target.version,
             "Channel changed concurrently",
           );
+          submissionStarted = true;
           if (removePrereleaseLatest && observed.latest === target.version) {
             runner.run(
               ["dist-tag", "rm", target.name, "latest", "--registry", base],
