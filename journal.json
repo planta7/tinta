@@ -28,8 +28,14 @@
           }
         },
         "npm:@tinta-lang/engine": {
-          "status": "pending",
-          "attempts": 0
+          "status": "verified",
+          "attempts": 0,
+          "receipt": {
+            "name": "@tinta-lang/engine",
+            "version": "0.1.0-dev.0",
+            "integrity": "sha512-bClyBbNTyv8CTuUBDEIenIestUUJ+E2oeigpFPY5QIXD4YYCXrKruAfgup9rwDPsp+HGfVG6slM3S1EjbR3v4w==",
+            "sha256": "cccaf7d12728ee6452c263488c376275c369dcfef309908471ee50574975ce5a"
+          }
         }
       }
     }
