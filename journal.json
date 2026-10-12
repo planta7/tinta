@@ -254,6 +254,10 @@
             "old": null,
             "new": "0.1.0-dev.0"
           }
+        },
+        "channel:@tinta-lang/local-files": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
