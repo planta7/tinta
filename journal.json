@@ -266,8 +266,14 @@
           }
         },
         "channel:@tinta-lang/cli": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "promoted",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/cli",
+            "channel": "next",
+            "old": null,
+            "new": "0.1.0-dev.0"
+          }
         }
       },
       "promotion": {
