@@ -26,10 +26,8 @@ export const nativeModes = [
   "os-offline",
 ];
 export const buildCommands = [
-  ["pnpm", "verify", "--suite", "editing"],
-  ["pnpm", "test:vscode:unit"],
-  ["pnpm", "test:vscode:browser"],
   ["node", "scripts/distribution-package.mjs"],
+  ["pnpm", "test:vscode:browser"],
   [
     "pnpm",
     "exec",
@@ -40,6 +38,166 @@ export const buildCommands = [
   ],
   ["node", "scripts/check-release-artifacts.mjs", "build/distribution"],
 ];
+
+export const verificationWorkflow = ".github/workflows/verify.yml";
+export const verificationJobs = [
+  "verify",
+  "cli-portability (ubuntu-24.04)",
+  "cli-portability (macos-15)",
+  "cli-portability (windows-2022)",
+  "release-preparation",
+];
+
+export function validateVerification(receipt, producer) {
+  assert.ok(receipt, "Missing successful Verify run");
+  assert.deepEqual(
+    Object.keys(receipt).sort(),
+    [
+      "attempt",
+      "conclusion",
+      "event",
+      "jobs",
+      "ref",
+      "repository",
+      "repositoryId",
+      "runId",
+      "sourceSha",
+      "status",
+      "workflow",
+      "workflowId",
+      "workflowSha256",
+    ].sort(),
+    "Closed verification receipt",
+  );
+  assert.equal(receipt.workflow, verificationWorkflow);
+  assert.equal(
+    receipt.workflowSha256,
+    digest(
+      readFileSync(new URL("../.github/workflows/verify.yml", import.meta.url)),
+    ),
+    "Verification workflow changed",
+  );
+  assert.equal(receipt.repository, producer.repository);
+  assert.equal(receipt.repositoryId, producer.repositoryId);
+  assert.equal(receipt.sourceSha, producer.sourceSha, "Verify source mismatch");
+  assert.equal(receipt.ref, producer.ref);
+  assert.equal(receipt.event, "push");
+  assert.equal(receipt.status, "completed");
+  assert.equal(receipt.conclusion, "success");
+  assert.match(receipt.runId, /^[1-9][0-9]*$/);
+  assert.ok(Number.isSafeInteger(receipt.workflowId) && receipt.workflowId > 0);
+  assert.ok(Number.isSafeInteger(receipt.attempt) && receipt.attempt > 0);
+  assert.deepEqual(
+    receipt.jobs.map((job) => job.name).sort(),
+    [...verificationJobs].sort(),
+    "Missing or duplicate Verify job",
+  );
+  assert.equal(
+    new Set(receipt.jobs.map((job) => job.id)).size,
+    verificationJobs.length,
+  );
+  for (const job of receipt.jobs) {
+    assert.deepEqual(Object.keys(job).sort(), [
+      "conclusion",
+      "id",
+      "name",
+      "status",
+    ]);
+    assert.equal(job.status, "completed");
+    assert.equal(job.conclusion, "success");
+    assert.ok(Number.isSafeInteger(job.id) && job.id > 0);
+  }
+  return receipt;
+}
+
+export async function successfulVerification(producer, { api }) {
+  const base = `/repos/${producer.repository}/actions`;
+  const workflow = await api(`${base}/workflows/verify.yml`);
+  assert.equal(workflow.path, verificationWorkflow);
+  assert.ok(Number.isSafeInteger(workflow.id) && workflow.id > 0);
+  const branch = producer.ref.slice("refs/heads/".length);
+  const query = `event=push&branch=${encodeURIComponent(branch)}&head_sha=${producer.sourceSha}&per_page=100`;
+  const listing = await api(`${base}/workflows/${workflow.id}/runs?${query}`);
+  assert.ok(
+    Number.isSafeInteger(listing.total_count) && listing.total_count <= 100,
+    "Verify run pagination limit",
+  );
+  assert.equal(listing.workflow_runs.length, listing.total_count);
+  const matches = listing.workflow_runs
+    .filter(
+      (run) =>
+        run.head_sha === producer.sourceSha &&
+        run.head_branch === branch &&
+        run.event === "push" &&
+        run.workflow_id === workflow.id,
+    )
+    .sort((a, b) => b.run_number - a.run_number);
+  assert.ok(matches.length > 0, "No Verify push run for this commit");
+  // The latest attempt must succeed; an earlier success cannot mask a rerun.
+  const run = await api(`${base}/runs/${matches[0].id}`);
+  assert.equal(run.id, matches[0].id);
+  assert.equal(run.workflow_id, workflow.id);
+  assert.equal(run.path, verificationWorkflow);
+  assert.equal(run.head_sha, producer.sourceSha);
+  assert.equal(run.head_branch, branch);
+  assert.equal(run.event, "push");
+  for (const repository of [run.repository, run.head_repository]) {
+    assert.equal(repository.full_name, producer.repository);
+    assert.equal(String(repository.id), producer.repositoryId);
+  }
+  assert.equal(run.status, "completed", "Verify has not completed");
+  assert.equal(run.conclusion, "success", "Verify did not pass");
+  assert.ok(Number.isSafeInteger(run.run_attempt) && run.run_attempt > 0);
+  const response = await api(
+    `${base}/runs/${run.id}/attempts/${run.run_attempt}/jobs?per_page=100`,
+  );
+  assert.ok(
+    Number.isSafeInteger(response.total_count) && response.total_count <= 100,
+    "Verify job pagination limit",
+  );
+  assert.equal(response.jobs.length, response.total_count);
+  for (const job of response.jobs) {
+    assert.equal(job.run_id, run.id);
+    assert.equal(job.head_sha, producer.sourceSha);
+    assert.equal(job.status, "completed", "Incomplete Verify job");
+    assert.equal(job.conclusion, "success", "Failed or skipped Verify job");
+  }
+  const current = await api(`${base}/runs/${run.id}`);
+  assert.equal(
+    current.run_attempt,
+    run.run_attempt,
+    "Verify rerun changed during lookup",
+  );
+  assert.equal(current.status, "completed");
+  assert.equal(current.conclusion, "success");
+  return validateVerification(
+    {
+      workflow: verificationWorkflow,
+      workflowId: workflow.id,
+      workflowSha256: digest(
+        readFileSync(
+          new URL("../.github/workflows/verify.yml", import.meta.url),
+        ),
+      ),
+      repository: producer.repository,
+      repositoryId: producer.repositoryId,
+      sourceSha: run.head_sha,
+      ref: producer.ref,
+      event: run.event,
+      status: run.status,
+      conclusion: run.conclusion,
+      runId: String(run.id),
+      attempt: run.run_attempt,
+      jobs: response.jobs.map(({ id, name, status, conclusion }) => ({
+        id,
+        name,
+        status,
+        conclusion,
+      })),
+    },
+    producer,
+  );
+}
 
 export function readCandidateJson(bytes) {
   assert.ok(bytes.length <= 16 * 1024 * 1024, "Metadata size limit");
@@ -216,6 +374,7 @@ export function checkReports(inventory, producer, build, reports) {
   assert.equal(inventory.source.commit, producer.sourceSha, "Wrong source");
   sameProducer(build.producer, producer);
   assert.equal(build.status, "PASS", "Build gates failed");
+  validateVerification(build.verification, producer);
   const dependencies = JSON.parse(
     readFileSync(new URL("../toolchain/dependencies.json", import.meta.url)),
   );

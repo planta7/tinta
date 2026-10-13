@@ -35,6 +35,9 @@ jobs:
           subject-path: toolchain/release.json
           create-storage-record: false
   build:
+    permissions:
+      contents: read
+      actions: read
     needs: provenance-capability
     if: github.ref_name == github.event.repository.default_branch
     runs-on: ubuntu-24.04
@@ -57,6 +60,10 @@ jobs:
         shell: bash
         run: echo "TINTA_GLOBAL_MODULES=$(npm root --global)" >> "$GITHUB_ENV"
       - run: pnpm exec node scripts/candidate-tools.mjs
+      - name: Reuse successful Verify for this commit
+        run: pnpm exec node scripts/candidate-ci.mjs verification
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm exec node scripts/candidate-ci.mjs build
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f

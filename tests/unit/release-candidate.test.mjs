@@ -3,6 +3,10 @@ import { readFileSync } from "node:fs";
 import { parse } from "yaml";
 import {
   buildCommands,
+  successfulVerification,
+  validateVerification,
+  verificationWorkflow,
+  verificationJobs,
   nativeModes,
   matrixCells,
   candidateWorkflow,
@@ -12,6 +16,7 @@ import {
   verifyProducer,
   validateProducerIdentity,
 } from "../../scripts/release-candidate.mjs";
+import { digest } from "../../scripts/distribution-archive.mjs";
 import { offlineInstalled } from "../../scripts/candidate-offline.mjs";
 import { verifyAttestation } from "../../scripts/verify-release-candidate.mjs";
 import { loadReleaseConfig } from "../../scripts/release-contract.mjs";
@@ -33,6 +38,29 @@ const producer = {
   ref: "refs/heads/main",
 };
 const file = (path) => ({ path, bytes: 10, sha256: hash, integrity });
+
+function verificationFixture() {
+  return {
+    workflow: verificationWorkflow,
+    workflowId: 7,
+    workflowSha256: digest(readFileSync(verificationWorkflow)),
+    repository: producer.repository,
+    repositoryId: producer.repositoryId,
+    sourceSha: producer.sourceSha,
+    ref: producer.ref,
+    event: "push",
+    status: "completed",
+    conclusion: "success",
+    runId: "77",
+    attempt: 2,
+    jobs: verificationJobs.map((name, index) => ({
+      id: index + 1,
+      name,
+      status: "completed",
+      conclusion: "success",
+    })),
+  };
+}
 
 function fixture() {
   const inventory = {
@@ -63,6 +91,7 @@ function fixture() {
     status: "PASS",
     osRelease: "fixture-os",
     inventorySha256: hash,
+    verification: verificationFixture(),
     tools: [
       ...Object.entries({
         pnpm: "pnpm",
@@ -194,6 +223,231 @@ function transportFixture() {
     signatures: () => signatures,
   };
 }
+
+describe("same-commit Verify reuse", () => {
+  function services() {
+    const receipt = verificationFixture();
+    const run = {
+      id: 77,
+      run_number: 12,
+      run_attempt: 2,
+      workflow_id: receipt.workflowId,
+      path: verificationWorkflow,
+      repository: { id: 42, full_name: producer.repository },
+      head_repository: { id: 42, full_name: producer.repository },
+      head_sha: source,
+      head_branch: "main",
+      event: "push",
+      status: "completed",
+      conclusion: "success",
+    };
+    const jobs = receipt.jobs.map((job) => ({
+      ...job,
+      run_id: 77,
+      head_sha: source,
+    }));
+    const calls = [];
+    const listing = { total_count: 1, workflow_runs: [run] };
+    const jobResponse = { total_count: jobs.length, jobs };
+    const api = async (path) => {
+      calls.push(path);
+      if (path.endsWith("/workflows/verify.yml"))
+        return { id: 7, path: verificationWorkflow };
+      if (path.includes("/workflows/7/runs?")) return listing;
+      if (path.includes("/jobs?")) return jobResponse;
+      return run;
+    };
+    return { receipt, run, jobs, listing, jobResponse, calls, api };
+  }
+
+  it("records the exact successful push run and its complete attempt", async () => {
+    const f = services();
+    await expect(successfulVerification(producer, f)).resolves.toEqual(
+      f.receipt,
+    );
+    expect(f.calls).toContain(
+      "/repos/fixture/tinta/actions/runs/77/attempts/2/jobs?per_page=100",
+    );
+    expect(f.calls.filter((path) => path.endsWith("/runs/77"))).toHaveLength(2);
+  });
+
+  it.each([
+    [
+      "no run",
+      (f) => {
+        f.listing.total_count = 0;
+        f.listing.workflow_runs = [];
+      },
+    ],
+    [
+      "different source",
+      (f) => {
+        f.run.head_sha = "d".repeat(40);
+      },
+    ],
+    [
+      "PR result",
+      (f) => {
+        f.run.event = "pull_request";
+      },
+    ],
+    [
+      "different branch",
+      (f) => {
+        f.run.head_branch = "feature/example";
+      },
+    ],
+    [
+      "different workflow",
+      (f) => {
+        f.run.path = candidateWorkflow;
+      },
+    ],
+    [
+      "foreign repository",
+      (f) => {
+        f.run.head_repository.id = 99;
+      },
+    ],
+    [
+      "pending run",
+      (f) => {
+        f.run.status = "in_progress";
+      },
+    ],
+    [
+      "failed run",
+      (f) => {
+        f.run.conclusion = "failure";
+      },
+    ],
+    [
+      "missing job",
+      (f) => {
+        f.jobs.pop();
+        f.jobResponse.total_count--;
+      },
+    ],
+    [
+      "skipped job",
+      (f) => {
+        f.jobs[0].conclusion = "skipped";
+      },
+    ],
+    [
+      "pending job",
+      (f) => {
+        f.jobs[0].status = "queued";
+      },
+    ],
+    [
+      "duplicate job",
+      (f) => {
+        f.jobs[1].name = f.jobs[0].name;
+      },
+    ],
+    [
+      "different job commit",
+      (f) => {
+        f.jobs[0].head_sha = "d".repeat(40);
+      },
+    ],
+    [
+      "different job run",
+      (f) => {
+        f.jobs[0].run_id = 88;
+      },
+    ],
+    [
+      "truncated jobs",
+      (f) => {
+        f.jobResponse.total_count++;
+      },
+    ],
+    [
+      "truncated runs",
+      (f) => {
+        f.listing.total_count++;
+      },
+    ],
+  ])("rejects %s", async (_name, change) => {
+    const f = services();
+    change(f);
+    await expect(successfulVerification(producer, f)).rejects.toThrow();
+  });
+
+  it("does not fall back to an older successful run", async () => {
+    const f = services();
+    f.listing.workflow_runs.push({ ...f.run, id: 76, run_number: 11 });
+    f.listing.total_count = 2;
+    f.run.conclusion = "failure";
+    await expect(successfulVerification(producer, f)).rejects.toThrow(
+      /Verify did not pass/,
+    );
+  });
+
+  it("rejects a rerun started while jobs are being checked", async () => {
+    const f = services();
+    const api = async (path) => {
+      const result = await f.api(path);
+      if (path.includes("/jobs?")) f.run.run_attempt++;
+      return structuredClone(result);
+    };
+    await expect(successfulVerification(producer, { api })).rejects.toThrow(
+      /rerun changed/,
+    );
+  });
+
+  it("requires the reused result in the signed build report", () => {
+    const f = fixture();
+    delete f.build.verification;
+    expect(() =>
+      checkReports(f.inventory, producer, f.build, f.reports),
+    ).toThrow(/Missing successful Verify/);
+    const changed = verificationFixture();
+    changed.sourceSha = "d".repeat(40);
+    expect(() => validateVerification(changed, producer)).toThrow(
+      /source mismatch/,
+    );
+  });
+
+  it("keeps candidate-specific package and preview checks without repeating source suites", () => {
+    expect(buildCommands).toContainEqual([
+      "node",
+      "scripts/distribution-package.mjs",
+    ]);
+    expect(buildCommands).toContainEqual(["pnpm", "test:vscode:browser"]);
+    expect(
+      buildCommands.some(
+        (command) =>
+          command.includes("verify") || command.includes("test:vscode:unit"),
+      ),
+    ).toBe(false);
+    const workflow = parse(readFileSync(verificationWorkflow, "utf8"));
+    const names = Object.entries(workflow.jobs).flatMap(([name, job]) =>
+      job.strategy?.matrix?.os
+        ? job.strategy.matrix.os.map((os) => `${name} (${os})`)
+        : [name],
+    );
+    expect(names.sort()).toEqual([...verificationJobs].sort());
+    const candidate = parse(readFileSync(candidateWorkflow, "utf8"));
+    expect(candidate.jobs.build.permissions).toEqual({
+      contents: "read",
+      actions: "read",
+    });
+    const steps = candidate.jobs.build.steps;
+    const gate = steps.findIndex(
+      (step) =>
+        step.run === "pnpm exec node scripts/candidate-ci.mjs verification",
+    );
+    const build = steps.findIndex(
+      (step) => step.run === "pnpm exec node scripts/candidate-ci.mjs build",
+    );
+    expect(gate).toBeGreaterThan(0);
+    expect(gate).toBeLessThan(build);
+    expect(steps[gate].env.GITHUB_TOKEN).toBe("${{ github.token }}");
+  });
+});
 
 describe("frozen candidate metadata", () => {
   it("assembles every configured target/environment from the same supplied hashes", () => {

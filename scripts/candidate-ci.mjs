@@ -18,6 +18,8 @@ import {
   retentionDays,
   nativeModes,
   buildCommands,
+  successfulVerification,
+  validateVerification,
   readCandidateJson,
   fileRecord,
   checkInventory,
@@ -161,10 +163,20 @@ async function api(path) {
 
 const producer = preflight();
 const command = process.argv[2];
-if (command === "build") {
+if (command === "verification") {
+  const receipt = await successfulVerification(producer, { api });
+  save(join(output, "verification.json"), receipt);
+  console.log(
+    `Reusing Verify run ${receipt.runId}, attempt ${receipt.attempt}.`,
+  );
+} else if (command === "build") {
   const report = {
     producer,
     status: "FAIL",
+    verification: validateVerification(
+      read(join(output, "verification.json")),
+      producer,
+    ),
     osRelease: release(),
     tools: tools(),
     commands: [],
