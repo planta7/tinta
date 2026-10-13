@@ -249,7 +249,55 @@ describe("offline adapter command fixtures", () => {
       } else {
         expect(commands.at(-1).at(-1)).toContain("Enable-NetAdapter");
         expect(commands.at(-1).at(-1)).toContain("@(7,12)");
+        expect(commands.at(-1).at(-1)).toContain("Resolve-DnsName");
+        expect(commands.at(-1).at(-1)).toContain("Get-NetIPConfiguration");
+        expect(fixtures.execute.mock.calls.at(-1)[1].timeout).toBe(60000);
       }
     },
   );
+
+  it("checks the runner endpoints after restoring Windows adapters, without exposing URL credentials", async () => {
+    platform("win32");
+    vi.stubEnv("GITHUB_SERVER_URL", "https://github.example");
+    vi.stubEnv("GITHUB_API_URL", "https://github.example/api/v3");
+    vi.stubEnv(
+      "ACTIONS_RESULTS_URL",
+      "https://artifact.example/path?token=private-value",
+    );
+    const { offlineInstalled } =
+      await import("../../scripts/candidate-offline.mjs");
+    offlineInstalled(["/pinned node", "test.mjs"]);
+    const commands = fixtures.execute.mock.calls.map(([command]) => command);
+    expect(commands[2]).toEqual(["/pinned node", "test.mjs"]);
+    const restoration = commands[3].at(-1);
+    expect(restoration).toContain("@('github.example','artifact.example')");
+    expect(restoration).not.toContain("private-value");
+    expect(restoration.indexOf("Enable-NetAdapter")).toBeLessThan(
+      restoration.indexOf("Clear-DnsClientCache"),
+    );
+    expect(restoration.indexOf("Clear-DnsClientCache")).toBeLessThan(
+      restoration.indexOf("Resolve-DnsName"),
+    );
+    expect(restoration).toContain("AddSeconds(45)");
+    expect(restoration).toContain('throw "Hosted network restoration exceeded');
+  });
+
+  it("fails if Windows network restoration fails after a successful offline test", async () => {
+    platform("win32");
+    fixtures.execute.mockImplementation((command) => {
+      if (command.at(-1).includes("Resolve-DnsName"))
+        throw new Error("Hosted network restoration exceeded 45 seconds");
+      return { stdout: "[7,12]" };
+    });
+    const { offlineInstalled } =
+      await import("../../scripts/candidate-offline.mjs");
+    expect(() => offlineInstalled(["/pinned node", "test.mjs"])).toThrow(
+      "Hosted network restoration exceeded",
+    );
+    expect(
+      fixtures.execute.mock.calls.some(
+        ([command]) => command[0] === "/pinned node",
+      ),
+    ).toBe(true);
+  });
 });

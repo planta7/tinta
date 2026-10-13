@@ -5,6 +5,58 @@ import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { requireCommandSync } from "./commands.mjs";
 
+function windowsRestoration(selector, enable) {
+  const endpoints = [
+    process.env.GITHUB_SERVER_URL ?? "https://github.com",
+    process.env.GITHUB_API_URL ?? "https://api.github.com",
+    process.env.ACTIONS_RESULTS_URL,
+  ].filter(Boolean);
+  const hosts = [
+    ...new Set(
+      endpoints.map((endpoint) => {
+        let host;
+        try {
+          host = new URL(endpoint).hostname;
+        } catch {
+          throw new Error("Invalid hosted network endpoint.");
+        }
+        assert.match(host, /^[a-z0-9.-]+$/i, "Invalid hosted DNS name");
+        return host;
+      }),
+    ),
+  ];
+  const names = hosts.map((host) => `'${host}'`).join(",");
+  return `
+$ErrorActionPreference = 'Stop'
+${enable}
+$deadline = [DateTime]::UtcNow.AddSeconds(45)
+while ($true) {
+  try {
+    $configurations = Get-NetIPConfiguration | Where-Object {
+      $_.InterfaceIndex -in @(${selector})
+    }
+    $routed = $configurations | Where-Object {
+      $_.IPv4Address -and $_.IPv4DefaultGateway
+    }
+    if (-not $routed) {
+      throw 'Restored adapters do not have an IP address and default gateway yet.'
+    }
+    Clear-DnsClientCache
+    foreach ($name in @(${names})) {
+      Resolve-DnsName -Name $name -DnsOnly -QuickTimeout | Out-Null
+    }
+    Write-Output 'Hosted network IP routing and DNS restored.'
+    break
+  } catch {
+    if ([DateTime]::UtcNow -ge $deadline) {
+      throw "Hosted network restoration exceeded 45 seconds: $($_.Exception.Message)"
+    }
+    Start-Sleep -Milliseconds 500
+  }
+}
+`;
+}
+
 /** Temporarily disconnect only a disposable GitHub-hosted test machine. */
 export function offlineInstalled(command) {
   assert.equal(process.env.GITHUB_ACTIONS, "true");
@@ -77,13 +129,17 @@ export function offlineInstalled(command) {
     const selector = indices.join(",");
     const adapters = `Get-NetAdapter | Where-Object { $_.InterfaceIndex -in @(${selector}) }`;
     const enable = `${adapters} | Enable-NetAdapter -Confirm:$false`;
+    const restoration = windowsRestoration(selector, enable);
     watchdog = spawn(
       "powershell.exe",
       ["-NoProfile", "-Command", `Start-Sleep -Seconds 180; ${enable}`],
       { detached: true, stdio: "ignore" },
     );
     restore = () =>
-      requireCommandSync(["powershell.exe", "-NoProfile", "-Command", enable]);
+      requireCommandSync(
+        ["powershell.exe", "-NoProfile", "-Command", restoration],
+        { timeout: 60000, stdio: "inherit" },
+      );
     disconnect = () =>
       requireCommandSync([
         "powershell.exe",
