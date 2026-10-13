@@ -5,8 +5,36 @@ import { digest } from "./distribution-archive.mjs";
 export function releaseAdapter({ api, request, token, directory, journal }) {
   let repository;
   const root = () => `/repos/${repository}`;
-  const readRelease = (plan) =>
-    api("GET", `${root()}/releases/tags/${encodeURIComponent(plan.tag)}`);
+  let releaseId;
+  const readRelease = async (plan) => {
+    if (releaseId !== undefined)
+      return api("GET", `${root()}/releases/${releaseId}`);
+    const published = await api(
+      "GET",
+      `${root()}/releases/tags/${encodeURIComponent(plan.tag)}`,
+    );
+    if (published) {
+      releaseId = published.id;
+      return published;
+    }
+    // The tag endpoint excludes drafts; authenticated listing includes them.
+    for (let page = 1; page <= 10; page += 1) {
+      const releases = await api(
+        "GET",
+        `${root()}/releases?per_page=100&page=${page}`,
+      );
+      const matches = releases.filter(
+        (release) => release.tag_name === plan.tag,
+      );
+      assert.ok(matches.length <= 1, "Ambiguous release tag");
+      if (matches.length === 1) {
+        releaseId = matches[0].id;
+        return matches[0];
+      }
+      if (releases.length < 100) return null;
+    }
+    throw new Error("Release lookup exceeded pagination bound");
+  };
   const checkRelease = (release, plan) => {
     assert.equal(release.tag_name, plan.tag);
     assert.equal(release.target_commitish, plan.sourceSha);
