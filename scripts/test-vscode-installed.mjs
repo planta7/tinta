@@ -6,6 +6,7 @@ import { networkInterfaces } from "node:os";
 import assert from "node:assert/strict";
 import { driveInstalledUI } from "./vscode-installed-ui.mjs";
 import { inspectPackage } from "./vscode-package.mjs";
+import { emitPerformanceWarnings } from "../tests/vscode/performance-confirmation.mjs";
 
 const [executable, cli, archive, directory, ...flags] = process.argv.slice(2);
 if (!directory)
@@ -220,6 +221,7 @@ if (hostedOffline) {
   );
 }
 const report = JSON.parse(await readFile(join(root, "result.json"), "utf8"));
+emitPerformanceWarnings(report.performance);
 report.archiveSha256 = inspection.sha256;
 report.networkIsolation = hostedOffline
   ? `Disposable hosted isolation: ${hostedOffline}; external interfaces absent`

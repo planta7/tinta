@@ -102,8 +102,11 @@ export async function run() {
     );
     report.groups.push("Unicode diagnostic and error recovery");
     await testAuthoring(open, report.groups);
-    if (process.env.TINTA_INSTALLED_PERFORMANCE === "true")
-      report.performance = await measureInstalled(open);
+    if (process.env.TINTA_INSTALLED_PERFORMANCE === "true") {
+      report.performance = await measureInstalled(open, (value) => {
+        report.performance = value;
+      });
+    }
     if (process.env.TINTA_INSTALLED_WORKFLOW === "true")
       await installedWorkflow(root, open, report.groups);
     const preview = await open(

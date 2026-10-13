@@ -6,17 +6,124 @@ import { join } from "node:path";
 import { setFlagsFromString } from "node:v8";
 import { runInNewContext } from "node:vm";
 import { startResidentSampler } from "./resident-sampler.mjs";
+import {
+  confirmPerformance,
+  performanceStatus,
+  responsivenessWithinBudget,
+  samplesWithinBudget,
+} from "./performance-confirmation.mjs";
 
 const percentile = (values, fraction) =>
   [...values].sort((a, b) => a - b)[Math.ceil(values.length * fraction) - 1];
-export async function measureInstalled(open) {
+const corpus = [
+  [10240, 200],
+  [102400, 500],
+  [1048576, 2000],
+];
+
+function analysisSource(bytes) {
+  let text = "@let amount = 2\n{{ amount }}\n\n";
+  while (text.length < bytes) {
+    const blockBytes = Math.min(32000, bytes - text.length);
+    if (blockBytes < 14) {
+      text += " ".repeat(blockBytes);
+      break;
+    }
+    const start = "```text\n";
+    const end = "\n```\n";
+    text +=
+      start +
+      "Reference listing. "
+        .repeat(Math.ceil(blockBytes / 19))
+        .slice(0, blockBytes - start.length - end.length) +
+      end;
+  }
+  return text;
+}
+
+async function measureAnalysis(request, bytes, budgetMs) {
+  const text = analysisSource(bytes);
+  for (let warm = 0; warm < 3; warm++) await request(text);
+  const samples = [];
+  for (let index = 0; index < 30; index++) {
+    const started = performance.now();
+    await request(text);
+    samples.push(performance.now() - started);
+  }
+  return { bytes, samples, p95Ms: percentile(samples, 0.95), budgetMs };
+}
+
+async function measureCompletions(open) {
+  const doc = await open("cached.tinta", "@let amount = 2\n{{ amount }}\n");
+  const complete = () =>
+    vscode.commands.executeCommand(
+      "vscode.executeCompletionItemProvider",
+      doc.uri,
+      new vscode.Position(1, 6),
+    );
+  await complete();
+  const samples = [];
+  for (let index = 0; index < 30; index++) {
+    const started = performance.now();
+    const result = await complete();
+    assert.ok(result.items.some((item) => item.label === "amount"));
+    samples.push(performance.now() - started);
+  }
+  return { samples, p95Ms: percentile(samples, 0.95), budgetMs: 50 };
+}
+
+async function rapidEdits(open) {
+  const documents = [];
+  for (let index = 0; index < 8; index++)
+    documents.push(
+      await open(`rapid-${index}.tinta`, "@let amount = 2\n{{ amount }}\n"),
+    );
+  for (let revision = 0; revision < 20; revision++) {
+    const edit = new vscode.WorkspaceEdit();
+    for (const document of documents)
+      edit.replace(
+        document.uri,
+        new vscode.Range(0, 14, 0, 15),
+        String(revision % 10),
+      );
+    assert.ok(await vscode.workspace.applyEdit(edit));
+  }
+  for (const document of documents) {
+    const definitions = await vscode.commands.executeCommand(
+      "vscode.executeDefinitionProvider",
+      document.uri,
+      new vscode.Position(1, 6),
+    );
+    assert.equal(definitions.length, 1);
+  }
+}
+
+async function closeRapidEditors() {
+  for (const document of vscode.workspace.textDocuments.filter(
+    (item) => /[\\/]rapid-\d+\.tinta$/.test(item.uri.fsPath) && item.isDirty,
+  )) {
+    await vscode.window.showTextDocument(document, vscode.ViewColumn.One);
+    await vscode.commands.executeCommand(
+      "workbench.action.revertAndCloseActiveEditor",
+    );
+  }
+}
+
+const responsiveness = (loop) => ({
+  loopP95Ms: loop.percentile(95) / 1e6,
+  loopMaxMs: loop.max / 1e6,
+  count: loop.count,
+});
+
+export async function measureInstalled(open, record = () => {}) {
   const extension = vscode.extensions.getExtension(
     process.env.TINTA_INSTALLED_ID,
   );
   assert.ok(extension, "VSIX was not installed for performance checks.");
   const worker = new Worker(join(extension.extensionPath, "dist/worker.mjs"));
   const loop = monitorEventLoopDelay({ resolution: 5 });
-  const samples = [];
+  const report = { status: "FAIL", analysis: [], confirmations: {} };
+  record(report);
   let version = 0;
   const request = (text) =>
     new Promise((accept, reject) => {
@@ -42,83 +149,51 @@ export async function measureInstalled(open) {
   const sampler = startResidentSampler(
     join(process.env.TINTA_INSTALLED_ROOT, "resident-sampler.mjs"),
   );
+  const withSampler = async (measure) => {
+    const confirmationSampler = startResidentSampler(
+      join(process.env.TINTA_INSTALLED_ROOT, "resident-sampler.mjs"),
+    );
+    try {
+      await confirmationSampler.ready;
+      const measurement = await measure();
+      await confirmationSampler.stop();
+      return measurement;
+    } finally {
+      await confirmationSampler.dispose();
+    }
+  };
+  const measureResponsiveness = async () => {
+    await closeRapidEditors();
+    return withSampler(async () => {
+      const confirmationLoop = monitorEventLoopDelay({ resolution: 5 });
+      try {
+        confirmationLoop.enable();
+        const analysis = [];
+        for (const [bytes, budgetMs] of corpus)
+          analysis.push(await measureAnalysis(request, bytes, budgetMs));
+        const completion = await measureCompletions(open);
+        await rapidEdits(open);
+        confirmationLoop.disable();
+        return { ...responsiveness(confirmationLoop), analysis, completion };
+      } finally {
+        confirmationLoop.disable();
+      }
+    });
+  };
   try {
     await sampler.ready;
     loop.enable();
-    for (const [bytes, budgetMs] of [
-      [10240, 200],
-      [102400, 500],
-      [1048576, 2000],
-    ]) {
-      let text = "@let amount = 2\n{{ amount }}\n\n";
-      while (text.length < bytes) {
-        const blockBytes = Math.min(32000, bytes - text.length);
-        if (blockBytes < 14) {
-          text += " ".repeat(blockBytes);
-          break;
-        }
-        const start = "```text\n";
-        const end = "\n```\n";
-        text +=
-          start +
-          "Reference listing. "
-            .repeat(Math.ceil(blockBytes / 19))
-            .slice(0, blockBytes - start.length - end.length) +
-          end;
-      }
-      for (let warm = 0; warm < 3; warm++) await request(text);
-      const durations = [];
-      for (let index = 0; index < 30; index++) {
-        const started = performance.now();
-        await request(text);
-        durations.push(performance.now() - started);
-      }
-      samples.push({
-        bytes,
-        samples: durations,
-        p95Ms: percentile(durations, 0.95),
-        budgetMs,
-      });
-    }
-    const doc = await open("cached.tinta", "@let amount = 2\n{{ amount }}\n");
-    const complete = () =>
-      vscode.commands.executeCommand(
-        "vscode.executeCompletionItemProvider",
-        doc.uri,
-        new vscode.Position(1, 6),
-      );
-    await complete();
-    const completions = [];
-    for (let index = 0; index < 30; index++) {
-      const started = performance.now();
-      const result = await complete();
-      assert.ok(result.items.some((item) => item.label === "amount"));
-      completions.push(performance.now() - started);
-    }
-    const documents = [];
-    for (let index = 0; index < 8; index++)
-      documents.push(
-        await open(`rapid-${index}.tinta`, "@let amount = 2\n{{ amount }}\n"),
-      );
-    for (let revision = 0; revision < 20; revision++) {
-      const edit = new vscode.WorkspaceEdit();
-      for (const document of documents)
-        edit.replace(
-          document.uri,
-          new vscode.Range(0, 14, 0, 15),
-          String(revision % 10),
-        );
-      assert.ok(await vscode.workspace.applyEdit(edit));
-    }
-    for (const document of documents) {
-      const definitions = await vscode.commands.executeCommand(
-        "vscode.executeDefinitionProvider",
-        document.uri,
-        new vscode.Position(1, 6),
-      );
-      assert.equal(definitions.length, 1);
-    }
+    for (const [bytes, budgetMs] of corpus)
+      report.analysis.push(await measureAnalysis(request, bytes, budgetMs));
+    const completion = await measureCompletions(open);
+    await rapidEdits(open);
     loop.disable();
+    const initialResponsiveness = responsiveness(loop);
+    Object.assign(report, {
+      completionP95Ms: completion.p95Ms,
+      completionSamples: completion.samples,
+      ...initialResponsiveness,
+    });
     const { baselineRss, peakRss } = await sampler.stop();
     await vscode.commands.executeCommand("workbench.action.closeAllEditors");
     setFlagsFromString("--expose-gc");
@@ -141,26 +216,8 @@ export async function measureInstalled(open) {
     }
     collect();
     const retainedHeapGrowth = process.memoryUsage().heapUsed - heapBefore;
-    const completionP95Ms = percentile(completions, 0.95);
-    const loopP95Ms = loop.percentile(95) / 1e6;
-    const loopMaxMs = loop.max / 1e6;
     const rssGrowth = peakRss === null ? null : peakRss - baselineRss;
-    return {
-      status:
-        samples.every((sample) => sample.p95Ms < sample.budgetMs) &&
-        completionP95Ms < 50 &&
-        loopP95Ms < 50 &&
-        loopMaxMs <= 100 &&
-        retainedHeapGrowth <= 32 * 1024 ** 2 &&
-        rssGrowth !== null &&
-        rssGrowth <= 512 * 1024 ** 2
-          ? "PASS"
-          : "FAIL",
-      analysis: samples,
-      completionP95Ms,
-      completionSamples: completions,
-      loopP95Ms,
-      loopMaxMs,
+    Object.assign(report, {
       retainedHeapGrowth,
       baselineRss,
       peakRss,
@@ -175,7 +232,50 @@ export async function measureInstalled(open) {
         "through native provider; RSS collection runs in a dedicated worker " +
         "without overlapping samples; post-GC heap is extension host only; RSS sums host " +
         "descendants including server and worker threads in their owner process.",
-    };
+    });
+    await sampler.dispose();
+    const confirm = (name, initial, measure, assess) =>
+      confirmPerformance(initial, measure, assess, (value) => {
+        report.confirmations[name] = value;
+      });
+    for (const sample of report.analysis)
+      await confirm(
+        `analysis-${sample.bytes}`,
+        sample,
+        () =>
+          withSampler(() =>
+            measureAnalysis(request, sample.bytes, sample.budgetMs),
+          ),
+        (value) => samplesWithinBudget(value, sample.budgetMs),
+      );
+    await confirm(
+      "completion",
+      completion,
+      () => withSampler(() => measureCompletions(open)),
+      (value) => samplesWithinBudget(value, 50),
+    );
+    await confirm(
+      "responsiveness",
+      initialResponsiveness,
+      measureResponsiveness,
+      responsivenessWithinBudget,
+    );
+    report.status = performanceStatus(
+      report.confirmations,
+      Number.isFinite(retainedHeapGrowth) &&
+        retainedHeapGrowth <= 32 * 1024 ** 2 &&
+        rssGrowth !== null &&
+        Number.isFinite(rssGrowth) &&
+        rssGrowth <= 512 * 1024 ** 2,
+    );
+    report.warnings = Object.entries(report.confirmations)
+      .filter(([, value]) => value.status === "UNSTABLE")
+      .map(
+        ([name]) =>
+          `${name}: one of three measurements exceeded its timing budget; ` +
+          "both confirmations passed (UNSTABLE).",
+      );
+    return report;
   } finally {
     await sampler.dispose();
     loop.disable();
