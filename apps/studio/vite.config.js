@@ -7,6 +7,26 @@ export default defineConfig({
   plugins: [
     react(),
     {
+      name: "studio-brand-icon",
+      transformIndexHtml() {
+        const icon = readFileSync(
+          new URL("../../docs/assets/logo.svg", import.meta.url),
+          "utf8",
+        );
+        return [
+          {
+            tag: "link",
+            attrs: {
+              rel: "icon",
+              type: "image/svg+xml",
+              href: `data:image/svg+xml,${encodeURIComponent(icon)}`,
+            },
+            injectTo: "head-prepend",
+          },
+        ];
+      },
+    },
+    {
       name: "studio-host-policy",
       apply: "build",
       transformIndexHtml: {

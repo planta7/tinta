@@ -2,20 +2,23 @@
   xmlns="http://www.w3.org/2000/svg"
   width="128"
   height="128"
-  viewBox="0 0 128 128"
+  viewBox="0 0 100 100"
   role="img"
   aria-labelledby="title"
 >
-  <title id="title">tinta monogram</title>
-  <rect width="128" height="128" rx="20" fill="#e8edf8" />
-  <text
-    x="44"
-    y="101"
+  <title id="title">tinta</title>
+  <rect width="100" height="100" rx="16" fill="#eaf0fa" />
+  <path
     fill="#384e99"
-    font-family="Georgia, serif"
-    font-size="112"
-    font-style="italic"
-  >
-    t
-  </text>
+    transform="translate(0 -5)"
+    d="M 34 20
+       C 42 19, 58 19, 66 20
+       C 72 21, 78 28, 77 39
+       C 74 56, 61 76, 51.25 90
+       V 50.84
+       A 5 5 0 1 0 48.75 50.84
+       V 90
+       C 39 76, 26 56, 23 39
+       C 22 28, 28 21, 34 20 Z"
+  />
 </svg>

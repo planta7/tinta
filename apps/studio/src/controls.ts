@@ -11,6 +11,16 @@ const iconPaths: Record<string, string> = {
   chevron: "M 8 10 l4 4 4-4",
 };
 
+const brandMarkPath = `M 34 20
+  C 42 19, 58 19, 66 20
+  C 72 21, 78 28, 77 39
+  C 74 56, 61 76, 51.25 90
+  V 50.84
+  A 5 5 0 1 0 48.75 50.84
+  V 90
+  C 39 76, 26 56, 23 39
+  C 22 28, 28 21, 34 20 Z`;
+
 export function icon(name: string) {
   return h(
     "svg",
@@ -38,7 +48,24 @@ export function brand() {
       href: "#/home",
       "aria-label": "tinta studio home",
     },
-    h("span", { className: "brand-mark", "aria-hidden": true }, "t"),
+    h(
+      "span",
+      { className: "brand-mark", "aria-hidden": true },
+      h(
+        "svg",
+        {
+          width: 36,
+          height: 36,
+          viewBox: "0 0 100 100",
+          focusable: false,
+        },
+        h("path", {
+          d: brandMarkPath,
+          fill: "currentColor",
+          transform: "translate(0 -5)",
+        }),
+      ),
+    ),
     h(
       "span",
       null,

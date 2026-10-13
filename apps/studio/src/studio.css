@@ -128,10 +128,10 @@ button.text-button:hover {
 .brand-mark {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 38px;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
   color: var(--accent);
-  font: italic 36px/1 var(--display);
 }
 .brand-studio {
   margin-left: 6px;
@@ -1064,10 +1064,12 @@ button.example-row:hover .example-copy strong {
 }
 
 @media (forced-colors: active) {
-  button.primary,
-  .brand-mark {
+  button.primary {
     background: Highlight;
     color: HighlightText;
+  }
+  .brand-mark {
+    color: CanvasText;
   }
   .mode-switch button[aria-pressed="true"],
   .tabs button[aria-pressed="true"] {

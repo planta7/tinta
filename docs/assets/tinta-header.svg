@@ -8,21 +8,25 @@
 >
   <title id="title">tinta</title>
   <desc id="description">
-    The blue italic t monogram and lowercase tinta wordmark. A document. With
-    more to say.
+    The blue tinta pictogram and lowercase wordmark. A document. With more to
+    say.
   </desc>
   <rect width="1280" height="180" rx="16" fill="#f4f4f6" />
-  <rect x="40" y="38" width="88" height="104" rx="12" fill="#e8edf8" />
-  <text
-    x="70"
-    y="120"
-    fill="#384e99"
-    font-family="Georgia, serif"
-    font-size="90"
-    font-style="italic"
-  >
-    t
-  </text>
+  <svg x="40" y="38" width="104" height="104" viewBox="0 0 100 100">
+    <path
+      fill="#384e99"
+      transform="translate(0 -5)"
+      d="M 34 20
+         C 42 19, 58 19, 66 20
+         C 72 21, 78 28, 77 39
+         C 74 56, 61 76, 51.25 90
+         V 50.84
+         A 5 5 0 1 0 48.75 50.84
+         V 90
+         C 39 76, 26 56, 23 39
+         C 22 28, 28 21, 34 20 Z"
+    />
+  </svg>
   <text
     x="152"
     y="122"

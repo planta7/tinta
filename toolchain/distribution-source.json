@@ -95,6 +95,7 @@
   "docs/CHEATSHEET.md",
   "docs/SOURCES.md",
   "docs/assets/logo.svg",
+  "docs/assets/pictogram.svg",
   "docs/assets/studio.png",
   "docs/assets/tinta-header.svg",
   "eslint.config.js",

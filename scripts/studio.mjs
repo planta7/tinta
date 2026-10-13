@@ -86,6 +86,7 @@ export async function buildStudio() {
     money: "money(10)",
   };
   const studioVersion = implementationVersion;
+  const icon = await readFile("docs/assets/logo.svg", "utf8");
   const snippets = Object.fromEntries(
     registry.directives.map((name) => ["@" + name, templates[name]]),
   );
@@ -100,6 +101,7 @@ export async function buildStudio() {
   const buildFingerprint = createHash("sha256")
     .update(worker.code)
     .update(previewHtml)
+    .update(icon)
     .update(JSON.stringify({ studioVersion, examples, snippets }));
   for (const filename of (await readdir("apps/studio/src")).sort()) {
     buildFingerprint.update(filename);
@@ -148,6 +150,7 @@ export async function buildStudio() {
     "\n/*!\n" + notices.join("\n\n").replace(/\*\//g, "* /") + "\n*/\n";
   const code = script(studio.code);
   const style = await readFile("apps/studio/src/studio.css", "utf8");
+  const iconUrl = `data:image/svg+xml,${encodeURIComponent(icon)}`;
   const policy =
     `default-src 'none'; script-src 'sha256-${digest(code)}' ` +
     `'sha256-${digest(previewCode)}'; ` +
@@ -157,6 +160,7 @@ export async function buildStudio() {
   const html =
     '<!doctype html><html lang="en"><head><meta charset="UTF-8">' +
     '<meta name="viewport" content="width=device-width,initial-scale=1">' +
+    `<link rel="icon" type="image/svg+xml" href="${iconUrl}">` +
     `<meta http-equiv="Content-Security-Policy" content="${policy}">` +
     `<title>tinta studio</title><style>${style}</style></head><body>` +
     `<script>${code}</script></body></html>`;
