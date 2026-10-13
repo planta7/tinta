@@ -19,10 +19,10 @@
     }
   },
   "versions": {
-    "implementation": "0.1.0-dev.0",
-    "npmChannel": "next",
-    "extension": "0.1.0",
-    "extensionChannel": "pre-release",
+    "implementation": "0.1.0",
+    "npmChannel": "latest",
+    "extension": "0.2.0",
+    "extensionChannel": "stable",
     "contract": "1.0-draft.3",
     "sourceFormat": "1.0",
     "ir": "tinta-ir-1",
