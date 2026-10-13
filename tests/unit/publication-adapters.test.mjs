@@ -243,6 +243,57 @@ describe("credential and dispatch boundaries", () => {
 });
 
 describe("npm destination", () => {
+  it("verifies an uploaded version while the aggregate package index remains stale", async () => {
+    const w = workspace();
+    try {
+      const target = {
+        name: "@fixture/package",
+        version: "1.0.0",
+        kind: "npm",
+        archive: w.archive,
+        dependencies: [],
+        externalDependencies: {},
+      };
+      const remote = {
+        name: target.name,
+        version: target.version,
+        dist: {
+          integrity: w.archive.integrity,
+          tarball: "https://registry.npmjs.org/fixture.tgz",
+        },
+      };
+      let writes = 0;
+      let aggregateReads = 0;
+      const adapter = npmAdapter({
+        directory: w.directory,
+        runner: {
+          run: () => {
+            writes += 1;
+          },
+        },
+        request: async (url, options) => {
+          if (options?.binary) return w.bytes;
+          if (url.endsWith("/1.0.0")) return writes ? remote : null;
+          aggregateReads += 1;
+          return { name: target.name, versions: {} };
+        },
+        wait: async () => {},
+      });
+      await adapter.preflight({ targets: [target] });
+      const operation = adapter.upload(target, { candidate: "a".repeat(64) });
+      expect(await operation.read()).toBeNull();
+      await operation.write();
+      expect((await operation.verify(await operation.read())).sha256).toBe(
+        w.archive.sha256,
+      );
+      expect(await operation.read()).toEqual(remote);
+      expect(aggregateReads).toBe(1);
+      expect(writes).toBe(1);
+    } finally {
+      w.close();
+    }
+  });
+
   it.each([false, true])(
     "waits for uploaded version indexing without repeating the upload: %s",
     async (neverVisible) => {
@@ -264,16 +315,15 @@ describe("npm destination", () => {
               writes += 1;
             },
           },
-          request: async (_url, options) => {
+          request: async (url, options) => {
+            expect(url).toBe(
+              "https://registry.npmjs.org/%40fixture%2Fpackage/1.0.0",
+            );
+            expect(options.missing).toBe(true);
             expect(options.headers["Cache-Control"]).toBe("no-cache");
-            if (!writes) return { versions: {} };
+            if (!writes) return null;
             reads += 1;
-            return {
-              versions:
-                !neverVisible && reads >= 3
-                  ? { [target.version]: metadata }
-                  : {},
-            };
+            return !neverVisible && reads >= 3 ? metadata : null;
           },
           wait: async (ms) => {
             expect(ms).toBe(5000);
@@ -316,9 +366,7 @@ describe("npm destination", () => {
         },
       };
       const request = async (_url, options) =>
-        options?.binary
-          ? w.bytes
-          : { versions: { "1.0.0": meta }, "dist-tags": { latest: "0.9.0" } };
+        options?.binary ? w.bytes : meta;
       const adapter = npmAdapter({
         request,
         directory: w.directory,

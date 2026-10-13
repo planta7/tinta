@@ -114,8 +114,11 @@ export function npmAdapter({
       `${base}/-/package/${encodeURIComponent(target.name)}/dist-tags`,
       { headers: { "Cache-Control": "no-cache" } },
     )) ?? {};
-  const version = async (target) =>
-    (await metadata(target))?.versions?.[target.version] ?? null;
+  const version = (target) =>
+    request(
+      `${base}/${encodeURIComponent(target.name)}/${encodeURIComponent(target.version)}`,
+      { missing: true, headers: { "Cache-Control": "no-cache" } },
+    );
   const verify = async (target, remote) => {
     assert.equal(remote.name, target.name);
     assert.equal(remote.version, target.version);

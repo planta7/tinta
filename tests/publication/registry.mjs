@@ -19,6 +19,12 @@ const server = createServer(async (req, res) => {
     if (req.method === "GET" && path === `/${name}`) {
       return res.end(JSON.stringify({ name, versions, "dist-tags": tags }));
     }
+    if (req.method === "GET" && path.startsWith(`/${name}/`)) {
+      const version = path.slice(name.length + 2);
+      if (versions[version]) return res.end(JSON.stringify(versions[version]));
+      res.statusCode = 404;
+      return res.end('{"error":"fixture version absent"}');
+    }
     if (req.method === "GET" && tarballs.has(path)) {
       res.setHeader("content-type", "application/octet-stream");
       return res.end(tarballs.get(path));
