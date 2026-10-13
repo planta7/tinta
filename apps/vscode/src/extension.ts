@@ -197,7 +197,7 @@ export async function activate(
             return;
           status.text =
             value.source === "capacity"
-              ? "tinta: host capacity; retry Check"
+              ? "tinta: analysis limit reached; try Check again"
               : value.source === "valid"
                 ? "tinta: source valid"
                 : "tinta: source errors";

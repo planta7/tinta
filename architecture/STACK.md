@@ -10,7 +10,7 @@
 | Markdown | micromark + mdast-util-from-markdown | Real block/inline parser extensions, original source spans. |
 | Markdown extensions | Individual table, task-list, strikethrough micromark/mdast modules | Do not enable all GFM/MDX/HTML extras by convenience. |
 | Expressions | Project-owned Pratt parser + typed bounded AST interpreter | Closed function registry; no general scripting. |
-| Numeric behaviour | Finite binary64 + explicit formatting contract | Not an accounting decimal engine. |
+| Numeric behavior | Finite binary64 + explicit formatting contract | Not an accounting decimal engine. |
 | Charts | `d3-array`, `d3-scale`, `d3-shape`; project-owned safe SVG scene adapter | No d3 global bundle, d3 DOM selections, remote chart loader or author Vega spec. |
 | Reader | Typed DOM construction and SVG, framework-independent | Same semantic render plan used in interactive/static export. |
 | Editor | React 19 + CodeMirror 6 | React never enters core/reader/export dependencies. |
@@ -20,7 +20,7 @@
 | Tests | Vitest, fast-check, Playwright, axe-core | Semantic fixtures, property tests, real browser interaction and a11y checks. |
 | Validation | Ajv with JSON Schema 2020-12 | No coercion, default insertion or silent removal of unknown properties. |
 
-TypeScript avoids a second implementation and a Rust/WASM build/serialization bridge for a browser-centric document reader. Rust may be revisited only if measured parser/runtime limits cannot be met; enthusiasm or an unrelated repository convention is not sufficient. React is justified for file/dialog/editor state, not for the document engine. D3 supplies maintained geometry primitives; the project still owns chart semantics, accessible navigation and deterministic presentation. A generic chart grammar would expose far more capability than the product authoring model needs.
+TypeScript avoids a second implementation and a Rust/WASM build/serialization bridge for a browser-centric document reader. Reconsider the implementation language only if measured parser or runtime limits require it. React is justified for file/dialog/editor state, not for the document engine. D3 supplies maintained geometry primitives; the project still owns chart semantics, accessible navigation and deterministic presentation. A generic chart grammar would expose far more capability than the product authoring model needs.
 
 ## Approved release lines
 

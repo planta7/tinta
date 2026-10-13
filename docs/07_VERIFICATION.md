@@ -28,7 +28,7 @@ Run deterministic fast-check seeds in CI: 1000 generated inputs per mandatory pr
 
 ## Browser and platform matrix
 
-The test suites use the pinned Node baseline and Chromium, Firefox and WebKit builds. CLI filesystem/argument tests target macOS arm64, Linux x64 and Windows x64; browser artifact tests open exports through actual `file://`. The toolchain inventory identifies exact Playwright browser revisions, not only browser-family names.
+The test suites use the pinned Node baseline and Chromium, Firefox and WebKit builds. CLI filesystem/argument tests target macOS arm64, Linux arm64 and Windows x64; browser artifact tests open exports through actual `file://`. The toolchain inventory identifies exact Playwright browser revisions, not only browser-family names.
 
 Automated WebKit is not actual Safari. Safari with VoiceOver on macOS, Firefox with NVDA on Windows and Safari reader behavior on iOS depend on those environments. Browser emulation cannot establish physical-device or assistive-technology compatibility; see the [accessibility requirements](05_ACCESSIBILITY_AND_DESIGN.md).
 

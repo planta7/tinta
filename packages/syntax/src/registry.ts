@@ -149,10 +149,10 @@ export const registry = {
     E_EXPRESSION_SYNTAX: "Invalid/unfinished expression token sequence.",
     E_NAME_RESERVED: "Reserved or invalid identifier.",
     E_NAME_DUPLICATE: "Document name declared more than once.",
-    E_NAME_UNKNOWN: "Unresolved global name.",
+    E_NAME_UNKNOWN: "This name has not been defined in the document.",
     E_ROW_SCOPE: "row.field used outside a supported row context.",
     E_COLUMN_UNKNOWN: "Referenced table column does not exist.",
-    E_TYPE: "Types do not satisfy an operator/directive/function contract.",
+    E_TYPE: "This value has the wrong type for this operation.",
     E_FUNCTION_ARITY: "Incorrect number of function arguments.",
     E_CONST_DEPENDENCY: "Constant depends on nonconstant state/data.",
     E_CYCLE: "Dependency cycle detected.",
@@ -161,7 +161,8 @@ export const registry = {
     E_DIGITS_RANGE: "Formatting/rounding digits are outside integer 0\u201310.",
     E_EMPTY_MEAN: "Mean requested for an empty table/view.",
     E_STATE_NAME: "Update names an unknown/non-control symbol.",
-    E_STATE_DOMAIN: "Control update/default violates its allowed domain.",
+    E_STATE_DOMAIN:
+      "The control value is outside its allowed range or choices.",
     E_DATA_HEADER: "Invalid or duplicate typed table header.",
     E_DATA_ARITY: "Row cell count differs from the schema.",
     E_DATA_VALUE: "Cell is not a valid scalar for its declared type.",
@@ -181,12 +182,13 @@ export const registry = {
     E_BUNDLE:
       "Malformed bundle, duplicate keys/entries, CRC or manifest mismatch.",
     E_HASH_MISMATCH: "Source/resource hash does not match its envelope.",
-    E_SNAPSHOT: "State envelope does not match source/schema/controls.",
+    E_SNAPSHOT:
+      "The saved answers do not match this document and its controls.",
     E_EXPORT_INVALID:
       "Export requested for invalid/stale source or an invalid state.",
     E_OUTPUT_EXISTS: "Output already exists and replacement is not authorized.",
-    E_IO: "Authorized filesystem operation failed.",
-    E_WORKER_TIMEOUT: "Worker did not complete before the watchdog.",
+    E_IO: "Could not read or write the selected file.",
+    E_WORKER_TIMEOUT: "The document took too long to process.",
     E_PROTOCOL:
       "Malformed or unauthorized host protocol message; stale valid results are ignored.",
     E_INTERNAL: "Unexpected engine fault; not a document syntax diagnosis.",
@@ -196,7 +198,8 @@ export const registry = {
     W_HTML_INERT: "Raw author HTML displayed as text.",
     W_LINK_LOCAL_UNSUPPORTED: "Local document navigation is not implemented.",
     W_LINK_UNSAFE: "Unsafe/unsupported link disabled.",
-    W_ASSET_UNAVAILABLE: "Preview image unavailable; export remains blocked.",
+    W_ASSET_UNAVAILABLE:
+      "A document image is unavailable. Exports require all images they include.",
     W_RECOVERY_UNAVAILABLE: "Local browser recovery is unavailable.",
     W_MARKDOWN_COLLISION:
       "Enrichment proposes escapes for Tinta-looking literal text.",

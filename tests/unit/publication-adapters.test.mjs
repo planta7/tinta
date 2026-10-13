@@ -10,7 +10,10 @@ import {
   verifyMarketplacePayload,
 } from "../../scripts/publication-marketplace.mjs";
 import { npmAdapter, npmRunner } from "../../scripts/publication-npm.mjs";
-import { releaseAdapter } from "../../scripts/publication-github.mjs";
+import {
+  releaseAdapter,
+  candidateReleaseNotes,
+} from "../../scripts/publication-github.mjs";
 import {
   httpTransport,
   entraCredential,
@@ -766,12 +769,13 @@ it.each(["paginated", "ambiguous", "unbounded"])(
       id: 42,
       tag_name: plan.tag,
       target_commitish: plan.sourceSha,
-      body: `Candidate SHA-256: ${plan.candidate}`,
+      body: "Fixture changes and compatibility notes.",
       prerelease: true,
       draft: true,
     };
     let pages = 0;
     const adapter = releaseAdapter({
+      notes: () => "Fixture changes and compatibility notes.",
       journal: { assertWriteAccess() {} },
       api: async (method, path) => {
         expect(method).toBe("GET");
@@ -854,6 +858,7 @@ it("uploads immutable GitHub assets, detects collisions and finalizes only the f
     };
     let writeAccess = false;
     const adapter = releaseAdapter({
+      notes: () => "Fixture changes and compatibility notes.",
       api,
       request,
       token: "fixture-token",
@@ -875,6 +880,13 @@ it("uploads immutable GitHub assets, detects collisions and finalizes only the f
       await op.verify(await op.read());
     }
     expect(release.draft).toBe(false);
+    expect(release.body).toBe("Fixture changes and compatibility notes.");
+    const correctBody = release.body;
+    release.body = "Changed release description";
+    await expect(adapter.preflight(plan)).rejects.toThrow(
+      "description collision",
+    );
+    release.body = correctBody;
     expect(mutations.at(-1).body).toEqual({
       draft: false,
       make_latest: "false",
@@ -980,4 +992,45 @@ it("keeps publish workflow gated, serialized, pinned and free of candidate build
   expect(publication).toContain("publish-release.mjs promote");
   expect(publication).toContain("publish-release.mjs github");
   expect(text).not.toContain("secrets.");
+});
+
+it("uses the matching notes from the verified candidate source, with no later versions", () => {
+  const w = workspace();
+  try {
+    const bytes = zipEntries({
+      "CHANGELOG.md": Buffer.from(
+        "# Changelog\n\n## 0.2.0-dev.0 / VS Code 0.3.0\n\n" +
+          "- New document feature.\n\n### Compatibility\n\n" +
+          "- Desktop only.\n\n## 0.1.0-dev.0 / VS Code 0.1.0\n\n- Older notes.\n",
+      ),
+    });
+    writeFileSync(join(w.directory, "source.zip"), bytes);
+    const plan = {
+      repository: "fixture/repo",
+      sourceSha: "a".repeat(40),
+      candidate: "b".repeat(64),
+      targets: [
+        { id: "source", archive: fileRecord("source.zip", bytes) },
+        { kind: "npm", version: "0.2.0-dev.0" },
+        { id: "vscode", version: "0.3.0" },
+      ],
+    };
+    const notes = candidateReleaseNotes(plan, w.directory);
+    expect(notes).toContain("- New document feature.");
+    expect(notes).toContain("### Compatibility\n\n- Desktop only.");
+    expect(notes).not.toContain("Older notes");
+    expect(notes).toContain(`/blob/${plan.sourceSha}/README.md`);
+    expect(notes).toContain(`Candidate SHA-256: ${plan.candidate}`);
+    plan.targets[1].version = "0.4.0";
+    expect(() => candidateReleaseNotes(plan, w.directory)).toThrow(
+      "release notes",
+    );
+    writeFileSync(
+      join(w.directory, "source.zip"),
+      Buffer.from("changed bytes"),
+    );
+    expect(() => candidateReleaseNotes(plan, w.directory)).toThrow();
+  } finally {
+    w.close();
+  }
 });

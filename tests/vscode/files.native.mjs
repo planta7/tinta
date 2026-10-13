@@ -62,7 +62,7 @@ beforeEach(async () => {
     .mockImplementation(async (_text, _options, choice) => choice);
   vscode.window.showErrorMessage.mockReset();
   vscode.window.showInformationMessage = vi.fn(async (_text, choice) => choice);
-  vscode.window.showQuickPick = vi.fn(async () => "Authored initial answers");
+  vscode.window.showQuickPick = vi.fn(async () => "Document starting values");
   vscode.window.showSaveDialog = vi.fn(async () =>
     uri(join(root, "result.html")),
   );
@@ -322,7 +322,7 @@ describe("native local file commands", () => {
     await perform("openSourceBundle");
     vscode.window.showQuickPick.mockResolvedValue(undefined);
     await perform("exportStatic");
-    vscode.window.showQuickPick.mockResolvedValue("Authored initial answers");
+    vscode.window.showQuickPick.mockResolvedValue("Document starting values");
     vscode.window.showWarningMessage.mockResolvedValue(undefined);
     await perform("exportInteractive");
     vscode.window.showWarningMessage.mockResolvedValue("Export");

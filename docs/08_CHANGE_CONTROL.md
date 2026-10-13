@@ -2,7 +2,7 @@
 
 ## Authority
 
-The approved product boundaries are in DECISIONS.md. The normative language prose and its matching machine-readable registry/grammar/contracts define the implementation. A normative conflict is a defect in this package, not an invitation to choose whichever rule is easier. Open a decision record under decisions/ with the conflicting file/section, a minimal input that exposes the difference, proposed resolution, compatibility/security impact and affected tests. Never implement a guessed fallback and describe it as specified.
+The approved product boundaries are in DECISIONS.md. The normative language prose and its matching machine-readable registry/grammar/contracts define the implementation. Conflicting normative rules must be resolved before implementing the affected behavior. Open a decision record under decisions/ with the conflicting file/section, a minimal input that exposes the difference, proposed resolution, compatibility/security impact and affected tests. Never implement a guessed fallback and describe it as specified.
 
 The language defines explicit behavior. Dependency compatibility, browser behavior and measured performance are properties of a particular build and environment. A change to normative behavior needs a technical decision and matching fixtures, with its compatibility and security impact stated explicitly.
 
@@ -22,11 +22,11 @@ Static options use ungrouped literals and selection uses a bare identifier. Cont
 
 The project is Tinta, with `.tinta` source, `.tinta.zip` bundles, the `tinta` profile and CLI, and `@tinta-lang/*` internal workspace identities. Envelope discriminators, IR ABI and host protocol use the `tinta-` prefix. Source and envelope format versions remain 1.0; language semantics are unchanged.
 
-## License and commercial separation
+## Licensing
 
 The specification, implementation, reference editor, CLI, examples and original fixtures use MIT; see LICENSE. Third-party specifications, conformance suites, libraries and fonts retain their own licenses. Never replace a third-party notice with this project's license. Use system fonts; do not package proprietary font files.
 
-Future proprietary product work belongs in a separate repository and depends on the open engine through the public API. No commercial-only code, secrets, billing/accounts or artificial open-engine limits are added here. Keeping workspace packages `private: true` prevents accidental npm publication; it does not make the repository's MIT-licensed content proprietary. Public hosting, registration, releases and namespace availability remain explicit owner actions outside automated implementation.
+The MIT license applies to the source regardless of whether a workspace manifest is marked `private`. The public SDK defines the integration boundary for applications using the engine.
 
 Release archives and package file lists must explicitly include public inputs and exclude local configuration, credentials, and development outputs. Verify actual archive contents before distribution.
 
@@ -40,4 +40,4 @@ The local VSIX uses development version `0.1.0-dev.0` and the internal installat
 
 ## Coordinated software distribution
 
-The [software distribution contract](15_DISTRIBUTION.md) defines proposed public identities, an implementation version group, independent numeric Marketplace versions, channels and closed release metadata. Private source manifests retain their development placeholders; builds embed the selected implementation version from the distribution configuration. Source format and ABI versions remain separate from software versions.
+The [software distribution contract](15_DISTRIBUTION.md) defines public package and extension identities, an implementation version group, independent numeric Marketplace versions, channels and closed release metadata. Private source manifests retain their development placeholders; builds embed the selected implementation version from the distribution configuration. Source format and ABI versions remain separate from software versions.

@@ -57,7 +57,7 @@ const snippets: Record<string, [string, string, string]> = {
   ],
   "@toggle": [
     "An on/off choice",
-    "Add a labelled boolean control. Pair it with a condition to reveal an explanation.",
+    "Add an on/off control with a label. Pair it with a condition to reveal an explanation.",
     "Controls",
   ],
   "@choice": [
@@ -72,7 +72,7 @@ const snippets: Record<string, [string, string, string]> = {
   ],
   "@details": [
     "An optional explanation",
-    "Place supporting text inside an expandable, labelled disclosure.",
+    "Put supporting text in an expandable section with a heading.",
     "Structure",
   ],
   "@data": [
@@ -112,7 +112,7 @@ const snippets: Record<string, [string, string, string]> = {
   ],
   round: [
     "Round a number",
-    "Round a numeric expression to the nearest integer.",
+    "Round a number to a chosen number of decimal places. Omit the second argument to round to an integer.",
     "Calculations",
   ],
   pow: [
@@ -256,10 +256,13 @@ function CatalogCard({
         "button",
         {
           type: "button",
-          "aria-label": entry.name,
+          "aria-label":
+            kind === "examples"
+              ? "Open " + entry.title
+              : "Insert " + entry.name,
           onClick: () => choose(entry.name, entry.source),
         },
-        kind === "examples" ? "Open " + entry.name : "Insert " + entry.name,
+        kind === "examples" ? "Open " + entry.title : "Insert " + entry.name,
       ),
     ),
   );
@@ -297,7 +300,7 @@ function Catalog({
       h("input", {
         type: "search",
         "aria-label": "Search " + kind,
-        placeholder: "Find your starting point…",
+        placeholder: "Search " + kind,
         value: query,
         onChange: (event) => setQuery(event.currentTarget.value),
       }),
@@ -317,7 +320,7 @@ function Catalog({
     h(
       "p",
       { className: "catalog-count", role: "status" },
-      `${visible.length} ${kind}`,
+      `${visible.length} ${visible.length === 1 ? kind.slice(0, -1) : kind}`,
     ),
     visible.length
       ? h(
@@ -359,7 +362,7 @@ export function catalogDialog(
         node(
           "p",
           kind === "examples"
-            ? "Four complete documents. Explore an idea, read its source, and make it your own."
+            ? "Open an example, try its controls, then edit and save a copy."
             : "Small building blocks, shown in action. Declaration previews include a usage example; only the original snippet is inserted.",
         ),
       );

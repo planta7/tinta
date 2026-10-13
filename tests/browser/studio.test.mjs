@@ -98,7 +98,15 @@ async function example(page, name = "guide") {
   await page
     .getByRole("button", { name: "Explore examples", exact: true })
     .click();
-  await page.getByRole("button", { name, exact: true }).click();
+  const titles = {
+    guide: "A handout that adapts",
+    article: "An article you can explore",
+    report: "A neighborhood reading report",
+    "chart-atlas": "Everything in one document",
+  };
+  await page
+    .getByRole("button", { name: "Open " + titles[name], exact: true })
+    .click();
   await expect(
     page.getByRole("button", { name: "Export", exact: true }),
   ).toBeEnabled();
@@ -287,7 +295,7 @@ test("unknown extensions require a profile and multiple files require a single c
   ]);
   await page.getByRole("button", { name: "first.bin", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Choose source profile" }),
+    page.getByRole("heading", { name: "Choose document type" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Markdown", exact: true }).click();
   await expect(page.locator("header")).toContainText("first.bin");
@@ -551,7 +559,9 @@ test("data import previews mappings and inserts after a complete root block", as
     mimeType: "text/csv",
     buffer: Buffer.from("Name,Score\nOne,2\nTwo,3\n"),
   });
-  await expect(page.getByRole("dialog")).toContainText("root block boundary");
+  await expect(page.getByRole("dialog")).toContainText(
+    "The table will be inserted at the end of the current top-level block.",
+  );
   await expect(page.getByRole("dialog").locator("pre")).toContainText(
     "@data scores",
   );
@@ -792,9 +802,7 @@ test("recovery deletion and disabling are explicit and preserve the active buffe
   await page
     .getByRole("button", { name: "Show recovery copies", exact: true })
     .click();
-  await page
-    .getByRole("button", { name: "Delete this recovery", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Delete copy", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Recover guide.tinta", exact: true }),
   ).toHaveCount(0);
@@ -849,7 +857,9 @@ test("JSON mappings, invalid imports and diagnostics preserve existing source", 
   await page.getByRole("button", { name: "Close dialog", exact: true }).click();
   await expect(editor).toHaveText("# Data");
   await studioAction(page, "Snippets");
-  await page.getByRole("button", { name: "@toggle", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Insert @toggle", exact: true })
+    .click();
   await expect(editor).toContainText("@toggle visible");
 });
 
@@ -1279,7 +1289,9 @@ test("workspace reflows, retains the source cursor and exposes insertion from th
   }
   await page.getByRole("button", { name: "Preview", exact: true }).click();
   await studioAction(page, "Snippets");
-  await page.getByRole("button", { name: "@toggle", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Insert @toggle", exact: true })
+    .click();
   await expect(editor).toBeVisible();
   await expect(
     page.locator("summary").filter({ hasText: /^Insert$/ }),
@@ -1322,7 +1334,12 @@ test("design review captures welcome, reading, editing, export and mobile surfac
     page.getByRole("button", { name: "Export", exact: true }),
   ).toBeDisabled();
   await studioAction(page, "Examples");
-  await page.getByRole("button", { name: "article", exact: true }).click();
+  await page
+    .getByRole("button", {
+      name: "Open An article you can explore",
+      exact: true,
+    })
+    .click();
   await page.getByRole("button", { name: "Discard", exact: true }).click();
   await page.setViewportSize({ width: 390, height: 844 });
   await expect(
@@ -1357,7 +1374,7 @@ test("new documents explain the empty state and clearing diagnostics does not le
   await page.goto(url);
   await page.getByRole("button", { name: "New document", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Your next idea starts here." }),
+    page.getByRole("heading", { name: "Write your first paragraph" }),
   ).toBeVisible();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await page
@@ -1368,7 +1385,7 @@ test("new documents explain the empty state and clearing diagnostics does not le
   await page.getByRole("button", { name: "Discard", exact: true }).click();
   await expect(page.locator(".diagnostics button")).toHaveCount(0);
   await expect(
-    page.getByRole("heading", { name: "Your next idea starts here." }),
+    page.getByRole("heading", { name: "Write your first paragraph" }),
   ).toBeVisible();
 });
 
@@ -1394,6 +1411,7 @@ test("catalogs describe their contents, filter without editing and close action 
   });
   await page.getByRole("searchbox", { name: "Search examples" }).fill("seven");
   await expect(page.locator(".catalog-card")).toHaveCount(1);
+  await expect(page.locator(".catalog-count")).toHaveText("1 example");
   await page.getByRole("searchbox").fill("not-a-document");
   await expect(
     page.getByText("No matches. Try another word or category."),
@@ -1434,7 +1452,9 @@ test("catalogs describe their contents, filter without editing and close action 
   expect(
     (await new AxeBuilder({ page }).exclude("iframe").analyze()).violations,
   ).toEqual([]);
-  await page.getByRole("button", { name: "@toggle", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Insert @toggle", exact: true })
+    .click();
   await expect(
     page.getByRole("textbox", { name: "Document source" }),
   ).toContainText("@toggle visible");
@@ -1509,7 +1529,7 @@ test("declaration thumbnails demonstrate results without inserting their demonst
   ).toContainText("The calculated total is 3");
   await page.getByLabel("Category", { exact: true }).selectOption("Data");
   await page
-    .getByRole("button", { name: "@data", exact: true })
+    .getByRole("button", { name: "Insert @data", exact: true })
     .scrollIntoViewIfNeeded();
   await expect(
     page
@@ -1517,7 +1537,7 @@ test("declaration thumbnails demonstrate results without inserting their demonst
       .getByRole("table"),
   ).toContainText("2");
   await page
-    .getByRole("button", { name: "@view", exact: true })
+    .getByRole("button", { name: "Insert @view", exact: true })
     .scrollIntoViewIfNeeded();
   await expect(
     page
@@ -1533,7 +1553,11 @@ test("declaration thumbnails demonstrate results without inserting their demonst
   await page.getByRole("searchbox").fill("named value");
   await expect(page.locator(".catalog-card")).toHaveCount(0);
   await page.getByLabel("Category", { exact: true }).selectOption("All");
-  await page.getByRole("button", { name: "@let", exact: true }).click();
+  await expect(page.locator(".catalog-count")).toHaveText("1 snippet");
+  await expect(page.getByPlaceholder("Search snippets")).toHaveValue(
+    "named value",
+  );
+  await page.getByRole("button", { name: "Insert @let", exact: true }).click();
   await expect(
     page.getByRole("textbox", { name: "Document source" }),
   ).toContainText("@let value = 1");

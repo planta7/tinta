@@ -3,7 +3,7 @@ export * from "vscode";
 export const choices = {
   open: undefined,
   save: undefined,
-  answers: "Authored initial answers",
+  answers: "Document starting values",
   confirm: true,
   messages: [],
   cancel: undefined,

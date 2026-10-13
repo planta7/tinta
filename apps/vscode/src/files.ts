@@ -452,7 +452,7 @@ export class FileController implements vscode.Disposable {
     let readingCurrent = () => true;
     if (format !== "bundle") {
       const choice = await vscode.window.showQuickPick(
-        ["Authored initial answers", "Current preview answers"],
+        ["Document starting values", "Current preview answers"],
         { title: "Export answers" },
       );
       if (!choice) return;
@@ -505,7 +505,7 @@ export class FileController implements vscode.Disposable {
     }
     const output = await vscode.window.showSaveDialog({
       title: format === "bundle" ? "Save Source Bundle" : "Export HTML",
-      saveLabel: "Write separate artifact",
+      saveLabel: format === "bundle" ? "Save bundle" : "Export HTML",
       filters:
         format === "bundle"
           ? { "tinta source bundle": ["tinta.zip"] }

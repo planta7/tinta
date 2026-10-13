@@ -33,8 +33,11 @@ export function createWorkspace() {
   emptyPreview.className = "empty-preview";
   emptyPreview.append(
     node("span", "A document to explore."),
-    node("h2", "Your next idea starts here."),
-    node("p", "Start writing, or open an example to discover tinta."),
+    node("h2", "Write your first paragraph"),
+    node(
+      "p",
+      "Start with Markdown, or open an example to try controls and charts.",
+    ),
   );
   sourcePane.append(sourceHeading);
   previewPane.append(previewHeading, emptyPreview, previewContent);

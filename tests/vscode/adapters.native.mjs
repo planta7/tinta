@@ -134,7 +134,7 @@ describe("native activation and client boundaries", () => {
     for (const [source, text] of [
       ["valid", "tinta: source valid"],
       ["invalid", "tinta: source errors"],
-      ["capacity", "tinta: host capacity; retry Check"],
+      ["capacity", "tinta: analysis limit reached; try Check again"],
     ]) {
       client.notification({ uri: "untitled:test", version: 1, source });
       expect(vscode.status.text).toBe(text);

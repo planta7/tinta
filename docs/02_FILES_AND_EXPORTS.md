@@ -14,7 +14,7 @@ Images are only static PNG, JPEG and WebP. Sniff bytes and decode dimensions; ex
 
 Paths are relative to the selected document root; decode URL escapes once, require valid UTF-8, reject NUL/ASCII controls, absolute paths, drive prefixes, UNC paths, scheme-relative paths, backslashes, empty components, `.` and `..` components. A single optional leading `./` is removed before component validation. Query strings/fragments in image paths are not supported. A final normalized path must stay inside the granted root. Runtime document code cannot expand the grant.
 
-Browser mode resolves only explicitly selected File objects/directory handles. Opening one `.tinta` file does not grant access to its neighbouring files automatically; unresolved sidecars prompt **Add local images** or **Open source bundle**. CLI can resolve inside the input directory or an explicit `--asset-root`; reject symlinks/reparse points and directory traversal. Check identity/root membership around opening, and never fall back to an HTTP fetch. No remote image or author data/blob URL is loaded. Preview displays a labelled placeholder and a warning; portable export fails if any image required by that export is unresolved or forbidden.
+Browser mode resolves only explicitly selected File objects/directory handles. Opening one `.tinta` file does not grant access to its neighboring files automatically; unresolved sidecars prompt **Add local images** or **Open source bundle**. CLI can resolve inside the input directory or an explicit `--asset-root`; reject symlinks/reparse points and directory traversal. Check identity/root membership around opening, and never fall back to an HTTP fetch. No remote image or author data/blob URL is loaded. Preview displays a labeled placeholder and a warning; portable export fails if any image required by that export is unresolved or forbidden.
 
 Imported images receive `assets/<lowercase-sha256>.<ext>`, with canonical extensions png/jpg/webp and MIME image/png, image/jpeg, image/webp. Deduplicate identical bytes by hash. Alt text is plain static source text; default insertion requires the author to enter meaningful alt text or explicitly mark decorative with an empty alt. The original filename is shown in the import dialog but is not retained in the exported bundle manifest.
 
@@ -24,7 +24,7 @@ An ordinary ZIP containing exactly these non-directory entries:
 
 ```text
 manifest.json
- document.tinta                 (no leading space in the actual name)
+document.tinta
 assets/<sha256>.png|jpg|webp  (zero to 100 images)
 ```
 
@@ -54,11 +54,11 @@ The chosen answer state becomes the artifact reset baseline. Reset returns there
 
 The no-script presentation contains an export-time static rendering of the selected answers and the sentence `Interactivity requires JavaScript; the values below are the exported answers.` This is a fallback, not another runtime. When JavaScript initializes successfully it replaces the fallback with the reader; do not show two copies. An initialization error leaves the fallback and a clear local error. Screen-reader labels are not dependent on generated SVG text.
 
-Privacy notice, shown before first export per editor session and printed in About/details of the artifact: **This interactive file contains the complete source, all embedded data, hidden explanations and image metadata. Hidden content is not private. It does not send data anywhere.** That last statement refers to automatic product behaviour; external links may open a destination only when activated by the reader.
+Privacy notice, shown before first export per editor session and printed in About/details of the artifact: **This interactive file contains the complete source, all embedded data, hidden explanations and image metadata. Hidden content is not private. It does not send data anywhere.** That last statement refers to automatic product behavior; external links may open a destination only when activated by the reader.
 
 ## Static standalone HTML
 
-Inputs are the same `initial` or `current answers` choice. Produce resolved Markdown content for true conditions only. Replace controls with labelled static answer text. Expand every visible details body. Include complete tables from visible table/figure nodes and SVG figures with all series visible. No JS, event handlers, embedded source, program AST, hidden conditions, answer state envelope or unreferenced data/resources. Visible figure tables necessarily disclose their included data; static export is not an automatic anonymizer.
+Inputs are the same `initial` or `current answers` choice. Produce resolved Markdown content for true conditions only. Replace controls with labeled static answer text. Expand every visible details body. Include complete tables from visible table/figure nodes and SVG figures with all series visible. No JS, event handlers, embedded source, program AST, hidden conditions, answer state envelope or unreferenced data/resources. Visible figure tables necessarily disclose their included data; static export is not an automatic anonymizer.
 
 Only images referenced by the visible result need be bundled. Source must still compile globally, but unresolved images exclusively inside false conditions do not block static export; interactive export requires them. Metadata may include a generated-by string with format/engine version but no timestamps, paths, usernames or host identifiers. Includes print CSS; browser printing is not a promised programmatic PDF exporter.
 
@@ -72,7 +72,7 @@ CSS is one trusted stylesheet; dynamic SVG values are safe numeric/presentation 
 
 ## Atomicity
 
-Construct an export completely in memory (within limits), validate, then hand off to the selected save mechanism. CLI writes to a same-directory temporary file, fsyncs, and commits after validation. Existing targets use rename; a new target may instead use an atomic hard link followed by removal of the temporary name, so a concurrently created target is rejected without overwrite. If hard links are unsupported, fail without a non-atomic fallback; existing outputs require `--force` and are never partially truncated. If Windows replacement semantics cannot provide the same rename guarantee, use a backed-up staged replacement with restoration on failure and report the platform behaviour; never delete the old file first without a recoverable copy. Browser File System Access writes through its writable stream and aborts on error; fallback downloads report initiation only. Cancel leaves source and current answers unchanged.
+Construct an export completely in memory (within limits), validate, then hand off to the selected save mechanism. CLI writes to a same-directory temporary file, fsyncs, and commits after validation. Existing targets use rename; a new target may instead use an atomic hard link followed by removal of the temporary name, so a concurrently created target is rejected without overwrite. If hard links are unsupported, fail without a non-atomic fallback; existing outputs require `--force` and are never partially truncated. If Windows replacement semantics cannot provide the same rename guarantee, use a backed-up staged replacement with restoration on failure and report the platform behavior; never delete the old file first without a recoverable copy. Browser File System Access writes through its writable stream and aborts on error; fallback downloads report initiation only. Cancel leaves source and current answers unchanged.
 
 
 ## Asset map keys and export rebasing

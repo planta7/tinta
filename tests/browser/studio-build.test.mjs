@@ -30,7 +30,9 @@ test("chunked Studio preserves module initialization and embedded runtimes", asy
     await page
       .getByRole("button", { name: "Explore examples", exact: true })
       .click();
-    await page.getByRole("button", { name: "guide", exact: true }).click();
+    await page
+      .getByRole("button", { name: "Open A handout that adapts", exact: true })
+      .click();
     await expect(
       page.getByRole("button", { name: "Export", exact: true }),
     ).toBeEnabled();
@@ -76,7 +78,9 @@ test("Studio loads from a repository Pages path", async ({ page }) => {
     await page
       .getByRole("button", { name: "Explore examples", exact: true })
       .click();
-    await page.getByRole("button", { name: "guide", exact: true }).click();
+    await page
+      .getByRole("button", { name: "Open A handout that adapts", exact: true })
+      .click();
     await expect(
       page.frameLocator("iframe").getByRole("article"),
     ).toBeVisible();

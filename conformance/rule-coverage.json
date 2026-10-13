@@ -29,7 +29,7 @@
     },
     {
       "path": "spec/registry.json",
-      "sha256": "bdff206f2428faae73d37e4266a5b9c54de6b8d4f44e2f0584b838713531c6d7"
+      "sha256": "d9574bb9d5153607490349917bd40cf8a0dbc570d7e08a9b5c09ce4e7a1fb3a2"
     },
     {
       "path": "spec/grammar.ebnf",
@@ -37,7 +37,7 @@
     },
     {
       "path": "contracts/public-api.d.ts",
-      "sha256": "e24c7ca8f1136eef0ee060f614c1a83cffd258a439bcc43e2f0b714c7ead9fd5"
+      "sha256": "bcf8c0d07cd5941b3a37a702e9dba4c60e533c8ff669bb0524335a177d77970e"
     },
     {
       "path": "contracts/worker-protocol.d.ts",
@@ -274,7 +274,7 @@
       "line": 107,
       "title": "\"SC-001 and CT-007: author HTML, comments and interpolated payloads stay inert without requests\"",
       "sha256": "4cff2e704e71dccaa72746d3647c84cc59a1ad74413ea225df8889544dafb697",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "syntax-3bd29bfde85f",
@@ -337,7 +337,7 @@
       "line": 159,
       "title": "\"CT-009: unsafe links are inert and allowed links carry explicit navigation protections\"",
       "sha256": "1092693211e010576dc3a95b8c9d555d37035fe9b1a52dc6694a2cb37e5e54ea",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "syntax-cdd10c4a6de3",
@@ -370,19 +370,19 @@
       "id": "reader-485b9bc23bce",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 329,
+      "line": 456,
       "title": "\"same-document anchors remain local across instances and do not reveal false branches\"",
       "sha256": "b21ecd2cd680210e7553da50a42fbbb02b98e39bfdae81621564b8b7ee779ca7",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "reader-105a9ba2ba98",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 788,
+      "line": 915,
       "title": "\"shared sessions reserve hidden headings and never steal focus from another mounted reader\"",
       "sha256": "8d7724529c81a757856ba3f4ed1c63b5848aae503aed5757ea6d449e7e170479",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "syntax-fd10bc6d60eb",
@@ -442,10 +442,10 @@
       "id": "editor-9234d15abffc",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 201,
+      "line": 211,
       "title": "\"raw Markdown opens inert, preserves bytes, enriches and reports download handoff\"",
       "sha256": "0702a7136bd1e6281e22d0067548d998c7015c86b9e91de3efcfacfe8e72d0d8",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "syntax-fc8ec2cd89a4",
@@ -685,37 +685,37 @@
       "id": "reader-c3da0125d8f6",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 247,
+      "line": 374,
       "title": "\"rejected actions roll back DOM value, prose and focus, and recover on the next valid input\"",
       "sha256": "40f15f39d7d807abfde6e9d3d9e8826a0b45d64a6031e6c3c2a4dc9bac494af3",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "reader-14a83dafb140",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 356,
+      "line": 483,
       "title": "\"resetPresentation preserves answers while reading reset restores the session baseline\"",
       "sha256": "1d41a96f78643ca124029010baabc090b6ff832b74a45ba052a4e4e01afb6858",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "exports-18463aefe612",
       "kind": "test",
       "path": "tests/browser/artifacts.test.mjs",
-      "line": 148,
+      "line": 166,
       "title": "\"current answers become reset baseline, hidden content is safe, payload terminators inert\"",
       "sha256": "ca83b0763a090577d4c1e7d5feb150fe5c0a717e9d249a969e1940af20f218d0",
-      "fileSha256": "b74702b18e903a4aa71f96d8f05109c9eac206182c23eb003e7a10647345e58e"
+      "fileSha256": "8ac806d6ccc9ce8ccef7216d987b6943bed77855d7708cbe582912aa2c680cc9"
     },
     {
       "id": "exports-5a8e95bc29e2",
       "kind": "test",
       "path": "tests/browser/artifacts.test.mjs",
-      "line": 444,
+      "line": 473,
       "title": "\"exports retain answers but reset legend, pin and details presentation\"",
-      "sha256": "77bae091b0d9c7fa10a3cfe5f52fef33bb6cfcbb0886b065e85d3d41c39ec425",
-      "fileSha256": "b74702b18e903a4aa71f96d8f05109c9eac206182c23eb003e7a10647345e58e"
+      "sha256": "bad7037378e12e833826d1d0b595051aafa148986a6f86fb9883f79800c19c1a",
+      "fileSha256": "8ac806d6ccc9ce8ccef7216d987b6943bed77855d7708cbe582912aa2c680cc9"
     },
     {
       "id": "engine-2f252eac166e",
@@ -751,16 +751,16 @@
       "line": 185,
       "title": "\"native controls update one immutable revision and preserve field identity, focus and details\"",
       "sha256": "e0ca48fdeb40adefe3402c6a6cd02f227680b5ce525dcef51b30090642377571",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "reader-c273215916a5",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 530,
+      "line": 657,
       "title": "\"pointer dragging retains the native slider throughout successive updates and debounces announcements\"",
       "sha256": "f129fd5f699276a2c6204e7594aaaa2028cd08bbc49918ea642f6ff5369b7a4f",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "syntax-cd6f299d8c2a",
@@ -784,19 +784,19 @@
       "id": "reader-009175229967",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 556,
+      "line": 683,
       "title": "\"nested controls work, hidden details retain presentation, and source remount resets it\"",
       "sha256": "0acdfa7f209b683d8b159031b725f047a6964541615c468f9fa056cc5ac76538",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "exports-7d3f1920ff51",
       "kind": "test",
       "path": "tests/browser/artifacts.test.mjs",
-      "line": 210,
+      "line": 228,
       "title": "\"static output omits hidden material and expands visible details\"",
       "sha256": "e9e14c2b2606ba32cdf519e06be8dbbfe6ff06e03542c8fd3334024cc86a2395",
-      "fileSha256": "b74702b18e903a4aa71f96d8f05109c9eac206182c23eb003e7a10647345e58e"
+      "fileSha256": "8ac806d6ccc9ce8ccef7216d987b6943bed77855d7708cbe582912aa2c680cc9"
     },
     {
       "id": "syntax-e937bbbdc23e",
@@ -838,10 +838,10 @@
       "id": "reader-affa881cec3b",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 275,
+      "line": 402,
       "title": "\"tables, captions, counts, empty views, Markdown alignment and local placeholders\"",
       "sha256": "c9b0edab4a01e0ec5b9080a9ed3cf9878a8127dd0f31169c93e77735d41afe93",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "syntax-811d30c7fe8b",
@@ -892,10 +892,10 @@
       "id": "reader-293206c0d493",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 904,
+      "line": 1031,
       "title": "\"SC-028: all seven native explorers provide keyboard actions and matching data\"",
       "sha256": "47e90b8bf50e1e9f80cc56080128a9b21ab618dd3b49e2f134d81dbf3c9c08e3",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "syntax-4bc4f394b435",
@@ -955,10 +955,10 @@
       "id": "editor-545243b7f075",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 491,
+      "line": 536,
       "title": "\"data import previews mappings and inserts after a complete root block\"",
-      "sha256": "475f293523163e43fba48a761811dbe81f186382dcec67cdc4284c84aa12bc22",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "sha256": "a5425dfcc7378237543e94fa2363217d22f8e4726749d344bca1697726a3342e",
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "engine-8c6e1c327e2f",
@@ -973,28 +973,28 @@
       "id": "cli-74bfa68660aa",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 289,
+      "line": 295,
       "title": "\"import schema is strict, complete and does not silently coerce JSON\"",
       "sha256": "1a7f101a2dcffe09ca734108b0e9cc89a9913f7a6c7b6cbab84e352c20bd60e0",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "editor-6bc821e2163a",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 783,
+      "line": 828,
       "title": "\"JSON mappings, invalid imports and diagnostics preserve existing source\"",
-      "sha256": "6d40a161d308ab469b90a0a5a4fa2fe139598ff21fb40688d27502be652d37e6",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "sha256": "10721ea9442aae6e490f102d59c6d5eb2fd53e2eaa404ff9ccb06dd694376f11",
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-1290d7aeb8e7",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 394,
+      "line": 439,
       "title": "\"image import is one source and asset undo transaction\"",
       "sha256": "f6f6171800c8fe8c82d5a5281ff40c6d199a19127fbae41cbeeab1dc3d1ee4f3",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "charts-ae9f14801022",
@@ -1099,10 +1099,10 @@
       "id": "reader-95808e1c04f7",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1124,
+      "line": 1251,
       "title": "\"SC-034: responsive scenes retain explorer focus and provide review artifacts\"",
       "sha256": "0ce8c5ab07fb52d10a55b1f5e48e13fffc9cfb81e6ea2769d1b4878fbff6bc36",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "engine-579357d4a6ad",
@@ -1135,10 +1135,10 @@
       "id": "reader-0abf0c906fc0",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1045,
+      "line": 1172,
       "title": "\"SC-032: zero, single, empty inspectors and histogram reset\"",
       "sha256": "cbe125e36b4083ea3707c17143e1254ca350e77c2a14ae8b4b4f2dd42aca5df2",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "charts-000162e27e2a",
@@ -1153,100 +1153,100 @@
       "id": "reader-6ed0b92cd59b",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 990,
+      "line": 1117,
       "title": "\"SC-031: legend visibility is local, persistent across filtering and resettable\"",
       "sha256": "a96be4d534e2d40928ced8acc3b08411a8af793a9375f4361f82e62b3b44bce8",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "reader-a299f4d4e59f",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 944,
+      "line": 1071,
       "title": "\"SC-029 and SC-030: shared selection, pointer inspection, outside filters and no-op revisions\"",
       "sha256": "5f55f48d0978dfe42f769ba6172567e3def1b85a97054606136a0b6104199a4b",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "reader-a29a543ddc03",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1078,
+      "line": 1205,
       "title": "\"linked chart failure rolls back narrative and every figure\"",
       "sha256": "cd4d946a2b1ecca621df4785eea06e075c2f06e055d8a4a0494b126b28761b72",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "reader-548e6169b5ab",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1189,
+      "line": 1316,
       "title": "\"SC-033: overlapping scatter points select x across rows and series\"",
       "sha256": "8deedc327510659287c95880ac96ce4ad2f8d4828dbadff2ee561ee63f326ce8",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "reader-ef240d8dbc67",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1493,
+      "line": 1620,
       "title": "\"a failing chart domain rejects a linked selection atomically\"",
       "sha256": "a536ffcd68f0a5375d1b71b52d8eaf6a0ee8b92d3a74bd3f8dc3901ddbcd2c0e",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "reader-85bf4d0b7234",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1532,
+      "line": 1659,
       "title": "\"pointer pins, escape and explorer focus keep inspection local\"",
-      "sha256": "e945b375cb87be7981d9d83bb516f93e7f25363b3f7d718b45dda4ec2c4f3319",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "sha256": "2328908a1473cdfacf4937b61744f9796881bf870e6a54c46667422687387836",
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "reader-3aa7f782abe0",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1419,
+      "line": 1546,
       "title": "\"focused chart controls retain focus when an external update empties their data\"",
       "sha256": "be72cb5c414720052f08b16f09cc821f6512ebc0935283fe146ad1c802181eea",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "reader-d246900bf8a9",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 1460,
+      "line": 1587,
       "title": "\"a self-hiding figure action recovers focus to the preceding native control\"",
       "sha256": "94ba85a7f501a9807c163c81b61118a3c4c89e1be6403f601d6794b95c79be70",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "editor-1f25bc62f3b3",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 608,
+      "line": 655,
       "title": "\"mixed line endings and BOM survive edit, undo and raw source saving\"",
       "sha256": "103da584ef4a0d4e2aa702da84157153c904f6f0393b9107a039650e4300cad7",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-32476bf4f35e",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 637,
+      "line": 684,
       "title": "\"bundle and snapshot downloads preserve authored defaults and chosen answers\"",
       "sha256": "2d89fcf3200a1b4123f6393d4ec5cfdacfc41ea096c207ce5550faf5a1629ef6",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "cli-c6f240d1f939",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 121,
+      "line": 127,
       "title": "\"enrich preserves original and refuses every alias even with force\"",
       "sha256": "911bd437d51abfef33c34513d28465cfafd22895e431ebf3a7dd21cc06f95280",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "studio-a54e9ae9fbd1",
@@ -1297,55 +1297,55 @@
       "id": "cli-6a3c44ce73d1",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 200,
+      "line": 206,
       "title": "\"image root grants reject symlink escapes\"",
       "sha256": "37d45b47a9449221b8ed5631585616276abb37327c1f37e9335e539a522b7c78",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "editor-d8d6c102c660",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 996,
+      "line": 1046,
       "title": "\"missing image resolution preserves distinct source paths with shared basenames\"",
       "sha256": "f5c8f7360522dfb387d82c6b8a3b126a3104abfbaabb541011383947e4c884e7",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-f0e993552911",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1068,
+      "line": 1118,
       "title": "\"preview rejects unsafe, missing and indirect asset alias targets\"",
       "sha256": "e7d82ae10524f97602871a432f5427f9dcd35453f912d796ad20668be9d5d9e9",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "artifacts-0677b35d2bf5",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 178,
+      "line": 179,
       "title": "\"canonical packing changes only image destinations and preserves BOM/CRLF\"",
       "sha256": "83a316e9a414e6d0348533058e83ab50ca770a43e7020fae336b4f975e654041",
-      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
+      "fileSha256": "35b9a0c2a8f97c52c0e74f9c948c2bfc33d87d4cefabb2d1e564ab992a62b733"
     },
     {
       "id": "artifacts-13e3ec5ef5e5",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 221,
+      "line": 222,
       "title": "\"rejects unknown paths, CRC corruption, trailing bytes, duplicate JSON and hash lies\"",
       "sha256": "7b04397de90a4ba533373e4eb1e52d48d2220c81a2fce11ab73561618512e72b",
-      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
+      "fileSha256": "35b9a0c2a8f97c52c0e74f9c948c2bfc33d87d4cefabb2d1e564ab992a62b733"
     },
     {
       "id": "artifacts-d36a6e3148f7",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 334,
+      "line": 343,
       "title": "\"shared image references preserve ordinary links and original label/title syntax\"",
       "sha256": "b3402fa9381f52adefe86071ccae73fb4cb05bcc9fef317b6246765c5e9e777c",
-      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
+      "fileSha256": "35b9a0c2a8f97c52c0e74f9c948c2bfc33d87d4cefabb2d1e564ab992a62b733"
     },
     {
       "id": "security-7f60b3524507",
@@ -1396,100 +1396,100 @@
       "id": "artifacts-1d15b6b947b9",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 123,
+      "line": 124,
       "title": "\"round trips a complete selected baseline and resets there\"",
       "sha256": "3f6422f99744f3a1b78aa9b6ed2bbe7b2f8bf7df2c24bde55e1bb428a1a6fb8b",
-      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
+      "fileSha256": "35b9a0c2a8f97c52c0e74f9c948c2bfc33d87d4cefabb2d1e564ab992a62b733"
     },
     {
       "id": "artifacts-799ada687672",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 156,
+      "line": 157,
       "title": "\"rejects hash, extra metadata and duplicate keys\"",
       "sha256": "a4996eafe3f4c9a0e94a677a555082c06a1cba7d942c1ef5f6a9ee610d7d8783",
-      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
+      "fileSha256": "35b9a0c2a8f97c52c0e74f9c948c2bfc33d87d4cefabb2d1e564ab992a62b733"
     },
     {
       "id": "cli-c587102843e0",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 356,
+      "line": 362,
       "title": "\"snapshot builds preserve source identity and reject changed sources\"",
       "sha256": "2e8b0635bcfd54be643c6ad19a44d8294151eba9cf4685b942f120851748c2d8",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "artifacts-d417d1808b41",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 292,
+      "line": 293,
       "title": "\"interactive escapes payload terminators, rebases private paths \" +\n      \"and includes complete content\"",
       "sha256": "fb2ed3b53ee6bc6e34cfeae163d22ec1586202a43884f9550e2a0756ef03dc06",
-      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
+      "fileSha256": "35b9a0c2a8f97c52c0e74f9c948c2bfc33d87d4cefabb2d1e564ab992a62b733"
     },
     {
       "id": "exports-93846569f6eb",
       "kind": "test",
       "path": "tests/browser/artifacts.test.mjs",
-      "line": 108,
+      "line": 120,
       "title": "`offline standalone ${name} initializes complete document`",
-      "sha256": "8f238c06686cd9735e751171ce57dcbedf3c1b3098c3eb9560f0132d86cdf2b8",
-      "fileSha256": "b74702b18e903a4aa71f96d8f05109c9eac206182c23eb003e7a10647345e58e"
+      "sha256": "e9e3e37b96cb0eb6f59ef7c0b26b5a94bd2ae930c33759be867380aeff7a130b",
+      "fileSha256": "8ac806d6ccc9ce8ccef7216d987b6943bed77855d7708cbe582912aa2c680cc9"
     },
     {
       "id": "exports-edbbdd6694d0",
       "kind": "test",
       "path": "tests/browser/artifacts.test.mjs",
-      "line": 181,
+      "line": 199,
       "title": "\"JavaScript disabled retains selected-answer fallback\"",
       "sha256": "60c8e38cefd96f45a2b72de185797ac98106eb0bffede19287102a1dc0fc1bf0",
-      "fileSha256": "b74702b18e903a4aa71f96d8f05109c9eac206182c23eb003e7a10647345e58e"
+      "fileSha256": "8ac806d6ccc9ce8ccef7216d987b6943bed77855d7708cbe582912aa2c680cc9"
     },
     {
       "id": "exports-baf92e2a6ffd",
       "kind": "test",
       "path": "tests/browser/artifacts.test.mjs",
-      "line": 274,
+      "line": 292,
       "title": "\"tampered envelope fails closed and leaves fallback\"",
-      "sha256": "48fd487b52ca69bd0971de08b35e3a01c14f4499e426d475b269286e0a8347ce",
-      "fileSha256": "b74702b18e903a4aa71f96d8f05109c9eac206182c23eb003e7a10647345e58e"
+      "sha256": "1d5bb6c2fdc42395a484a0ec77bcb0c759aecd3d057b6815d49be5a2886af755",
+      "fileSha256": "8ac806d6ccc9ce8ccef7216d987b6943bed77855d7708cbe582912aa2c680cc9"
     },
     {
       "id": "exports-6600bd2dc659",
       "kind": "test",
       "path": "tests/browser/artifacts.test.mjs",
-      "line": 368,
+      "line": 390,
       "title": "\"runtime rejects malformed authenticated envelopes without discarding fallback\"",
-      "sha256": "7589b5b4405c8cbb54265fc9345815b14ef667891f1a043de97f46ec5f2764ed",
-      "fileSha256": "b74702b18e903a4aa71f96d8f05109c9eac206182c23eb003e7a10647345e58e"
+      "sha256": "8240b8d8f1322aa379ca6cc572996683a1ac6c49f5771f98692fbbb69c40f486",
+      "fileSha256": "8ac806d6ccc9ce8ccef7216d987b6943bed77855d7708cbe582912aa2c680cc9"
     },
     {
       "id": "editor-6315c32185d9",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 360,
+      "line": 405,
       "title": "\"exports selected current answers and validates the downloaded offline reader\"",
       "sha256": "aaccb42937dbe5992e77321c22ff407fd33432fdc96e6ecf6b292a532b08cbcb",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "artifacts-f8fa34769e2f",
       "kind": "test",
       "path": "tests/unit/artifacts.test.mjs",
-      "line": 258,
+      "line": 259,
       "title": "\"static omits hidden data/source/assets and does not need hidden images\"",
       "sha256": "0758b8ef1327960f0b0d881603779e9722a929ea1cb3e7bfec29540b8b28a8ab",
-      "fileSha256": "890d97f77d981edf06ac15c89c79b7d9726ab1bf999dd626f75a45b6f3ab09bf"
+      "fileSha256": "35b9a0c2a8f97c52c0e74f9c948c2bfc33d87d4cefabb2d1e564ab992a62b733"
     },
     {
       "id": "exports-c3b484549f48",
       "kind": "test",
       "path": "tests/browser/artifacts.test.mjs",
-      "line": 318,
+      "line": 339,
       "title": "\"static guide discloses only the selected platform\"",
-      "sha256": "206002ae91b81930194511336f618374c3d90a41cc361f9bbf8963baf3492e6c",
-      "fileSha256": "b74702b18e903a4aa71f96d8f05109c9eac206182c23eb003e7a10647345e58e"
+      "sha256": "c1fb4f62057ec2eb7251aef69dd2de906c31fda9a2a3aa642ddb1c79b7090533",
+      "fileSha256": "8ac806d6ccc9ce8ccef7216d987b6943bed77855d7708cbe582912aa2c680cc9"
     },
     {
       "id": "security-6a0f2a06ac8b",
@@ -1504,46 +1504,46 @@
       "id": "exports-4b9412231cfd",
       "kind": "test",
       "path": "tests/browser/artifacts.test.mjs",
-      "line": 227,
+      "line": 245,
       "title": "\"local PNG, JPEG and WebP bytes decode with no network requests\"",
       "sha256": "3859dbdfb6fce10472f65ab9ea150a1c456a02174a3b0ce1529e632354750197",
-      "fileSha256": "b74702b18e903a4aa71f96d8f05109c9eac206182c23eb003e7a10647345e58e"
+      "fileSha256": "8ac806d6ccc9ce8ccef7216d987b6943bed77855d7708cbe582912aa2c680cc9"
     },
     {
       "id": "exports-1b938f2def36",
       "kind": "test",
       "path": "tests/browser/artifacts.test.mjs",
-      "line": 334,
+      "line": 356,
       "title": "\"external links navigate only after explicit activation\"",
       "sha256": "1dbc085254b96109ba2d518c0d9682a7b2c867e6db02bb22f4d28b94dd956edd",
-      "fileSha256": "b74702b18e903a4aa71f96d8f05109c9eac206182c23eb003e7a10647345e58e"
+      "fileSha256": "8ac806d6ccc9ce8ccef7216d987b6943bed77855d7708cbe582912aa2c680cc9"
     },
     {
       "id": "editor-7f2904325f37",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 535,
+      "line": 582,
       "title": "\"sandbox denies parent authority and ignores unauthenticated messages\"",
       "sha256": "281c549256c32054cf946f25ba6e2fca247d0b344201b0eb33c71c8c062e5aac",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "cli-32cfeaafc245",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 144,
+      "line": 150,
       "title": "\"build rejects conflicts, preserves output on invalid input and replaces atomically\"",
       "sha256": "c082c8dc3eaef74cd963e0f22816c702e677780c2cc0c69a4a976bc05cfbb37a",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "cli-72d6fa6aa1ed",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 270,
+      "line": 276,
       "title": "\"aborting an atomic write preserves old content and removes its staging file\"",
       "sha256": "f71f2f656564e43c7885a5d7ce0f8fbce4b46b185b29dab3d3cf2f21a196ed6a",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "io-c64065af53fc",
@@ -1567,37 +1567,37 @@
       "id": "editor-f3fda819175c",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 937,
+      "line": 984,
       "title": "\"a source revision change cancels an export before download handoff\"",
-      "sha256": "aa2be8982223a7460852d0ba7f4235d3db823a5b3db9d9626546b2dc29c21079",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "sha256": "7c9c5a0d6bcf5832708c3a373ee256292ea2a5824c20c644d3219b5db5a133e3",
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-a42d8ae0bd82",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 106,
+      "line": 116,
       "title": "\"standalone reading, sandbox, answers, edit and invalid recovery\"",
       "sha256": "72ee3f5136cdd9625476a6eb0307d5ccad24603e8d11c216d95df3b29415b530",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-bd9840b8f95b",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 296,
+      "line": 306,
       "title": "`offline example ${name} and responsive reading`",
-      "sha256": "1e241ad9f20eb2128c941e7b9cdd639f227c82c7f53b31351ae7d8afe950f033",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "sha256": "28c4d58cbc9a395d68d9643d14199286efbaaccb4e991492c4a7e745c6573900",
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-44792eecfe01",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 980,
+      "line": 1030,
       "title": "\"editor surfaces expose labelled controls and accessible dialogs\"",
       "sha256": "5b6d050da87415ff92615dc39eb7db917004a79fbd9eb501c20e6840cee1226d",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "studio-1476aaec0765",
@@ -1632,8 +1632,8 @@
       "path": "tests/browser/scheduling.test.mjs",
       "line": 5,
       "title": "\"editor and recovery debounce at their exact idle boundaries and cancel older work\"",
-      "sha256": "6901e16d3f32014f8503d3aa0dc0a4deae73cd4932e3f366db7f38c0b765763b",
-      "fileSha256": "e82f84008c0a35b835390dda3c1fb88d6b3b59fbb73c3f3f79c52935632198ac"
+      "sha256": "1d543b18645f6edfa9e4d2cdfe711c4d738190c0df3eca2beecd9cac98218c5c",
+      "fileSha256": "3feac71d65243231971c598c459d2c973b8f29ce7137cad0ed9ab7a33929b2ca"
     },
     {
       "id": "studio-3755f9588d0d",
@@ -1657,37 +1657,37 @@
       "id": "editor-f71dc5af42a4",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 333,
+      "line": 358,
       "title": "\"reconciles prose edits and resets a changed initial without changing saved source\"",
       "sha256": "caef432f17e7f237ad9bb90e54f0ea4593515c471d0c2d42b63c9c230ed92496",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-ac92108d5700",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 244,
+      "line": 254,
       "title": "\"unsaved dialog close preserves source, file actions and focus\"",
       "sha256": "7c65c1f8deb872a1381df18f31b9782fc94d3e647ee2fdf1d827366f24c28402",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-ec6d370e0eb2",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 266,
+      "line": 276,
       "title": "\"unknown extensions require a profile and multiple files require a single choice\"",
-      "sha256": "efae0b1743b615b64ccb46d349bef68525fec16793e7e114ccf0cef3903fc2a8",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "sha256": "3273e6432516549a2411dd126f81ded7c663e3424ad0aced8383dddcff80a4c1",
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-9ca658f6c6b4",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 682,
+      "line": 729,
       "title": "\"source save-as, keyboard commands and unsaved Save or Discard\"",
       "sha256": "b0bdff9d44a6c96f8ff482af2b9a7fe2aaecffea9893bbf98fdbea9450ee6fd9",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "studio-a42bdeff1f22",
@@ -1711,91 +1711,91 @@
       "id": "editor-6fcbe5038110",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 143,
+      "line": 153,
       "title": "\"automatic local drafts restore source and mode after reload\"",
       "sha256": "f11520d401d510526d17bf8c58325510daee5b9ebdc076bf7dba9bd45c02b96b",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-2ba717ce789b",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 585,
+      "line": 632,
       "title": "\"denied recovery storage leaves source saving available\"",
       "sha256": "125de038beeac096b52691a5c452425598029205b07d6b63dcf391b90855ddb3",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-aeed8b8095de",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 717,
+      "line": 764,
       "title": "\"recovery deletion and disabling are explicit and preserve the active buffer\"",
-      "sha256": "3cecb1136bf7b33e8f264674afee73c060a906822efc09bef1c949e5e275c8c0",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "sha256": "19bae546a79ee7ece3b4b5a3ab29bf7878c4567b240ce10aa6c46cdb8592cc6e",
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "cli-b03287662ac7",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 32,
+      "line": 33,
       "title": "\"help, version and actual workspace bin\"",
-      "sha256": "48867ff15a039853462265ddbb81034671e04562c0fcb8b2e68700c882e7d949",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "sha256": "6f51a1f7b6989132853c71684443e477428838bbdf7622560467bd35b13431bf",
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "cli-e0db2029b80d",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 90,
+      "line": 96,
       "title": "\"accepts equal-valued flags, Unicode paths and operand terminator\"",
       "sha256": "50c88c483f0dd534c82e001857827fcef1ae8f878221cac7cf37d6c5a5e50014",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "cli-6d3fd0ee9ead",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 108,
+      "line": 114,
       "title": "\"check validates evaluation and warnings without implicitly loading images\"",
       "sha256": "b5809399a7ef326622a836f892525a3fbf213239e05ccb86971f25ba3a5296b7",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "cli-94386525172a",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 164,
+      "line": 170,
       "title": "\"pack and unpack validate resources before writing and reject existing directories\"",
       "sha256": "de9cd66779c76f62146d0b3e275c6d3398e894fbc2cef60e1767669211aa321f",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "cli-feffb14164e9",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 237,
+      "line": 243,
       "title": "\"missing production Studio fails explicitly without using the scaffold\"",
       "sha256": "f872fe8932cc71cb0bb518176b062021d4d6bab180bf01b1a3828f97224beaa6",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "cli-89e0a8423da1",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 255,
+      "line": 261,
       "title": "\"production Studio resolves and copies exact standalone bytes\"",
       "sha256": "8ce897689e475461babe2df7dde2ee53745f318c828b9d9bf0406c88c5d177ca",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "cli-eafcd6c05092",
       "kind": "test",
       "path": "tests/unit/cli.test.mjs",
-      "line": 423,
+      "line": 429,
       "title": "\"malformed UTF-8 snapshot and import schema are validation errors\"",
       "sha256": "b0b351093517f877c9f518ec82f18ae96e4f9184bf1e9a5f4b10aed95f84d3a2",
-      "fileSha256": "bc0ff4eca69d14cb80b946e8936646f7bef1edeb6f7c824027b0bbecada077e2"
+      "fileSha256": "85287fb9ce84ee701aeafc7cbc2a8bff5171181c7243edfa34865c0dae750f94"
     },
     {
       "id": "io-23c090bdbb5f",
@@ -1837,19 +1837,19 @@
       "id": "reader-03843a0b43b3",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 484,
+      "line": 611,
       "title": "\"accessible document reflows, supports keyboard and records screenshot baselines\"",
       "sha256": "8b22ec47ad858fc327cf1bbe1146a4c2baa8310e06aaaf88d37f5e82b4b4d417",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "reader-bf5f36113ffe",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 583,
+      "line": 710,
       "title": "\"untrusted render plans fail before host mutation and subscriber failures are contained\"",
       "sha256": "b54ca216d6de8f6da680c567c7156117183b457d6e2ea5c6dcc6ffb163ff14e1",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "engine-b8ef2c0fbf9d",
@@ -1882,19 +1882,19 @@
       "id": "editor-0e4af1059705",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 868,
+      "line": 915,
       "title": "\"preview capability handles only valid monotonic commands and closes on excess fields\"",
       "sha256": "1e1da1221d25da26277c25e33b8f54fbe5ebe2f6c579b2b279388d8fa4b2aafc",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-573fa5c1142f",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 918,
+      "line": 965,
       "title": "\"preview rejects untrusted IR and explicit destroy tears down the reader\"",
       "sha256": "ada984608e553846ad9980f1b0c0a07507ed2353c2f73009f30202b80c9ec95a",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "integrity-b03e2dcd9c7d",
@@ -1927,7 +1927,7 @@
       "id": "check-scripts-verify.mjs",
       "kind": "check",
       "path": "scripts/verify.mjs",
-      "sha256": "8c84050a5f4f2d7c5e891c129095eacc6b6666ea47ca3a4f79b074e0dad85be9"
+      "sha256": "1e73cfeb1e69afea8e84ce3a5d76a6de63c5386ba48f0dbda667b0108fb51b2d"
     },
     {
       "id": "check-scripts-hardening.mjs",
@@ -1993,7 +1993,7 @@
       "id": "check-scripts-check_spec.py",
       "kind": "check",
       "path": "scripts/check_spec.py",
-      "sha256": "48afbd4715ae08b4b195314574aee287e437311df7b1e96b9a69887e5ee39c76"
+      "sha256": "9f32a0a6b332a5ae8d5751276bcc6c115649964daf214de1b95fada930c4327e"
     },
     {
       "id": "check-scripts-licenses.mjs",
@@ -2005,7 +2005,7 @@
       "id": "check-scripts-distribution-package.mjs",
       "kind": "check",
       "path": "scripts/distribution-package.mjs",
-      "sha256": "5595c5f48e228290bd25aeaf37473db672a833225df2b5491092d06ff14d6f53"
+      "sha256": "6cba11ba8cec9a98820f1bed0faf1c2bad8b66654f79f2ba7990f0fce62d63af"
     },
     {
       "id": "engine-dc4a86eb00cc",
@@ -2038,19 +2038,19 @@
       "id": "reader-bf722a4a7e46",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 376,
+      "line": 503,
       "title": "\"mount rejects foreign, forged and duplicate hosts, preserves host siblings and isolates destruction\"",
       "sha256": "0496a59d308f94a1b9d36cc7f3f027d79f80a1d90b2b6176985ba8725fa25400",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "reader-e8ad57cde28d",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 722,
+      "line": 849,
       "title": "\"one subscription per instance and no retained listeners or timer after repeated destroy\"",
       "sha256": "34bbb525f1db5098b8741052058756c8e246cecc6f067d64405ff2e56cc011d6",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "worker-58d99badb1fc",
@@ -2371,10 +2371,10 @@
       "id": "reader-6c15032349f5",
       "kind": "test",
       "path": "tests/browser/reader.test.mjs",
-      "line": 823,
+      "line": 950,
       "title": "\"unavailable host callbacks and destroyed sessions yield local errors with usable reset\"",
       "sha256": "16f5a1dbeb07b14e8a366cae9612760bf5611ecad7e26848635f92bc7996c35b",
-      "fileSha256": "15e2a2678b7155c089e82a4095b3a58c9673cd334c606685ca04451fd2f3afbf"
+      "fileSha256": "f032a9e4c5c02dbde143e4f57feaf65196f2d26ef3031228ab1a18b524cdd45b"
     },
     {
       "id": "diagnostics-880817e887f3",
@@ -2479,109 +2479,109 @@
       "id": "editor-2b44ae101452",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1125,
+      "line": 1175,
       "title": "\"document menus support keyboard dismissal, outside clicks and dialog focus return\"",
       "sha256": "382d9908eee9d9ca8c12e06d7fa019be4f14594f3ed3fa66b7c42dd481a75dd6",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-9c2f24aa5f93",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1180,
+      "line": 1230,
       "title": "\"workspace reflows, retains the source cursor and exposes insertion from the narrow preview\"",
-      "sha256": "86bc0741d535339a1e436881b6a40eb50a387e42158f6398598efa961ae5454d",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "sha256": "53ac7248d708ee0ce1a22ca55a81dfe6c83d83b210819ef015b7c54d042c3c09",
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-bd34140adc88",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1250,
+      "line": 1302,
       "title": "\"design review captures welcome, reading, editing, export and mobile surfaces\"",
-      "sha256": "6e7645bc11ff0363c83e68e61aa4c54ab110f5e0feb3b4334a7bebc0404f0458",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "sha256": "1ffec18f96c63e691afbed8ad179a6dc4cd5cf6c1cf79f8b45bf3379eff941c4",
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-76ae8637c541",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1314,
+      "line": 1371,
       "title": "\"new documents explain the empty state and clearing diagnostics does not leak across documents\"",
-      "sha256": "d74f6a441e1ee92bb280ca84c284dd5c726a5cb0882354734b486e3e8c094e3d",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "sha256": "9e3078de074bce3b39947dc0f3782c89a2cd3b1719bfbf3f711812a17be9a175",
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-c6bfe4ae9ec4",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1335,
+      "line": 1392,
       "title": "\"catalogs describe their contents, filter without editing and close action menus\"",
-      "sha256": "e41e186396dd18276d0d65e7de5bcd3983ed7c5a3c47343e5bec6cd48c14d3bc",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "sha256": "4249e26f7409aac6aa38270bfca8f81e335ce63593c47940c3e39c01bd08ba7d",
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-de4a0d45458e",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1404,
+      "line": 1464,
       "title": "\"draft restoration resets answers and persistent opt-out prevents automatic reopening\"",
       "sha256": "7bc7bcfbaf7092b181e90dbc48dba870bf8d6e0b085e9edbfdbe4df779398517",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-ffa998e27004",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1433,
+      "line": 1493,
       "title": "\"direct section URLs and missing draft routes have usable recovery paths\"",
       "sha256": "bc889d04304211009b4d797571951b9288f00980ecfca23de2be10d42b62fe59",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-35944d5636e8",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1451,
+      "line": 1511,
       "title": "\"declaration thumbnails demonstrate results without inserting their demonstration\"",
-      "sha256": "d9e709501ca130fa41f052fb5c31630f03b39ebe250903c465253c4b3984f4ce",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "sha256": "9e403b58fef8c02c187a367b4c0dfbeab4d8194e683add8c943a99f36825dc45",
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-0e43e8bc5c51",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1505,
+      "line": 1569,
       "title": "\"new documents retain a clean checkpoint and home navigation respects the requested destination\"",
       "sha256": "5d45fa5392303d7eef41aa546c4e2aed4b02049b58d87fa0eb8f666e78110f03",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-d654cfd0a0d6",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1564,
+      "line": 1628,
       "title": "\"dialog actions share one footer and reader actions remain outside the document\"",
-      "sha256": "9739d321361a23390f6ebf52530336094363031c06b963bba13ff9789e0a4693",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "sha256": "f8035f6903a046b00fa7dbedd90dae4eae9859953cc44fc5e191e7f7474b79dd",
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-d76845f7227e",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1602,
+      "line": 1668,
       "title": "\"parser decorations cover every directive and exclude literal fenced source\"",
       "sha256": "3e59a5db7872e8d6cb034babed38dfc4e374b0eef09cef613fc3338316ab067b",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "editor-7cb9ca4ad62e",
       "kind": "test",
       "path": "tests/browser/studio.test.mjs",
-      "line": 1671,
+      "line": 1737,
       "title": "\"renaming preserves source and profile and persists the next save filename\"",
       "sha256": "250efd4d5e600be1272b7f28ca72c8fe911253e85ee32e3e12a15c343b39902a",
-      "fileSha256": "454cf5f608dc128dd3bc091a0fbc48c528c4ddbc35159cc7f84eadf6a2567a35"
+      "fileSha256": "f98e43d960c0cf6582133804f7f5d2040382198b73708891a869eb0e86ef1845"
     },
     {
       "id": "performance-preview-content",
@@ -2898,7 +2898,7 @@
       "authority": "contracts/CONTRACT_RULES.md",
       "section": "Contract implementation notes",
       "line": 17,
-      "sha256": "fa5504c9c93d19a3b4e8f9326d9a7ce6399d6fafe0d379dd37ef748d2420c46d",
+      "sha256": "8cb3823d32b9cb3eb997515dc3fb6b5a6b07f4c2edb7ef8df4ae15469a647c11",
       "assertion": "Assert validated IR branding, closed shapes, source identity, immutable lifecycle, authentic hosts and capability/revision handling.",
       "references": [
         "engine-d7e781652616",
@@ -2976,7 +2976,7 @@
       "authority": "contracts/CONTRACT_RULES.md",
       "section": "Contract implementation notes",
       "line": 23,
-      "sha256": "767a3d71fa8a6bb0fdb2b93270f5a95da00e17c012372058eb8022ae5b827ada",
+      "sha256": "a3750de5bcbef7555d3d98422ad07f00506142361dfdef24a2c644fd446b0758",
       "assertion": "Assert validated IR branding, closed shapes, source identity, immutable lifecycle, authentic hosts and capability/revision handling.",
       "references": [
         "engine-d7e781652616",
@@ -3002,7 +3002,7 @@
       "authority": "docs/01_PRODUCT.md",
       "section": "Purpose",
       "line": 5,
-      "sha256": "29c5fc72f3d5a42ea1241bb2ec98880412c397ecad639c3c76113897639c4ff6",
+      "sha256": "3b484c5f85e95e8c99a9e2ba193216aaf0f6c978189a8793924cff8b31815d88",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
       "references": [
         "editor-a42d8ae0bd82",
@@ -3026,7 +3026,7 @@
       "authority": "docs/01_PRODUCT.md",
       "section": "Purpose",
       "line": 7,
-      "sha256": "eaebfd3e85e6190a174b17c4ebfb65b884f49e3f01aa52e058b6b9a15a6083ab",
+      "sha256": "0c9132e0d0518a381a5328e5b50a78cdd577e009819fa7eec3e2ad87e4de0e17",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
       "references": [
         "editor-a42d8ae0bd82",
@@ -3194,7 +3194,7 @@
       "authority": "docs/01_PRODUCT.md",
       "section": "Language and tools",
       "line": 25,
-      "sha256": "f1baf19328491924501fee071d0d35d558f86ca45d85882e57740e525ab123a1",
+      "sha256": "e0e0e5cedb3ee21303438571bd5ed6eb23f5549b6c9c80f1f377b0acd1ff0df5",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
       "references": [
         "editor-a42d8ae0bd82",
@@ -3266,7 +3266,7 @@
       "authority": "docs/01_PRODUCT.md",
       "section": "Supported usage environments",
       "line": 37,
-      "sha256": "0fa1424f0d2798dbb4188046b5d8f6dad9b873ac3c3b6573f2770313834c5eaf",
+      "sha256": "543e6441c52d6c38701d0e7013005b178c934faecc8e69ee5848677043a8e923",
       "assertion": "Browser automation and CLI tests are distinct from physical-device and operating-system behavior.",
       "references": [
         "editor-a42d8ae0bd82",
@@ -3364,7 +3364,7 @@
       "authority": "docs/02_FILES_AND_EXPORTS.md",
       "section": "Permitted images and local resolution",
       "line": 17,
-      "sha256": "4ac16534794934ec35029c40d5269b582b47ef4ae66768a5757883239101a019",
+      "sha256": "7ef247599c3747dad3e45d71e1637ea6e693e2dd3419c318f4e5c1be1ee01082",
       "assertion": "Assert sniffed static rasters, exact bytes/hashes, normalized path grants, symlink rejection and explicit missing-image replacement.",
       "references": [
         "security-22dc7135c2bf",
@@ -3608,7 +3608,7 @@
       "authority": "docs/02_FILES_AND_EXPORTS.md",
       "section": "Interactive standalone HTML",
       "line": 57,
-      "sha256": "1f1256a2c5b4e51d8735dc127d63691dcde6dc2e38bd9a694076d1df52e11b83",
+      "sha256": "23d02cce1026f0087a52cda11492bacce94519ada5fd642447ad295c8a93ffcc",
       "assertion": "Assert isolated offline exports, selected reset baseline, escaped payloads, no-script fallback, safe runtime hydration and privacy presentation.",
       "references": [
         "artifacts-d417d1808b41",
@@ -3626,7 +3626,7 @@
       "authority": "docs/02_FILES_AND_EXPORTS.md",
       "section": "Static standalone HTML",
       "line": 61,
-      "sha256": "6ea0101d1ad604bb1bbf14623cbc86df7d43e0e753ed760440724af6ba635864",
+      "sha256": "616a1eaf74666e69456276edf011b644b9f9972a0d5136d93ae9580ebd7ea134",
       "assertion": "Assert visible-only data/assets, expanded details, inert typed markup and selected values without executable runtime.",
       "references": [
         "artifacts-f8fa34769e2f",
@@ -3696,7 +3696,7 @@
       "authority": "docs/02_FILES_AND_EXPORTS.md",
       "section": "Atomicity",
       "line": 75,
-      "sha256": "c3df03dd931016465f40df92481ff8153a72311e2246309e520c421756f79504",
+      "sha256": "875ff3552385db2c2bdcf22b86537885c90b941c31ac40c8194881d2c56e53f9",
       "assertion": "Assert failing or cancelled exports do not replace output or emit stale downloads.",
       "references": [
         "cli-32cfeaafc245",
@@ -3762,7 +3762,7 @@
       "id": "RULE-054",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "App form",
-      "line": 5,
+      "line": 9,
       "sha256": "04572129b359e7d564991a2b589b49f410770d4a69f174f21f7b01c91b8f06ae",
       "assertion": "Assert local welcome/new/example/file flows and responsive source/reading surfaces.",
       "references": [
@@ -3781,7 +3781,7 @@
       "id": "RULE-055",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "App form",
-      "line": 7,
+      "line": 11,
       "sha256": "66d62efc3dcbb5e9f2dc494eb433a3ec54c57b6c8f6c36b84ad472c76e8bd446",
       "assertion": "Assert local welcome/new/example/file flows and responsive source/reading surfaces.",
       "references": [
@@ -3807,8 +3807,8 @@
       "id": "RULE-056",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "App form",
-      "line": 9,
-      "sha256": "754bcbe6bd12177789c84c2bf3f1f8bf05307dc5d46ce5ab6af58c6e707aebdb",
+      "line": 13,
+      "sha256": "751871ccbe591c0cf51c566d6283dc77d42ab003d83ab37053aff39c59accecf",
       "assertion": "Assert local welcome/new/example/file flows and responsive source/reading surfaces.",
       "references": [
         "editor-a42d8ae0bd82",
@@ -3827,7 +3827,7 @@
       "id": "RULE-057",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Source editor",
-      "line": 13,
+      "line": 17,
       "sha256": "2da7544decaa6ff3aa030b0c0f82f61e85babcf6133f12aa08f2293e7c9a84f6",
       "assertion": "Assert registry snippets, original source editing/undo, authoritative worker results, exact debounce and invalid-source gating.",
       "references": [
@@ -3851,7 +3851,7 @@
       "id": "RULE-058",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Source editor",
-      "line": 15,
+      "line": 19,
       "sha256": "91273c39877734913199313f125168cc6c99c7b8cd178beb078b101b74bcd566",
       "assertion": "Assert registry snippets, original source editing/undo, authoritative worker results, exact debounce and invalid-source gating.",
       "references": [
@@ -3872,7 +3872,7 @@
       "id": "RULE-059",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Source editor",
-      "line": 17,
+      "line": 21,
       "sha256": "1f987cad1c1ae851d0388c7a61cfff7d6b91f8408bf1efc86c8d67b143d0db47",
       "assertion": "Assert registry snippets, original source editing/undo, authoritative worker results, exact debounce and invalid-source gating.",
       "references": [
@@ -3893,8 +3893,8 @@
       "id": "RULE-060",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Invalid and recovered source",
-      "line": 21,
-      "sha256": "782ba2926608fe827755b9ea562c78dd69fefce3fb05c76b484bffc981e1d528",
+      "line": 25,
+      "sha256": "5d602a4c4efacf9782199e5aaee13f5d7d8868ba2aa4b2067061dbd7ffdb559e",
       "assertion": "Assert stale/invalid preview disabling, diagnostic selection, exact answer reconciliation and source preservation.",
       "references": [
         "studio-3755f9588d0d",
@@ -3910,7 +3910,7 @@
       "id": "RULE-061",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Invalid and recovered source",
-      "line": 23,
+      "line": 27,
       "sha256": "44650a50e92761cfd5bc4fb299dba972501795c4c1797e450cd1f88bbf216781",
       "assertion": "Assert stale/invalid preview disabling, diagnostic selection, exact answer reconciliation and source preservation.",
       "references": [
@@ -3926,7 +3926,7 @@
       "id": "RULE-062",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Invalid and recovered source",
-      "line": 25,
+      "line": 29,
       "sha256": "7c9bdac8627a9d6c0e12d7c36a89ac7289c1c593142adfdc2e9838d4805d7ba9",
       "assertion": "Assert stale/invalid preview disabling, diagnostic selection, exact answer reconciliation and source preservation.",
       "references": [
@@ -3942,7 +3942,7 @@
       "id": "RULE-063",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "File opening and saving",
-      "line": 29,
+      "line": 33,
       "sha256": "18619237b996e64a5dcadd6c940cbbd5596271669e39b3b4383122837983529c",
       "assertion": "Assert explicit profile/single-file choices, unsaved cancellation, original bytes, validated bundles and truthful save status.",
       "references": [
@@ -3959,7 +3959,7 @@
       "id": "RULE-064",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "File opening and saving",
-      "line": 31,
+      "line": 35,
       "sha256": "6304b759f7dad096249bd9920bc6b5d08a6199242c7c448e38744e9917ff3921",
       "assertion": "Assert explicit profile/single-file choices, unsaved cancellation, original bytes, validated bundles and truthful save status.",
       "references": [
@@ -3977,7 +3977,7 @@
       "id": "RULE-065",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "File opening and saving",
-      "line": 33,
+      "line": 37,
       "sha256": "c1a9c74377cae686c55133422065df92b0114a5a4dadea28ab3a50c9ad7aff89",
       "assertion": "Assert explicit profile/single-file choices, unsaved cancellation, original bytes, validated bundles and truthful save status.",
       "references": [
@@ -3993,7 +3993,7 @@
       "id": "RULE-066",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "File opening and saving",
-      "line": 35,
+      "line": 39,
       "sha256": "4de15dc4789cb6e223482c882653037318ce06610c887172699f998665c4a458",
       "assertion": "Assert explicit profile/single-file choices, unsaved cancellation, original bytes, validated bundles and truthful save status.",
       "references": [
@@ -4009,7 +4009,7 @@
       "id": "RULE-067",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Local recovery — not saved files",
-      "line": 39,
+      "line": 43,
       "sha256": "4ade43e37311f92d0dc5a897ef57faae8db1ba5a184dd41da03ae403c907ba6e",
       "assertion": "Assert automatic local source restoration, persistent opt-out, exact idle boundary, bounded oldest-inactive eviction, no answer persistence, deletion and denied-store recovery.",
       "references": [
@@ -4027,8 +4027,8 @@
       "id": "RULE-068",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Local recovery — not saved files",
-      "line": 41,
-      "sha256": "686ed6957ec0a31b192331ab0394b2d1d24787fa1152c3b3690f5e9872e39104",
+      "line": 45,
+      "sha256": "4d47678ffd5273c3fb449ec9e19edd4bcb2d5d1fa9f65cf459babdf1786b3d03",
       "assertion": "Assert automatic local source restoration, persistent opt-out, exact idle boundary, bounded oldest-inactive eviction, no answer persistence, deletion and denied-store recovery.",
       "references": [
         "studio-a42bdeff1f22",
@@ -4046,7 +4046,7 @@
       "id": "RULE-069",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Assets and data import",
-      "line": 45,
+      "line": 49,
       "sha256": "d018cfd59d0367cb032c1e743df605f4ff4aaa1c1dcd1ab5ce258af1b6aa7a20",
       "assertion": "Assert approved schema/source previews, atomic source/asset undo and explicit path-resolution aliases.",
       "references": [
@@ -4060,7 +4060,7 @@
       "id": "RULE-070",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Assets and data import",
-      "line": 47,
+      "line": 51,
       "sha256": "386d678d924fda8b5f83ecde210eee23586340a2ff92284c48e5b39c338b29ef",
       "assertion": "Assert approved schema/source previews, atomic source/asset undo and explicit path-resolution aliases.",
       "references": [
@@ -4074,7 +4074,7 @@
       "id": "RULE-071",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Export flow",
-      "line": 51,
+      "line": 55,
       "sha256": "dac5d012e9c3539e8ca7a82e241c36d8ae04ef3aba17ac433b4f7119399dbd24",
       "assertion": "Assert chosen baseline/privacy, pending/stale source rejection and reset without source mutation.",
       "references": [
@@ -4087,7 +4087,7 @@
       "id": "RULE-072",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Export flow",
-      "line": 53,
+      "line": 57,
       "sha256": "cdb477ff0bd0ea7a97ebffc6e450b3ab213afe5d05e6946c76ceb4daea3c9882",
       "assertion": "Assert chosen baseline/privacy, pending/stale source rejection and reset without source mutation.",
       "references": [
@@ -4101,8 +4101,8 @@
       "id": "RULE-073",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Keyboard commands",
-      "line": 57,
-      "sha256": "3fc12ff58a9067996fcf15a6c9ab8afe8f60a1bae751656508f184fa14d479d9",
+      "line": 61,
+      "sha256": "f77819fa8dfb8047891c72a5bf270f142a0622f0b4b1f87de590806cebd14405",
       "assertion": "Assert native shortcuts, unsaved decisions and labelled accessible dialogs.",
       "references": [
         "editor-ac92108d5700",
@@ -4119,8 +4119,8 @@
       "id": "RULE-074",
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Keyboard commands",
-      "line": 59,
-      "sha256": "8f2dd2f0d74e0236ab2de72540b13c96505d50d130b96e82ac53a8a4720e004e",
+      "line": 63,
+      "sha256": "54d8f899a5da09c1091eaf0b107b98e993f828a7c0b2720129a86c85fe6670e0",
       "assertion": "Assert native shortcuts, unsaved decisions and labelled accessible dialogs.",
       "references": [
         "editor-ac92108d5700",
@@ -4351,7 +4351,7 @@
       "authority": "docs/04_SECURITY.md",
       "section": "Studio-specific CSP",
       "line": 38,
-      "sha256": "c2aa58f3445eb10b126543eb257b170c62888cae03afdfe1cbeea22a15ff7190",
+      "sha256": "1c9491a6a3570aeb2b59bcbc6977648e5968b40ed672f41b8ff1c023a3d9af37",
       "assertion": "Assert bounded untrusted input handling, inert rendering, isolated capabilities, no automatic requests and fail-closed protocol/artifact validation.",
       "references": [
         "reader-2f5f596d2b81",
@@ -4471,7 +4471,7 @@
       "authority": "docs/04_SECURITY.md",
       "section": "Vulnerability handling",
       "line": 52,
-      "sha256": "1b47d96dac5cc443dc8ebf4fb7f5d633721980300e0320a824afbc96b3c8f393",
+      "sha256": "2a28a6e66932b1e41ddd2573066ff6a9c40953a21272a8d4769dd42182132670",
       "assertion": "Private disclosure procedure and audit claims require the configured project contact and actual audit scope.",
       "references": [],
       "inspection": {
@@ -4726,7 +4726,7 @@
       "authority": "docs/06_CLI.md",
       "section": "CLI contract",
       "line": 3,
-      "sha256": "4e6b3a4e972d1218b9d6300f809254abeb4d4cd78149e4a609e61bdc7f0371e1",
+      "sha256": "52c9fdfa42d16ef436f20d26adfe74386505f8a2565185137fae40f01c4e5b85",
       "assertion": "Assert actual CLI arguments, profiles, streams, exit status, root grants and atomic output behaviour against real temporary files.",
       "references": [
         "cli-b03287662ac7",
@@ -4755,7 +4755,7 @@
       "authority": "docs/06_CLI.md",
       "section": "Commands",
       "line": 18,
-      "sha256": "a349963f063a79ef65893126f51972cd421563a1bd8e19d2f8b896082e699403",
+      "sha256": "98ff8f68ef75166bad62a68481e5bc320242493c265b7ee76071bb17bf77c85a",
       "assertion": "Assert actual CLI arguments, profiles, streams, exit status, root grants and atomic output behaviour against real temporary files.",
       "references": [
         "cli-b03287662ac7",
@@ -5273,7 +5273,7 @@
       "authority": "docs/07_VERIFICATION.md",
       "section": "Browser and platform matrix",
       "line": 31,
-      "sha256": "635dcede108db44cbfce8ee7e782c74c08561a7d33901c7e6c74b7b85e7ba4dc",
+      "sha256": "9a9185df97614575b14ed5d0a1a0a367a739c3e6cef26ac73c9154a2320f7f48",
       "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
@@ -5555,7 +5555,7 @@
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Authority",
       "line": 5,
-      "sha256": "ce92e3e3ea270919799d5d147c2076e1a9780ab05ab65789bde35478c416c7c6",
+      "sha256": "6624068d1b60e5d1950824d12209f590ece760db1b6d2b1cef0dfcf3422bdcd5",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
@@ -5645,7 +5645,7 @@
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Draft 2 identifier revision",
       "line": 23,
-      "sha256": "b6137718865e7f25abf5535140d704e14e9686300a88e724b7e903a6865d6b85",
+      "sha256": "1c98dc7b780314136444ce5fa7e1c318ac57a3e3b0be14097382cc6c1cd91de1",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
@@ -5661,7 +5661,7 @@
     {
       "id": "RULE-143",
       "authority": "docs/08_CHANGE_CONTROL.md",
-      "section": "License and commercial separation",
+      "section": "Licensing",
       "line": 27,
       "sha256": "79472ea3f55d3282677c44c4054b40e48abaef034427b7cedff3dce7bd8a37b8",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
@@ -5679,9 +5679,9 @@
     {
       "id": "RULE-144",
       "authority": "docs/08_CHANGE_CONTROL.md",
-      "section": "License and commercial separation",
+      "section": "Licensing",
       "line": 29,
-      "sha256": "e4f30d6a0d16294d1e2195dadb356b50aee58b9fbcd10c7e025f2fb5cf0569d7",
+      "sha256": "ffeb525c711786d898b27ec9a2e23de19876299b8d8df954bdc3699e2f85a7f6",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
@@ -5697,9 +5697,9 @@
     {
       "id": "RULE-145",
       "authority": "docs/08_CHANGE_CONTROL.md",
-      "section": "License and commercial separation",
+      "section": "Licensing",
       "line": 31,
-      "sha256": "e2405d93607c40ec9802b9d59e99720d9465ba6dd60327fc506624d3c10480f5",
+      "sha256": "243ace7936b6b4193675ea7bda6936f8960bceb50019e6e9e5dd83dba7c023eb",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
@@ -7731,7 +7731,7 @@
       "authority": "spec/06_LIMITS_AND_DIAGNOSTICS.md",
       "section": "Errors",
       "line": 67,
-      "sha256": "cbe0368f9d1c9c2ac9451bf625301900f7855aff30ba33287dd1cfa1d1f5a9c4",
+      "sha256": "07ade0e045daee36ff1099653e035411424894babf7c6bde42ca34e7d39e4216",
       "assertion": "Each registered diagnostic is mapped separately below to a concrete assertion or explicit unclosed inspection.",
       "references": [
         "engine-bc5a2c51299b",
@@ -7743,7 +7743,7 @@
       "authority": "spec/06_LIMITS_AND_DIAGNOSTICS.md",
       "section": "Warnings",
       "line": 129,
-      "sha256": "9abdf7293dabd84254cad0f69e2a07fb26bc8d4eba92514917604c940f6ad63f",
+      "sha256": "8d1d7f9aa12f97f0be79daf0182b35cbb990b79323992505ff28b6e2de1bd65e",
       "assertion": "Each registered diagnostic is mapped separately below to a concrete assertion or explicit unclosed inspection.",
       "references": [
         "engine-bc5a2c51299b",
@@ -7923,6 +7923,128 @@
         "language-0d5601c4be5c",
         "language-d6c2d9e7611c"
       ]
+    },
+    {
+      "id": "RULE-REFERENCE-contracts-CONTRACT-RULES-md-26",
+      "authority": "contracts/CONTRACT_RULES.md",
+      "section": "Contract implementation notes",
+      "line": 26,
+      "sha256": "ea09fd1f55787dd86be066ffa324346bf96bb97eaf25a95fa35d570bf2177eef",
+      "assertion": "Inspect the documented integration boundary and preserve source identity, protocol and resource restrictions.",
+      "references": [],
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the public integration reference with its named type declarations, host and artifact implementations.",
+        "expected": "The native editor contracts in `editor-analysis.d.ts` and `vscode-webview.d.ts` are separate from ProgramIR and the inner worker protocol. Follow `docs/13_VSCODE.md` for source verification, exact identity matching, bounded queries, canonical base64 assets, JSON validation and source-fidelity failures. An editor analysis snapshot is not a branded Program. Partial recovery cannot establish valid source. These declarations do not themselves implement the language service or authorize IO; the supplied bytes and host grants remain separate capabilities.\n"
+      }
+    },
+    {
+      "id": "RULE-STUDIO-FILE-GUIDE",
+      "authority": "docs/03_EDITOR_AND_READER.md",
+      "section": "Open, save and export a document",
+      "line": 5,
+      "sha256": "a1e260f15ade3e7f9d8912d0ad56aacc0f090270e158c4f651209d59fd7a381a",
+      "assertion": "Opening, source and bundle saving, exports and recovery preserve the documented file and privacy boundaries.",
+      "references": [
+        "editor-a42d8ae0bd82",
+        "editor-bd9840b8f95b",
+        "editor-44792eecfe01",
+        "editor-ffa998e27004",
+        "editor-2b44ae101452",
+        "editor-bd34140adc88",
+        "editor-76ae8637c541",
+        "editor-c6bfe4ae9ec4",
+        "editor-35944d5636e8",
+        "editor-0e43e8bc5c51",
+        "editor-d654cfd0a0d6",
+        "editor-7cb9ca4ad62e",
+        "editor-9c2f24aa5f93",
+        "editor-ac92108d5700",
+        "editor-ec6d370e0eb2",
+        "editor-1f25bc62f3b3",
+        "editor-32476bf4f35e",
+        "editor-9ca658f6c6b4",
+        "studio-a54e9ae9fbd1",
+        "studio-a42bdeff1f22",
+        "boundaries-d0fc395049e4",
+        "scheduling-cb1a684c2a1a",
+        "editor-6fcbe5038110",
+        "editor-2ba717ce789b",
+        "editor-aeed8b8095de",
+        "editor-de4a0d45458e",
+        "editor-6315c32185d9",
+        "editor-f3fda819175c"
+      ]
+    },
+    {
+      "id": "RULE-REFERENCE-docs-04-SECURITY-md-56",
+      "authority": "docs/04_SECURITY.md",
+      "section": "Native editor host",
+      "line": 56,
+      "sha256": "d5d085ab3d0639f74d72becbc58c2bd20dac9098e73512b95386dc52b2c6f9e9",
+      "assertion": "Inspect the documented integration boundary and preserve source identity, protocol and resource restrictions.",
+      "references": [],
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the public integration reference with its named type declarations, host and artifact implementations.",
+        "expected": "The [VS Code contract](13_VSCODE.md) separates opened-source verification, Workspace Trust and explicit image/output grants. Pure language analysis and the LSP worker have no author filesystem authority. Only the bounded shared file adapter accesses granted paths. Trust loss revokes grants and cancels outputs. A decoded editor buffer does not establish valid UTF-8 or source byte identity. Native save normalization is disclosed; fidelity-sensitive edits require an explicit separate-copy conversion, never overwriting the original automatically."
+      }
+    },
+    {
+      "id": "RULE-REFERENCE-docs-04-SECURITY-md-58",
+      "authority": "docs/04_SECURITY.md",
+      "section": "Native editor host",
+      "line": 58,
+      "sha256": "6610cf7cbaab3b2ca846d817711bd9b2a404c00cc8f9e5c467dc908a47f72d7c",
+      "assertion": "Inspect the documented integration boundary and preserve source identity, protocol and resource restrictions.",
+      "references": [],
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the public integration reference with its named type declarations, host and artifact implementations.",
+        "expected": "The trusted outer webview uses a separate closed protocol and capability from the existing inner opaque iframe. It has no command URI permission or workspace resource roots. The inner sandbox tokens, MessageChannel authentication and CSP remain unchanged. Restrict the outer CSP too: srcdoc inherits it. No source, asset or message can grant host commands, filesystem lookup or resource fetching. Analysis workers are terminable; the extension event loop supervises them. Native editor recovery belongs to VS Code; do not introduce Studio draft storage or automatic persistence of reader answers into this host.\n"
+      }
+    },
+    {
+      "id": "RULE-REFERENCE-docs-08-CHANGE-CONTROL-md-35",
+      "authority": "docs/08_CHANGE_CONTROL.md",
+      "section": "Native editor integration",
+      "line": 35,
+      "sha256": "7f6ea1288c6916b438baa4ba1962af838c12bbac7b566b135d665b8d75704593",
+      "assertion": "Inspect the documented integration boundary and preserve source identity, protocol and resource restrictions.",
+      "references": [],
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the public integration reference with its named type declarations, host and artifact implementations.",
+        "expected": "The [VS Code host](13_VSCODE.md) introduces portable editor-analysis DTOs and an independent outer webview protocol, `tinta-vscode-1`. It does not change source format 1.0, `tinta-ir-1`, `tinta-host-1`, source bundles or answer snapshots. The shared file adapter expands the host boundary to explicitly granted native editor operations without granting filesystem access to core packages. See [the source-fidelity decision](../decisions/native-editor-source-fidelity.md) for the native editor's line-ending limitation and separate-copy policy."
+      }
+    },
+    {
+      "id": "RULE-REFERENCE-docs-08-CHANGE-CONTROL-md-39",
+      "authority": "docs/08_CHANGE_CONTROL.md",
+      "section": "Local extension artifact identity",
+      "line": 39,
+      "sha256": "8b930f7dfe63374beeec46175765c09dc775d457f381e45816854fea583ba160",
+      "assertion": "Inspect the documented integration boundary and preserve source identity, protocol and resource restrictions.",
+      "references": [],
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the public integration reference with its named type declarations, host and artifact implementations.",
+        "expected": "The local VSIX uses development version `0.1.0-dev.0` and the internal installation identity `tinta-local.tinta`. Its generated manifest is separate from the private `@tinta-lang/vscode` workspace package. Workspace source versions remain `0.0.0`. Builds generate the embedded implementation version from `toolchain/release.json`, and interactive envelopes must exactly match their embedded reader. The build identity records both versions, contract revision, source hash, commit/dirty state and payload hashes. Repeated local builds retain the development version and are distinguished by hashes. No intentional distribution, version increment, Marketplace identity or publication is implied by creating or testing a local archive."
+      }
+    },
+    {
+      "id": "RULE-REFERENCE-docs-08-CHANGE-CONTROL-md-43",
+      "authority": "docs/08_CHANGE_CONTROL.md",
+      "section": "Coordinated software distribution",
+      "line": 43,
+      "sha256": "231b18c44675deeafc191081d389adb43a78efb05f9ecc35e423b58e6406d813",
+      "assertion": "Inspect the documented integration boundary and preserve source identity, protocol and resource restrictions.",
+      "references": [],
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the public integration reference with its named type declarations, host and artifact implementations.",
+        "expected": "The [software distribution contract](15_DISTRIBUTION.md) defines proposed public identities, an implementation version group, independent numeric Marketplace versions, channels and closed release metadata. Private source manifests retain their development placeholders; builds embed the selected implementation version from the distribution configuration. Source format and ABI versions remain separate from software versions.\n"
+      }
     }
   ],
   "diagnostics": [

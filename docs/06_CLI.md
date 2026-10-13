@@ -1,6 +1,6 @@
 # CLI contract
 
-The command name is the internal executable `tinta`; no public npm-name availability or package publication is assumed. In a development workspace use `pnpm --filter @tinta-lang/cli exec tinta ...` after building/linking the workspace. `--help` and `--version` are implemented before other commands. Version prints implementation semver, source-format version and IR ABI.
+Use `tinta` to check documents, import data and create local exports. In a development workspace use `pnpm --filter @tinta-lang/cli exec tinta ...` after building/linking the workspace. Run `tinta --help` for commands and `tinta --version` for the implementation version, source-format version and IR ABI.
 
 ## Commands
 
@@ -15,7 +15,7 @@ tinta import-data INPUT.csv|INPUT.json --name IDENTIFIER --output OUTPUT.tinta [
 tinta studio [--output OUTPUT.html] [--force] [--json]
 ```
 
-No abbreviation, unlisted alias, implicit command, unknown flag or duplicate scalar flag is accepted. Flag values may follow `=` or be a separate token. `--` ends flags; a following path is an operand, even if it begins with `-`. Paths may contain spaces/Unicode and are passed as argument strings, never concatenated into a shell command. There are no environment variables that change language semantics, locale, state or asset permissions. `NO_COLOR` may disable terminal colouring only; JSON output never has ANSI colours.
+No abbreviation, unlisted alias, implicit command, unknown flag or duplicate scalar flag is accepted. Flag values may follow `=` or be a separate token. `--` ends flags; a following path is an operand, even if it begins with `-`. Paths may contain spaces/Unicode and are passed as argument strings, never concatenated into a shell command. There are no environment variables that change language semantics, locale, state or asset permissions. `NO_COLOR` may disable terminal colouring only; JSON output never has ANSI colors.
 
 ## Inputs and profiles
 

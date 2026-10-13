@@ -440,7 +440,7 @@ export class PreviewController implements vscode.Disposable {
     const message = { ...state.identity, kind, ...fields };
     if (!boundedJson(message)) {
       state.enabled = false;
-      state.panel.title = "tinta Preview — Transport capacity exceeded";
+      state.panel.title = "tinta Preview — Document too large for preview";
       return;
     }
     void state.panel.webview.postMessage(message);

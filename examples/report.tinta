@@ -5,7 +5,8 @@
 ![Cozy reading nook with books by a window](assets/8fdb90d5752dad93797e210042b5a266b99e87ffe530c6f80ccee1de493df246.webp)
 
 A community reading room wants to compare four opening days. These numbers are
-fictional. Change the filters to ask which days clear a threshold; the summary,
+fictional. A reading is one print-reading session; audio sessions are counted
+separately. A visitor may take part in both. Change the filters to ask which days clear a threshold; the summary,
 chart and table all use the same selected rows.
 
 @toggle include_weekends = false (label: "Include weekends")

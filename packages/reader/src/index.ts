@@ -299,7 +299,7 @@ export function mountReader(
       warn(
         node,
         "W_ASSET_UNAVAILABLE",
-        "Preview image unavailable; export remains blocked.",
+        "A document image is unavailable. Exports require all images they include.",
       );
 
       return placeholder;

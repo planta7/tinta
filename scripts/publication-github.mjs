@@ -1,8 +1,55 @@
 import assert from "node:assert/strict";
 import { checkFile } from "./release-candidate.mjs";
-import { digest } from "./distribution-archive.mjs";
+import { digest, readZip } from "./distribution-archive.mjs";
 
-export function releaseAdapter({ api, request, token, directory, journal }) {
+export function candidateReleaseNotes(plan, directory) {
+  const source = plan.targets.find((target) => target.id === "source");
+  assert.ok(source, "Missing candidate source archive");
+  const entries = readZip(checkFile(directory, source.archive));
+  const changelog = entries["CHANGELOG.md"];
+  assert.ok(changelog, "Missing candidate changelog");
+  const text = new TextDecoder("utf-8", { fatal: true }).decode(changelog);
+  const implementation = plan.targets.find((target) => target.kind === "npm");
+  const extension = plan.targets.find((target) => target.id === "vscode");
+  assert.ok(implementation && extension, "Missing release versions");
+  const heading = `## ${implementation.version} / VS Code ${extension.version}`;
+  const lines = text.split(/\r?\n/);
+  const matches = lines.flatMap((line, index) =>
+    line === heading ? [index] : [],
+  );
+  assert.equal(matches.length, 1, "Missing or ambiguous release notes");
+  const start = matches[0] + 1;
+  const next = lines.findIndex(
+    (line, index) => index >= start && line.startsWith("## "),
+  );
+  const notes = lines
+    .slice(start, next < 0 ? undefined : next)
+    .join("\n")
+    .trim();
+  assert.ok(notes, "Empty release notes");
+  const reference = `https://github.com/${plan.repository}/blob/${plan.sourceSha}`;
+  return [
+    notes,
+    "",
+    "### Install and use",
+    "",
+    "Download the files attached to this release. See the " +
+      `[setup instructions](${reference}/README.md#try-it-locally) and ` +
+      `[VS Code quickstart](${reference}/docs/14_VSCODE_QUICKSTART.md).`,
+    "",
+    `Candidate SHA-256: ${plan.candidate}`,
+  ].join("\n");
+}
+
+export function releaseAdapter({
+  api,
+  request,
+  token,
+  directory,
+  journal,
+  notes = (plan) => candidateReleaseNotes(plan, directory),
+}) {
+  let body;
   let repository;
   const root = () => `/repos/${repository}`;
   let releaseId;
@@ -38,7 +85,7 @@ export function releaseAdapter({ api, request, token, directory, journal }) {
   const checkRelease = (release, plan) => {
     assert.equal(release.tag_name, plan.tag);
     assert.equal(release.target_commitish, plan.sourceSha);
-    assert.equal(release.body, `Candidate SHA-256: ${plan.candidate}`);
+    assert.equal(release.body, body, "Release description collision");
     assert.equal(
       release.prerelease,
       plan.targets.find((t) => t.kind === "npm").channel !== "latest",
@@ -53,6 +100,7 @@ export function releaseAdapter({ api, request, token, directory, journal }) {
   return {
     async preflight(plan) {
       repository = plan.repository;
+      body = notes(plan);
       // The journal ref update proves Contents write using the same credential.
       journal.assertWriteAccess(repository);
       const repo = await api("GET", root());
@@ -99,7 +147,7 @@ export function releaseAdapter({ api, request, token, directory, journal }) {
             tag_name: plan.tag,
             target_commitish: plan.sourceSha,
             name: plan.releaseId,
-            body: `Candidate SHA-256: ${plan.candidate}`,
+            body,
             draft: true,
             prerelease:
               plan.targets.find((t) => t.kind === "npm").channel !== "latest",

@@ -65,7 +65,7 @@ The total is **{{ money(total) }}**.
 
 Control initial values and static properties are **ungrouped literals**, not formulas: use `label: "People"`, not `label: ("People")`. Numeric signs touch their number; static list items are also ungrouped. Expression parentheses remain available in calculations, conditions, filters and computed chart values. `@choice` requires distinct text options and an initial contained in them. `@slider` defaults to min 0, max 100, step 1; its min/max/step/initial must form the precisely defined decimal grid. All labels default to the name with underscores replaced by spaces. Effective control labels and details summaries cannot be blank; underscore-only control names need an explicit nonblank label. Metadata/labels/figure titles are static: use surrounding prose for dynamic captions.
 
-## 4. Long directives can breathe
+## 4. Multiline directives
 
 ```tinta
 @choice platform = "macOS" (
@@ -200,7 +200,7 @@ Multiple named numeric series:
 @chart line trend (x: "month", y: ["readers", "target"], title: "Observed and target")
 ```
 
-One computed numeric series linked to a control:
+One numeric series calculated from a control value:
 
 ```tinta
 @chart line trend (
@@ -210,7 +210,7 @@ One computed numeric series linked to a control:
 )
 ```
 
-Chart options are `x`, `y`, `title`, `xLabel`, `yLabel`, `select`, and histogram-only `bins`. Histogram forbids `y` and `select`. No dimensions, arbitrary colours, HTML/CSS or event handlers are part of source. Figure appearance belongs to the reader; a paragraph is its explorable caption.
+Chart options are `x`, `y`, `title`, `xLabel`, `yLabel`, `select`, and histogram-only `bins`. Histogram forbids `y` and `select`. No dimensions, arbitrary colors, HTML/CSS or event handlers are part of source. Figure appearance belongs to the reader; a paragraph is its explorable caption.
 
 Line/area/bar accept text or numeric x; scatter/histogram require numeric x. Line/area numeric x is ordered ascending; bars preserve input order. All except scatter/histogram require unique x values. Areas overlap without stacking; bars are grouped. Pie/donut accept one nonnegative series; zero-total data is a documented empty figure. Histogram counts observations into equally spaced intervals and includes the maximum in the final bin.
 

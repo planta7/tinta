@@ -192,7 +192,7 @@ export function createChartView(
       element(
         "caption",
         `${chart.title} — ${chart.table.rows.length} source rows; ` +
-          `all prepared data, including hidden entries`,
+          `all chart data, including hidden series and categories`,
       ),
     );
     const head = element("thead");

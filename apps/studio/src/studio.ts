@@ -626,7 +626,7 @@ export class Studio {
         body.append(
           node(
             "p",
-            "Sidecar images are not included. Save bundle for a portable document.",
+            "Images are not included in the source file. Choose Save bundle to keep them with the document.",
           ),
         );
       action(body, "Save", () => {
@@ -653,7 +653,7 @@ export class Studio {
       this.message(
         message +
           (this.assets.size
-            ? " Sidecar images are not included. Save bundle for a portable document."
+            ? " Images are not included in the source file. Choose Save bundle to keep them with the document."
             : ""),
       );
       this.render();
@@ -690,7 +690,7 @@ export class Studio {
     const file = files[0]!;
     const profile = profileFor(file.name);
     if (!profile)
-      return dialog("Choose source profile", (body, close) => {
+      return dialog("Choose document type", (body, close) => {
         for (const selected of ["markdown", "tinta"] as const)
           action(body, selected === "markdown" ? "Markdown" : "tinta", () => {
             close();
@@ -756,7 +756,11 @@ export class Studio {
         body.append(
           node(
             "p",
-            `${enriched.edits.length} proposed escapes. The original Markdown file stays unchanged.`,
+            enriched.edits.length === 0
+              ? "No changes are needed to preserve the literal text. Your Markdown file stays unchanged."
+              : `${enriched.edits.length} ${enriched.edits.length === 1 ? "backslash is" : "backslashes are"} ` +
+                  "needed to keep existing text literal in tinta. Review the copy below. " +
+                  "Your Markdown file stays unchanged.",
           ),
           node("pre", enriched.source),
         );
@@ -845,10 +849,12 @@ export class Studio {
       body.append(
         node(
           "p",
-          "Current answers is not an exact screen snapshot. Legends start " +
-            "visible, pins are cleared and details start closed. Static HTML " +
-            "contains only the resolved visible presentation, complete visible " +
-            "tables and referenced images. Images may retain metadata.",
+          "Current answers keeps the selected values, not the exact screen layout. " +
+            "Interactive HTML starts with every chart series and category visible, " +
+            "no pinned chart inspection and expandable sections closed. Static HTML " +
+            "includes the visible result, complete data tables for visible charts, " +
+            "and required images. Visible expandable sections are open. Images may " +
+            "retain metadata. Answers snapshots contain control values for this exact source.",
         ),
       );
       body.append(feedback);
@@ -972,7 +978,7 @@ export class Studio {
           body.append(
             node(
               "p",
-              `Insert after source offset ${position}, at a root block boundary.`,
+              "The table will be inserted at the end of the current top-level block.",
             ),
           );
           const name = field(body, "Table name", defaultName);
@@ -1112,10 +1118,10 @@ export class Studio {
       body.append(
         node(
           "p",
-          "Recovery copies are stored on this device, not saved files. At most " +
-            "10 copies and 30 MiB are kept. Least recently edited copies are " +
-            "evicted first; the active copy is never silently discarded. Reader " +
-            "answers are never stored.",
+          "Studio keeps up to 10 recovery copies on this device, using at most " +
+            "30 MiB. Copies you edited longest ago are removed first; your open " +
+            "draft is kept. Save your document to keep a file of your own. " +
+            "Reader answers are not included.",
         ),
       );
       const enable = field(body, "Keep local recovery copies on this device");
@@ -1161,7 +1167,7 @@ export class Studio {
               });
               action(
                 entry,
-                "Delete this recovery",
+                "Delete copy",
                 () =>
                   void this.attempt(async () => {
                     if (copy.id === this.documentId) this.drafts.cancel();

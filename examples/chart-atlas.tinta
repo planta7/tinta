@@ -50,10 +50,9 @@ minutes:number | pages:number
 @calc total_actual = sum(week, "actual")
 @calc selected_status = if(factor > 1, "scaled", "original")
 
-The **{{ selected_status }}** weekly total is based on **{{ total_actual }}**
-original readings. **{{ count(above_target) }} periods** meet the current
-threshold after multiplying by {{ factor }}. A view filters rows without
-changing the embedded source table.
+The original weekly total is **{{ total_actual }} readings**. After multiplying
+each period by **{{ factor }}**, **{{ count(above_target) }} periods** meet the
+threshold. A view filters rows without changing the embedded source table.
 
 @details "See the filtered table"
 @table above_target (title: "Periods meeting the threshold")
@@ -63,8 +62,7 @@ changing the embedded source table.
 ### A worked note
 
 A named value sets the threshold at {{ baseline }}. A calculation derives the
-original total; the view changes when the multiplier changes. The tables and
-figures stay in the document rather than becoming separate dashboards.
+original total; the view changes when the multiplier changes. The table and charts use the same data.
 @end
 
 ## Lines
@@ -82,10 +80,10 @@ these three figures changes the same slider and highlight.
 ## Scatter
 @chart scatter sessions (x: "minutes", y: "pages", title: "Session length and pages", xLabel: "Minutes", yLabel: "Pages")
 
-## Sectors
+## Pie chart
 @chart pie formats (x: "format", y: "readers", select: selected_format, title: "Formats as sectors")
 
-## An annular view
+## Donut chart
 @chart donut formats (x: "format", y: "readers", select: selected_format, title: "Formats as a ring")
 
 The selected format is **{{ selected_format }}**. Both figures share the choice

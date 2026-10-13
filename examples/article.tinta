@@ -5,13 +5,13 @@
 ![Blank letter in a blue envelope](assets/ec254171e91ca507fd37cbec4b67c581c3175a89e8e08e15e0345bda68b93b11.webp)
 
 Imagine an independent newsletter with 100 readers today. An editor wants to
-understand what a steady change in readership would mean over four editions.
+understand what a steady change in readership would mean over the next four editions. Edition 0 represents today.
 This fictional model is **not a forecast**: move the rate or select a point in
 the chart to see the assumption and the sentence below change together.
 
 @let starting_readers = 100
-@slider growth = 5 (min: 0, max: 20, step: 1, label: "Growth per period (%)")
-@slider period = 2 (min: 0, max: 4, step: 1, label: "Period to inspect")
+@slider growth = 5 (min: 0, max: 20, step: 1, label: "Growth per edition (%)")
+@slider period = 2 (min: 0, max: 4, step: 1, label: "Edition to inspect")
 @calc selected_readers = round(starting_readers * pow(1 + growth / 100, period))
 
 @data steps
@@ -27,23 +27,23 @@ period:number
   x: "period",
   y: round(starting_readers * pow(1 + growth / 100, row.period)),
   select: period,
-  title: "Readers across five editions",
+  title: "Readers today and over the next four editions",
   xLabel: "Edition after today",
   yLabel: "Readers",
 )
 
-At period **{{ period }}**, the model gives **{{ selected_readers }} readers**.
-The assumed rate is **{{ percent(growth / 100) }} per period**.
+At edition **{{ period }}**, the model gives **{{ selected_readers }} readers**.
+The assumed rate is **{{ percent(growth / 100) }} per edition**.
 
 @when growth == 0
-Without growth, every period has the same value.
+Without growth, every edition has the same value.
 @end
 
 @details "What the calculation assumes"
-Every period applies the same rate. There is no external data connection.
+Each edition applies the same rate. There is no external data connection.
 
 1. Begin with the initial readership.
-2. Multiply by the same factor for each period.
+2. Multiply by the same factor for each edition.
 3. Round only the displayed count in this example.
 
 ```text

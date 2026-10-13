@@ -2,9 +2,9 @@
 
 ## Purpose
 
-tinta is a language for interactive documents, combining prose, data, expressions and reader interaction. It uses Markdown-compatible text formatting. A reader should be able to change an assumption, inspect a figure or choose a relevant explanation **without leaving the flow of a document**. The author should start with prose and add behaviour only where it helps understanding. A document remains a file owned by its author and readable as plain text.
+tinta is a language for interactive documents, combining prose, data, expressions and reader interaction. It uses Markdown-compatible text formatting. A reader should be able to change an assumption, inspect a figure or choose a relevant explanation **without leaving the flow of a document**. The author should start with prose and add behavior only where it helps understanding. A document remains a file owned by its author and readable as plain text.
 
-The project provides a local document language and toolchain. Do not add conversion funnels, templates for web landing pages or premium account logic.
+The tools create and read local interactive documents.
 
 ## Required author journeys
 
@@ -22,7 +22,7 @@ The project provides a local document language and toolchain. Do not add convers
 
 A normative language specification; a conformance corpus; a parser/validator/evaluator SDK; a safe renderer; all seven chart types; a CLI; a local reference editor with static application and portable standalone builds; editable `.tinta`/`.tinta.zip`; interactive/static HTML; documentation; license notices; reproducible builds and automated tests.
 
-The reference editor is intentionally small. It is not the future proprietary product. Its source belongs to the open reference toolchain. A future premium application may consume the public SDK from another repository without changing the file format or requiring its account for reading.
+The reference editor and reusable packages are open source under the MIT license. Applications can use the public SDK to read the same document format.
 
 ## Document guarantees
 
@@ -34,4 +34,4 @@ V1 supports Markdown prose, headings, nested lists, quotes, code, links, local i
 
 ## Supported usage environments
 
-The authoring editor targets modern desktop Chromium, Firefox and Safari; the reader and exports also provide narrow/mobile reading. CLI targets macOS arm64/x64, Linux x64 and Windows x64 on the pinned Node 24 line. Browser storage, file permissions and assistive-technology behavior depend on the actual environment. Automated Chromium, Firefox and WebKit tests exercise their pinned browser builds; WebKit results do not establish Safari or iOS compatibility. Unsupported features must fail or degrade explicitly rather than lose source or produce a misleading result.
+The authoring editor targets modern desktop Chromium, Firefox and Safari; the reader and exports also provide narrow/mobile reading. CLI supports macOS arm64, Linux arm64 and Windows x64 on the pinned Node 24 line. Browser storage, file permissions and assistive-technology behavior depend on the actual environment. Automated Chromium, Firefox and WebKit tests exercise their pinned browser builds; WebKit results do not establish Safari or iOS compatibility. Unsupported features must fail or degrade explicitly rather than lose source or produce a misleading result.

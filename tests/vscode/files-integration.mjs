@@ -163,7 +163,7 @@ export async function run() {
         "native enrichment diff and separate Tinta copy preserve Markdown",
       );
       await vscode.window.showTextDocument(doc);
-      choices.answers = "Authored initial answers";
+      choices.answers = "Document starting values";
       choices.save = vscode.Uri.file(join(root, "cancelled.html"));
       duringProduce = async () => {
         await editor.edit((edit) =>

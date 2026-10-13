@@ -66,7 +66,7 @@ Repository linked by the official migration notice; with installed package versi
 
 https://github.com/remarkjs/remark-gfm
 
-Reference for GFM behaviours; Tinta selects table/task-list/strikethrough modules rather than enabling the entire aggregate.
+Reference for GFM behaviors; Tinta selects table/task-list/strikethrough modules rather than enabling the entire aggregate.
 
 ## S12 — fflate repository
 
@@ -112,4 +112,4 @@ Feature detection and limited availability; no promise that it works in every br
 
 ## Internal decisions versus external facts
 
-The `.tinta` extension, syntax, functions, chart semantics, limits, exports, component boundaries and build outputs are this project’s design, not assertions about any third-party product. No exclusive file-extension registration, trademark clearance or package-name availability has been established. No external competitor review is required before implementing the agreed local scope. External websites may change after this dated review; the repository lock and dependency inventory identify actual installed versions.
+These references describe external tools and platform behavior. The Tinta specification defines its syntax, functions, chart semantics, file formats and limits. The lockfile and dependency inventory identify the exact installed versions.

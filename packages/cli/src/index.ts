@@ -403,7 +403,7 @@ export async function run(
         : error instanceof HostFailure || error instanceof ArtifactFailure
           ? error.message
           : exitCode === 3
-            ? "Authorized filesystem operation failed."
+            ? "Could not read or write the selected file."
             : "Unexpected internal failure.",
       span: {
         uri: "tinta:cli",
