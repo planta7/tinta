@@ -6,6 +6,7 @@ import { testAuthoring } from "./authoring.mjs";
 import { installedWorkflow } from "./installed-workflow.mjs";
 import { checkIpcWatchdog } from "../consumer/ipc-watchdog.mjs";
 import { measureInstalled } from "./installed-performance.mjs";
+import { traceCompletionLatency } from "./completion-latency.mjs";
 import { openInstalledPreview } from "./installed-preview.mjs";
 
 const root = process.env.TINTA_INSTALLED_ROOT;
@@ -35,6 +36,7 @@ export async function run() {
     trusted: vscode.workspace.isTrusted,
     groups: [],
   };
+  let latency;
   try {
     const extension = vscode.extensions.getExtension(
       process.env.TINTA_INSTALLED_ID,
@@ -68,6 +70,10 @@ export async function run() {
         "utf8",
       ),
     );
+    if (process.env.TINTA_INSTALLED_PERFORMANCE === "true")
+      latency = traceCompletionLatency(
+        join(extension.extensionPath, "dist/server.mjs"),
+      );
     await extension.activate();
     report.watchdog = await checkIpcWatchdog(
       join(extension.extensionPath, "dist/server.mjs"),
@@ -103,7 +109,7 @@ export async function run() {
     report.groups.push("Unicode diagnostic and error recovery");
     await testAuthoring(open, report.groups);
     if (process.env.TINTA_INSTALLED_PERFORMANCE === "true")
-      report.performance = await measureInstalled(open);
+      report.performance = await measureInstalled(open, latency);
     if (process.env.TINTA_INSTALLED_WORKFLOW === "true")
       await installedWorkflow(root, open, report.groups);
     const preview = await open(
@@ -145,6 +151,10 @@ export async function run() {
   } catch (error) {
     report.error = String(error.stack ?? error);
   } finally {
+    if (latency) {
+      latency.dispose();
+      report.completionLatency = latency.report();
+    }
     await writeFile(
       join(root, "result.json"),
       JSON.stringify(report, null, 2) + "\n",

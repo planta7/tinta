@@ -86,7 +86,13 @@ describe("native failure evidence", () => {
     (offline) => {
       const root = mkdtempSync(join(tmpdir(), "tinta-native-evidence-"));
       try {
-        const result = { status: "FAIL", performance: { loopMaxMs: 101 } };
+        const result = {
+          status: "FAIL",
+          performance: { loopMaxMs: 101 },
+          completionLatency: {
+            samples: [{ totalMs: 88, serverRoundTripMs: 1 }],
+          },
+        };
         const execute = () => {
           writeFileSync(join(root, "result.json"), JSON.stringify(result));
           const logs = join(root, "portable/user-data/logs/session");

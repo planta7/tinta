@@ -9,7 +9,7 @@ import { startResidentSampler } from "./resident-sampler.mjs";
 
 const percentile = (values, fraction) =>
   [...values].sort((a, b) => a - b)[Math.ceil(values.length * fraction) - 1];
-export async function measureInstalled(open) {
+export async function measureInstalled(open, latency) {
   const extension = vscode.extensions.getExtension(
     process.env.TINTA_INSTALLED_ID,
   );
@@ -90,10 +90,15 @@ export async function measureInstalled(open) {
     await complete();
     const completions = [];
     for (let index = 0; index < 30; index++) {
-      const started = performance.now();
-      const result = await complete();
-      assert.ok(result.items.some((item) => item.label === "amount"));
-      completions.push(performance.now() - started);
+      latency.begin(index);
+      try {
+        const started = performance.now();
+        const result = await complete();
+        assert.ok(result.items.some((item) => item.label === "amount"));
+        completions.push(performance.now() - started);
+      } finally {
+        latency.end();
+      }
     }
     const documents = [];
     for (let index = 0; index < 8; index++)
