@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { EventEmitter } from "node:events";
 import { Worker } from "node:worker_threads";
-import { execFileSync } from "node:child_process";
+import { execFileSync, fork } from "node:child_process";
 import { mkdtempSync, writeFileSync, rmSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
@@ -422,6 +422,74 @@ it("bundled worker agrees with CLI validation under equal source/options", async
   }
 });
 
+it("preserves interleaved outline and navigation requests over production IPC", async () => {
+  const child = fork(resolve("apps/vscode/dist/server.mjs"), [], {
+    execArgv: [],
+    stdio: ["ignore", "ignore", "ignore", "ipc"],
+  });
+  const replies = new Map();
+  let timer;
+  try {
+    await new Promise((accept, reject) => {
+      timer = setTimeout(() => reject(new Error("Missing IPC replies")), 8000);
+      child.on("error", reject);
+      child.on("exit", (code) => reject(new Error(`IPC exited: ${code}`)));
+      child.on("message", (message) => {
+        if (message.id === 1) {
+          const uri = "file:///outline-navigation.tinta";
+          child.send({ jsonrpc: "2.0", method: "initialized", params: {} });
+          child.send({
+            jsonrpc: "2.0",
+            method: "textDocument/didOpen",
+            params: {
+              textDocument: {
+                uri,
+                languageId: "tinta",
+                version: 1,
+                text: "@let amount = 2\n# 😀 Heading\n{{ amount }}",
+              },
+            },
+          });
+          for (const [id, method, extra] of [
+            [2, "textDocument/documentSymbol", {}],
+            [
+              3,
+              "textDocument/definition",
+              { position: { line: 2, character: 5 } },
+            ],
+            [4, "textDocument/documentSymbol", {}],
+          ]) {
+            child.send({
+              jsonrpc: "2.0",
+              id,
+              method,
+              params: { textDocument: { uri }, ...extra },
+            });
+          }
+        } else if ([2, 3, 4].includes(message.id)) {
+          replies.set(message.id, message.result);
+          if (replies.size === 3) accept();
+        }
+      });
+      child.send({
+        jsonrpc: "2.0",
+        id: 1,
+        method: "initialize",
+        params: { processId: process.pid, capabilities: {}, rootUri: null },
+      });
+    });
+    expect(replies.get(2).map((item) => item.name)).toEqual([
+      "amount",
+      "😀 Heading",
+    ]);
+    expect(replies.get(4)).toEqual(replies.get(2));
+    expect(replies.get(3)).toHaveLength(1);
+  } finally {
+    clearTimeout(timer);
+    child.kill();
+  }
+});
+
 it("shares overlapping symbol requests for the same document version", async () => {
   const { supervisor, workers } = harness();
   supervisor.update("untitled:a", 1, "@let amount = 2");
@@ -449,6 +517,66 @@ it("shares overlapping symbol requests for the same document version", async () 
   expect(await pending).toBeNull();
   expect(await duplicate).toBeNull();
 });
+
+it("keeps outline symbols pending when navigation interrupts their analysis", async () => {
+  const { supervisor, workers } = harness();
+  const uri = "untitled:outline-navigation";
+  supervisor.update(uri, 1, "@let amount = 2\n{{ amount }}");
+  const outline = supervisor.query(uri, { kind: "symbols" });
+  const definition = supervisor.query(uri, {
+    kind: "definition",
+    position: { line: 1, character: 5 },
+  });
+  const concurrentOutline = supervisor.query(uri, { kind: "symbols" });
+  expect(concurrentOutline).toBe(outline);
+  await vi.advanceTimersByTimeAsync(0);
+  const worker = workers.at(-1);
+  const request = worker.requests.at(-1);
+  expect(request.query.params.kind).toBe("definition");
+  const result = analyze(
+    { uri, profile: "tinta", text: request.text },
+    {
+      documentInstance: request.instance,
+      editorVersion: request.version,
+      sourceRevision: request.version,
+    },
+  );
+  const target = [
+    {
+      uri,
+      range: {
+        start: { line: 0, character: 5 },
+        end: { line: 0, character: 11 },
+      },
+    },
+  ];
+  worker.emit("message", { request, result, authoring: target });
+  expect(await definition).toEqual(target);
+  expect((await outline).map((item) => item.name)).toEqual(["amount"]);
+  expect(await concurrentOutline).toEqual(await outline);
+});
+
+for (const invalidate of ["edit", "close", "timeout", "dispose"]) {
+  it(`invalidates retained outline queries on ${invalidate}`, async () => {
+    const { supervisor } = harness();
+    const uri = "untitled:retained-outline";
+    supervisor.update(uri, 1, "@let amount = 2");
+    const outline = supervisor.query(uri, { kind: "symbols" });
+    const navigation = supervisor.query(uri, {
+      kind: "definition",
+      position: { line: 0, character: 6 },
+    });
+    const duplicate = supervisor.query(uri, { kind: "symbols" });
+    expect(duplicate).toBe(outline);
+    if (invalidate === "edit") supervisor.update(uri, 2, "@let amount = 3");
+    else if (invalidate === "close") supervisor.close(uri);
+    else if (invalidate === "dispose") supervisor.dispose();
+    else await vi.advanceTimersByTimeAsync(3000);
+    expect(await outline).toBeNull();
+    expect(await duplicate).toBeNull();
+    expect(await navigation).toBeNull();
+  });
+}
 
 it("queries immediately, coalesces requests and releases replies on edits, close and timeout", async () => {
   const { supervisor, workers } = harness();
