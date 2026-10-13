@@ -172,6 +172,7 @@ describe("software distribution contract", () => {
     [
       "stable tag for development version",
       (c) => {
+        c.versions.implementation = "0.1.0-dev.0";
         c.versions.npmChannel = "latest";
       },
     ],
@@ -184,6 +185,7 @@ describe("software distribution contract", () => {
     [
       "stable channel with odd minor",
       (c) => {
+        c.versions.extension = "0.1.0";
         c.versions.extensionChannel = "stable";
       },
     ],
