@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="#try-it-locally">Try the studio</a> ·
+  <a href="https://planta7.github.io/tinta/">Try the studio</a> ·
   <a href="#write-in-vs-code">Use VS Code</a> ·
   <a href="examples/README.md">Explore examples</a> ·
   <a href="docs/CHEATSHEET.md">Syntax cheatsheet</a> ·
@@ -20,9 +20,13 @@
 
 An article that invites questions. A report where readers can test their assumptions. A guide that gives each reader the explanation they need.
 
-Choose the tool that fits your work. **Studio** is the local browser editor, the **VS Code extension** brings authoring into your desktop editor, and the **CLI** validates and exports documents from the terminal. They share the same language and engine. Exported HTML opens independently of all three.
+Choose the tool that fits your work. **Studio** is the browser editor, the **VS Code extension** brings authoring into your desktop editor, and the **CLI** validates and exports documents from the terminal. They share the same language and engine. Exported HTML opens independently of all three.
 
 ## Meet tinta studio
+
+> [!TIP]
+> **Try tinta studio live.** [Open the browser demo →](https://planta7.github.io/tinta/)
+> Explore an example, change a control and watch the document respond. No account needed.
 
 Write on the left. Read and interact on the right.
 
@@ -35,7 +39,7 @@ _The included [explorable article](examples/article.tinta), open in tinta studio
 - **A reader that participates.** Move a slider, choose a scenario or inspect a chart. The explanation stays connected to the same underlying data.
 - **Pick up where you left off.** Recovery copies help you return to a draft. Save your work, then export the finished document for your readers.
 
-New documents open ready to type. Existing documents open in Reading mode. Studio runs as a static web app or as a single local HTML file, without an account or backend.
+New documents open ready to type. Existing documents open in Reading mode. Studio runs as a static web app or as a single local HTML file, without an account or backend. You can also [run it locally](#try-it-locally).
 
 ## Write in VS Code
 

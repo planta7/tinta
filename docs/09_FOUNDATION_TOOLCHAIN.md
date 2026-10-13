@@ -14,7 +14,9 @@ Reviewed notice sources: esbuild and rolldown native packages use the same-versi
 
 Infrastructure coverage applies to the architecture scanner, capability selection and packaging primitives, with 85% statements/lines/functions and 80% branches. Build orchestration, inventory command-line scripts and configuration are exercised by their explicit aggregate commands. Empty product modules and type-only contracts do not count as runtime coverage. Product coverage thresholds remain as specified in the verification contract.
 
-CI performs verification only on pull requests and pushes to the repository's configured default branch. It has read-only repository permissions, does not retain checkout credentials, and performs no deployment, package publication or artifact upload. CI checks run in their configured environments; results do not imply support for every browser or device.
+The `Verify language` workflow checks pull requests and pushes to the repository's configured default branch. Its jobs have read-only repository permissions, do not retain checkout credentials, and do not deploy or publish artifacts. Checks run in their configured environments; results do not imply support for every browser or device.
+
+The separate `Deploy Studio demo` workflow runs after a successful `Verify language` push run on `main`. It verifies that the run came from this repository and that its commit is still the current `main` revision. A read-only job rebuilds that commit, checks the static Studio files and exercises the production application in Chromium. Only `build/studio/` is uploaded as the Pages artifact. The deployment job has the Pages and OIDC permissions, uses the `github-pages` environment and rechecks the branch revision before publishing. Pull request runs and superseded revisions cannot deploy. GitHub Pages must use GitHub Actions as its publishing source. The hosted Studio remains a client-side editor; this workflow does not upload user documents or add document publication features.
 
 ## Native browser verification
 

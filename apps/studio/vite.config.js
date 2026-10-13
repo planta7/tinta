@@ -79,6 +79,7 @@ export default defineConfig({
           groups: [
             { name: "compiler-runtime", test: /runtime\/workerCode\.js$/ },
             { name: "preview-runtime", test: /runtime\/previewHtml\.js$/ },
+            { name: "studio-data", test: /studio\/dist\/studio-runtime\.js$/ },
             {
               name: "export-runtime",
               test: /artifacts\/dist\/runtime-data\.js$/,

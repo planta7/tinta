@@ -60,3 +60,30 @@ test("chunked Studio preserves module initialization and embedded runtimes", asy
     });
   }
 });
+
+test("Studio loads from a repository Pages path", async ({ page }) => {
+  const server = await preview({
+    root: resolve("apps/studio"),
+    configFile: resolve("apps/studio/vite.config.js"),
+    base: "/tinta/",
+    preview: { host: "127.0.0.1", port: 0, strictPort: true },
+  });
+  try {
+    const errors = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    const address = server.httpServer.address();
+    await page.goto(`http://127.0.0.1:${address.port}/tinta/`);
+    await page
+      .getByRole("button", { name: "Explore examples", exact: true })
+      .click();
+    await page.getByRole("button", { name: "guide", exact: true }).click();
+    await expect(
+      page.frameLocator("iframe").getByRole("article"),
+    ).toBeVisible();
+    expect(errors).toEqual([]);
+  } finally {
+    await new Promise((resolve, reject) => {
+      server.httpServer.close((error) => (error ? reject(error) : resolve()));
+    });
+  }
+});

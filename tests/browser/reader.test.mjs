@@ -1665,19 +1665,19 @@ test("pointer pins, escape and explorer focus keep inspection local", async ({
   const text = figure.locator("p").last();
   const range = figure.getByLabel("Inspect data point");
   await marks.first().hover();
-  await expect(text).toContainText("minutes: 12");
+  await expect(text).toContainText("Minutes: 12");
   await figure.locator("figcaption").hover();
   await expect(text).toHaveText("");
   await marks.first().click();
   await marks.last().hover();
-  await expect(text).toContainText("minutes: 12");
+  await expect(text).toContainText("Minutes: 12");
   await expect(text).toContainText("Pinned");
   await range.focus();
   await range.press("Escape");
   await range.press("End");
-  await expect(figure.locator("output")).toContainText("minutes: 52");
+  await expect(figure.locator("output")).toContainText("Minutes: 52");
   await marks.first().hover();
-  await expect(text).toContainText("minutes: 52");
+  await expect(text).toContainText("Minutes: 52");
   await figure
     .getByRole("button", { name: "Pin inspection", exact: true })
     .focus();
@@ -1688,13 +1688,13 @@ test("pointer pins, escape and explorer focus keep inspection local", async ({
     .getByRole("button", { name: "Reset reading", exact: true })
     .focus();
   await marks.first().hover();
-  await expect(text).toContainText("minutes: 12");
+  await expect(text).toContainText("Minutes: 12");
   expect(
     await page.evaluate(
       () => globalThis.readerTest.instances[0].session.getRevision().number,
     ),
   ).toBe(0);
-  await expect(figure.locator("output")).not.toContainText("minutes: 12");
+  await expect(figure.locator("output")).not.toContainText("Minutes: 12");
 });
 
 async function settledFigures(page) {

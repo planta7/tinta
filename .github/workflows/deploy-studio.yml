@@ -1,0 +1,114 @@
+name: Deploy Studio demo
+
+on:
+  workflow_run:
+    workflows: [Verify language]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  current-revision:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == github.event.repository.default_branch &&
+      github.event.workflow_run.head_repository.id == github.event.repository.id
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      publish: ${{ steps.head.outputs.publish }}
+    steps:
+      - name: Check the verified revision is current
+        id: head
+        shell: bash
+        env:
+          VERIFIED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          current="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)"
+          if [ -z "$current" ]; then
+            echo "Cannot read the current main revision." >&2
+            exit 1
+          fi
+          if [ "$current" = "$VERIFIED_SHA" ]; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "A newer main revision superseded this verification run."
+          fi
+
+  build:
+    needs: current-revision
+    if: needs.current-revision.outputs.publish == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - run: npm install --global pnpm@10.34.6
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Check the static Studio artifact
+        shell: bash
+        run: |
+          test -s build/studio/index.html
+          test -s build/studio/LICENSE
+          test -s build/studio/THIRD_PARTY_NOTICES.txt
+          test -d build/studio/assets
+          if find build/studio -type l | grep -q .; then
+            echo "The Studio artifact contains a symbolic link." >&2
+            exit 1
+          fi
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec playwright test tests/browser/studio-build.test.mjs --project=chromium
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: build/studio/
+          retention-days: 7
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    concurrency:
+      group: studio-pages
+      cancel-in-progress: false
+    permissions:
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Recheck the main revision
+        id: head
+        shell: bash
+        env:
+          VERIFIED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          current="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)"
+          if [ -z "$current" ]; then
+            echo "Cannot read the current main revision." >&2
+            exit 1
+          fi
+          if [ "$current" = "$VERIFIED_SHA" ]; then
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "A newer main revision superseded this build."
+          fi
+      - name: Deploy to GitHub Pages
+        if: steps.head.outputs.publish == 'true'
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

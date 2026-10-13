@@ -52,5 +52,38 @@
     "license": "MIT",
     "licenseUrl": "https://raw.githubusercontent.com/actions/attest/c32b4b8b198b65d0bd9d63490e847ff7b53989d4/LICENSE",
     "licenseSha256": "32d0bae2419f014f5066af5915264c966efdb7b6e7fe8f90cf87dc75c5a8d6d0"
+  },
+  {
+    "repository": "https://github.com/actions/upload-pages-artifact",
+    "ref": "refs/tags/v5.0.0",
+    "commit": "fc324d3547104276b827a68afc52ff2a11cc49c9",
+    "actionDefinitionSha256": "f84e759011e0c497e696f5bce4ebb5fbe9bbdc5aea309b73795283fa139c1558",
+    "resolvedAtUTC": "2026-10-13T09:05:27Z",
+    "review": "Official composite action inspected at the pinned release. Archives only the explicit Studio build directory and invokes a pinned upload-artifact action.",
+    "license": "MIT",
+    "licenseUrl": "https://raw.githubusercontent.com/actions/upload-pages-artifact/fc324d3547104276b827a68afc52ff2a11cc49c9/LICENSE",
+    "licenseSha256": "b1bb6c1d76d90892ac4a9d1cca6380316df22671560c6cf4a5e298dcfa26bb4d"
+  },
+  {
+    "repository": "https://github.com/actions/upload-artifact",
+    "ref": "refs/tags/v7.0.0",
+    "commit": "bbbca2ddaa5d8feaa63e36b76fdaad77386f024f",
+    "actionDefinitionSha256": "c5979822866a72362e609844b6ebe77d4b7e759af68cc1c2c425dcf51481fab4",
+    "resolvedAtUTC": "2026-10-13T09:05:27Z",
+    "review": "Official Node 24 artifact uploader inspected as the exact transitive action used by upload-pages-artifact v5.0.0.",
+    "license": "MIT",
+    "licenseUrl": "https://raw.githubusercontent.com/actions/upload-artifact/bbbca2ddaa5d8feaa63e36b76fdaad77386f024f/LICENSE",
+    "licenseSha256": "3e855ffa704114a51628ef8f0bf3aeb41728adf9d9070e263bf58aa5640b0eb5"
+  },
+  {
+    "repository": "https://github.com/actions/deploy-pages",
+    "ref": "refs/tags/v5.0.1",
+    "commit": "368f82528645a54fb793d4d04e342629a3f51346",
+    "actionDefinitionSha256": "64c44539fba53559a157b5de16c01d3ab91dbc999c1b98b5c0b2fc3528d5d059",
+    "resolvedAtUTC": "2026-10-13T09:05:27Z",
+    "review": "Official Node 24 Pages deployment action inspected at the pinned release. Runs only in the separate write-scoped deployment job.",
+    "license": "MIT",
+    "licenseUrl": "https://raw.githubusercontent.com/actions/deploy-pages/368f82528645a54fb793d4d04e342629a3f51346/LICENSE",
+    "licenseSha256": "741d1031b351a6dc8421130e3282456afe884068596134683fd5e5f8188363ee"
   }
 ]

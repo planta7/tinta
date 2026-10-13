@@ -988,7 +988,10 @@ test("a source revision change cancels an export before download handoff", async
         // completed bytes cross the host's revision guard.
         const view = document.querySelector(".cm-content").cmTile.root.view;
         view.dispatch({
-          changes: { from: 0, insert: "# Changed during export\n\n" },
+          changes: {
+            from: view.state.doc.length,
+            insert: "\n\n# Changed during export\n",
+          },
         });
       }
       return serialized;
