@@ -1,4 +1,5 @@
 import type { AuthoringQuery, AuthoringResult } from "./authoring.js";
+import { authoring } from "./authoring.js";
 import { randomBytes } from "node:crypto";
 import {
   diagnostic,
@@ -36,7 +37,13 @@ export class Supervisor {
     string,
     (result: AuthoringResult) => void
   >();
-  private readonly symbolQueries = new Map<string, Promise<AuthoringResult>>();
+  private readonly symbolQueries = new Map<
+    string,
+    {
+      promise: Promise<AuthoringResult>;
+      resolve: (result: AuthoringResult) => void;
+    }
+  >();
   private nextQuery = 0;
   private sourceBytes = 0;
   private analysisBytes = 0;
@@ -117,8 +124,9 @@ export class Supervisor {
     if (!state || state.blocked || this.disposed) return Promise.resolve(null);
     const shared =
       params.kind === "symbols" ? this.symbolQueries.get(uri) : undefined;
-    if (shared) return shared;
-    this.finishQuery(uri, null);
+    if (shared) return shared.promise;
+    this.queries.get(uri)?.(null);
+    this.queries.delete(uri);
     if (state.timer) clearTimeout(state.timer);
     delete state.timer;
     state.request = {
@@ -126,18 +134,28 @@ export class Supervisor {
       query: { id: ++this.nextQuery, params },
     };
     if (this.active?.uri === uri) this.stopWorker();
+    let complete!: (result: AuthoringResult) => void;
     const result = new Promise<AuthoringResult>((resolve) => {
-      this.queries.set(uri, resolve);
+      complete = resolve;
     });
-    if (params.kind === "symbols") this.symbolQueries.set(uri, result);
+    if (params.kind === "symbols") {
+      this.symbolQueries.set(uri, { promise: result, resolve: complete });
+    } else {
+      this.queries.set(uri, complete);
+    }
     this.pending.set(uri, state.request);
     this.pump();
     return result;
   }
 
-  private finishQuery(uri: string, result: AuthoringResult): void {
+  private finishQuery(
+    uri: string,
+    result: AuthoringResult,
+    symbols: AuthoringResult = null,
+  ): void {
     this.queries.get(uri)?.(result);
     this.queries.delete(uri);
+    this.symbolQueries.get(uri)?.resolve(symbols);
     this.symbolQueries.delete(uri);
   }
 
@@ -310,7 +328,15 @@ export class Supervisor {
         this.cacheSizes.set(request.uri, bytes);
         this.analysisBytes += bytes;
       }
-      this.finishQuery(request.uri, reply.authoring ?? null);
+      // Outline requests survive navigation on the same immutable version.
+      const symbols = this.symbolQueries.has(request.uri)
+        ? request.query?.params.kind === "symbols"
+          ? (reply.authoring ?? null)
+          : result.ok
+            ? authoring(result.value, { kind: "symbols" })
+            : null
+        : null;
+      this.finishQuery(request.uri, reply.authoring ?? null, symbols);
       this.options.publish(request, {
         diagnostics: result.diagnostics.map((item) =>
           identifyInternalDiagnostic(item, () =>
