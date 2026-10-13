@@ -5,7 +5,7 @@
     "c5bce814ae649782e17caa45dfded574df9aaff640ed735e107764a83bbdaf72": {
       "candidate": "c5bce814ae649782e17caa45dfded574df9aaff640ed735e107764a83bbdaf72",
       "releaseId": "tinta-0.1.0-dev.0-vscode-0.1.0-pre-release",
-      "status": "pending",
+      "status": "promoted",
       "items": {
         "npm:@tinta-lang/types": {
           "status": "verified",
@@ -304,9 +304,274 @@
           }
         },
         "github:draft": {
-          "status": "failed",
+          "status": "verified",
           "attempts": 1,
-          "error": "verification-failed"
+          "receipt": {
+            "id": 410411875,
+            "tag": "tinta-v0.1.0-dev.0-vscode-0.1.0-pre-release",
+            "candidate": "c5bce814ae649782e17caa45dfded574df9aaff640ed735e107764a83bbdaf72",
+            "draft": false
+          }
+        },
+        "github:asset:attestation.sigstore.json": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124646,
+            "name": "attestation.sigstore.json",
+            "sha256": "ccb24200ffb6c597e9185798937507c353ec9627aec6a766c19b3bc4cba21ba1",
+            "bytes": 10834
+          }
+        },
+        "github:asset:build.json": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124642,
+            "name": "build.json",
+            "sha256": "21ce0f4720d0f62b78f3ce35516aeeb21071acc05766a1dbddaef1d1dd01d9a5",
+            "bytes": 2995
+          }
+        },
+        "github:asset:candidate-index.json": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124638,
+            "name": "candidate-index.json",
+            "sha256": "565dba42d63514bbac136dbfbdcce015e409adb1e970d3aa9adcc53aaea90d48",
+            "bytes": 3173
+          }
+        },
+        "github:asset:darwin-arm64.json": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124637,
+            "name": "darwin-arm64.json",
+            "sha256": "bda089d1491131042713a344402a17eaf91eed66724c1623bd96b141bcb0253b",
+            "bytes": 45800
+          }
+        },
+        "github:asset:examples-0.1.0-dev.0.zip": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124640,
+            "name": "examples-0.1.0-dev.0.zip",
+            "sha256": "e263e013ec44a2a520bcbe2def0f545a9b0c1c0896e11bef0c398a7d8d97bf7c",
+            "bytes": 628270
+          }
+        },
+        "github:asset:inventory.json": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124660,
+            "name": "inventory.json",
+            "sha256": "e5e1eb1f8b0a42b7ba976c0c78b2b7a592cbbd458bf67369c2edbb833d55d3f3",
+            "bytes": 241866
+          }
+        },
+        "github:asset:linux-arm64.json": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124661,
+            "name": "linux-arm64.json",
+            "sha256": "192faab9bb6c468266efa22ab11db64427f961db22718a9d4afe44610c9d09ed",
+            "bytes": 43799
+          }
+        },
+        "github:asset:reader-runtime-0.1.0-dev.0.zip": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124662,
+            "name": "reader-runtime-0.1.0-dev.0.zip",
+            "sha256": "a69ff65eaad7024ea9ff3ed4f1500a1a8e7a3925e599ed92d354e0e272d99bda",
+            "bytes": 105362
+          }
+        },
+        "github:asset:release-manifest.json": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124667,
+            "name": "release-manifest.json",
+            "sha256": "c5bce814ae649782e17caa45dfded574df9aaff640ed735e107764a83bbdaf72",
+            "bytes": 61408
+          }
+        },
+        "github:asset:release-manifest.json.sha256": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124666,
+            "name": "release-manifest.json.sha256",
+            "sha256": "c318e67f71985b95655b39f528047f14a3ba697ea4337305c3cd7f18efb5cdf5",
+            "bytes": 65
+          }
+        },
+        "github:asset:source-0.1.0-dev.0.zip": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124673,
+            "name": "source-0.1.0-dev.0.zip",
+            "sha256": "4f95b25262b88a1320790963261725cacfddc0c1e4756d5a5b10328e03be7166",
+            "bytes": 1419018
+          }
+        },
+        "github:asset:studio-directory-0.1.0-dev.0.zip": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124678,
+            "name": "studio-directory-0.1.0-dev.0.zip",
+            "sha256": "e46dd5878ee0bc7fe726363d8936e45a9f67231de3af86120e5b6061af5a7ae1",
+            "bytes": 687895
+          }
+        },
+        "github:asset:studio-standalone-0.1.0-dev.0.zip": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124681,
+            "name": "studio-standalone-0.1.0-dev.0.zip",
+            "sha256": "5abb7f4da12f8eb0d2032985dc829dda956fcabbd83dfbf2ba3df6d141a7e16f",
+            "bytes": 873466
+          }
+        },
+        "github:asset:tinta-0.1.0.vsix": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124680,
+            "name": "tinta-0.1.0.vsix",
+            "sha256": "90c54ced65b983343e7bd376303e35199bef9d8627dab686be03df62b1d7fea7",
+            "bytes": 840983
+          }
+        },
+        "github:asset:tinta-lang-artifacts-0.1.0-dev.0.tgz": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124683,
+            "name": "tinta-lang-artifacts-0.1.0-dev.0.tgz",
+            "sha256": "343f770b7196a57675b7027586932cba8672ca79b2e741bd0986acd953b0b953",
+            "bytes": 132321
+          }
+        },
+        "github:asset:tinta-lang-charts-0.1.0-dev.0.tgz": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124691,
+            "name": "tinta-lang-charts-0.1.0-dev.0.tgz",
+            "sha256": "4bac6c81de3135d9cceddd7008eae68f0c0f46b541697304197f9dc783f33832",
+            "bytes": 63265
+          }
+        },
+        "github:asset:tinta-lang-cli-0.1.0-dev.0.tgz": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124693,
+            "name": "tinta-lang-cli-0.1.0-dev.0.tgz",
+            "sha256": "3da9a1a7540beb1d4235fb223f9d7f0ff14a248e593b0addf0fea79a923c5349",
+            "bytes": 864279
+          }
+        },
+        "github:asset:tinta-lang-engine-0.1.0-dev.0.tgz": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124698,
+            "name": "tinta-lang-engine-0.1.0-dev.0.tgz",
+            "sha256": "cccaf7d12728ee6452c263488c376275c369dcfef309908471ee50574975ce5a",
+            "bytes": 143605
+          }
+        },
+        "github:asset:tinta-lang-language-server-0.1.0-dev.0.tgz": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124702,
+            "name": "tinta-lang-language-server-0.1.0-dev.0.tgz",
+            "sha256": "9f41e136ae6494a141b09a61cafda4d36a82b7c758deb7f3117c9f7fc23cf373",
+            "bytes": 245539
+          }
+        },
+        "github:asset:tinta-lang-language-service-0.1.0-dev.0.tgz": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124704,
+            "name": "tinta-lang-language-service-0.1.0-dev.0.tgz",
+            "sha256": "0f55bccd4a4a5c40292fd7ffaea0a55f9a666a978b0ecaf8647db4fe9b2ed896",
+            "bytes": 68707
+          }
+        },
+        "github:asset:tinta-lang-local-files-0.1.0-dev.0.tgz": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124727,
+            "name": "tinta-lang-local-files-0.1.0-dev.0.tgz",
+            "sha256": "c3322877015168a9708927df40c9810ff7f92a05b25ef63cc4b5f862580e47d1",
+            "bytes": 64031
+          }
+        },
+        "github:asset:tinta-lang-reader-0.1.0-dev.0.tgz": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124725,
+            "name": "tinta-lang-reader-0.1.0-dev.0.tgz",
+            "sha256": "a145007e804479d9d7e6f361eb1d338c61610147f545697a1ab63b084b85080c",
+            "bytes": 74951
+          }
+        },
+        "github:asset:tinta-lang-syntax-0.1.0-dev.0.tgz": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124723,
+            "name": "tinta-lang-syntax-0.1.0-dev.0.tgz",
+            "sha256": "cf6a5359e7f416c0ae5c819eaa02a83c602d8765683e82c478fd6d50ef50b927",
+            "bytes": 295918
+          }
+        },
+        "github:asset:tinta-lang-types-0.1.0-dev.0.tgz": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124729,
+            "name": "tinta-lang-types-0.1.0-dev.0.tgz",
+            "sha256": "96747ca9df303b6db2775b63e511ceba282194e80cdd9970b38f6444f6ac38ee",
+            "bytes": 75121
+          }
+        },
+        "github:asset:win32-x64.json": {
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 636124734,
+            "name": "win32-x64.json",
+            "sha256": "25b41c3acf8ff5f285a4e00c31262da0875f83fe40ec8cd68217ac5818be5d6b",
+            "bytes": 45715
+          }
+        },
+        "github:publish": {
+          "status": "promoted",
+          "attempts": 1,
+          "receipt": {
+            "id": 410411875,
+            "tag": "tinta-v0.1.0-dev.0-vscode-0.1.0-pre-release",
+            "candidate": "c5bce814ae649782e17caa45dfded574df9aaff640ed735e107764a83bbdaf72",
+            "draft": false
+          }
         }
       },
       "promotion": {
