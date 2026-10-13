@@ -105,7 +105,10 @@ export function npmAdapter({
   );
   const base = url.origin;
   const metadata = (target) =>
-    request(`${base}/${encodeURIComponent(target.name)}`, { missing: true });
+    request(`${base}/${encodeURIComponent(target.name)}`, {
+      missing: true,
+      headers: { "Cache-Control": "no-cache" },
+    });
   const channelTags = async (target) =>
     (await request(
       `${base}/-/package/${encodeURIComponent(target.name)}/dist-tags`,
@@ -153,11 +156,21 @@ export function npmAdapter({
       }
     },
     upload(target, plan) {
+      let submissionStarted = false;
       return {
         retryAbsent: true,
-        read: () => version(target),
+        read: async () => {
+          const attempts = submissionStarted ? 13 : 1;
+          for (let attempt = 0; attempt < attempts; attempt++) {
+            const remote = await version(target);
+            if (remote !== null) return remote;
+            if (attempt + 1 < attempts) await wait(5000);
+          }
+          return null;
+        },
         write: async () => {
           checkFile(directory, target.archive);
+          submissionStarted = true;
           runner.run(
             [
               "publish",

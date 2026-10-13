@@ -243,6 +243,56 @@ describe("credential and dispatch boundaries", () => {
 });
 
 describe("npm destination", () => {
+  it.each([false, true])(
+    "waits for uploaded version indexing without repeating the upload: %s",
+    async (neverVisible) => {
+      const w = workspace();
+      try {
+        let writes = 0;
+        let reads = 0;
+        let waits = 0;
+        const target = {
+          name: "@fixture/package",
+          version: "1.0.0",
+          archive: w.archive,
+        };
+        const metadata = { name: target.name, version: target.version };
+        const operation = npmAdapter({
+          directory: w.directory,
+          runner: {
+            run: () => {
+              writes += 1;
+            },
+          },
+          request: async (_url, options) => {
+            expect(options.headers["Cache-Control"]).toBe("no-cache");
+            if (!writes) return { versions: {} };
+            reads += 1;
+            return {
+              versions:
+                !neverVisible && reads >= 3
+                  ? { [target.version]: metadata }
+                  : {},
+            };
+          },
+          wait: async (ms) => {
+            expect(ms).toBe(5000);
+            waits += 1;
+          },
+        }).upload(target, { candidate: "a".repeat(64) });
+        expect(await operation.read()).toBeNull();
+        expect(waits).toBe(0);
+        await operation.write();
+        expect(await operation.read()).toEqual(neverVisible ? null : metadata);
+        expect(writes).toBe(1);
+        expect(reads).toBe(neverVisible ? 13 : 3);
+        expect(waits).toBe(neverVisible ? 12 : 2);
+      } finally {
+        rmSync(w.directory, { recursive: true, force: true });
+      }
+    },
+  );
+
   it("uploads only the verified archive with explicit candidate tag and public access", async () => {
     const w = workspace();
     try {
