@@ -620,7 +620,12 @@
       "candidate": "5e6c9562bac8a0a02c95925cf170ebbc414c62cafff2d828845d52d13ec1d497",
       "releaseId": "tinta-0.1.3-vscode-0.2.3-stable",
       "status": "pending",
-      "items": {}
+      "items": {
+        "npm:@tinta-lang/types": {
+          "status": "pending",
+          "attempts": 0
+        }
+      }
     }
   }
 }
