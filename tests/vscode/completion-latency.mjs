@@ -1,6 +1,8 @@
 import childProcess from "node:child_process";
 import { syncBuiltinESMExports } from "node:module";
 import { performance } from "node:perf_hooks";
+import { realpathSync } from "node:fs";
+import { resolve, win32 } from "node:path";
 
 // Observe only the installed server. Keep payloads and filesystem writes out
 // of the measured path; the caller saves this bounded trace after testing.
@@ -10,14 +12,29 @@ export function traceCompletionLatency(
     processes = childProcess,
     now = () => performance.now(),
     sync = syncBuiltinESMExports,
+    platform = process.platform,
+    realpath = realpathSync.native,
   } = {},
 ) {
   const originalFork = processes.fork;
   const children = [];
   const samples = [];
+  const launches = [];
   let active;
   let droppedEvents = 0;
   let attachedServers = 0;
+
+  function canonicalPath(value) {
+    if (typeof value !== "string") return null;
+    let path;
+    try {
+      path = realpath(value);
+    } catch {
+      path = platform === "win32" ? win32.resolve(value) : resolve(value);
+    }
+    return platform === "win32" ? win32.normalize(path).toLowerCase() : path;
+  }
+  const expectedPath = canonicalPath(serverPath);
 
   function observe(direction, message) {
     if (!active || active.events.length >= 128) {
@@ -39,8 +56,11 @@ export function traceCompletionLatency(
   }
 
   function fork(modulePath, ...args) {
+    const literalMatch = modulePath === serverPath;
+    const canonicalMatch = canonicalPath(modulePath) === expectedPath;
     const child = Reflect.apply(originalFork, this, [modulePath, ...args]);
-    if (modulePath !== serverPath) return child;
+    if (launches.length < 16) launches.push({ literalMatch, canonicalMatch });
+    if (!canonicalMatch) return child;
     attachedServers++;
     const originalSend = child.send;
     function send(message, ...rest) {
@@ -102,6 +122,15 @@ export function traceCompletionLatency(
         method:
           "Native command wall time split at installed-server IPC boundaries; server round trip includes IPC and scheduling. CPU and event loop utilization cover the extension host only; null utilization means unavailable. No document contents are recorded.",
         attachedServers,
+        launches,
+        complete:
+          attachedServers > 0 &&
+          samples.length === 30 &&
+          samples.every(
+            (sample) =>
+              sample.requestCount === 1 && sample.serverRoundTripMs !== null,
+          ) &&
+          droppedEvents === 0,
         droppedEvents,
         samples,
       };

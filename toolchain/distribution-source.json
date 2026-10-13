@@ -1,4 +1,5 @@
 [
+  ".github/workflows/diagnose-installed-performance.yml",
   ".github/workflows/publish-release.yml",
   ".github/workflows/verify-marketplace-identity.yml",
   ".github/workflows/verify.yml",
@@ -377,6 +378,7 @@
   "tests/unit/foundation.test.mjs",
   "tests/unit/host-delay.test.mjs",
   "tests/unit/incident-diagnostics.test.mjs",
+  "tests/unit/installed-performance-workflow.test.mjs",
   "tests/unit/installed-preview.test.mjs",
   "tests/unit/language-boundaries.test.mjs",
   "tests/unit/language-server.test.mjs",

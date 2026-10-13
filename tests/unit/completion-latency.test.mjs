@@ -2,7 +2,7 @@ import { EventEmitter } from "node:events";
 import { describe, expect, it, vi } from "vitest";
 import { traceCompletionLatency } from "../vscode/completion-latency.mjs";
 
-function fixture() {
+function fixture(serverPath = "/installed/server.mjs", options = {}) {
   let time = 0;
   const child = new EventEmitter();
   child.send = vi.fn(() => false);
@@ -10,10 +10,11 @@ function fixture() {
   const originalFork = vi.fn(() => child);
   const processes = { fork: originalFork };
   const sync = vi.fn();
-  const trace = traceCompletionLatency("/installed/server.mjs", {
+  const trace = traceCompletionLatency(serverPath, {
     processes,
     sync,
     now: () => time,
+    ...options,
   });
   return {
     child,
@@ -29,6 +30,40 @@ function fixture() {
 }
 
 describe("installed completion latency trace", () => {
+  it("recognizes Windows separator and casing variants without changing the launch", () => {
+    const f = fixture("C:\\Installed\\dist\\server.mjs", {
+      platform: "win32",
+      realpath: () => {
+        throw new Error("Use normalized test paths");
+      },
+    });
+    const actual = "c:/installed/dist/server.mjs";
+    f.processes.fork(actual);
+    expect(f.originalFork).toHaveBeenCalledWith(actual);
+    expect(f.trace.report()).toMatchObject({
+      attachedServers: 1,
+      launches: [{ literalMatch: false, canonicalMatch: true }],
+      complete: false,
+    });
+    f.trace.dispose();
+  });
+
+  it("resolves filesystem aliases before observing only the installed server", () => {
+    const realpath = vi.fn((path) =>
+      path.includes("RUNNER~1")
+        ? path.replace("RUNNER~1", "runneradmin")
+        : path,
+    );
+    const f = fixture("C:\\Users\\RUNNER~1\\extension\\server.mjs", {
+      platform: "win32",
+      realpath,
+    });
+    f.processes.fork("C:\\Users\\runneradmin\\extension\\server.mjs");
+    expect(f.trace.report().attachedServers).toBe(1);
+    expect(realpath).toHaveBeenCalledTimes(2);
+    f.trace.dispose();
+  });
+
   it("splits command latency while preserving IPC arguments, return and delivery", () => {
     const f = fixture();
     const options = { silent: true };
@@ -91,6 +126,24 @@ describe("installed completion latency trace", () => {
       ],
     });
   });
+
+  it.each([true, false])(
+    "requires every response before declaring complete evidence (last reply=%s)",
+    (lastReply) => {
+      const f = fixture();
+      f.processes.fork("/installed/server.mjs");
+      for (let index = 0; index < 30; index++) {
+        f.trace.begin(index);
+        f.child.send({ id: index, method: "textDocument/completion" });
+        if (index < 29 || lastReply)
+          f.child.emit("message", { id: index, result: [] });
+        f.trace.end();
+      }
+      expect(f.trace.report().complete).toBe(lastReply);
+      expect(f.trace.report().samples).toHaveLength(30);
+      f.trace.dispose();
+    },
+  );
 
   it("bounds events and samples and retains partial samples during failure cleanup", () => {
     const f = fixture();

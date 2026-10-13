@@ -1,0 +1,163 @@
+name: Diagnose installed performance
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Verify language run containing the immutable VSIX
+        required: true
+        type: string
+        default: "38445080647"
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: installed-performance-diagnostic
+  cancel-in-progress: false
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - name: Download and verify the supplied archive
+        id: supplied
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TINTA_SOURCE_RUN: ${{ inputs.source_run_id }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:TINTA_SOURCE_RUN -notmatch '^[1-9][0-9]{0,19}$') {
+            throw 'Invalid source run ID.'
+          }
+          $repository = $env:GITHUB_REPOSITORY
+          $runJson = gh api "repos/$repository/actions/runs/$env:TINTA_SOURCE_RUN"
+          if ($LASTEXITCODE -ne 0) { throw 'Source run lookup failed.' }
+          $run = $runJson | ConvertFrom-Json
+          if ($run.repository.full_name -ne $repository -or
+              $run.head_repository.full_name -ne $repository -or
+              $run.event -ne 'push' -or $run.head_branch -ne 'main' -or
+              $run.path -ne '.github/workflows/verify.yml' -or
+              $run.status -ne 'completed' -or
+              $run.head_sha -notmatch '^[a-f0-9]{40}$') {
+            throw 'Expected a completed default-branch Verify language run.'
+          }
+          $artifact = "payloads-$($run.id)-$($run.run_attempt)"
+          gh run download $run.id --repo $repository --name $artifact --dir probe/payloads
+          if ($LASTEXITCODE -ne 0) { throw 'Payload download failed.' }
+          $inventory = Get-Content probe/payloads/inventory.json -Raw | ConvertFrom-Json
+          $build = Get-Content probe/payloads/build.json -Raw | ConvertFrom-Json
+          if ($inventory.source.commit -ne $run.head_sha -or
+              $inventory.source.dirty -ne $false -or
+              $build.status -ne 'PASS' -or
+              $build.producer.repository -ne $repository -or
+              $build.producer.repositoryId -ne [string]$run.repository.id -or
+              $build.producer.sourceSha -ne $run.head_sha -or
+              $build.producer.runId -ne [string]$run.id -or
+              $build.producer.attempt -ne $run.run_attempt) {
+            throw 'Payload source identity mismatch.'
+          }
+          $targets = @($inventory.targets | Where-Object { $_.id -eq 'vscode' })
+          if ($targets.Count -ne 1 -or
+              $targets[0].archive -notmatch '^tinta-[0-9]+\.[0-9]+\.[0-9]+\.vsix$') {
+            throw 'Expected exactly one versioned VSIX.'
+          }
+          $archive = Join-Path $env:GITHUB_WORKSPACE "probe/payloads/$($targets[0].archive)"
+          $hash = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ($hash -ne $targets[0].sha256 -or
+              (Get-Item $archive).Length -ne $targets[0].bytes) {
+            throw 'VSIX transport integrity mismatch.'
+          }
+          New-Item reports/windows-performance -ItemType Directory -Force | Out-Null
+          $runJson | Set-Content reports/windows-performance/source-run.json
+          Copy-Item probe/payloads/inventory.json reports/windows-performance/inventory.json
+          Copy-Item probe/payloads/build.json reports/windows-performance/build.json
+          "source_sha=$($run.head_sha)" >> $env:GITHUB_OUTPUT
+          "archive=$archive" >> $env:GITHUB_OUTPUT
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ steps.supplied.outputs.source_sha }}
+          path: source
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install pinned diagnostic prerequisites
+        working-directory: source
+        shell: pwsh
+        run: |
+          npm install --global npm@11.19.0 pnpm@10.34.6
+          if ($LASTEXITCODE -ne 0) { throw 'Pinned tools installation failed.' }
+          pnpm install --frozen-lockfile
+          if ($LASTEXITCODE -ne 0) { throw 'Frozen dependency installation failed.' }
+          "TINTA_GLOBAL_MODULES=$(npm root --global)" >> $env:GITHUB_ENV
+      - name: Locate the pinned desktop
+        working-directory: source
+        run: pnpm exec node scripts/candidate-tools.mjs --desktop
+      - name: Apply current diagnostic observer to the original test harness
+        shell: pwsh
+        run: |
+          Copy-Item tests/vscode/completion-latency.mjs source/tests/vscode/completion-latency.mjs
+          Get-FileHash tests/vscode/completion-latency.mjs -Algorithm SHA256 |
+            Select-Object Algorithm, Hash |
+            ConvertTo-Json | Set-Content reports/windows-performance/observer.json
+      - name: Measure three fresh profiles without rebuilding the VSIX
+        working-directory: source
+        shell: bash
+        env:
+          TINTA_RELEASE_SOURCE_SHA: ${{ steps.supplied.outputs.source_sha }}
+          TINTA_PROBE_ARCHIVE: ${{ steps.supplied.outputs.archive }}
+        run: |
+          node --input-type=module <<'JS'
+          import { join, resolve } from 'node:path';
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { runNativeMode, runNativeModes } from './scripts/candidate-native.mjs';
+
+          const reports = resolve('../reports/windows-performance');
+          const outcomes = [];
+          try {
+            runNativeModes([1, 2, 3], (index) => {
+              const root = join(process.env.RUNNER_TEMP, `tinta-performance-${index}`);
+              const report = join(reports, `run-${index}.json`);
+              try {
+                runNativeMode([
+                  process.execPath,
+                  'scripts/test-vscode-installed.mjs',
+                  process.env.TINTA_VSCODE_EXECUTABLE,
+                  process.env.TINTA_VSCODE_CLI,
+                  process.env.TINTA_PROBE_ARCHIVE,
+                  root,
+                  '--release',
+                  '--performance',
+                ], root, report);
+              } finally {
+                const result = JSON.parse(readFileSync(report, 'utf8'));
+                outcomes.push({
+                  index,
+                  status: result.status,
+                  completionP95Ms: result.performance?.completionP95Ms,
+                  traceComplete: result.completionLatency?.complete === true,
+                });
+              }
+              if (outcomes.at(-1).traceComplete !== true) {
+                throw new Error(`Incomplete IPC evidence in profile ${index}.`);
+              }
+            });
+          } finally {
+            writeFileSync(
+              join(reports, 'outcomes.json'),
+              JSON.stringify(outcomes, null, 2) + '\n',
+            );
+          }
+          JS
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        if: always()
+        with:
+          name: windows-performance-${{ github.run_id }}-${{ github.run_attempt }}
+          path: reports/windows-performance/
+          if-no-files-found: error
+          retention-days: 30
