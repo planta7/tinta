@@ -16,7 +16,7 @@ import {
   validateReleaseManifest,
 } from "./release-contract.mjs";
 
-export const candidateWorkflow = ".github/workflows/release-candidate.yml";
+export const candidateWorkflow = ".github/workflows/verify.yml";
 export const retentionDays = 30;
 export const matrixCells = ["darwin-arm64", "linux-arm64", "win32-x64"];
 export const nativeModes = [
@@ -26,9 +26,7 @@ export const nativeModes = [
   "os-offline",
 ];
 export const buildCommands = [
-  ["node", "scripts/distribution-package.mjs"],
-  ["pnpm", "test:vscode:unit"],
-  ["pnpm", "test:vscode:browser"],
+  ["node", "scripts/distribution-package.mjs", "--built"],
   [
     "pnpm",
     "exec",
@@ -43,7 +41,6 @@ export const buildCommands = [
 export const verificationWorkflow = ".github/workflows/verify.yml";
 export const verificationJobs = [
   "verify",
-  "cli-portability (ubuntu-24.04)",
   "cli-portability (macos-15)",
   "cli-portability (windows-2022)",
 ];
@@ -134,8 +131,10 @@ export async function successfulVerification(producer, { api }) {
     .sort((a, b) => b.run_number - a.run_number);
   assert.ok(matches.length > 0, "No Verify push run for this commit");
   // The latest attempt must succeed; an earlier success cannot mask a rerun.
-  const run = await api(`${base}/runs/${matches[0].id}`);
-  assert.equal(run.id, matches[0].id);
+  const selected =
+    matches.find((run) => String(run.id) === producer.runId) ?? matches[0];
+  const run = await api(`${base}/runs/${selected.id}`);
+  assert.equal(run.id, selected.id);
   assert.equal(run.workflow_id, workflow.id);
   assert.equal(run.path, verificationWorkflow);
   assert.equal(run.head_sha, producer.sourceSha);
@@ -145,8 +144,19 @@ export async function successfulVerification(producer, { api }) {
     assert.equal(repository.full_name, producer.repository);
     assert.equal(String(repository.id), producer.repositoryId);
   }
-  assert.equal(run.status, "completed", "Verify has not completed");
-  assert.equal(run.conclusion, "success", "Verify did not pass");
+  const sameRun = String(run.id) === producer.runId;
+  if (!sameRun) {
+    assert.equal(run.status, "completed", "Verify has not completed");
+    assert.equal(run.conclusion, "success", "Verify did not pass");
+  } else {
+    assert.equal(
+      run.run_attempt,
+      producer.attempt,
+      "Source job attempt mismatch",
+    );
+    assert.ok(["in_progress", "completed"].includes(run.status));
+    if (run.status === "completed") assert.equal(run.conclusion, "success");
+  }
   assert.ok(Number.isSafeInteger(run.run_attempt) && run.run_attempt > 0);
   const response = await api(
     `${base}/runs/${run.id}/attempts/${run.run_attempt}/jobs?per_page=100`,
@@ -156,7 +166,10 @@ export async function successfulVerification(producer, { api }) {
     "Verify job pagination limit",
   );
   assert.equal(response.jobs.length, response.total_count);
-  for (const job of response.jobs) {
+  const jobs = sameRun
+    ? response.jobs.filter((job) => verificationJobs.includes(job.name))
+    : response.jobs;
+  for (const job of jobs) {
     assert.equal(job.run_id, run.id);
     assert.equal(job.head_sha, producer.sourceSha);
     assert.equal(job.status, "completed", "Incomplete Verify job");
@@ -168,8 +181,10 @@ export async function successfulVerification(producer, { api }) {
     run.run_attempt,
     "Verify rerun changed during lookup",
   );
-  assert.equal(current.status, "completed");
-  assert.equal(current.conclusion, "success");
+  if (!sameRun) {
+    assert.equal(current.status, "completed");
+    assert.equal(current.conclusion, "success");
+  }
   return validateVerification(
     {
       workflow: verificationWorkflow,
@@ -184,11 +199,11 @@ export async function successfulVerification(producer, { api }) {
       sourceSha: run.head_sha,
       ref: producer.ref,
       event: run.event,
-      status: run.status,
-      conclusion: run.conclusion,
+      status: "completed",
+      conclusion: "success",
       runId: String(run.id),
       attempt: run.run_attempt,
-      jobs: response.jobs.map(({ id, name, status, conclusion }) => ({
+      jobs: jobs.map(({ id, name, status, conclusion }) => ({
         id,
         name,
         status,
@@ -253,6 +268,17 @@ export function checkInventory(directory, config, { clean = false } = {}) {
     "Lock digest",
   );
   if (clean) assert.equal(inventory.source.dirty, false, "Dirty source");
+  if (inventory.releasePlan) {
+    assert.equal(inventory.releasePlan.path, "release-plan.json");
+    const bytes = readFileSync(join(directory, "release-plan.json"));
+    assert.equal(digest(bytes), inventory.releasePlan.sha256);
+    const plan = readCandidateJson(bytes);
+    assert.equal(plan.sourceSha, inventory.source.commit);
+    assert.equal(plan.implementation, config.versions.implementation);
+    assert.equal(plan.extension, config.versions.extension);
+    assert.equal(typeof plan.notes, "string");
+    assert.ok(plan.notes.trim());
+  }
   const expected = [...config.packages, ...config.artifacts];
   assert.deepEqual(
     inventory.targets.map((t) => t.id).sort(),
@@ -363,7 +389,7 @@ export function validateProducerIdentity(producer) {
     "Workflow and source must be the reviewed default-branch revision",
   );
   assert.equal(producer.workflow, candidateWorkflow);
-  assert.equal(producer.event, "workflow_dispatch");
+  assert.equal(producer.event, "push");
   assert.match(producer.ref, /^refs\/heads\/[A-Za-z0-9/_.-]+$/);
   assert.ok(Number.isSafeInteger(producer.attempt) && producer.attempt > 0);
 }

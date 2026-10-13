@@ -10,12 +10,7 @@ const { createCoverageMap } = await import(
 );
 const merged = createCoverageMap({});
 const workerPath = resolve("apps/studio/dist/worker.js");
-const unit = JSON.parse(
-  await readFile(
-    "reports/verification/studio-unit-coverage/coverage-final.json",
-    "utf8",
-  ),
-);
+const unit = JSON.parse(await readFile("coverage/coverage-final.json", "utf8"));
 if (!unit[workerPath]) throw new Error("Missing compiler worker coverage.");
 merged.addFileCoverage(unit[workerPath]);
 

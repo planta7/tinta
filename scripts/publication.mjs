@@ -78,6 +78,7 @@ export async function publishRelease({
   intent,
   now,
   phase = "all",
+  reconcileRecordedPromotion = false,
 }) {
   const plan = await gate();
   validateIntent(intent, plan, now());
@@ -215,11 +216,23 @@ export async function publishRelease({
       record.status = "reconciliation-required";
       record.reconciliation = { digest: review, observed };
       await save();
-      assert.equal(
-        intent.reconciliation,
-        review,
-        "Partial promotion requires reviewed reconciliation",
-      );
+      const recorded = record.promotion;
+      const unchanged =
+        recorded &&
+        packages.every(
+          (target) =>
+            recorded.desired[target.name] === target.version &&
+            [recorded.observed[target.name], target.version].includes(
+              observed[target.name],
+            ),
+        );
+      if (!(reconcileRecordedPromotion && unchanged)) {
+        assert.equal(
+          intent.reconciliation,
+          review,
+          "Partial promotion requires reviewed reconciliation",
+        );
+      }
     }
     record.promotion ??= {
       observed,

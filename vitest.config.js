@@ -1,8 +1,10 @@
+import vscodeConfig from "./scripts/vscode-vitest.config.js";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  resolve: vscodeConfig.resolve,
   test: {
-    include: ["tests/unit/**/*.test.mjs"],
+    include: ["tests/unit/**/*.test.mjs", "tests/vscode/*.native.mjs"],
     reporters: [
       "default",
       ["json", { outputFile: "reports/verification/unit-results.json" }],
@@ -10,6 +12,8 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: [
+        ...vscodeConfig.test.coverage.include,
+        "apps/studio/dist/worker.js",
         "scripts/architecture.mjs",
         "scripts/packaging.mjs",
         "scripts/capabilities.mjs",
@@ -33,6 +37,18 @@ export default defineConfig({
         branches: 80,
         functions: 85,
         lines: 85,
+        "apps/vscode/dist/**": {
+          statements: 85,
+          functions: 85,
+          lines: 85,
+          branches: 80,
+        },
+        "packages/language-server/dist/**": {
+          statements: 85,
+          functions: 85,
+          lines: 85,
+          branches: 80,
+        },
         "packages/artifacts/dist/**": {
           statements: 90,
           branches: 85,

@@ -34,18 +34,27 @@ if (
     "Source inventory differs from the explicit public file allowlist.",
   );
 const destination = "build/distribution";
-// Every invocation rebuilds from source, including generated runtimes and workers.
-for (const path of [
-  "build",
-  ...config.packages.map((item) => `${item.source}/dist`),
-  "apps/studio/dist",
-  "apps/vscode/dist",
-])
-  await rm(path, { recursive: true, force: true });
-requireCommandSync(["pnpm", "build"]);
+// CI packages the outputs already exercised by the source suites.
+if (!process.argv.includes("--built")) {
+  for (const path of [
+    "build",
+    ...config.packages.map((item) => `${item.source}/dist`),
+    "apps/studio/dist",
+    "apps/vscode/dist",
+  ])
+    await rm(path, { recursive: true, force: true });
+  requireCommandSync(["pnpm", "build"]);
+}
+await rm(destination, { recursive: true, force: true });
 await mkdir(destination, { recursive: true });
 const reports = await packageNpm(config, destination);
 
+let releasePlan;
+if (process.env.TINTA_RELEASE_SOURCE_SHA) {
+  const bytes = await readFile("reports/release/plan.json");
+  await writeFile(join(destination, "release-plan.json"), bytes);
+  releasePlan = { path: "release-plan.json", sha256: digest(bytes) };
+}
 const licenses = {};
 for (const name of ["LICENSE", "THIRD_PARTY_NOTICES.txt"])
   licenses[name] = await readFile(name);
@@ -215,6 +224,7 @@ await writeFile(
         sha256: candidate.sourceSha256,
       },
       versions: config.versions,
+      ...(releasePlan ? { releasePlan } : {}),
       toolchain: {
         node: process.versions.node,
         pnpm: JSON.parse(await readFile("package.json", "utf8")).packageManager,

@@ -10,6 +10,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { loadReleaseConfig } from "../../scripts/release-contract.mjs";
 import { checkInventory } from "../../scripts/release-candidate.mjs";
+import { digest } from "../../scripts/distribution-archive.mjs";
 
 const config = loadReleaseConfig();
 describe("public supplied-archive checker", () => {
@@ -34,6 +35,10 @@ describe("public supplied-archive checker", () => {
     "lock",
     "configuration",
     "path",
+    "release-plan-digest",
+    "release-plan-source",
+    "release-plan-version",
+    "release-plan-notes",
   ])("rejects tampered %s", (kind) => {
     const root = mkdtempSync(join(tmpdir(), "tinta-candidate-fixture-"));
     try {
@@ -51,6 +56,24 @@ describe("public supplied-archive checker", () => {
       if (kind === "lock") inventory.lockSha256 = "0".repeat(64);
       if (kind === "configuration") inventory.configSha256 = "0".repeat(64);
       if (kind === "path") inventory.targets[0].archive = "../unexpected.tgz";
+      if (kind.startsWith("release-plan-")) {
+        const plan = {
+          sourceSha: inventory.source.commit,
+          implementation: config.versions.implementation,
+          extension: config.versions.extension,
+          notes: "Fixture release notes",
+        };
+        if (kind === "release-plan-source") plan.sourceSha = "0".repeat(40);
+        if (kind === "release-plan-version") plan.extension = "999.0.0";
+        if (kind === "release-plan-notes") plan.notes = "";
+        const bytes = Buffer.from(JSON.stringify(plan));
+        writeFileSync(join(root, "release-plan.json"), bytes);
+        inventory.releasePlan = {
+          path: "release-plan.json",
+          sha256:
+            kind === "release-plan-digest" ? "0".repeat(64) : digest(bytes),
+        };
+      }
       writeFileSync(path, JSON.stringify(inventory));
       expect(() => checkInventory(root, config)).toThrow();
     } finally {

@@ -158,6 +158,32 @@ function fixture() {
 }
 
 describe("resumable coordinated publication", () => {
+  it("automatically resumes a recorded partial promotion without repeating uploads", async () => {
+    const f = fixture();
+    f.control.fail = "tag:@fixture/b";
+    f.control.before = true;
+    await expect(f.run({ reconcileRecordedPromotion: true })).rejects.toThrow();
+    f.control.fail = null;
+    expect((await f.run({ reconcileRecordedPromotion: true })).status).toBe(
+      "promoted",
+    );
+    expect(f.intent.reconciliation).toBeNull();
+    expect(f.writes.filter((key) => key === "@fixture/a")).toHaveLength(1);
+    expect(f.writes.filter((key) => key === "tag:@fixture/a")).toHaveLength(1);
+  });
+
+  it("refuses automatic reconciliation of an externally changed partial promotion", async () => {
+    const f = fixture();
+    f.control.fail = "tag:@fixture/b";
+    f.control.before = true;
+    await expect(f.run()).rejects.toThrow();
+    f.control.fail = null;
+    f.tags["@fixture/b"] = "0.9.0";
+    await expect(f.run({ reconcileRecordedPromotion: true })).rejects.toThrow(
+      "reconciliation",
+    );
+  });
+
   it("uses dependency order and does not repeat verified writes", async () => {
     const f = fixture();
     expect((await f.run()).status).toBe("promoted");

@@ -59,8 +59,11 @@ export async function acquireCandidate(api, inputs, repository, download) {
   );
   assert.equal(run.status, "completed");
   assert.equal(run.conclusion, "success");
-  assert.equal(run.path, ".github/workflows/release-candidate.yml");
-  assert.equal(run.event, "workflow_dispatch");
+  assert.equal(run.path, ".github/workflows/verify.yml");
+  assert.equal(run.event, "push");
+  assert.equal(run.head_branch, "main");
+  assert.equal(run.head_sha, inputs.publisherSha);
+  assert.equal(run.head_repository.full_name, repository);
   assert.equal(run.repository.full_name, repository);
   const source = await api("GET", `${base}/git/commits/${run.head_sha}`);
   const list = await api(
@@ -127,7 +130,7 @@ async function main(mode, env) {
       writeFileSync(join(directory, path), content);
     }
     writeFileSync("build/publication/expected.json", encode(expected));
-    await publicationGate({
+    const verified = await publicationGate({
       directory,
       expected,
       inputs,
@@ -135,6 +138,10 @@ async function main(mode, env) {
       env,
       api: (path) => api("GET", path),
     });
+    appendFileSync(
+      env.GITHUB_OUTPUT,
+      `manifest_sha256=${verified.plan.candidate}\n`,
+    );
     const npmBytes = await request(policy.npm.url, { binary: true });
     assert.equal(
       `sha512-${createHash("sha512").update(npmBytes).digest("base64")}`,
@@ -174,7 +181,7 @@ async function main(mode, env) {
     appendFileSync(env.GITHUB_OUTPUT, `dependencies_sha256=${transportHash}\n`);
     return;
   }
-  assert.ok(["npm", "marketplace", "promote", "github"].includes(mode));
+  assert.ok(["npm", "marketplace", "promote", "github", "all"].includes(mode));
   assert.equal(
     digest(readFileSync("build/publication/dependencies.tgz")),
     env.TINTA_DEPENDENCIES_SHA256,
@@ -247,10 +254,11 @@ async function main(mode, env) {
     intent: verified.intent,
     now: Date.now,
     phase: mode,
+    reconcileRecordedPromotion: true,
   });
   writeFileSync("build/publication/receipt.json", encode(result));
   console.log(
-    mode === "github"
+    mode === "github" || mode === "all"
       ? "All required destinations verified and promoted."
       : "Destination verified; coordinated release remains incomplete.",
   );

@@ -43,7 +43,7 @@ function fixture() {
     workflowSha: source,
     sourceSha: source,
     sourceTree: "b".repeat(40),
-    event: "workflow_dispatch",
+    event: "push",
     runId: "77",
     attempt: 2,
     ref: "refs/heads/main",
@@ -221,7 +221,7 @@ describe("published Studio deployment", () => {
     [
       "different producer workflow",
       (f) => {
-        f.run.path = ".github/workflows/verify.yml";
+        f.run.path = ".github/workflows/unrelated.yml";
       },
     ],
     [
@@ -322,20 +322,20 @@ describe("published Studio deployment", () => {
     expect(commands[1]).toContain("--signer-digest");
   });
 
-  it("uses stable release events and explicit post-publication dispatch without build or test steps", () => {
+  it("deploys the published release inside CD without build or test steps", () => {
     const workflow = parse(
-      readFileSync(".github/workflows/deploy-studio.yml", "utf8"),
+      readFileSync(".github/workflows/publish-release.yml", "utf8"),
     );
-    expect(Object.keys(workflow.on).sort()).toEqual([
-      "release",
-      "workflow_dispatch",
+    expect(Object.keys(workflow.on)).toEqual(["workflow_run"]);
+    expect(workflow.jobs["prepare-studio"].needs).toBe("publish");
+    expect(workflow.jobs["deploy-studio"].needs).toEqual([
+      "publish",
+      "prepare-studio",
     ]);
-    expect(workflow.on.release.types).toEqual(["published"]);
-    expect(workflow.jobs.prepare.if).toContain("prerelease == false");
-    expect(workflow.jobs.deploy.needs).toBe("prepare");
     expect(workflow.concurrency).toEqual({
-      group: "studio-pages",
+      group: "publication",
       "cancel-in-progress": false,
+      queue: "max",
     });
     const steps = Object.values(workflow.jobs).flatMap((job) => job.steps);
     for (const step of steps) {
@@ -354,13 +354,13 @@ describe("published Studio deployment", () => {
     );
     const publishSteps = publisher.jobs.publish.steps;
     const publication = publishSteps.findIndex(
-      (step) => step.run === "node scripts/publish-release.mjs github",
+      (step) => step.run === "node scripts/publish-release.mjs all",
     );
     const dispatch = publishSteps.findIndex(
-      (step) => step.run === "node scripts/deploy-studio.mjs dispatch",
+      (step) => step.run === "node scripts/deploy-studio.mjs locate",
     );
     expect(dispatch).toBeGreaterThan(publication);
-    expect(publisher.jobs.publish.permissions.actions).toBe("write");
+    expect(publisher.jobs.publish.permissions.actions).toBe("read");
     expect(stableStudioRelease(fixture().release)).toEqual({
       implementation: "0.1.0",
       extension: "0.2.0",

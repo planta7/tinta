@@ -19,7 +19,7 @@ import {
   entraCredential,
 } from "../../scripts/publication-transport.mjs";
 import {
-  dispatchInputs,
+  dispatchInputs as parseDispatchInputs,
   activationPolicy,
 } from "../../scripts/publication-gate.mjs";
 import { loadReleaseConfig } from "../../scripts/release-contract.mjs";
@@ -49,9 +49,9 @@ function workspace() {
 
 const env = {
   GITHUB_ACTIONS: "true",
-  GITHUB_EVENT_NAME: "workflow_dispatch",
+  GITHUB_EVENT_NAME: "workflow_run",
   GITHUB_SHA: "a".repeat(40),
-  TINTA_REVIEWED_PUBLISHER_SHA: "a".repeat(40),
+  TINTA_RELEASE_SOURCE_SHA: "a".repeat(40),
   GITHUB_REPOSITORY: "fixture/repo",
   GITHUB_REPOSITORY_ID: "42",
   GITHUB_REF: "refs/heads/main",
@@ -64,6 +64,21 @@ const env = {
   TINTA_CANDIDATE_ATTEMPT: "1",
   TINTA_MANIFEST_SHA256: "b".repeat(64),
 };
+
+const sourceEvent = {
+  workflow_run: {
+    id: 123,
+    run_attempt: 1,
+    event: "push",
+    status: "completed",
+    conclusion: "success",
+    path: ".github/workflows/verify.yml",
+    head_branch: "main",
+    head_sha: "a".repeat(40),
+    head_repository: { full_name: "fixture/repo", id: 42 },
+  },
+};
+const dispatchInputs = (value) => parseDispatchInputs(value, sourceEvent);
 
 describe("credential and dispatch boundaries", () => {
   it("reports failure locations without assertion values, tokens or private paths", () => {
@@ -910,10 +925,12 @@ it("selects candidate storage by run/attempt and authenticates container bytes",
     run_attempt: 1,
     status: "completed",
     conclusion: "success",
-    path: ".github/workflows/release-candidate.yml",
-    event: "workflow_dispatch",
+    path: ".github/workflows/verify.yml",
+    event: "push",
     head_sha: "a".repeat(40),
     repository: { full_name: "fixture/repo" },
+    head_repository: { full_name: "fixture/repo" },
+    head_branch: "main",
   };
   const api = async (_method, path) => {
     if (path.endsWith("/fixture/repo"))
@@ -955,16 +972,18 @@ it("selects candidate storage by run/attempt and authenticates container bytes",
 it("keeps publish workflow gated, serialized, pinned and free of candidate builds", () => {
   const text = readFileSync(".github/workflows/publish-release.yml", "utf8");
   const workflow = parse(text);
-  expect(Object.keys(workflow.on)).toEqual(["workflow_dispatch"]);
-  expect(Object.keys(workflow.on.workflow_dispatch.inputs)).toEqual([
-    "candidate_run",
-    "candidate_attempt",
-    "manifest_sha256",
-  ]);
+  expect(workflow.on).toEqual({
+    workflow_run: {
+      workflows: ["Verify language"],
+      types: ["completed"],
+      branches: ["main"],
+    },
+  });
   expect(workflow.permissions).toEqual({});
   expect(workflow.concurrency).toEqual({
     group: "publication",
     "cancel-in-progress": false,
+    queue: "max",
   });
   const gate = workflow.jobs["candidate-gate"];
   const publish = workflow.jobs.publish;
@@ -987,10 +1006,8 @@ it("keeps publish workflow gated, serialized, pinned and free of candidate build
   expect(publication).not.toMatch(
     /npm install|pnpm install|pnpm build|package:vscode|distribution-package/,
   );
-  expect(publication).toContain("publish-release.mjs npm");
-  expect(publication).toContain("publish-release.mjs marketplace");
-  expect(publication).toContain("publish-release.mjs promote");
-  expect(publication).toContain("publish-release.mjs github");
+  expect(publication).toContain("publish-release.mjs all");
+  expect(publication.match(/publish-release.mjs/g)).toHaveLength(1);
   expect(text).not.toContain("secrets.");
 });
 

@@ -237,29 +237,12 @@ async function main(mode) {
     readCandidateJson(
       Buffer.from(requireCommandSync(["gh", "api", path]).stdout),
     );
-  if (mode === "dispatch") {
-    const config = loadReleaseConfig();
-    if (
-      config.versions.npmChannel !== "latest" ||
-      config.versions.extensionChannel !== "stable"
-    )
-      return;
+  if (mode === "locate") {
     const release = await api(
-      `/repos/${policy.repository}/releases/tags/${releaseIdentity(config).tag}`,
+      `/repos/${policy.repository}/releases/tags/${releaseIdentity(loadReleaseConfig()).tag}`,
     );
     stableStudioRelease(release);
-    const repo = await api(`/repos/${policy.repository}`);
-    requireCommandSync([
-      "gh",
-      "api",
-      "--method",
-      "POST",
-      `/repos/${policy.repository}/actions/workflows/deploy-studio.yml/dispatches`,
-      "-f",
-      `ref=${repo.default_branch}`,
-      "-f",
-      `inputs[release_id]=${release.id}`,
-    ]);
+    appendFileSync(process.env.GITHUB_OUTPUT, `release_id=${release.id}\n`);
     return;
   }
   assert.ok(["prepare", "current"].includes(mode), "Unknown demo operation");

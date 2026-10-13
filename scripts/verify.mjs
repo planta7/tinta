@@ -58,18 +58,7 @@ const commands = [
       : []),
   ]),
   ...(suite === "--suite editing"
-    ? [
-        [
-          "pnpm",
-          "exec",
-          "vitest",
-          "run",
-          "--coverage",
-          "--config",
-          "scripts/studio-vitest.config.js",
-        ],
-        ["node", "scripts/studio-coverage.mjs"],
-      ]
+    ? [["node", "scripts/studio-coverage.mjs"]]
     : []),
   ...(["--suite artifacts", "--suite editing"].includes(suite)
     ? [

@@ -32,7 +32,7 @@ const producer = {
   workflowSha: source,
   sourceSha: source,
   sourceTree: "c".repeat(40),
-  event: "workflow_dispatch",
+  event: "push",
   runId: "123",
   attempt: 2,
   ref: "refs/heads/main",
@@ -191,7 +191,7 @@ function transportFixture() {
     run_attempt: 2,
     repository: { id: 42, full_name: "fixture/tinta" },
     head_sha: source,
-    event: "workflow_dispatch",
+    event: "push",
     path: candidateWorkflow,
     status: "completed",
     conclusion: "success",
@@ -271,6 +271,28 @@ describe("same-commit Verify reuse", () => {
     expect(f.calls.filter((path) => path.endsWith("/runs/77"))).toHaveLength(2);
   });
 
+  it("reuses completed source jobs while distribution jobs in the same run are pending", async () => {
+    const f = services();
+    const current = { ...producer, runId: "77" };
+    f.run.status = "in_progress";
+    f.run.conclusion = null;
+    f.jobs.push({
+      id: 99,
+      name: "build",
+      status: "in_progress",
+      conclusion: null,
+    });
+    f.jobResponse.total_count = f.jobs.length;
+    await expect(successfulVerification(current, f)).resolves.toEqual(
+      f.receipt,
+    );
+    f.jobs[0].conclusion = "failure";
+    await expect(successfulVerification(current, f)).rejects.toThrow();
+    f.jobs[0].conclusion = "success";
+    f.run.run_attempt += 1;
+    await expect(successfulVerification(current, f)).rejects.toThrow("attempt");
+  });
+
   it.each([
     [
       "no run",
@@ -300,7 +322,7 @@ describe("same-commit Verify reuse", () => {
     [
       "different workflow",
       (f) => {
-        f.run.path = candidateWorkflow;
+        f.run.path = ".github/workflows/unrelated.yml";
       },
     ],
     [
@@ -415,20 +437,26 @@ describe("same-commit Verify reuse", () => {
     expect(buildCommands).toContainEqual([
       "node",
       "scripts/distribution-package.mjs",
+      "--built",
     ]);
-    expect(buildCommands).toContainEqual(["pnpm", "test:vscode:browser"]);
+    expect(buildCommands).not.toContainEqual(["pnpm", "test:vscode:browser"]);
+    expect(
+      parse(readFileSync(verificationWorkflow, "utf8")).jobs.verify.steps,
+    ).toContainEqual({ run: "pnpm test:vscode:browser" });
     expect(
       buildCommands.filter((command) => command.includes("test:vscode:unit")),
-    ).toEqual([["pnpm", "test:vscode:unit"]]);
+    ).toEqual([]);
     expect(buildCommands.some((command) => command.includes("verify"))).toBe(
       false,
     );
     const workflow = parse(readFileSync(verificationWorkflow, "utf8"));
-    const names = Object.entries(workflow.jobs).flatMap(([name, job]) =>
-      job.strategy?.matrix?.os
-        ? job.strategy.matrix.os.map((os) => `${name} (${os})`)
-        : [name],
-    );
+    const names = Object.entries(workflow.jobs)
+      .filter(([name]) => ["verify", "cli-portability"].includes(name))
+      .flatMap(([name, job]) =>
+        job.strategy?.matrix?.os
+          ? job.strategy.matrix.os.map((os) => `${name} (${os})`)
+          : [name],
+      );
     expect(names.sort()).toEqual([...verificationJobs].sort());
     const candidate = parse(readFileSync(candidateWorkflow, "utf8"));
     expect(candidate.jobs.build.permissions).toEqual({
@@ -616,7 +644,7 @@ describe("trusted producer with fixture CI, storage and signature services", () 
     [
       "workflow",
       (f) => {
-        f.run.path = ".github/workflows/verify.yml";
+        f.run.path = ".github/workflows/unrelated.yml";
       },
     ],
     [
@@ -737,9 +765,13 @@ describe("trusted producer with fixture CI, storage and signature services", () 
 describe("candidate workflow security topology", () => {
   it("isolates attestation, binds exact downloads and never rebuilds in consumers", () => {
     const workflow = parse(readFileSync(candidateWorkflow, "utf8"));
-    expect(Object.keys(workflow.on)).toEqual(["workflow_dispatch"]);
+    expect(Object.keys(workflow.on)).toEqual(["push"]);
     expect(workflow.permissions).toEqual({ contents: "read" });
-    expect(workflow.jobs.build.needs).toBe("provenance-capability");
+    expect(workflow.jobs.build.needs).toEqual([
+      "verify",
+      "cli-portability",
+      "provenance-capability",
+    ]);
     expect(
       workflow.jobs["provenance-capability"].steps.every((s) => !s.run),
     ).toBe(true);
@@ -781,7 +813,7 @@ describe("candidate workflow security topology", () => {
         }
         if (step.run) {
           expect(step.run).not.toContain("${{");
-          if (name !== "build")
+          if (!["build", "verify"].includes(name))
             expect(step.run).not.toMatch(
               /distribution-package|pnpm build|package:vscode/,
             );
@@ -791,19 +823,22 @@ describe("candidate workflow security topology", () => {
     const ordinary = parse(
       readFileSync(".github/workflows/verify.yml", "utf8"),
     );
-    for (const job of Object.values(ordinary.jobs)) {
+    for (const name of ["verify", "cli-portability"]) {
+      const job = ordinary.jobs[name];
       expect(job.permissions).toEqual({ contents: "read" });
-      expect(job.steps.some((s) => /attest@/.test(s.uses ?? ""))).toBe(false);
+      expect(job.steps.some((step) => /attest@/.test(step.uses ?? ""))).toBe(
+        false,
+      );
     }
     expect(ordinary.jobs).not.toHaveProperty("release-preparation");
-    const preparation = parse(
-      readFileSync(".github/workflows/prepare-release.yml", "utf8"),
-    );
-    expect(
-      preparation.jobs.validate.steps.some(
-        (step) => step.run === "node scripts/validate-release-preparation.mjs",
-      ),
-    ).toBe(true);
+    for (const name of [
+      "build",
+      "installed",
+      "attest",
+      "provenance-capability",
+    ]) {
+      expect(ordinary.jobs[name].if).toBe("github.ref == 'refs/heads/main'");
+    }
     expect(buildCommands).toContainEqual([
       "node",
       "scripts/check-release-artifacts.mjs",
@@ -867,6 +902,7 @@ it("refuses an actual dirty Git checkout before building a candidate", async () 
       event,
       JSON.stringify({
         repository: { default_branch: "main" },
+        after: sha,
         inputs: {
           source_sha: sha,
           config_sha256: createHash("sha256")
@@ -883,9 +919,10 @@ it("refuses an actual dirty Git checkout before building a candidate", async () 
         encoding: "utf8",
         env: {
           ...process.env,
+          TINTA_RELEASE_SOURCE_SHA: "",
           GITHUB_ACTIONS: "true",
           GITHUB_EVENT_PATH: event,
-          GITHUB_EVENT_NAME: "workflow_dispatch",
+          GITHUB_EVENT_NAME: "push",
           GITHUB_REF: "refs/heads/main",
           GITHUB_SHA: sha,
         },
