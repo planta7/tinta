@@ -6,6 +6,19 @@ export function candidateReleaseNotes(plan, directory) {
   const source = plan.targets.find((target) => target.id === "source");
   assert.ok(source, "Missing candidate source archive");
   const entries = readZip(checkFile(directory, source.archive));
+  const releasePlanRecord = plan.metadata?.find(
+    (record) => record.path === "release-plan.json",
+  );
+  if (releasePlanRecord) {
+    const releasePlan = JSON.parse(checkFile(directory, releasePlanRecord));
+    assert.equal(releasePlan.sourceSha, plan.sourceSha);
+    assert.equal(typeof releasePlan.notes, "string");
+    assert.ok(releasePlan.notes.trim());
+    return (
+      releasePlan.notes +
+      `\n\n[Install and use](https://github.com/${plan.repository}/blob/${plan.sourceSha}/README.md#try-it-locally)`
+    );
+  }
   const changelog = entries["CHANGELOG.md"];
   assert.ok(changelog, "Missing candidate changelog");
   const text = new TextDecoder("utf-8", { fatal: true }).decode(changelog);

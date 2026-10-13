@@ -190,24 +190,20 @@ describe("release PR integration without external mutations", () => {
 });
 
 describe("workflow authority and validation topology", () => {
-  it("pins actions, serializes explicit dispatch and scopes write permissions", () => {
+  it("pins automatic CI actions and reserves publication permissions for CD", () => {
     const workflow = parse(
-      readFileSync(".github/workflows/prepare-release.yml", "utf8"),
+      readFileSync(".github/workflows/verify.yml", "utf8"),
     );
-    expect(Object.keys(workflow.on)).toEqual(["workflow_dispatch"]);
-    expect(workflow.on.workflow_dispatch.inputs.authorize_remote.default).toBe(
-      false,
-    );
+    expect(Object.keys(workflow.on)).toEqual(["push"]);
     expect(workflow.permissions).toEqual({ contents: "read" });
     expect(workflow.concurrency["cancel-in-progress"]).toBe(false);
-    expect(workflow.jobs["pull-request"].needs).toBe("validate");
-    expect(workflow.jobs["pull-request"].if).toContain(
-      "inputs.authorize_remote",
+    expect(workflow.concurrency.queue).toBe("max");
+    expect(workflow.jobs.verify.if).toBeUndefined();
+    const cd = parse(
+      readFileSync(".github/workflows/publish-release.yml", "utf8"),
     );
-    expect(workflow.jobs["pull-request"].permissions).toEqual({
-      contents: "write",
-      "pull-requests": "write",
-    });
+    expect(cd.on.workflow_run.branches).toEqual(["main"]);
+    expect(cd.jobs.publish.permissions.contents).toBe("write");
     for (const job of Object.values(workflow.jobs)) {
       for (const step of job.steps) {
         if (step.uses) expect(step.uses).toMatch(/@[a-f0-9]{40}$/);
@@ -216,7 +212,11 @@ describe("workflow authority and validation topology", () => {
     }
     const verify = parse(readFileSync(".github/workflows/verify.yml", "utf8"));
     expect(Object.keys(verify.jobs).sort()).toEqual([
+      "attest",
+      "build",
       "cli-portability",
+      "installed",
+      "provenance-capability",
       "verify",
     ]);
     expect(
@@ -229,8 +229,8 @@ describe("workflow authority and validation topology", () => {
         ),
     ).toBe(false);
     expect(
-      workflow.jobs.validate.steps.some(
-        (step) => step.run === "node scripts/validate-release-preparation.mjs",
+      workflow.jobs.verify.steps.some(
+        (step) => step.run === "pnpm verify --suite editing",
       ),
     ).toBe(true);
     const validation = readFileSync(

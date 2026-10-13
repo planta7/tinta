@@ -1,3 +1,4 @@
+import { automaticVersions } from "./automatic-release.mjs";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -227,6 +228,12 @@ export function validateConfig(config, manifests) {
 
 export function loadReleaseConfig() {
   const config = readJson("toolchain/release.json");
+  if (process.env.TINTA_RELEASE_SOURCE_SHA) {
+    Object.assign(
+      config.versions,
+      automaticVersions(process.env.TINTA_RELEASE_SOURCE_SHA),
+    );
+  }
   const paths = [
     ".",
     "apps/studio",

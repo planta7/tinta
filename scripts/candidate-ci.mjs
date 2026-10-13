@@ -40,25 +40,20 @@ function preflight() {
   assert.equal(
     process.env.GITHUB_ACTIONS,
     "true",
-    "Hosted dispatch required; local tests are fixtures only",
+    "Hosted push required; local tests are fixtures only",
   );
   const event = read(process.env.GITHUB_EVENT_PATH);
-  assert.equal(process.env.GITHUB_EVENT_NAME, "workflow_dispatch");
+  assert.equal(process.env.GITHUB_EVENT_NAME, "push");
   assert.equal(
     process.env.GITHUB_REF,
     `refs/heads/${event.repository.default_branch}`,
   );
   assert.equal(
-    event.inputs.source_sha,
+    event.after,
     process.env.GITHUB_SHA,
-    "Explicit source must be the dispatched default-branch commit",
+    "Source must be the pushed default-branch commit",
   );
-  assert.equal(
-    event.inputs.config_sha256,
-    digest(readFileSync("toolchain/release.json")),
-    "Unreviewed release configuration",
-  );
-  assert.equal(git("rev-parse", "HEAD"), event.inputs.source_sha);
+  assert.equal(git("rev-parse", "HEAD"), event.after);
   assert.equal(
     git("status", "--porcelain"),
     "",
@@ -68,7 +63,7 @@ function preflight() {
     "git",
     "merge-base",
     "--is-ancestor",
-    event.inputs.source_sha,
+    event.after,
     `origin/${event.repository.default_branch}`,
   ]);
   const producer = {
@@ -76,7 +71,7 @@ function preflight() {
     repositoryId: process.env.GITHUB_REPOSITORY_ID,
     workflow: candidateWorkflow,
     workflowSha: process.env.GITHUB_WORKFLOW_SHA,
-    sourceSha: event.inputs.source_sha,
+    sourceSha: event.after,
     sourceTree: git("rev-parse", "HEAD^{tree}"),
     event: process.env.GITHUB_EVENT_NAME,
     runId: process.env.GITHUB_RUN_ID,

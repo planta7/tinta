@@ -15,19 +15,34 @@ import { readTarball } from "./distribution-archive.mjs";
 import { validateIntent } from "./publication.mjs";
 import { publishingNpmVersion } from "./publication-npm.mjs";
 
-export function dispatchInputs(env) {
-  assert.equal(env.GITHUB_EVENT_NAME, "workflow_dispatch");
-  assert.equal(env.GITHUB_REF, `refs/heads/${env.TINTA_DEFAULT_BRANCH}`);
+export function dispatchInputs(
+  env,
+  event = readCandidateJson(readFileSync(env.GITHUB_EVENT_PATH)),
+) {
+  assert.equal(env.GITHUB_EVENT_NAME, "workflow_run");
+  assert.equal(env.GITHUB_REF, "refs/heads/main");
+  const run = event.workflow_run;
+  assert.equal(run.event, "push");
+  assert.equal(run.status, "completed");
+  assert.equal(run.conclusion, "success");
+  assert.equal(run.path, ".github/workflows/verify.yml");
+  assert.equal(run.head_branch, "main");
+  assert.equal(run.head_repository.full_name, env.GITHUB_REPOSITORY);
+  assert.equal(String(run.head_repository.id), env.GITHUB_REPOSITORY_ID);
+  assert.equal(String(run.id), env.TINTA_CANDIDATE_RUN);
+  assert.equal(String(run.run_attempt), env.TINTA_CANDIDATE_ATTEMPT);
+  assert.equal(run.head_sha, env.TINTA_RELEASE_SOURCE_SHA);
   assert.match(env.TINTA_CANDIDATE_RUN, /^[1-9][0-9]*$/);
   assert.match(env.TINTA_CANDIDATE_ATTEMPT, /^[1-9][0-9]*$/);
   assert.ok(Number.isSafeInteger(Number(env.TINTA_CANDIDATE_ATTEMPT)));
-  assert.match(env.TINTA_MANIFEST_SHA256, /^[a-f0-9]{64}$/);
+  if (env.TINTA_MANIFEST_SHA256)
+    assert.match(env.TINTA_MANIFEST_SHA256, /^[a-f0-9]{64}$/);
   assert.match(env.GITHUB_SHA, /^[a-f0-9]{40}$/);
   return {
     run: env.TINTA_CANDIDATE_RUN,
     attempt: Number(env.TINTA_CANDIDATE_ATTEMPT),
     digest: env.TINTA_MANIFEST_SHA256,
-    publisherSha: env.GITHUB_SHA,
+    publisherSha: env.TINTA_RELEASE_SOURCE_SHA,
   };
 }
 
@@ -41,11 +56,7 @@ export function activationPolicy(policy, config, env) {
   );
   assert.equal(policy.repository, env.GITHUB_REPOSITORY);
   assert.equal(policy.repositoryId, env.GITHUB_REPOSITORY_ID);
-  assert.equal(
-    env.TINTA_REVIEWED_PUBLISHER_SHA,
-    env.GITHUB_SHA,
-    "Publisher revision has not been reviewed",
-  );
+  assert.match(env.TINTA_RELEASE_SOURCE_SHA, /^[a-f0-9]{40}$/);
   assert.equal(policy.environment, "release");
   assert.equal(config.identities.repository.value, policy.repository);
   assert.equal(policy.npm.version, publishingNpmVersion);
@@ -77,13 +88,23 @@ export async function publicationGate({
   const config = loadReleaseConfig();
   activationPolicy(policy, config, env);
   const index = verifyCandidateFiles(directory, config);
+  const inventory = readCandidateJson(
+    readFileSync(join(directory, index.inventory.path)),
+  );
+  assert.equal(
+    inventory.releasePlan?.path,
+    "release-plan.json",
+    "Missing signed release plan",
+  );
   assert.equal(index.producer.runId, inputs.run);
   assert.equal(index.producer.attempt, inputs.attempt);
-  assert.equal(
-    index.manifest.sha256,
-    inputs.digest,
-    "Unapproved manifest digest",
-  );
+  assert.equal(index.producer.sourceSha, inputs.publisherSha);
+  if (inputs.digest)
+    assert.equal(
+      index.manifest.sha256,
+      inputs.digest,
+      "Manifest digest mismatch",
+    );
   await verifyProducer(
     index,
     { ...expected, indexPath: join(directory, "candidate-index.json") },
@@ -123,6 +144,7 @@ export async function publicationGate({
     expiresAt: index.expiresAt,
     targets: manifest.targets,
     metadata: [
+      "release-plan.json",
       "release-manifest.json",
       "release-manifest.json.sha256",
       "candidate-index.json",
@@ -131,8 +153,13 @@ export async function publicationGate({
       ...Object.values(index.reports).map((record) => record.path),
     ].map((path) => fileRecord(path, readFileSync(join(directory, path)))),
   };
-  assert.ok(env.TINTA_RELEASE_INTENT, "Missing reviewed release intent");
-  const intent = readCandidateJson(Buffer.from(env.TINTA_RELEASE_INTENT));
+  const intent = {
+    candidate: plan.candidate,
+    publisherSha: plan.publisherSha,
+    releaseId: plan.releaseId,
+    expiresAt: plan.expiresAt,
+    reconciliation: null,
+  };
   validateIntent(intent, plan, now);
   return { plan, intent };
 }
