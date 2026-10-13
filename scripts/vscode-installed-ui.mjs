@@ -35,7 +35,10 @@ export async function driveInstalledUI(root, port, signal) {
       page.setDefaultTimeout(15000);
       if (request.action === "enrich") {
         await page
-          .getByRole("button", { name: "Create Tinta Copy", exact: true })
+          .getByRole("button", {
+            name: "Create Separate Document",
+            exact: true,
+          })
           .click();
       } else if (request.action === "root") {
         const input = page.locator(".quick-input-widget input[type=text]");

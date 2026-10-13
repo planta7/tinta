@@ -243,7 +243,7 @@ export async function run() {
           group.tabs.some(
             (tab) =>
               tab.input instanceof vscode.TabInputWebview &&
-              tab.label === "Tinta Preview",
+              tab.label === "tinta Preview",
           ),
         ),
       "Native preview did not complete the LSP compilation path",

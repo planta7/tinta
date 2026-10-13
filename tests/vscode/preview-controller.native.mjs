@@ -78,7 +78,7 @@ const createPanel = () => {
 };
 const ready = async (state) => {
   controller.receive(state, { ...state.identity, kind: "ready" });
-  await vi.waitFor(() => expect(state.panel.title).toBe("Tinta Preview"));
+  await vi.waitFor(() => expect(state.panel.title).toBe("tinta Preview"));
 };
 beforeEach(() => {
   io.fail = false;
@@ -201,7 +201,7 @@ describe("native preview controller boundaries", () => {
       document: doc,
       contentChanges: [{ rangeOffset: 0, rangeLength: 22, text: "# Fixed" }],
     });
-    await vi.waitFor(() => expect(state.panel.title).toBe("Tinta Preview"));
+    await vi.waitFor(() => expect(state.panel.title).toBe("tinta Preview"));
     controller.receive(state, {
       ...old,
       kind: "state",

@@ -150,7 +150,7 @@ export class PreviewController implements vscode.Disposable {
     } catch {
       if (this.sources.get(document) === state)
         state.error =
-          "Source bytes are unverified. Use Tinta: Create UTF-8/LF Copy for Preview; the original is preserved.";
+          "Source bytes are unverified. Use tinta: Create UTF-8/LF Copy for Preview; the original is preserved.";
     }
   }
 
@@ -276,13 +276,13 @@ export class PreviewController implements vscode.Disposable {
     }
     if (this.panels.size >= 4) {
       void vscode.window.showWarningMessage(
-        "At most four Tinta previews may be open.",
+        "At most four tinta previews may be open.",
       );
       return;
     }
     const panel = vscode.window.createWebviewPanel(
       "tinta.preview",
-      "Tinta Preview — Checking source",
+      "tinta Preview — Checking source",
       vscode.ViewColumn.Beside,
       {
         enableScripts: true,
@@ -418,7 +418,7 @@ export class PreviewController implements vscode.Disposable {
       state.pendingState?.resolve();
       delete state.pendingState;
       state.enabled = true;
-      state.panel.title = "Tinta Preview";
+      state.panel.title = "tinta Preview";
     } else if (message.kind === "diagnostics") {
       state.panel.dispose();
       void vscode.window.showErrorMessage(
@@ -440,7 +440,7 @@ export class PreviewController implements vscode.Disposable {
     const message = { ...state.identity, kind, ...fields };
     if (!boundedJson(message)) {
       state.enabled = false;
-      state.panel.title = "Tinta Preview — Transport capacity exceeded";
+      state.panel.title = "tinta Preview — Transport capacity exceeded";
       return;
     }
     void state.panel.webview.postMessage(message);
@@ -452,7 +452,7 @@ export class PreviewController implements vscode.Disposable {
     state.enabled = false;
     delete state.expectedLoad;
     state.generation++;
-    state.panel.title = `Tinta Preview — ${title}`;
+    state.panel.title = `tinta Preview — ${title}`;
     this.send(state, "set-enabled", { enabled: false });
   }
 
@@ -462,7 +462,7 @@ export class PreviewController implements vscode.Disposable {
     const snapshot = this.sources.get(state.document)?.snapshot;
     if (!snapshot) {
       state.panel.title =
-        "Tinta Preview — Source unverified; create a UTF-8/LF copy";
+        "tinta Preview — Source unverified; create a UTF-8/LF copy";
       return;
     }
     const generation = state.generation;
@@ -492,7 +492,7 @@ export class PreviewController implements vscode.Disposable {
         !compiled.result.ok
       ) {
         state.panel.title =
-          "Tinta Preview — Source errors; last valid preview disabled";
+          "tinta Preview — Source errors; last valid preview disabled";
         return;
       }
       state.identity = { ...state.identity, source: snapshot.identity };
@@ -522,7 +522,7 @@ export class PreviewController implements vscode.Disposable {
       state.expectedLoad = state.identity.requestId;
     } catch {
       if (state.generation !== generation) return;
-      state.panel.title = "Tinta Preview — Host failure";
+      state.panel.title = "tinta Preview — Host failure";
       void vscode.window.showErrorMessage(
         `Preview failed. Incident: ${token()}.`,
       );

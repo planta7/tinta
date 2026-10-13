@@ -99,7 +99,7 @@ describe("native activation and client boundaries", () => {
     ])
       output[method]("SECRET SOURCE");
     output.show();
-    expect(output.name).toBe("Tinta");
+    expect(output.name).toBe("tinta");
     expect(vscode.output.show).toHaveBeenCalledOnce();
     expect(vscode.output.error.mock.calls[0][0]).toMatch(
       /Incident: [a-f0-9]{32}/,
@@ -130,11 +130,11 @@ describe("native activation and client boundaries", () => {
     expect(vscode.status.tooltip).toContain("unverified");
     client.notification({ uri: "untitled:other", version: 1, source: "valid" });
     client.notification({ uri: "untitled:test", version: 2, source: "valid" });
-    expect(vscode.status.text).toBe("Tinta: source only");
+    expect(vscode.status.text).toBe("tinta: source only");
     for (const [source, text] of [
-      ["valid", "Tinta: source valid"],
-      ["invalid", "Tinta: source errors"],
-      ["capacity", "Tinta: host capacity; retry Check"],
+      ["valid", "tinta: source valid"],
+      ["invalid", "tinta: source errors"],
+      ["capacity", "tinta: host capacity; retry Check"],
     ]) {
       client.notification({ uri: "untitled:test", version: 1, source });
       expect(vscode.status.text).toBe(text);

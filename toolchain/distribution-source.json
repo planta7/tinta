@@ -43,6 +43,7 @@
   "apps/studio/src/workspace.ts",
   "apps/studio/tsconfig.json",
   "apps/studio/vite.config.js",
+  "apps/vscode/icon.png",
   "apps/vscode/language-configuration.json",
   "apps/vscode/package.json",
   "apps/vscode/src/artifact-protocol.ts",

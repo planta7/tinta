@@ -9,7 +9,9 @@
     "@tinta-lang/local-files": "workspace:*",
     "@tinta-lang/artifacts": "workspace:*"
   },
-  "displayName": "Tinta",
+  "displayName": "tinta",
+  "description": "Write interactive Markdown documents with controls, calculations and charts; preview and export standalone HTML.",
+  "icon": "icon.png",
   "publisher": "tinta-local",
   "engines": {
     "vscode": "^1.141.0"
@@ -32,7 +34,7 @@
       {
         "id": "tinta",
         "aliases": [
-          "Tinta"
+          "tinta"
         ],
         "extensions": [
           ".tinta"
@@ -50,53 +52,53 @@
     "commands": [
       {
         "command": "tinta.check",
-        "title": "Tinta: Check"
+        "title": "tinta: Check"
       },
       {
         "command": "tinta.openPreview",
-        "title": "Tinta: Open Preview"
+        "title": "tinta: Open Preview"
       },
       {
         "command": "tinta.previewCopy",
-        "title": "Tinta: Create UTF-8/LF Copy for Preview"
+        "title": "tinta: Create UTF-8/LF Copy for Preview"
       },
       {
         "command": "tinta.resetReading",
-        "title": "Tinta: Reset Reading"
+        "title": "tinta: Reset Reading"
       },
       {
         "command": "tinta.selectImageRoot",
-        "title": "Tinta: Select Image Root",
+        "title": "tinta: Select Image Root",
         "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "tinta.refreshImages",
-        "title": "Tinta: Refresh Images",
+        "title": "tinta: Refresh Images",
         "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "tinta.enrichMarkdown",
-        "title": "Tinta: Enrich Markdown",
+        "title": "tinta: Enrich Markdown",
         "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "tinta.openSourceBundle",
-        "title": "Tinta: Open Source Bundle",
+        "title": "tinta: Open Source Bundle",
         "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "tinta.saveSourceBundle",
-        "title": "Tinta: Save Source Bundle",
+        "title": "tinta: Save Source Bundle",
         "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "tinta.exportInteractive",
-        "title": "Tinta: Export Interactive HTML",
+        "title": "tinta: Export Interactive HTML",
         "enablement": "isWorkspaceTrusted"
       },
       {
         "command": "tinta.exportStatic",
-        "title": "Tinta: Export Static HTML",
+        "title": "tinta: Export Static HTML",
         "enablement": "isWorkspaceTrusted"
       }
     ],

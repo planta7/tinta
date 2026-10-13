@@ -35,7 +35,7 @@ const subscribe = (name) => (handler) => {
   return { dispose: () => listeners.delete(handler) };
 };
 export const output = {
-  name: "Tinta",
+  name: "tinta",
   error: vi.fn(),
   show: vi.fn(),
   dispose: vi.fn(),

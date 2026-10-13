@@ -14,6 +14,7 @@ export const extensionVersion = "0.1.0-dev.0";
 export const payloadFiles = [
   "package.json",
   "README.md",
+  "icon.png",
   "LICENSE",
   "THIRD_PARTY_NOTICES.txt",
   "build-identity.json",
@@ -136,8 +137,6 @@ export async function packageExtension({
     version,
     publisher,
     categories: ["Programming Languages"],
-    description:
-      "Local Markdown-first Tinta authoring, preview and export (development build).",
     license: "MIT",
   };
   const registry = JSON.parse(await readFile("spec/registry.json", "utf8"));
@@ -151,9 +150,11 @@ export async function packageExtension({
         : await readFile(
             name === "README.md"
               ? "docs/14_VSCODE_QUICKSTART.md"
-              : ["LICENSE", "THIRD_PARTY_NOTICES.txt"].includes(name)
-                ? name
-                : `apps/vscode/${name}`,
+              : name === "icon.png"
+                ? "apps/vscode/icon.png"
+                : ["LICENSE", "THIRD_PARTY_NOTICES.txt"].includes(name)
+                  ? name
+                  : `apps/vscode/${name}`,
           );
     entries[`extension/${name}`] = bytes;
   }
@@ -188,6 +189,7 @@ export async function packageExtension({
   <Default Extension="mjs" ContentType="application/javascript"/>
   <Default Extension="md" ContentType="text/markdown"/>
   <Default Extension="txt" ContentType="text/plain"/>
+  <Default Extension="png" ContentType="image/png"/>
   <Default Extension="vsixmanifest" ContentType="text/xml"/>
   <Override PartName="/extension/LICENSE" ContentType="text/plain"/>
 </Types>`);
@@ -196,8 +198,8 @@ export async function packageExtension({
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
   <Metadata>
     <Identity Language="en-US" Id="tinta" Version="${version}" Publisher="${publisher}"/>
-    <DisplayName>Tinta</DisplayName>
-    <Description xml:space="preserve">Local Tinta authoring, preview and export</Description>
+    <DisplayName>tinta</DisplayName>
+    <Description xml:space="preserve">Write interactive Markdown documents with controls, calculations and charts; preview and export standalone HTML.</Description>
     <Tags>markdown</Tags>
     <Categories>Programming Languages</Categories>
     <GalleryFlags>${release ? "Public Preview" : "Preview"}</GalleryFlags>
@@ -215,6 +217,7 @@ export async function packageExtension({
   <Assets>
     <Asset Type="Microsoft.VisualStudio.Code.Manifest" Path="extension/package.json" Addressable="true"/>
     <Asset Type="Microsoft.VisualStudio.Services.Content.Details" Path="extension/README.md" Addressable="true"/>
+    <Asset Type="Microsoft.VisualStudio.Services.Icons.Default" Path="extension/icon.png" Addressable="true"/>
     <Asset Type="Microsoft.VisualStudio.Services.Content.License" Path="extension/LICENSE" Addressable="true"/>
   </Assets>
 </PackageManifest>`);

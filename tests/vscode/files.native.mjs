@@ -439,7 +439,7 @@ describe("native local file commands", () => {
     expect(controller.createDocument).not.toHaveBeenCalled();
     vscode.window.showInformationMessage.mockImplementation(async () => {
       doc.version++;
-      return "Create Tinta Copy";
+      return "Create Separate Document";
     });
     await perform("enrichMarkdown");
     expect(lastWarning()).toContain("Markdown changed");

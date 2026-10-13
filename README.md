@@ -41,7 +41,7 @@ New documents open ready to type. Existing documents open in Reading mode. Studi
 
 The local VS Code Desktop extension brings `.tinta` documents into your editor: directive and expression completion, diagnostics, hover help, definitions and references, plus an interactive preview with controls and charts.
 
-Enrich an existing Markdown file into a separate Tinta document, explicitly select local images, open and save source bundles, and export interactive or static HTML. Markdown files keep their normal editing behavior. Image, bundle, enrichment and export commands require workspace trust and explicit confirmation or file choices.
+Enrich an existing Markdown file into a separate tinta document, select local images, open and save source bundles, and export interactive or static HTML. Markdown files keep their normal editing behavior. Image, bundle, enrichment and export commands require a trusted workspace.
 
 After installing the [repository toolchain and dependencies](#try-it-locally), build the local extension:
 
@@ -49,9 +49,9 @@ After installing the [repository toolchain and dependencies](#try-it-locally), b
 pnpm package:vscode
 ```
 
-In VS Code, run **Extensions: Install from VSIX…**, select `build/vscode/tinta-0.1.0-dev.0.vsix`, then reload. Open a `.tinta` file and run **Tinta: Open Preview**. The installed extension bundles its runtimes; editing requires no global Tinta CLI or separate Node installation.
+In VS Code, run **Extensions: Install from VSIX…**, select `build/vscode/tinta-0.1.0-dev.0.vsix`, then reload. Open a `.tinta` file and run **tinta: Open Preview**.
 
-The extension targets **VS Code Desktop 1.141.0** on macOS arm64, Linux arm64 and Windows x64. Remote workspaces and vscode.dev are unsupported. Rename, quick fixes and a formatter are not included.
+Use the extension in VS Code Desktop on macOS arm64, Linux arm64 or Windows x64. Remote workspaces and vscode.dev are unsupported. Rename, quick fixes and formatting are not available.
 
 See the [VS Code quickstart](docs/14_VSCODE_QUICKSTART.md) for examples, local installation, diagnostics and exports, and the [host reference](docs/13_VSCODE.md) for behavior and limits.
 

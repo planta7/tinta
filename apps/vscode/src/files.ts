@@ -92,7 +92,7 @@ export class FileController implements vscode.Disposable {
   private async run(action: () => Promise<void>): Promise<void> {
     if (this.active) {
       void vscode.window.showWarningMessage(
-        "Another Tinta file operation is running.",
+        "Another tinta file operation is running.",
       );
       return;
     }
@@ -102,7 +102,7 @@ export class FileController implements vscode.Disposable {
       await vscode.window.withProgress(
         {
           location: vscode.ProgressLocation.Notification,
-          title: "Tinta local files",
+          title: "tinta local files",
           cancellable: true,
         },
         async (_progress, cancellation) => {
@@ -332,7 +332,7 @@ export class FileController implements vscode.Disposable {
     this.preview.canAdopt(bytes);
     const text = decodeUtf8(bytes);
     const uri = vscode.Uri.parse(
-      `untitled:Tinta-${randomBytes(8).toString("hex")}.tinta`,
+      `untitled:tinta-${randomBytes(8).toString("hex")}.tinta`,
     );
     const document = await vscode.workspace.openTextDocument(uri);
     const edit = new vscode.WorkspaceEdit();
@@ -350,7 +350,7 @@ export class FileController implements vscode.Disposable {
       canSelectFiles: true,
       canSelectMany: false,
       title: "Open Source Bundle",
-      filters: { "Tinta source bundle": ["tinta.zip"] },
+      filters: { "tinta source bundle": ["tinta.zip"] },
     });
     if (!chosen?.[0]) return;
     this.checkpoint();
@@ -415,10 +415,10 @@ export class FileController implements vscode.Disposable {
         "Markdown enrichment — proposed copy",
       );
       const answer = await vscode.window.showInformationMessage(
-        "Review the proposed enrichment. Create a separate Tinta document? The Markdown source stays unchanged.",
-        "Create Tinta Copy",
+        "Review the proposed enrichment. Create a separate tinta document? The Markdown source stays unchanged.",
+        "Create Separate Document",
       );
-      if (answer !== "Create Tinta Copy") return;
+      if (answer !== "Create Separate Document") return;
       this.checkpoint();
       if (document.version !== version)
         throw new ArtifactFailure(
@@ -508,7 +508,7 @@ export class FileController implements vscode.Disposable {
       saveLabel: "Write separate artifact",
       filters:
         format === "bundle"
-          ? { "Tinta source bundle": ["tinta.zip"] }
+          ? { "tinta source bundle": ["tinta.zip"] }
           : { HTML: ["html"] },
     });
     if (!output) return;

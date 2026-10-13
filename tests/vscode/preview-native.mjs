@@ -176,7 +176,7 @@ export async function run() {
       ),
     );
     await waitFor(
-      () => state.panel.title === "Tinta Preview",
+      () => state.panel.title === "tinta Preview",
       "recovered source",
     );
     const recovered = await inspect(
