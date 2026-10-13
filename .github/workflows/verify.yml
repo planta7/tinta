@@ -31,7 +31,7 @@ jobs:
           mkdir -p reports/release build/transfer
 
           tar -czf build/transfer/compiled.tgz --exclude=build/transfer build packages/*/dist
-          apps/vscode/dist reports/release
+          apps/vscode/dist packages/cli/assets/tinta-studio.html reports/release
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         id: compiled
         with:
