@@ -33,7 +33,8 @@ jobs:
       - name: Prepare requested local diff
         run: node scripts/prepare-release-event.mjs
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
-      - run: node scripts/validate-release-preparation.mjs
+      - name: Validate release preparation and supplied archives
+        run: node scripts/validate-release-preparation.mjs
   pull-request:
     needs: validate
     if: inputs.authorize_remote && github.ref_name == github.event.repository.default_branch

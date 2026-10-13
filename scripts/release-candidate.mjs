@@ -27,6 +27,7 @@ export const nativeModes = [
 ];
 export const buildCommands = [
   ["node", "scripts/distribution-package.mjs"],
+  ["pnpm", "test:vscode:unit"],
   ["pnpm", "test:vscode:browser"],
   [
     "pnpm",
@@ -45,7 +46,6 @@ export const verificationJobs = [
   "cli-portability (ubuntu-24.04)",
   "cli-portability (macos-15)",
   "cli-portability (windows-2022)",
-  "release-preparation",
 ];
 
 export function validateVerification(receipt, producer) {

@@ -215,13 +215,31 @@ describe("workflow authority and validation topology", () => {
       }
     }
     const verify = parse(readFileSync(".github/workflows/verify.yml", "utf8"));
-    expect(verify.jobs["release-preparation"].permissions).toEqual({
-      contents: "read",
-    });
+    expect(Object.keys(verify.jobs).sort()).toEqual([
+      "cli-portability",
+      "verify",
+    ]);
     expect(
-      verify.jobs["release-preparation"].steps.some(
+      Object.values(verify.jobs)
+        .flatMap((job) => job.steps)
+        .some((step) =>
+          /validate-release-preparation|distribution-package|check-release-artifacts/.test(
+            step.run ?? "",
+          ),
+        ),
+    ).toBe(false);
+    expect(
+      workflow.jobs.validate.steps.some(
         (step) => step.run === "node scripts/validate-release-preparation.mjs",
       ),
     ).toBe(true);
+    const validation = readFileSync(
+      "scripts/validate-release-preparation.mjs",
+      "utf8",
+    );
+    expect(validation).toContain('"scripts/release-contract.mjs"');
+    expect(validation).toContain('"scripts/distribution-package.mjs"');
+    expect(validation).toContain('"scripts/check-release-artifacts.mjs"');
+    expect(validation).toContain('"scripts/distribution-vitest.config.js"');
   });
 });

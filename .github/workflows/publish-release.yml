@@ -73,7 +73,7 @@ jobs:
     environment: release
     permissions:
       contents: write
-      actions: read
+      actions: write
       attestations: read
       id-token: write
     steps:
@@ -127,6 +127,10 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ github.token }}
           TINTA_DEPENDENCIES_SHA256: ${{ needs.candidate-gate.outputs.dependencies_sha256 }}
+      - name: Deploy the published stable Studio release
+        run: node scripts/deploy-studio.mjs dispatch
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Preserve local receipt in addition to durable journal
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f

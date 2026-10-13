@@ -418,11 +418,11 @@ describe("same-commit Verify reuse", () => {
     ]);
     expect(buildCommands).toContainEqual(["pnpm", "test:vscode:browser"]);
     expect(
-      buildCommands.some(
-        (command) =>
-          command.includes("verify") || command.includes("test:vscode:unit"),
-      ),
-    ).toBe(false);
+      buildCommands.filter((command) => command.includes("test:vscode:unit")),
+    ).toEqual([["pnpm", "test:vscode:unit"]]);
+    expect(buildCommands.some((command) => command.includes("verify"))).toBe(
+      false,
+    );
     const workflow = parse(readFileSync(verificationWorkflow, "utf8"));
     const names = Object.entries(workflow.jobs).flatMap(([name, job]) =>
       job.strategy?.matrix?.os
@@ -795,13 +795,20 @@ describe("candidate workflow security topology", () => {
       expect(job.permissions).toEqual({ contents: "read" });
       expect(job.steps.some((s) => /attest@/.test(s.uses ?? ""))).toBe(false);
     }
+    expect(ordinary.jobs).not.toHaveProperty("release-preparation");
+    const preparation = parse(
+      readFileSync(".github/workflows/prepare-release.yml", "utf8"),
+    );
     expect(
-      ordinary.jobs["release-preparation"].steps.some(
-        (s) =>
-          s.run ===
-          "node scripts/check-release-artifacts.mjs build/distribution",
+      preparation.jobs.validate.steps.some(
+        (step) => step.run === "node scripts/validate-release-preparation.mjs",
       ),
     ).toBe(true);
+    expect(buildCommands).toContainEqual([
+      "node",
+      "scripts/check-release-artifacts.mjs",
+      "build/distribution",
+    ]);
   });
 });
 

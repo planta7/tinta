@@ -20,6 +20,7 @@ const commands = [
     "--config",
     "scripts/distribution-vitest.config.js",
   ],
+  ["node", "scripts/check-release-artifacts.mjs", "build/distribution"],
   ["pnpm", "exec", "vitest", "run", "tests/unit/cli.test.mjs"],
   ["pnpm", "test:vscode:unit"],
   [
