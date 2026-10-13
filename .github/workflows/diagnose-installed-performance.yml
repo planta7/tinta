@@ -98,11 +98,15 @@ jobs:
       - name: Locate the pinned desktop
         working-directory: source
         run: pnpm exec node scripts/candidate-tools.mjs --desktop
-      - name: Apply current diagnostic observer to the original test harness
+      - name: Apply current diagnostic collectors to the original test harness
         shell: pwsh
         run: |
           Copy-Item tests/vscode/completion-latency.mjs source/tests/vscode/completion-latency.mjs
-          Get-FileHash tests/vscode/completion-latency.mjs -Algorithm SHA256 |
+          Copy-Item tests/vscode/resident-memory.mjs source/tests/vscode/resident-memory.mjs
+          Get-FileHash -Path @(
+            'tests/vscode/completion-latency.mjs',
+            'tests/vscode/resident-memory.mjs'
+          ) -Algorithm SHA256 |
             Select-Object Algorithm, Hash |
             ConvertTo-Json | Set-Content reports/windows-performance/observer.json
       - name: Measure three fresh profiles without rebuilding the VSIX
