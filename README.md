@@ -20,19 +20,27 @@
 
 An article that invites questions. A report where readers can test their assumptions. A guide that gives each reader the explanation they need.
 
-Choose the tool that fits your work. **Studio** is the browser editor, the **VS Code extension** brings authoring into your desktop editor, and the **CLI** validates and exports documents from the terminal. They share the same language and engine. Exported HTML opens independently of all three.
+Choose the tool that fits your work. They share the same language and engine, and exported HTML opens independently of all three.
+
+| Work in | Use it to |
+| --- | --- |
+| [tinta studio](#meet-tinta-studio) | Explore examples, write and preview documents in a browser. |
+| [VS Code](#write-in-vs-code) | Write with completion, diagnostics and an interactive preview. |
+| [The CLI](#try-it-locally) | Check documents and create HTML exports from the terminal. |
 
 ## Meet tinta studio
 
-> [!TIP]
-> **Try tinta studio live.** [Open the browser demo →](https://planta7.github.io/tinta/)
+> [!NOTE]
+> **You can try tinta studio in your browser.** [Open the demo →](https://planta7.github.io/tinta/)
 > Explore an example, change a control and watch the document respond. No account needed.
 
 Write on the left. Read and interact on the right.
 
-![tinta studio editing the included article: Markdown source alongside a live document with sliders and a chart.](docs/assets/studio.png)
+<p align="center">
+  <img src="docs/assets/studio.png" alt="tinta studio editing the illustrated newsletter article: Markdown source on the left and the live document with two sliders on the right." width="1100">
+</p>
 
-_The included [explorable article](examples/article.tinta), open in tinta studio._
+<p align="center"><em>The updated <a href="examples/article.tinta">explorable article</a>, open in tinta studio.</em></p>
 
 - **See your ideas take shape.** Write and see the document update beside you. Search, undo and clear error messages help you keep going.
 - **A starting point when you need one.** Browse rendered examples and reusable snippets. Bring an existing Markdown file or import local CSV, JSON and raster images.
@@ -168,7 +176,8 @@ The [example collection](examples/README.md) also includes a minimal starting po
 | **Static HTML**      | The resolved visible presentation, without an executable program.    |
 | `.tinta.state.json`  | Explicitly saved reader answers tied to an exact source fingerprint. |
 
-**Interactive HTML includes the complete source, hidden branches and all embedded data.** Hidden does not mean private. Static export contains the resolved visible presentation and its referenced images. See the [file and export contract](docs/02_FILES_AND_EXPORTS.md) for the exact boundaries.
+> [!IMPORTANT]
+> **Interactive HTML includes the complete source, hidden branches and all embedded data.** Hidden content is still present in the file. Static HTML contains only the resolved visible presentation and its referenced images. See the [file and export contract](docs/02_FILES_AND_EXPORTS.md) for the exact boundaries.
 
 Studio's local recovery stores up to 10 copies and 30 MiB, replacing the oldest copies first. It can be disabled, and copies can be deleted. Reader answers are not automatically persisted. Studio can explicitly export an answers snapshot; the CLI can apply a matching snapshot during export. The VS Code preview keeps answers in memory and can include them in HTML exports, but does not provide snapshot import/export. [How saving and recovery work →](docs/03_EDITOR_AND_READER.md)
 
