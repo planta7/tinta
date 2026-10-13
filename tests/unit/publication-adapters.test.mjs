@@ -752,6 +752,53 @@ describe("Marketplace destination", () => {
   });
 });
 
+it.each(["paginated", "ambiguous", "unbounded"])(
+  "discovers GitHub drafts with %s listing results",
+  async (state) => {
+    const plan = {
+      repository: "fixture/repo",
+      tag: "fixture-tag",
+      sourceSha: "a".repeat(40),
+      candidate: "b".repeat(64),
+      targets: [{ kind: "npm", channel: "next" }],
+    };
+    const draft = {
+      id: 42,
+      tag_name: plan.tag,
+      target_commitish: plan.sourceSha,
+      body: `Candidate SHA-256: ${plan.candidate}`,
+      prerelease: true,
+      draft: true,
+    };
+    let pages = 0;
+    const adapter = releaseAdapter({
+      journal: { assertWriteAccess() {} },
+      api: async (method, path) => {
+        expect(method).toBe("GET");
+        if (path.endsWith("/fixture/repo"))
+          return { full_name: plan.repository, private: false };
+        if (!path.includes("/releases?")) return null;
+        pages += 1;
+        expect(path.endsWith(`per_page=100&page=${pages}`)).toBe(true);
+        if (state === "ambiguous") return [draft, { ...draft, id: 43 }];
+        if (state === "paginated" && pages === 2) return [draft];
+        return Array.from({ length: 100 }, (_, index) => ({
+          tag_name: `other-${pages}-${index}`,
+        }));
+      },
+    });
+    if (state === "paginated") {
+      await adapter.preflight(plan);
+      expect(pages).toBe(2);
+    } else {
+      await expect(adapter.preflight(plan)).rejects.toThrow(
+        state === "ambiguous" ? "Ambiguous" : "pagination bound",
+      );
+      expect(pages).toBe(state === "ambiguous" ? 1 : 10);
+    }
+  },
+);
+
 it("uploads immutable GitHub assets, detects collisions and finalizes only the full set", async () => {
   const w = workspace();
   try {
@@ -780,7 +827,10 @@ it("uploads immutable GitHub assets, detects collisions and finalizes only the f
         tag = { object: { type: "commit", sha: body.sha } };
         return tag;
       }
-      if (path.includes("/releases/tags/")) return release;
+      if (path.includes("/releases/tags/"))
+        return release?.draft ? null : release;
+      if (path.includes("/releases?")) return release ? [release] : [];
+      if (method === "GET" && path.endsWith("/releases/1")) return release;
       if (path.includes("/assets?")) return assets;
       if (method === "POST") {
         release = { ...body, id: 1 };
