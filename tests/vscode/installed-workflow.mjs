@@ -29,8 +29,10 @@ export async function installedWorkflow(root, open, groups) {
     "# Markdown\nLiteral {{ amount }}\n",
   );
   const enrichment = await ui("enrich");
-  await vscode.commands.executeCommand("tinta.enrichMarkdown");
-  await finished(enrichment);
+  await Promise.all([
+    vscode.commands.executeCommand("tinta.enrichMarkdown"),
+    finished(enrichment),
+  ]);
   assert.equal(markdown.getText(), "# Markdown\nLiteral {{ amount }}\n");
   assert.equal(vscode.window.activeTextEditor.document.languageId, "tinta");
   assert.notEqual(
@@ -58,8 +60,10 @@ Hidden confidential prose
 `;
   const document = await open("workflow.tinta", source);
   const rootChoice = await ui("root", { path: join(root, "workspace") });
-  await vscode.commands.executeCommand("tinta.selectImageRoot");
-  await finished(rootChoice);
+  await Promise.all([
+    vscode.commands.executeCommand("tinta.selectImageRoot"),
+    finished(rootChoice),
+  ]);
   await vscode.commands.executeCommand("tinta.openPreview");
   const controls = await ui("controls");
   await finished(controls);
@@ -73,8 +77,10 @@ Hidden confidential prose
     await vscode.window.showTextDocument(document, vscode.ViewColumn.One);
     const path = join(root, "workspace", name);
     const request = await ui("export", { path });
-    await vscode.commands.executeCommand(`tinta.${command}`);
-    await finished(request);
+    await Promise.all([
+      vscode.commands.executeCommand(`tinta.${command}`),
+      finished(request),
+    ]);
     assert.ok((await stat(path)).size > 1000);
     const html = await readFile(path, "utf8");
     assert.ok(html.includes("image/png"));

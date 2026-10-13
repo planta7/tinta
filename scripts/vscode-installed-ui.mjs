@@ -5,6 +5,18 @@ import { pathToFileURL } from "node:url";
 import assert from "node:assert/strict";
 
 const delay = (ms) => new Promise((accept) => setTimeout(accept, ms));
+export async function chooseInstalledPath(page, title, path) {
+  const dialog = page.locator(".quick-input-widget");
+  await dialog.getByText(title, { exact: true }).waitFor();
+  // The input is visible before the initial directory listing has loaded.
+  // That initial load can overwrite a path entered before it finishes.
+  await dialog.getByRole("option", { name: "..", exact: true }).waitFor();
+  const input = dialog.locator("input[type=text]");
+  await input.fill(path);
+  await input.press("Enter");
+  await dialog.waitFor({ state: "hidden" });
+}
+
 export async function driveInstalledUI(root, port, signal) {
   let browser;
   for (let attempt = 0; attempt < 100 && !signal.aborted; attempt++) {
@@ -41,9 +53,11 @@ export async function driveInstalledUI(root, port, signal) {
           })
           .click();
       } else if (request.action === "root") {
-        const input = page.locator(".quick-input-widget input[type=text]");
-        await input.fill(request.path + "/");
-        await input.press("Enter");
+        await chooseInstalledPath(
+          page,
+          "Select this document's local image root",
+          request.path + "/",
+        );
       } else if (request.action === "controls") {
         let inner;
         for (let index = 0; index < 150; index++) {
@@ -75,13 +89,7 @@ export async function driveInstalledUI(root, port, signal) {
           .getByText("Current preview answers", { exact: true })
           .click();
         await page.getByRole("button", { name: "Export", exact: true }).click();
-        await page
-          .locator(".quick-input-title")
-          .filter({ hasText: "Export HTML" })
-          .waitFor();
-        const input = page.locator(".quick-input-widget input[type=text]");
-        await input.fill(request.path);
-        await input.press("Enter");
+        await chooseInstalledPath(page, "Export HTML", request.path);
       } else if (request.action === "offline") {
         const offline = await chromium.launch({ headless: true });
         try {

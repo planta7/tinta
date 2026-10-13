@@ -1,7 +1,7 @@
 import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "../tests/vscode",
-  testMatch: "preview.browser.mjs",
+  testMatch: ["preview.browser.mjs", "installed-ui.browser.mjs"],
   workers: 1,
   retries: 0,
   forbidOnly: true,

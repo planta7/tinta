@@ -413,6 +413,7 @@
   "tests/vscode/inner-audit.mjs",
   "tests/vscode/installed-performance.mjs",
   "tests/vscode/installed-preview.mjs",
+  "tests/vscode/installed-ui.browser.mjs",
   "tests/vscode/installed-workflow.mjs",
   "tests/vscode/installed.mjs",
   "tests/vscode/outer.mjs",
