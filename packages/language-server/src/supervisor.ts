@@ -125,6 +125,15 @@ export class Supervisor {
     const shared =
       params.kind === "symbols" ? this.symbolQueries.get(uri) : undefined;
     if (shared) return shared.promise;
+    let complete!: (result: AuthoringResult) => void;
+    const result = new Promise<AuthoringResult>((resolve) => {
+      complete = resolve;
+    });
+    if (params.kind === "symbols") {
+      this.symbolQueries.set(uri, { promise: result, resolve: complete });
+      // The foreground analysis also supplies this version's outline.
+      if (this.queries.has(uri)) return result;
+    }
     this.queries.get(uri)?.(null);
     this.queries.delete(uri);
     if (state.timer) clearTimeout(state.timer);
@@ -134,13 +143,7 @@ export class Supervisor {
       query: { id: ++this.nextQuery, params },
     };
     if (this.active?.uri === uri) this.stopWorker();
-    let complete!: (result: AuthoringResult) => void;
-    const result = new Promise<AuthoringResult>((resolve) => {
-      complete = resolve;
-    });
-    if (params.kind === "symbols") {
-      this.symbolQueries.set(uri, { promise: result, resolve: complete });
-    } else {
+    if (params.kind !== "symbols") {
       this.queries.set(uri, complete);
     }
     this.pending.set(uri, state.request);

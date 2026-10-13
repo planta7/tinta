@@ -422,73 +422,92 @@ it("bundled worker agrees with CLI validation under equal source/options", async
   }
 });
 
-it("preserves interleaved outline and navigation requests over production IPC", async () => {
-  const child = fork(resolve("apps/vscode/dist/server.mjs"), [], {
-    execArgv: [],
-    stdio: ["ignore", "ignore", "ignore", "ipc"],
-  });
-  const replies = new Map();
-  let timer;
-  try {
-    await new Promise((accept, reject) => {
-      timer = setTimeout(() => reject(new Error("Missing IPC replies")), 8000);
-      child.on("error", reject);
-      child.on("exit", (code) => reject(new Error(`IPC exited: ${code}`)));
-      child.on("message", (message) => {
-        if (message.id === 1) {
-          const uri = "file:///outline-navigation.tinta";
-          child.send({ jsonrpc: "2.0", method: "initialized", params: {} });
-          child.send({
-            jsonrpc: "2.0",
-            method: "textDocument/didOpen",
-            params: {
-              textDocument: {
-                uri,
-                languageId: "tinta",
-                version: 1,
-                text: "@let amount = 2\n# 😀 Heading\n{{ amount }}",
-              },
-            },
-          });
-          for (const [id, method, extra] of [
-            [2, "textDocument/documentSymbol", {}],
-            [
-              3,
-              "textDocument/definition",
-              { position: { line: 2, character: 5 } },
-            ],
-            [4, "textDocument/documentSymbol", {}],
-          ]) {
+it.each([
+  ["definition", false],
+  ["definition", true],
+  ["references", false],
+  ["references", true],
+])(
+  "preserves %s with outline requests over IPC (navigation first: %s)",
+  async (kind, navigationFirst) => {
+    const child = fork(resolve("apps/vscode/dist/server.mjs"), [], {
+      execArgv: [],
+      stdio: ["ignore", "ignore", "ignore", "ipc"],
+    });
+    const replies = new Map();
+    let timer;
+    try {
+      await new Promise((accept, reject) => {
+        timer = setTimeout(
+          () => reject(new Error("Missing IPC replies")),
+          8000,
+        );
+        child.on("error", reject);
+        child.on("exit", (code) => reject(new Error(`IPC exited: ${code}`)));
+        child.on("message", (message) => {
+          if (message.id === 1) {
+            const uri = "file:///outline-navigation.tinta";
+            child.send({ jsonrpc: "2.0", method: "initialized", params: {} });
             child.send({
               jsonrpc: "2.0",
-              id,
-              method,
-              params: { textDocument: { uri }, ...extra },
+              method: "textDocument/didOpen",
+              params: {
+                textDocument: {
+                  uri,
+                  languageId: "tinta",
+                  version: 1,
+                  text: "@let amount = 2\n# 😀 Heading\n{{ amount }}",
+                },
+              },
             });
+            const requests = [
+              [2, "textDocument/documentSymbol", {}],
+              [
+                3,
+                `textDocument/${kind}`,
+                {
+                  position: { line: 2, character: 5 },
+                  context: { includeDeclaration: true },
+                },
+              ],
+              [4, "textDocument/documentSymbol", {}],
+            ];
+            if (navigationFirst)
+              [requests[0], requests[1]] = [requests[1], requests[0]];
+            for (const [id, method, extra] of requests) {
+              child.send({
+                jsonrpc: "2.0",
+                id,
+                method,
+                params: { textDocument: { uri }, ...extra },
+              });
+            }
+          } else if ([2, 3, 4].includes(message.id)) {
+            replies.set(message.id, message.result);
+            if (replies.size === 3) accept();
           }
-        } else if ([2, 3, 4].includes(message.id)) {
-          replies.set(message.id, message.result);
-          if (replies.size === 3) accept();
-        }
+        });
+        child.send({
+          jsonrpc: "2.0",
+          id: 1,
+          method: "initialize",
+          params: { processId: process.pid, capabilities: {}, rootUri: null },
+        });
       });
-      child.send({
-        jsonrpc: "2.0",
-        id: 1,
-        method: "initialize",
-        params: { processId: process.pid, capabilities: {}, rootUri: null },
-      });
-    });
-    expect(replies.get(2).map((item) => item.name)).toEqual([
-      "amount",
-      "😀 Heading",
-    ]);
-    expect(replies.get(4)).toEqual(replies.get(2));
-    expect(replies.get(3)).toHaveLength(1);
-  } finally {
-    clearTimeout(timer);
-    child.kill();
-  }
-});
+      expect(replies.get(2).map((item) => item.name)).toEqual([
+        "amount",
+        "😀 Heading",
+      ]);
+      expect(replies.get(4)).toEqual(replies.get(2));
+      expect(replies.get(3).map((item) => item.range.start.line)).toEqual(
+        kind === "references" ? [0, 2] : [0],
+      );
+    } finally {
+      clearTimeout(timer);
+      child.kill();
+    }
+  },
+);
 
 it("shares overlapping symbol requests for the same document version", async () => {
   const { supervisor, workers } = harness();
@@ -556,6 +575,44 @@ it("keeps outline symbols pending when navigation interrupts their analysis", as
   expect(await concurrentOutline).toEqual(await outline);
 });
 
+for (const kind of [
+  "references",
+  "definition",
+  "hover",
+  "completion",
+  "signature",
+]) {
+  it(`does not cancel pending ${kind} when outline symbols arrive`, async () => {
+    const { supervisor, workers } = harness();
+    const uri = "untitled:navigation-outline";
+    supervisor.update(uri, 1, "@let amount = 2\n{{ amount }}");
+    const navigation = supervisor.query(uri, {
+      kind,
+      position: { line: 1, character: 5 },
+      includeDeclaration: true,
+    });
+    const outline = supervisor.query(uri, { kind: "symbols" });
+    const duplicate = supervisor.query(uri, { kind: "symbols" });
+    expect(duplicate).toBe(outline);
+    expect(workers).toHaveLength(1);
+    expect(workers[0].terminated).toBe(false);
+    const request = workers[0].requests[0];
+    const result = analyze(
+      { uri, profile: "tinta", text: request.text },
+      {
+        documentInstance: request.instance,
+        editorVersion: request.version,
+        sourceRevision: request.version,
+      },
+    );
+    const response = [{ name: "requested result" }];
+    workers[0].emit("message", { request, result, authoring: response });
+    expect(await navigation).toEqual(response);
+    expect((await outline).map((item) => item.name)).toEqual(["amount"]);
+    expect(await duplicate).toEqual(await outline);
+  });
+}
+
 for (const invalidate of ["edit", "close", "timeout", "dispose"]) {
   it(`invalidates retained outline queries on ${invalidate}`, async () => {
     const { supervisor } = harness();
@@ -589,7 +646,10 @@ it("queries immediately, coalesces requests and releases replies on edits, close
     position: { line: 0, character: 3 },
   });
   expect(workers[0].requests[0].query.params.kind).toBe("completion");
-  const second = supervisor.query("untitled:a", { kind: "symbols" });
+  const second = supervisor.query("untitled:a", {
+    kind: "completion",
+    position: { line: 0, character: 2 },
+  });
   expect(await first).toBeNull();
   await vi.advanceTimersByTimeAsync(0);
   const request = workers[1].requests[0];
