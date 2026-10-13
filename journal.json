@@ -627,6 +627,12 @@
           "error": "verification-failed"
         }
       }
+    },
+    "8e6154eca22e1e98a1cbd255e65b0afa252a385fcd0bd44d52260af31116af94": {
+      "candidate": "8e6154eca22e1e98a1cbd255e65b0afa252a385fcd0bd44d52260af31116af94",
+      "releaseId": "tinta-0.1.14-vscode-0.2.14-stable",
+      "status": "pending",
+      "items": {}
     }
   }
 }
