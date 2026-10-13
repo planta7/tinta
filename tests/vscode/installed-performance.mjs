@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { setFlagsFromString } from "node:v8";
 import { runInNewContext } from "node:vm";
 import { startResidentSampler } from "./resident-sampler.mjs";
+import { traceHostDelay } from "./host-delay.mjs";
 
 const percentile = (values, fraction) =>
   [...values].sort((a, b) => a - b)[Math.ceil(values.length * fraction) - 1];
@@ -16,6 +17,7 @@ export async function measureInstalled(open, latency) {
   assert.ok(extension, "VSIX was not installed for performance checks.");
   const worker = new Worker(join(extension.extensionPath, "dist/worker.mjs"));
   const loop = monitorEventLoopDelay({ resolution: 5 });
+  const delayTrace = traceHostDelay(loop);
   const samples = [];
   let version = 0;
   const request = (text) =>
@@ -45,6 +47,7 @@ export async function measureInstalled(open, latency) {
   try {
     await sampler.ready;
     loop.enable();
+    delayTrace.checkpoint("analysis:start");
     for (const [bytes, budgetMs] of [
       [10240, 200],
       [102400, 500],
@@ -66,12 +69,17 @@ export async function measureInstalled(open, latency) {
             .slice(0, blockBytes - start.length - end.length) +
           end;
       }
-      for (let warm = 0; warm < 3; warm++) await request(text);
+      delayTrace.checkpoint(`analysis:${bytes}:corpus`);
+      for (let warm = 0; warm < 3; warm++) {
+        await request(text);
+        delayTrace.checkpoint(`analysis:${bytes}:warm:${warm}`);
+      }
       const durations = [];
       for (let index = 0; index < 30; index++) {
         const started = performance.now();
         await request(text);
         durations.push(performance.now() - started);
+        delayTrace.checkpoint(`analysis:${bytes}:sample:${index}`);
       }
       samples.push({
         bytes,
@@ -88,6 +96,7 @@ export async function measureInstalled(open, latency) {
         new vscode.Position(1, 6),
       );
     await complete();
+    delayTrace.checkpoint("completion:warm");
     const completions = [];
     for (let index = 0; index < 30; index++) {
       latency.begin(index);
@@ -98,6 +107,7 @@ export async function measureInstalled(open, latency) {
         completions.push(performance.now() - started);
       } finally {
         latency.end();
+        delayTrace.checkpoint(`completion:sample:${index}`);
       }
     }
     const documents = [];
@@ -105,6 +115,7 @@ export async function measureInstalled(open, latency) {
       documents.push(
         await open(`rapid-${index}.tinta`, "@let amount = 2\n{{ amount }}\n"),
       );
+    delayTrace.checkpoint("rapid:opened");
     for (let revision = 0; revision < 20; revision++) {
       const edit = new vscode.WorkspaceEdit();
       for (const document of documents)
@@ -114,6 +125,7 @@ export async function measureInstalled(open, latency) {
           String(revision % 10),
         );
       assert.ok(await vscode.workspace.applyEdit(edit));
+      delayTrace.checkpoint(`rapid:revision:${revision}`);
     }
     for (const document of documents) {
       const definitions = await vscode.commands.executeCommand(
@@ -122,8 +134,10 @@ export async function measureInstalled(open, latency) {
         new vscode.Position(1, 6),
       );
       assert.equal(definitions.length, 1);
+      delayTrace.checkpoint("rapid:definition");
     }
     loop.disable();
+    delayTrace.checkpoint("analysis:end");
     const { baselineRss, peakRss } = await sampler.stop();
     await vscode.commands.executeCommand("workbench.action.closeAllEditors");
     setFlagsFromString("--expose-gc");
@@ -166,6 +180,7 @@ export async function measureInstalled(open, latency) {
       completionSamples: completions,
       loopP95Ms,
       loopMaxMs,
+      hostDelay: delayTrace.report(),
       retainedHeapGrowth,
       baselineRss,
       peakRss,
