@@ -7,9 +7,13 @@ import { hash, encodeUtf8 } from "../../packages/types/dist/common.js";
 const io = vi.hoisted(() => ({
   bytes: new TextEncoder().encode("# Source"),
   fail: false,
+  pending: undefined,
+  reads: 0,
 }));
 vi.mock("@tinta-lang/local-files", () => ({
   readOpenedSource: async () => {
+    io.reads++;
+    await io.pending;
     if (io.fail) throw new Error("Secret path");
     return io.bytes;
   },
@@ -82,6 +86,8 @@ const ready = async (state) => {
 };
 beforeEach(() => {
   io.fail = false;
+  io.pending = undefined;
+  io.reads = 0;
   io.bytes = encodeUtf8("# Source");
   vscode.workspace.textDocuments = [];
   vscode.window.activeTextEditor = undefined;
@@ -104,6 +110,57 @@ afterEach(() => {
 });
 
 describe("native preview controller boundaries", () => {
+  it.each(["source", "preview"])(
+    "waits for the opening file verification before serving %s",
+    async (operation) => {
+      let release;
+      io.pending = new Promise((resolve) => {
+        release = resolve;
+      });
+      const doc = document("# Source", "file");
+      vscode.handlers.open(doc);
+      vscode.window.activeTextEditor = { document: doc };
+      let completed = false;
+      const result = (
+        operation === "source" ? controller.source(doc) : controller.show()
+      ).then((value) => {
+        completed = true;
+        return value;
+      });
+      await Promise.resolve();
+      await Promise.resolve();
+      expect(completed).toBe(false);
+      expect(io.reads).toBe(1);
+      release();
+      const value = await result;
+      if (operation === "source") expect(value.text).toBe("# Source");
+      else expect(controller.panels.has(doc)).toBe(true);
+      expect(vscode.window.showWarningMessage).not.toHaveBeenCalled();
+      expect(io.reads).toBe(1);
+    },
+  );
+
+  it.each(["changed", "closed", "failed"])(
+    "rejects a %s document after pending verification settles",
+    async (outcome) => {
+      let release;
+      io.pending = new Promise((resolve) => {
+        release = resolve;
+      });
+      const doc = document("# Source", "file");
+      vscode.handlers.open(doc);
+      const result = controller.source(doc);
+      if (outcome === "changed") doc.version++;
+      else if (outcome === "closed") vscode.handlers.close(doc);
+      else io.fail = true;
+      const rejected = expect(result).rejects.toThrow("verification");
+      release();
+      await rejected;
+      expect(controller.panels.size).toBe(0);
+      expect(io.reads).toBe(1);
+    },
+  );
+
   it("binds a panel to verified source and never grants workspace resources", async () => {
     const doc = document();
     await controller.open(doc, true);

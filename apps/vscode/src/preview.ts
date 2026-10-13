@@ -26,6 +26,7 @@ import {
 
 interface SourceState {
   readonly instance: string;
+  verification?: Promise<void>;
   snapshot?: NativeSource;
   error?: string;
   timer?: ReturnType<typeof setTimeout>;
@@ -104,10 +105,21 @@ export class PreviewController implements vscode.Disposable {
     document: vscode.TextDocument,
     newDocument: boolean,
   ): Promise<void> {
-    if (!this.supported(document) || this.sources.has(document)) return;
+    if (!this.supported(document)) return;
+    const existing = this.sources.get(document);
+    if (existing) return existing.verification;
     if (this.sources.size >= 32) return;
     const state: SourceState = { instance: token(), generation: 0 };
     this.sources.set(document, state);
+    state.verification = this.verifySource(document, newDocument, state);
+    return state.verification;
+  }
+
+  private async verifySource(
+    document: vscode.TextDocument,
+    newDocument: boolean,
+    state: SourceState,
+  ): Promise<void> {
     const version = document.version;
     const text = document.getText();
     try {
