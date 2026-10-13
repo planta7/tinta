@@ -1,0 +1,32 @@
+@meta (title: "Open a local document", locale: "en-US")
+
+# Open a local document
+
+Choose your platform to see the relevant file-opening instructions. This guide
+assumes you already have a local HTML document exported from tinta.
+
+@choice platform = "macOS" (
+  options: ["macOS", "Windows", "Linux"],
+  label: "Your platform",
+)
+
+@when platform == "macOS"
+In Finder, locate the HTML file and open it with your browser.
+@end
+
+@when platform == "Windows"
+In File Explorer, locate the HTML file and open it with your browser.
+@end
+
+@when platform == "Linux"
+In your file manager, locate the HTML file and open it with your browser.
+@end
+
+## Keep an editable copy
+
+An HTML export is for reading. Keep the original `.tinta` source for later edits.
+
+@details "If the document includes images"
+A `.tinta.zip` source bundle keeps the source and its local images together.
+An HTML export already embeds the images it needs.
+@end

@@ -1,0 +1,46 @@
+@meta (title: "Explore a documentation review", locale: "en-US")
+
+# Explore a documentation review
+
+These fictional observations describe four chapters. Filter the chapters to
+compare recorded review time; the summary, figure, and table share the same rows.
+
+@toggle include_drafts = false (label: "Include draft chapters")
+@slider minimum = 0 (min: 0, max: 40, step: 5, label: "Minimum review minutes")
+
+@data reviews
+chapter:text | minutes:number | approved:boolean
+Setup | 10 | true
+Editing | 20 | true
+Exports | 30 | false
+Reference | 40 | false
+@end
+
+@view visible = reviews (
+  where: (include_drafts or row.approved) and row.minutes >= minimum,
+  sort: "minutes",
+)
+@calc total = sum(visible, "minutes")
+@calc average = if(count(visible) > 0, mean(visible, "minutes"), 0)
+
+The selection contains **{{ count(visible) }} chapters** and
+**{{ total }} minutes** of recorded review time.
+
+@when count(visible) > 0
+Average review time is **{{ fixed(average, 1) }} minutes per chapter**.
+@end
+
+@when count(visible) == 0
+No chapters match. Lower the minimum or include drafts.
+@end
+
+@chart bar visible (
+  x: "chapter",
+  y: "minutes",
+  title: "Review time for selected chapters",
+  yLabel: "Minutes",
+)
+
+@table visible (title: "Selected review observations")
+
+The sample is too small to establish a general reading-speed benchmark.

@@ -1,0 +1,26 @@
+@meta (title: "Estimate a documentation review", locale: "en-US")
+@let minutes_per_page = 3
+@let discussion_minutes = 15
+
+# Estimate a documentation review
+
+This fictional planning example assumes three minutes per page and an optional
+15-minute discussion. It is an estimate, not a measurement of reading speed.
+
+@slider pages = 10 (min: 0, max: 40, step: 1, label: "Pages to review")
+@toggle discussion = false (label: "Include discussion")
+@calc minutes = pages * minutes_per_page + if(discussion, discussion_minutes, 0)
+
+Allow **{{ minutes }} minutes** for the current plan.
+
+@when minutes > 60
+Split this review into shorter sessions.
+@end
+
+@when minutes == 0
+No reading or discussion is scheduled.
+@end
+
+@details "What this estimate leaves out"
+Complexity, interruptions, and time spent making edits are not included.
+@end

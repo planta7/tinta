@@ -189,6 +189,12 @@ Documents cannot execute author JavaScript, CSS, HTML, plug-ins or code fences, 
 
 tinta focuses on interactive documents. There is no cloud storage, account system, telemetry, AI feature, website generator or publication service. PDF and flattened Markdown exports are outside the current scope. See the [product scope](docs/01_PRODUCT.md) and [security model](docs/04_SECURITY.md).
 
+## Write with a coding agent
+
+The [tinta authoring skill](docs/16_AGENT_AUTHORING.md) helps Codex and Claude Code write and edit `.tinta` documents, enrich existing Markdown, and check the result with the local CLI. It includes a platform guide, a time estimate, and a report with shared filters as starting points.
+
+Install the same skill folder in either agent, then ask it to create a document or update one you already have. The skill needs access to local files and a working tinta CLI to validate or export documents.
+
 ## Build with the engine
 
 The parser and semantic engine are portable TypeScript. The reader and export runtime are independent of React and CodeMirror; those belong to the studio.
