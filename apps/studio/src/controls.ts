@@ -11,15 +11,12 @@ const iconPaths: Record<string, string> = {
   chevron: "M 8 10 l4 4 4-4",
 };
 
-const brandMarkPath = `M 34 20
-  C 42 19, 58 19, 66 20
-  C 72 21, 78 28, 77 39
-  C 74 56, 61 76, 51.25 90
-  V 50.84
-  A 5 5 0 1 0 48.75 50.84
-  V 90
-  C 39 76, 26 56, 23 39
-  C 22 28, 28 21, 34 20 Z`;
+const brandMarkPath = `M 53 18
+  C 69 18, 80 29, 80 44
+  C 80 62, 65 79, 38 92
+  C 51 77, 55 67, 54 61
+  C 39 61, 28 53, 28 40
+  C 28 27, 38 18, 53 18 Z`;
 
 export function icon(name: string) {
   return h(
@@ -62,14 +59,13 @@ export function brand() {
         h("path", {
           d: brandMarkPath,
           fill: "currentColor",
-          transform: "translate(0 -5)",
         }),
       ),
     ),
     h(
       "span",
       null,
-      "tinta",
+      h("span", { className: "brand-name" }, "tinta"),
       h("span", { className: "brand-studio" }, "studio"),
     ),
     h("span", { className: "draft-label" }, "Draft"),
