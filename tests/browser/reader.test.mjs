@@ -218,6 +218,133 @@ test("native controls update one immutable revision and preserve field identity,
   ).toBeDisabled();
 });
 
+test("slider value aligns with its range while choice and checkbox show no duplicate value", async ({
+  page,
+}) => {
+  await mount(page);
+  const slider = page.locator('[data-tinta-control="amount"]');
+  await expect(slider.locator("output")).toHaveText("2");
+  await expect(page.locator('[data-tinta-control="show"] output')).toHaveCount(
+    0,
+  );
+  await expect(page.locator('[data-tinta-control="mode"] output')).toHaveCount(
+    0,
+  );
+  const toggleLayout = await page
+    .locator('[data-tinta-control="show"]')
+    .evaluate((control) => {
+      const checkbox = control.querySelector('input[type="checkbox"]');
+      const label = control.querySelector("label");
+      const fieldBox = checkbox.getBoundingClientRect();
+      const labelBox = label.getBoundingClientRect();
+      return {
+        checkboxRight: fieldBox.right,
+        labelLeft: labelBox.left,
+        centerDifference: Math.abs(
+          fieldBox.top +
+            fieldBox.height / 2 -
+            (labelBox.top + labelBox.height / 2),
+        ),
+      };
+    });
+  expect(toggleLayout.labelLeft).toBeGreaterThan(toggleLayout.checkboxRight);
+  expect(toggleLayout.centerDifference).toBeLessThan(1);
+
+  const centers = await slider.evaluate((control) => {
+    const range = control.querySelector('input[type="range"]');
+    const output = control.querySelector("output");
+    const center = (element) => {
+      const box = element.getBoundingClientRect();
+      return box.top + box.height / 2;
+    };
+    return [center(range), center(output)];
+  });
+  expect(Math.abs(centers[0] - centers[1])).toBeLessThan(1);
+
+  await page.getByRole("slider", { name: "Amount" }).fill("4");
+  await expect(slider.locator("output")).toHaveText("4");
+  await page.getByRole("combobox", { name: "Length" }).selectOption("Long");
+  await expect(page.locator('[data-tinta-control="mode"] output')).toHaveCount(
+    0,
+  );
+});
+
+test("Markdown task checkboxes replace list bullets and align with wrapped text", async ({
+  page,
+}, info) => {
+  await page.setViewportSize({ width: 390, height: 720 });
+  await mount(
+    page,
+    "# Tasks\n\n" +
+      "- [x] A completed task with enough descriptive text to wrap onto " +
+      "a second line at a narrow reading width.\n" +
+      "- [ ] An incomplete task.\n\n" +
+      '@toggle example = false (label: "Example toggle")\n',
+  );
+
+  const tasks = page.locator("li.tinta-task-item");
+  await expect(tasks).toHaveCount(2);
+  const layout = await tasks.first().evaluate((item) => {
+    const checkbox = item.querySelector('input[type="checkbox"]');
+    const paragraph = item.querySelector("p");
+    const field = checkbox.getBoundingClientRect();
+    const lines = Array.from(paragraph.getClientRects());
+    return {
+      marker: getComputedStyle(item).listStyleType,
+      checkboxRight: field.right,
+      checkboxCenter: field.top + field.height / 2,
+      lines: lines.map((line) => ({
+        left: line.left,
+        center: line.top + line.height / 2,
+      })),
+    };
+  });
+  expect(layout.marker).toBe("none");
+  expect(layout.lines.length).toBeGreaterThan(1);
+  expect(layout.lines[0].left).toBeGreaterThan(layout.checkboxRight);
+  expect(Math.abs(layout.lines[0].center - layout.checkboxCenter)).toBeLessThan(
+    3,
+  );
+  expect(Math.abs(layout.lines[0].left - layout.lines[1].left)).toBeLessThan(1);
+  await expect(tasks.first().locator('input[type="checkbox"]')).toBeDisabled();
+  await expect(tasks.last().locator('input[type="checkbox"]')).toBeDisabled();
+  const taskCheckbox = tasks.last().locator('input[type="checkbox"]');
+  const tintaCheckbox = page.getByRole("checkbox", { name: "Example toggle" });
+  const style = async (checkbox) =>
+    checkbox.evaluate((element) => {
+      const computed = getComputedStyle(element);
+      const bounds = element.getBoundingClientRect();
+      return {
+        width: bounds.width,
+        height: bounds.height,
+        border: computed.border,
+        borderRadius: computed.borderRadius,
+        background: computed.backgroundColor,
+        appearance: computed.appearance,
+        opacity: computed.opacity,
+      };
+    });
+  const { opacity: disabledOpacity, ...taskStyle } = await style(taskCheckbox);
+  const { opacity: enabledOpacity, ...tintaStyle } = await style(tintaCheckbox);
+  expect(taskStyle).toEqual(tintaStyle);
+  expect(taskStyle.width).toBe(20);
+  expect(taskStyle.height).toBe(20);
+  expect(Number(disabledOpacity)).toBeLessThan(Number(enabledOpacity));
+  await tintaCheckbox.check();
+  const { opacity: checkedDisabledOpacity, ...checkedTaskStyle } = await style(
+    tasks.first().locator('input[type="checkbox"]'),
+  );
+  const { opacity: checkedEnabledOpacity, ...checkedTintaStyle } =
+    await style(tintaCheckbox);
+  expect(checkedTaskStyle).toEqual(checkedTintaStyle);
+  expect(Number(checkedDisabledOpacity)).toBeLessThan(
+    Number(checkedEnabledOpacity),
+  );
+  await page.screenshot({
+    path: `reports/verification/markdown-tasks-${info.project.name}.png`,
+  });
+});
+
 test("SC-035: self-hidden focus moves to the preceding visible control or article heading", async ({
   page,
 }) => {

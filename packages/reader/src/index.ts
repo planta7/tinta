@@ -33,7 +33,7 @@ type Field = HTMLInputElement | HTMLSelectElement;
 interface ControlView {
   readonly root: HTMLDivElement;
   readonly field: Field;
-  readonly output: HTMLOutputElement;
+  readonly output: HTMLOutputElement | undefined;
   readonly error: HTMLSpanElement;
   readonly definition: ControlDefinition;
 }
@@ -200,7 +200,7 @@ export function mountReader(
     if (view.definition.kind === "toggle") {
       (view.field as HTMLInputElement).checked = value === true;
     } else view.field.value = String(value);
-    view.output.value = String(value);
+    if (view.output) view.output.value = String(value);
     view.error.textContent = "";
     view.field.removeAttribute("aria-invalid");
   }
@@ -212,6 +212,7 @@ export function mountReader(
     if (!view) {
       const root = doc.createElement("div");
       root.className = "tinta-control";
+      if (d.kind === "toggle") root.classList.add("tinta-control-toggle");
       root.dataset.tintaControl = d.name;
       const label = doc.createElement("label");
       label.textContent = d.label;
@@ -238,15 +239,24 @@ export function mountReader(
         }
       }
 
-      const output = doc.createElement("output");
-      output.htmlFor.value = field.id;
-      output.setAttribute("aria-live", "off");
-      output.setAttribute("aria-hidden", "true");
+      const fieldRow = doc.createElement("div");
+      fieldRow.className = "tinta-control-field";
+      if (d.kind === "toggle") fieldRow.append(field, label);
+      else fieldRow.append(field);
+      let output: HTMLOutputElement | undefined;
+      if (d.kind === "slider") {
+        output = doc.createElement("output");
+        output.htmlFor.value = field.id;
+        output.setAttribute("aria-live", "off");
+        output.setAttribute("aria-hidden", "true");
+        fieldRow.append(output);
+      }
       const error = doc.createElement("span");
       error.id = field.id + "-error";
       error.className = "tinta-control-error";
       field.setAttribute("aria-describedby", error.id);
-      root.append(label, field, output, error);
+      if (d.kind === "toggle") root.append(fieldRow, error);
+      else root.append(label, fieldRow, error);
       view = {
         root,
         field,
@@ -351,6 +361,12 @@ export function mountReader(
       (element as HTMLDetailsElement).open = open.has(node.id);
     }
     for (const child of node.children) element.append(render(child, open));
+    if (
+      node.tag === "li" &&
+      element.firstElementChild?.matches('input[type="checkbox"]')
+    ) {
+      element.classList.add("tinta-task-item");
+    }
     if (node.tag === "table" || node.tag === "pre") {
       const wrapper = doc.createElement("div");
       wrapper.className = "tinta-scroll";

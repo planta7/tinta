@@ -28,6 +28,11 @@
 .tinta-reader p {
   margin: 1em 0;
 }
+.tinta-reader img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
 .tinta-reader h1 {
   font-size: 2.5em;
 }
@@ -74,6 +79,41 @@
   border-radius: 4px;
   cursor: pointer;
 }
+.tinta-reader input[type="checkbox"] {
+  appearance: none;
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  min-height: 20px;
+  margin: 0;
+  border: 2px solid var(--tinta-muted);
+  border-radius: 4px;
+  background: var(--tinta-surface);
+}
+.tinta-reader input[type="checkbox"]::after {
+  content: "";
+  width: 5px;
+  height: 9px;
+  margin-top: -2px;
+  border-right: 2px solid var(--tinta-surface);
+  border-bottom: 2px solid var(--tinta-surface);
+  opacity: 0;
+  transform: rotate(45deg);
+}
+.tinta-reader input[type="checkbox"]:checked {
+  border-color: var(--tinta-accent);
+  background: var(--tinta-accent);
+}
+.tinta-reader input[type="checkbox"]:checked::after {
+  opacity: 1;
+}
+.tinta-reader input[type="checkbox"]:disabled {
+  opacity: 0.6;
+}
+.tinta-reader input[type="checkbox"]:enabled {
+  cursor: pointer;
+}
 .tinta-reader summary {
   min-height: 24px;
   cursor: pointer;
@@ -86,16 +126,14 @@
   font-weight: 600;
 }
 .tinta-control input[type="range"] {
-  width: min(calc(100% - 4em), 20em);
-  vertical-align: middle;
+  flex: 1 1 20em;
+  width: 100%;
+  min-width: 0;
+  max-width: 20em;
+  margin: 0;
 }
 .tinta-control input[type="checkbox"] {
-  width: 24px;
-  height: 24px;
-  vertical-align: middle;
-}
-.tinta-control output {
-  margin-inline-start: 12px;
+  flex: 0 0 20px;
 }
 .tinta-control-error {
   display: block;
@@ -163,6 +201,12 @@
   }
 }
 @media (forced-colors: active) {
+  .tinta-reader input[type="checkbox"] {
+    appearance: auto;
+  }
+  .tinta-reader input[type="checkbox"]::after {
+    content: none;
+  }
   .tinta-reader {
     color: CanvasText;
     background: Canvas;
@@ -194,8 +238,15 @@
 .tinta-reader li > input[type="checkbox"] + p {
   display: inline;
 }
-.tinta-reader li > input[type="checkbox"] {
-  margin-inline-end: 8px;
+.tinta-reader li.tinta-task-item {
+  list-style: none;
+  position: relative;
+  padding-inline-start: 30px;
+}
+.tinta-reader li.tinta-task-item > input[type="checkbox"] {
+  position: absolute;
+  inset-inline-start: 0;
+  top: calc(0.825em - 10px);
 }
 
 .tinta-chart-scroll {
@@ -299,8 +350,22 @@
   margin-bottom: 6px;
   font-size: 14px;
 }
+.tinta-control-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 100%;
+}
+.tinta-control-toggle .tinta-control-field {
+  gap: 10px;
+}
+.tinta-control-toggle label {
+  margin: 0;
+}
 .tinta-control output {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
   min-width: 2.5em;
   padding: 1px 8px;
   border: 1px solid var(--tinta-border);
