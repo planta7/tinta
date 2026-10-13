@@ -1,7 +1,12 @@
-# A guide that follows the reader
+@meta (version: "1.0", title: "Your local reading kit", locale: "en-US")
 
-This is a local documentation example, not a software installation service.
-Choose a platform and the document shows the relevant explanation.
+# Make a reading kit for your team
+
+![Quiet worktable with a notebook, pencil, and lamp](assets/67e28b4942b3731bd6bde60d49aa6f064e4711e9ed8ee4cfffa382df22add0a5.webp)
+
+A workshop handout can stay a readable document while adapting the practical
+instructions to each participant. Choose the computer you will use, then follow
+the matching path. This kit is fictional and works entirely with local files.
 
 @choice platform = "macOS" (
   options: ["macOS", "Windows", "Linux"],
@@ -32,6 +37,17 @@ This code block is descriptive only. Nothing here executes.
 ```
 @end
 
+## Then try the handout
+
+- [ ] Change the platform above and read the new instructions.
+- [ ] Turn on additional context when you want to know what an export contains.
+- [ ] Open the explanation below only if you need it.
+
+@details "Why keep the source?"
+The HTML copy is for reading. The `.tinta` source is the document you can edit,
+and a `.tinta.zip` keeps the source together with local images.
+@end
+
 @when more_detail
 ### What is inside the file?
 
@@ -42,7 +58,5 @@ A static export contains the resolved visible document instead.
 Hiding an explanation in an interactive file does not make it confidential.
 @end
 @end
-
-## Then continue reading
 
 Your choice is **{{ platform }}**. You remain inside one document.

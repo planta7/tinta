@@ -1,9 +1,12 @@
-@meta (title: "A fictional reading report", locale: "en-US")
+@meta (version: "1.0", title: "A fictional reading report", locale: "en-US")
 
-# A report with a shared filter
+# A neighborhood reading report
 
-The following data is fictional. The paragraph, table and figures below all
-refer to the same selected rows.
+![Cozy reading nook with books by a window](assets/8fdb90d5752dad93797e210042b5a266b99e87ffe530c6f80ccee1de493df246.webp)
+
+A community reading room wants to compare four opening days. These numbers are
+fictional. Change the filters to ask which days clear a threshold; the summary,
+chart and table all use the same selected rows.
 
 @toggle include_weekends = false (label: "Include weekends")
 @slider minimum = 0 (min: 0, max: 200, step: 5, label: "Minimum readings")
@@ -26,12 +29,14 @@ Sun | 80 | 25 | true
 @calc total = sum(visible, "readings")
 @calc average = if(count(visible) > 0, mean(visible, "readings"), 0)
 
+## The current picture
+
 There are **{{ count(visible) }} days**, **{{ total }} readings**, and an average
 of **{{ fixed(average, 1) }} readings per selected day**.
 
 @chart bar visible (
   x: "day", y: ["readings", "audio"], select: selected_day,
-  title: "Compare the selected days", yLabel: "Readings",
+  title: "Readings and audio sessions on the selected days", yLabel: "Sessions",
 )
 
 The selected day is **{{ selected_day }}**, with
@@ -47,3 +52,8 @@ Selection remains available even if the current filter hides that day.
 @when count(visible) == 0
 No rows match these choices. Reduce the minimum or include weekends.
 @end
+
+## A useful question
+
+Does adding the weekend change the pattern, or simply add more observations?
+Use the toggle and threshold before interpreting either figure.

@@ -2,8 +2,12 @@
 
 # A hypothesis you can move
 
-This fictional example explains compounding. It is **not a forecast**.
-Change the rate, then inspect a period in the figure.
+![Blank letter in a blue envelope](assets/ec254171e91ca507fd37cbec4b67c581c3175a89e8e08e15e0345bda68b93b11.webp)
+
+Imagine an independent newsletter with 100 readers today. An editor wants to
+understand what a steady change in readership would mean over four editions.
+This fictional model is **not a forecast**: move the rate or select a point in
+the chart to see the assumption and the sentence below change together.
 
 @let starting_readers = 100
 @slider growth = 5 (min: 0, max: 20, step: 1, label: "Growth per period (%)")
@@ -23,8 +27,8 @@ period:number
   x: "period",
   y: round(starting_readers * pow(1 + growth / 100, row.period)),
   select: period,
-  title: "The same explanation, with another assumption",
-  xLabel: "Period",
+  title: "Readers across five editions",
+  xLabel: "Edition after today",
   yLabel: "Readers",
 )
 
@@ -49,7 +53,8 @@ The code in this block is literal:
 ```
 @end
 
-## Keep reading
+## Use the result carefully
 
-Moving the figure changes an assumption inside the explanation; it does not
-turn this article into a page-building interface.
+The line makes a question visible: what would have to be true for this rate to
+hold? A real editorial decision would need actual audience data and uncertainty,
+which this small illustration does not include.

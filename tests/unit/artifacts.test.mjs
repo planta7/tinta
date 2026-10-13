@@ -13,6 +13,7 @@ import {
   encodeUtf8,
   decodeUtf8,
   hash,
+  imageDestinations,
   normalizeAssetPath,
   unwrap,
 } from "../../packages/artifacts/dist/index.js";
@@ -320,12 +321,20 @@ describe("HTML exports", () => {
       const session = unwrap(
         createSession(program(readFileSync(`examples/${name}.tinta`, "utf8"))),
       );
+      const assets = new Map();
+      for (const destination of imageDestinations(session.program.flow)) {
+        assets.set(
+          destination,
+          unwrap(createAsset(readFileSync(`examples/${destination}`))),
+        );
+      }
+      expect(assets.size).toBeGreaterThan(0);
       for (const format of ["static", "interactive"])
         expect(
-          (await exportHtml(session, new Map(), { format, answers: "initial" }))
+          (await exportHtml(session, assets, { format, answers: "initial" }))
             .ok,
         ).toBe(true);
-      expect((await packSource(session.program, new Map())).ok).toBe(true);
+      expect((await packSource(session.program, assets)).ok).toBe(true);
       session.destroy();
     },
   );

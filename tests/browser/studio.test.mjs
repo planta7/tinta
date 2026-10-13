@@ -74,6 +74,7 @@ test.afterAll(async ({ browserName }, worker) => {
                 "welcome.js",
                 "workspace-header.js",
                 "catalog.js",
+                "example-assets.js",
                 "navigation.js",
                 "drafts.js",
               ]
@@ -302,6 +303,21 @@ for (const name of ["article", "report", "guide", "chart-atlas"]) {
       if (/^https?:/.test(request.url())) requests.push(request.url());
     });
     await example(page, name);
+    const illustration = page.frameLocator("iframe").getByRole("img");
+    await expect(illustration).toHaveCount(1);
+    await expect
+      .poll(() => illustration.evaluate((image) => image.naturalWidth))
+      .toBe(1200);
+    expect(
+      await illustration.evaluate((image) => {
+        const article = image.closest("article");
+        return (
+          article !== null &&
+          image.getBoundingClientRect().right <=
+            article.getBoundingClientRect().right
+        );
+      }),
+    ).toBe(true);
     await page.getByRole("button", { name: "Edit", exact: true }).click();
     await page.setViewportSize({ width: 1024, height: 900 });
     await expect(
@@ -356,6 +372,26 @@ test("reconciles prose edits and resets a changed initial without changing saved
   await studioAction(page, "Reset reading");
   await expect(preview.getByLabel("Your platform")).toHaveValue("Windows");
   await expect(page.locator("header")).toContainText("Changed");
+});
+
+test("complete example exposes every control and all seven figures", async ({
+  page,
+}) => {
+  await example(page, "chart-atlas");
+  const preview = page.frameLocator("iframe");
+  await expect(preview.getByLabel("Value multiplier")).toHaveValue("1");
+  await expect(preview.getByLabel("Period", { exact: true })).toHaveValue("1");
+  await expect(preview.getByLabel("Format", { exact: true })).toHaveValue(
+    "Text",
+  );
+  await expect(preview.getByLabel("Show the worked notes")).not.toBeChecked();
+  await expect(preview.getByRole("figure")).toHaveCount(7);
+  await preview.getByLabel("Show the worked notes").check();
+  await expect(
+    preview.getByRole("heading", { name: "A worked note" }),
+  ).toBeVisible();
+  await preview.getByLabel("Value multiplier").fill("2");
+  await expect(preview.getByRole("article")).toContainText("scaled");
 });
 
 test("exports selected current answers and validates the downloaded offline reader", async ({
@@ -1342,7 +1378,7 @@ test("catalogs describe their contents, filter without editing and close action 
   await expect(page.locator(".action-menu[open]")).toHaveCount(0);
   await expect(page).toHaveURL(/#\/examples$/);
   await expect(
-    page.getByRole("heading", { name: "Seven ways to see your data" }),
+    page.getByRole("heading", { name: "Everything in one document" }),
   ).toBeVisible();
   await expect(
     page

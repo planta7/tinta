@@ -76,20 +76,26 @@ export function Welcome(actions: WelcomeActions) {
           [
             "guide",
             "01",
-            "Learn by doing",
-            "Get to know tinta, one interaction at a time.",
+            "A handout that adapts",
+            "Open the right instructions for each participant.",
           ],
           [
             "article",
             "02",
             "An article you can explore",
-            "Words, controls, and calculations working together.",
+            "Test a newsletter readership assumption.",
+          ],
+          [
+            "report",
+            "03",
+            "A neighborhood reading report",
+            "Filter days, compare figures, and inspect the rows.",
           ],
           [
             "chart-atlas",
-            "03",
-            "Let the data speak",
-            "Seven chart types, ready to explore.",
+            "04",
+            "Everything in one document",
+            "Explore every control and all seven chart types.",
           ],
         ].map(([name, number, title, description]) =>
           h(
@@ -108,7 +114,13 @@ export function Welcome(actions: WelcomeActions) {
               h(
                 "span",
                 { className: "specimen-glyph", "aria-hidden": true },
-                name === "guide" ? "Aa" : name === "article" ? "ƒ" : "▂ ▅ ▃ ▇",
+                name === "guide"
+                  ? "Aa"
+                  : name === "article"
+                    ? "ƒ"
+                    : name === "report"
+                      ? "▂ ▅ ▇"
+                      : "▂ ▅ ▃ ▇",
               ),
               h("span", { className: "example-number" }, number),
             ),

@@ -5,6 +5,7 @@ import {
 import { Drafts } from "./drafts.js";
 import { readRoute, writeRoute } from "./navigation.js";
 import { catalogDialog } from "./catalog.js";
+import { exampleAssetStore } from "./example-assets.js";
 import { createElement as h } from "react";
 import { createWorkspace } from "./workspace.js";
 import { action, dialog, field, node, select } from "./dialogs.js";
@@ -346,7 +347,12 @@ export class Studio {
           openFile: () => this.pickOpen(),
           exploreExamples: () => this.examples(),
           openExample: (name) =>
-            this.open(examples[name]!, name + ".tinta", "tinta"),
+            this.open(
+              examples[name]!,
+              name + ".tinta",
+              "tinta",
+              exampleAssetStore(name),
+            ),
           recovery: () => this.preferences(),
         }),
       );
@@ -725,7 +731,9 @@ export class Studio {
       "examples",
       examples,
       (name, source) => {
-        this.unsaved(() => this.open(source, name + ".tinta", "tinta"));
+        this.unsaved(() =>
+          this.open(source, name + ".tinta", "tinta", exampleAssetStore(name)),
+        );
       },
       () => {
         if (["examples", "snippets"].includes(readRoute()?.section ?? ""))

@@ -1,10 +1,20 @@
 import { compile, createSession } from "../../packages/engine/dist/index.js";
 import { mountReader } from "../../packages/reader/dist/index.js";
-import { exportHtml, unwrap } from "../../packages/artifacts/dist/index.js";
+import {
+  createAsset,
+  exportHtml,
+  unwrap,
+} from "../../packages/artifacts/dist/index.js";
 
 let session;
+let assets;
 globalThis.exportTest = {
-  mount(source) {
+  mount(source, image) {
+    assets = new Map();
+    if (image) {
+      const asset = unwrap(createAsset(Uint8Array.from(image)));
+      assets.set(asset.path, asset);
+    }
     session = unwrap(
       createSession(
         unwrap(
@@ -21,14 +31,14 @@ globalThis.exportTest = {
         session,
         { nativeElement: document.body },
         {
-          assets: new Map(),
+          assets,
         },
       ),
     );
   },
   async export(format) {
     const artifact = unwrap(
-      await exportHtml(session, new Map(), {
+      await exportHtml(session, assets, {
         format,
         answers: "current",
       }),

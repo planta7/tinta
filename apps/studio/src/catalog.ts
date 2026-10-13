@@ -5,6 +5,7 @@ import { workerCode } from "./studio-runtime.js";
 import { createElement as h, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { dialog, node } from "./dialogs.js";
+import { exampleAssetStore } from "./example-assets.js";
 
 interface CatalogEntry {
   name: string;
@@ -16,20 +17,20 @@ interface CatalogEntry {
 
 const examples: Record<string, [string, string]> = {
   guide: [
-    "Learn by doing",
-    "A hands-on guide to controls, conditional explanations, and calculations. Change your platform and explore how the document responds.",
+    "A handout that adapts",
+    "A local workshop reading kit with illustrated steps for macOS, Windows, and Linux. Change the platform to see the right path.",
   ],
   article: [
     "An article you can explore",
-    "A reading-first example where controls and formulas turn an explanation into something you can experiment with.",
+    "Test a fictional newsletter growth assumption. The chart, calculation, and explanation respond together.",
   ],
   report: [
-    "From data to a story",
-    "Explore a local dataset through tables, calculated summaries, and charts. A starting point for an interactive report.",
+    "A neighborhood reading report",
+    "Filter four opening days, compare readings and audio sessions, and inspect the same rows in a table.",
   ],
   "chart-atlas": [
-    "Seven ways to see your data",
-    "Compare all seven supported chart types and try their accessible interactions, legends, and linked selections.",
+    "Everything in one document",
+    "A complete tour of controls, calculations, conditions, data views, Markdown, images, and all seven chart types.",
   ],
 };
 
@@ -186,7 +187,7 @@ function DocumentThumbnail({
       preview = new PreviewHost(
         mount.current,
         result.program,
-        new Map(),
+        compact ? new Map() : exampleAssetStore(name),
         session.value.getRevision().state,
         1,
         () => {},

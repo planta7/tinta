@@ -54,6 +54,37 @@ export async function buildStudio() {
   const examples = {};
   for (const name of ["article", "report", "guide", "chart-atlas"])
     examples[name] = await readFile(`examples/${name}.tinta`, "utf8");
+  const assetPaths = JSON.parse(
+    await readFile("examples/catalog-assets.json", "utf8"),
+  );
+  const { compile } = await import("../packages/engine/dist/index.js");
+  const { imageDestinations, unwrap } =
+    await import("../packages/artifacts/dist/index.js");
+  const exampleAssets = {};
+  for (const [name, paths] of Object.entries(assetPaths)) {
+    if (!Object.hasOwn(examples, name))
+      throw new Error(`Unknown catalog example: ${name}`);
+    const program = unwrap(
+      compile({
+        text: examples[name],
+        profile: "tinta",
+        uri: `tinta:/${name}.tinta`,
+      }),
+    );
+    const destinations = [...new Set(imageDestinations(program.flow))].sort();
+    if (JSON.stringify(destinations) !== JSON.stringify([...paths].sort()))
+      throw new Error(`Catalog assets do not match ${name}.`);
+    exampleAssets[name] = [];
+    for (const path of paths) {
+      const match = /^assets\/([a-f0-9]{64})\.(png|jpe?g|webp)$/.exec(path);
+      if (!match) throw new Error(`Invalid catalog asset path: ${path}`);
+      const bytes = await readFile(`examples/${path}`);
+      const hash = createHash("sha256").update(bytes).digest("hex");
+      if (match[1] !== hash)
+        throw new Error(`Catalog asset hash does not match: ${path}`);
+      exampleAssets[name].push({ path, base64: bytes.toString("base64") });
+    }
+  }
   const registry = JSON.parse(await readFile("spec/registry.json", "utf8"));
   const templates = {
     meta: '@meta (version: "1.0", title: "Document", locale: "en-US", currency: "USD")',
@@ -102,7 +133,9 @@ export async function buildStudio() {
     .update(worker.code)
     .update(previewHtml)
     .update(icon)
-    .update(JSON.stringify({ studioVersion, examples, snippets }));
+    .update(
+      JSON.stringify({ studioVersion, examples, exampleAssets, snippets }),
+    );
   for (const filename of (await readdir("apps/studio/src")).sort()) {
     buildFingerprint.update(filename);
     buildFingerprint.update(await readFile(`apps/studio/src/${filename}`));
@@ -124,7 +157,13 @@ export async function buildStudio() {
     "apps/studio/dist/studio-runtime.js",
     'export { workerCode } from "./runtime/workerCode.js";\n' +
       'export { previewHtml } from "./runtime/previewHtml.js";\n' +
-      Object.entries({ examples, snippets, studioVersion, studioBuild })
+      Object.entries({
+        examples,
+        exampleAssets,
+        snippets,
+        studioVersion,
+        studioBuild,
+      })
         .map(
           ([key, value]) => `export const ${key} = ${JSON.stringify(value)};`,
         )

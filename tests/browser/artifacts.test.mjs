@@ -8,6 +8,7 @@ import { compile, createSession } from "../../packages/engine/dist/index.js";
 import {
   createAsset,
   exportHtml,
+  imageDestinations,
   unwrap,
 } from "../../packages/artifacts/dist/index.js";
 
@@ -75,6 +76,16 @@ async function exported(
   const session = unwrap(createSession(program));
   if (current) unwrap(session.setControls(current));
   try {
+    if (assets.size === 0) {
+      for (const path of imageDestinations(program.flow)) {
+        try {
+          const bytes = await readFile(`examples/${path}`);
+          assets.set(path, unwrap(createAsset(bytes)));
+        } catch (error) {
+          if (error?.code !== "ENOENT") throw error;
+        }
+      }
+    }
     return unwrap(
       await exportHtml(session, assets, {
         format,
@@ -125,6 +136,12 @@ for (const name of ["article", "report", "guide", "chart-atlas"]) {
         ).toHaveCount(0);
         expect(errors).toEqual([]);
         expect(await page.locator(".tinta-reader").count()).toBe(1);
+        await expect(page.locator("article img")).toHaveCount(1);
+        await expect
+          .poll(() =>
+            page.locator("article img").evaluate((image) => image.naturalWidth),
+          )
+          .toBe(1200);
         await page
           .getByRole("button", { name: "Reset reading", exact: true })
           .click();
@@ -331,6 +348,7 @@ test("static guide discloses only the selected platform", async ({ page }) => {
   expect(html).not.toContain("tinta-interactive");
   await visit(page, bytes, async () => {
     await expect(page.locator("article")).toContainText("Finder");
+    await expect(page.locator("article img")).toHaveCount(1);
     await expect(page.locator("select")).toHaveCount(0);
   });
 });
@@ -456,10 +474,16 @@ test("exports retain answers but reset legend, pin and details presentation", as
   page,
 }) => {
   const bundle = await classicBundle("tests/browser/artifact-harness.mjs");
+  const exampleAssets = JSON.parse(
+    await readFile("examples/catalog-assets.json", "utf8"),
+  );
   await page.addScriptTag({ content: bundle.code });
   await page.evaluate(
-    (source) => globalThis.exportTest.mount(source),
-    await readFile("examples/report.tinta", "utf8"),
+    ({ source, image }) => globalThis.exportTest.mount(source, image),
+    {
+      source: await readFile("examples/report.tinta", "utf8"),
+      image: [...(await readFile(`examples/${exampleAssets.report[0]}`))],
+    },
   );
   await page.getByLabel("Include weekends").check();
   const figure = page.locator("figure").first();

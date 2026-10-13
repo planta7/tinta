@@ -1,10 +1,21 @@
+@meta (version: "1.0", title: "The interactive document field guide", locale: "en-US", currency: "USD")
+
 # Seven ways to explore data
 
-All data here is fictional. Every figure also has a text/data alternative.
+![Open notebook and loose pages in blue tones](assets/3c680559948c017563e8324107dd8d63dac5fb2b49ae347afffe8510fd39e0e0.webp)
 
+This is a complete tour of the document language in one place. All data is
+fictional and local. Change a control, select a chart value, open the data
+alternatives, and then read the source to see how ordinary Markdown and tinta
+work together.
+
+## Controls and live values
+
+@let baseline = 15
 @slider factor = 1 (min: 1, max: 3, label: "Value multiplier")
 @slider selected_period = 1 (min: 1, max: 4, label: "Period")
 @choice selected_format = "Text" (options: ["Text", "Audio", "Video"], label: "Format")
+@toggle show_notes = false (label: "Show the worked notes")
 
 @data week
 period:number | actual:number | target:number
@@ -31,29 +42,93 @@ minutes:number | pages:number
 52 | 24
 @end
 
+@view above_target = week (
+  where: row.actual * factor >= baseline,
+  sort: "period",
+  descending: false,
+)
+@calc total_actual = sum(week, "actual")
+@calc selected_status = if(factor > 1, "scaled", "original")
+
+The **{{ selected_status }}** weekly total is based on **{{ total_actual }}**
+original readings. **{{ count(above_target) }} periods** meet the current
+threshold after multiplying by {{ factor }}. A view filters rows without
+changing the embedded source table.
+
+@details "See the filtered table"
+@table above_target (title: "Periods meeting the threshold")
+@end
+
+@when show_notes
+### A worked note
+
+A named value sets the threshold at {{ baseline }}. A calculation derives the
+original total; the view changes when the multiplier changes. The tables and
+figures stay in the document rather than becoming separate dashboards.
+@end
+
 ## Lines
-@chart line week (x: "period", y: ["actual", "target"], select: selected_period)
+@chart line week (x: "period", y: ["actual", "target"], select: selected_period, title: "Actual and target by period", xLabel: "Period", yLabel: "Readings")
 
 ## Areas
-@chart area week (x: "period", y: row.actual * factor, select: selected_period)
+@chart area week (x: "period", y: row.actual * factor, select: selected_period, title: "Scaled actual readings", xLabel: "Period", yLabel: "Readings")
 
 ## Grouped bars
-@chart bar week (x: "period", y: ["actual", "target"], select: selected_period)
+@chart bar week (x: "period", y: ["actual", "target"], select: selected_period, title: "Actual beside target", xLabel: "Period", yLabel: "Readings")
 
-The selected period is **{{ selected_period }}**.
+The selected period is **{{ selected_period }}**. Selecting a value in any of
+these three figures changes the same slider and highlight.
 
 ## Scatter
-@chart scatter sessions (x: "minutes", y: "pages", title: "Session length and pages")
+@chart scatter sessions (x: "minutes", y: "pages", title: "Session length and pages", xLabel: "Minutes", yLabel: "Pages")
 
 ## Sectors
-@chart pie formats (x: "format", y: "readers", select: selected_format)
+@chart pie formats (x: "format", y: "readers", select: selected_format, title: "Formats as sectors")
 
 ## An annular view
-@chart donut formats (x: "format", y: "readers", select: selected_format)
+@chart donut formats (x: "format", y: "readers", select: selected_format, title: "Formats as a ring")
 
-The selected format is **{{ selected_format }}**.
+The selected format is **{{ selected_format }}**. Both figures share the choice
+above. Their legends can hide categories for inspection without changing the
+source totals.
 
 ## Histogram
-@chart histogram sessions (x: "minutes", bins: 4, title: "Distribution of session lengths")
+@chart histogram sessions (x: "minutes", bins: 4, title: "Distribution of session lengths", xLabel: "Minutes", yLabel: "Sessions")
 
-The histogram counts observations in intervals; it does not select individual rows.
+The histogram counts observations in intervals; it does not select individual
+rows. Every figure offers a keyboard explorer and a **Show data** table.
+
+## Expressions and formatting
+
+The built-in functions can appear in prose as well as calculations:
+
+| Question | Result |
+| --- | --- |
+| Choose by condition | {{ if(factor > 1, "Scaled", "Original") }} |
+| Smaller and larger | {{ min(factor, 2) }} and {{ max(factor, 2) }} |
+| Rounded division | {{ round(10 / 3, 2) }} |
+| Exponent | {{ pow(factor, 2) }} |
+| Row count | {{ count(week) }} |
+| Column sum and mean | {{ sum(week, "actual") }} and {{ mean(week, "actual") }} |
+| Fixed decimals | {{ fixed(mean(week, "actual"), 1) }} |
+| Percentage | {{ percent(factor / 3) }} |
+| Currency | {{ money(total_actual) }} |
+
+## Markdown remains the foundation
+
+- [x] **Strong text**, *emphasis*, and a [link back to the controls](#tinta-controls-and-live-values) are ordinary Markdown.
+- [ ] Try ~~crossed-out text~~, tables, and a nested list:
+  - A nested item stays part of the document flow.
+
+```text
+This fenced code is literal, not a live control:
+@slider imaginary = 9
+{{ imaginary }}
+```
+
+@details "What this tour leaves outside the document"
+tinta studio can edit and save the source, import local CSV/JSON and raster images,
+keep local recovery copies, and export an interactive or static HTML file.
+Those are tool actions, not commands inside a document. An interactive export
+contains hidden branches and all embedded data; check it before sharing a copy.
+@end
