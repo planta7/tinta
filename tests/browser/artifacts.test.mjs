@@ -321,7 +321,7 @@ for (const answers of [undefined, { growth: 10, period: 2 }]) {
         const expected = answers ? "121" : "110";
         await expect(page.locator(".tinta-reader")).toContainText(expected);
         const growth = page.getByRole("slider", {
-          name: "Growth per period (%)",
+          name: "Growth per edition (%)",
         });
         await growth.focus();
         await growth.press("ArrowRight");

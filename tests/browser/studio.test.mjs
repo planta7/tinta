@@ -398,8 +398,9 @@ test("complete example exposes every control and all seven figures", async ({
   await expect(
     preview.getByRole("heading", { name: "A worked note" }),
   ).toBeVisible();
+  await expect(preview.getByRole("article")).toContainText("3 periods");
   await preview.getByLabel("Value multiplier").fill("2");
-  await expect(preview.getByRole("article")).toContainText("scaled");
+  await expect(preview.getByRole("article")).toContainText("4 periods");
 });
 
 test("exports selected current answers and validates the downloaded offline reader", async ({
@@ -1644,13 +1645,13 @@ test("dialog actions share one footer and reader actions remain outside the docu
   ).toHaveCount(0);
   await page
     .frameLocator("iframe")
-    .getByLabel("Growth per period (%)")
+    .getByLabel("Growth per edition (%)")
     .fill("10");
   await page
     .getByRole("button", { name: "Reset reading", exact: true })
     .click();
   await expect(
-    page.frameLocator("iframe").getByLabel("Growth per period (%)"),
+    page.frameLocator("iframe").getByLabel("Growth per edition (%)"),
   ).toHaveValue("5");
   await page.getByRole("button", { name: "Export", exact: true }).click();
   const footer = page.getByRole("dialog").locator(".dialog-actions");
