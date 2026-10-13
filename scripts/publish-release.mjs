@@ -221,11 +221,21 @@ async function main(mode, env) {
     policy.npm,
     readCandidateJson(readFileSync("toolchain/publication-npm-lock.json")),
   );
-  const journal = githubJournal(
+  const durableJournal = githubJournal(
     api,
     policy.repository,
     `${env.GITHUB_RUN_ID}/${env.GITHUB_RUN_ATTEMPT}`,
   );
+  const journal = {
+    ...durableJournal,
+    async save(records) {
+      await durableJournal.save(records);
+      writeFileSync(
+        "build/publication/receipt.json",
+        encode(records[verified.plan.candidate]),
+      );
+    },
+  };
   const adapters = {
     npm: npmAdapter({
       request,
