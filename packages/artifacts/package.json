@@ -1,6 +1,14 @@
 {
   "name": "@tinta-lang/artifacts",
   "version": "0.0.0",
+  "description": "Create and open tinta source bundles, state snapshots and standalone HTML.",
+  "keywords": [
+    "tinta",
+    "html",
+    "bundles",
+    "documents"
+  ],
+  "homepage": "https://github.com/planta7/tinta/blob/main/packages/artifacts/README.md",
   "private": true,
   "type": "module",
   "exports": {

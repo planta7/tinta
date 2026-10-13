@@ -1,6 +1,14 @@
 {
   "name": "@tinta-lang/engine",
   "version": "0.0.0",
+  "description": "Compile and evaluate interactive tinta documents with transactional controls.",
+  "keywords": [
+    "tinta",
+    "markdown",
+    "expressions",
+    "documents"
+  ],
+  "homepage": "https://github.com/planta7/tinta/blob/main/packages/engine/README.md",
   "private": true,
   "type": "module",
   "exports": {

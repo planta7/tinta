@@ -35,6 +35,9 @@ export function stagingManifest(config, target, source, files) {
   const manifest = {
     name: target.proposedName,
     version: config.versions.implementation,
+    description: source.description,
+    keywords: source.keywords,
+    homepage: source.homepage,
     private: false,
     type: "module",
     license: "MIT",
@@ -251,16 +254,10 @@ export async function packageNpm(config, destination) {
     const target = config.packages.find((item) => item.id === id);
     const source = await json(`${target.source}/package.json`);
     const entries = {};
+    entries["README.md"] = await readFile(`${target.source}/README.md`);
     if (id === "language-server") {
       for (const name of ["server.mjs", "worker.mjs"])
         entries[`dist/${name}`] = await readFile(`apps/vscode/dist/${name}`);
-      entries["README.md"] = Buffer.from(
-        "# Tinta language server\n\n" +
-          "Resolve `@tinta-lang/language-server/ipc` and launch it with Node's `fork` " +
-          "and an IPC channel. It speaks LSP over Node IPC, uses UTF-16 positions " +
-          "and full document synchronization. The sibling `worker.mjs` must stay " +
-          "beside the launcher. No stdio transport or root import is provided.\n",
-      );
     } else if (id === "syntax") {
       await parserBundle(entries);
       await declarationFiles(target.source, "index.js", entries);

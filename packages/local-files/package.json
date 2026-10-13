@@ -1,6 +1,14 @@
 {
   "name": "@tinta-lang/local-files",
   "version": "0.0.0",
+  "description": "Read and write local tinta files and images with explicit file access.",
+  "keywords": [
+    "tinta",
+    "files",
+    "images",
+    "node"
+  ],
+  "homepage": "https://github.com/planta7/tinta/blob/main/packages/local-files/README.md",
   "private": true,
   "type": "module",
   "exports": {

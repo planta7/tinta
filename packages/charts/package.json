@@ -1,6 +1,14 @@
 {
   "name": "@tinta-lang/charts",
   "version": "0.0.0",
+  "description": "Create SVG-ready scenes for interactive tinta document charts.",
+  "keywords": [
+    "tinta",
+    "charts",
+    "svg",
+    "documents"
+  ],
+  "homepage": "https://github.com/planta7/tinta/blob/main/packages/charts/README.md",
   "private": true,
   "type": "module",
   "exports": {

@@ -71,6 +71,17 @@ describe("portable distribution payloads", () => {
       expect(digest(bytes)).toBe(report.sha256);
       const entries = readTarball(bytes);
       const source = json(await readFile(`${target.source}/package.json`));
+      const readme = await readFile(`${target.source}/README.md`);
+      expect(entries["README.md"]).toEqual(readme);
+      expect(source.description).toMatch(/\S/);
+      expect(source.keywords.length).toBeGreaterThan(0);
+      expect(source.homepage).toBe(
+        `https://github.com/planta7/tinta/blob/main/${target.source}/README.md`,
+      );
+      const published = json(entries["package.json"]);
+      expect(published.description).toBe(source.description);
+      expect(published.keywords).toEqual(source.keywords);
+      expect(published.homepage).toBe(source.homepage);
       const manifest = stagingManifest(
         config,
         target,

@@ -1,6 +1,14 @@
 {
   "name": "@tinta-lang/language-server",
   "version": "0.0.0",
+  "description": "Run tinta language features over the Language Server Protocol in Node.",
+  "keywords": [
+    "tinta",
+    "language-server",
+    "lsp",
+    "editor"
+  ],
+  "homepage": "https://github.com/planta7/tinta/blob/main/packages/language-server/README.md",
   "private": true,
   "type": "module",
   "dependencies": {

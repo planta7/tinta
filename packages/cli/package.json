@@ -1,6 +1,14 @@
 {
   "name": "@tinta-lang/cli",
   "version": "0.0.0",
+  "description": "Check, enrich, bundle and export tinta documents from the command line.",
+  "keywords": [
+    "tinta",
+    "cli",
+    "markdown",
+    "documents"
+  ],
+  "homepage": "https://github.com/planta7/tinta/blob/main/packages/cli/README.md",
   "private": true,
   "type": "module",
   "exports": {

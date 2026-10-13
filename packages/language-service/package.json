@@ -1,6 +1,14 @@
 {
   "name": "@tinta-lang/language-service",
   "version": "0.0.0",
+  "description": "Analyze tinta source for editor diagnostics, completion and navigation.",
+  "keywords": [
+    "tinta",
+    "language-service",
+    "editor",
+    "markdown"
+  ],
+  "homepage": "https://github.com/planta7/tinta/blob/main/packages/language-service/README.md",
   "private": true,
   "type": "module",
   "exports": {

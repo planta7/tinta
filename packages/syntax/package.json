@@ -1,6 +1,14 @@
 {
   "name": "@tinta-lang/syntax",
   "version": "0.0.0",
+  "description": "Parse Markdown and tinta source, and enrich existing Markdown documents.",
+  "keywords": [
+    "tinta",
+    "markdown",
+    "parser",
+    "syntax"
+  ],
+  "homepage": "https://github.com/planta7/tinta/blob/main/packages/syntax/README.md",
   "private": true,
   "type": "module",
   "exports": {

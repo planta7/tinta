@@ -1,6 +1,14 @@
 {
   "name": "@tinta-lang/reader",
   "version": "0.0.0",
+  "description": "Mount interactive tinta documents with accessible controls and charts.",
+  "keywords": [
+    "tinta",
+    "reader",
+    "markdown",
+    "charts"
+  ],
+  "homepage": "https://github.com/planta7/tinta/blob/main/packages/reader/README.md",
   "private": true,
   "type": "module",
   "exports": {
