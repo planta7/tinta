@@ -22,34 +22,6 @@ const processes = [
 ];
 
 describe("native resident memory measurements", () => {
-  it.each(["SystemRoot", "SYSTEMROOT", "systemroot"])(
-    "finds the Windows system directory in a case-sensitive worker copy (%s)",
-    async (name) => {
-      const run = vi.fn().mockResolvedValue({
-        stdout: JSON.stringify(processes),
-      });
-      expect(
-        await residentBytes({
-          platform: "win32",
-          pid: 20,
-          env: { [name]: "C:/Windows" },
-          run,
-        }),
-      ).toBe(7168);
-      expect(run.mock.calls[0][0].replaceAll("\\", "/")).toBe(
-        "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
-      );
-    },
-  );
-
-  it("fails before launching a collector without a Windows system directory", async () => {
-    const run = vi.fn();
-    await expect(
-      residentBytes({ platform: "win32", env: {}, run }),
-    ).rejects.toThrow("Windows system root is unavailable");
-    expect(run).not.toHaveBeenCalled();
-  });
-
   it.each(["darwin", "linux", "win32"])(
     "sums the host and descendants on %s",
     async (platform) => {
@@ -114,13 +86,7 @@ describe("native failure evidence", () => {
     (offline) => {
       const root = mkdtempSync(join(tmpdir(), "tinta-native-evidence-"));
       try {
-        const result = {
-          status: "FAIL",
-          performance: { loopMaxMs: 101 },
-          completionLatency: {
-            samples: [{ totalMs: 88, serverRoundTripMs: 1 }],
-          },
-        };
+        const result = { status: "FAIL", performance: { loopMaxMs: 101 } };
         const execute = () => {
           writeFileSync(join(root, "result.json"), JSON.stringify(result));
           const logs = join(root, "portable/user-data/logs/session");

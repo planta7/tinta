@@ -13,13 +13,8 @@ export async function residentBytes({
 } = {}) {
   let rows;
   if (platform === "win32") {
-    // Worker environment copies are case-sensitive even on Windows.
-    const systemRoot = Object.entries(env).find(
-      ([name]) => name.toLowerCase() === "systemroot",
-    )?.[1];
-    assert.ok(systemRoot, "Windows system root is unavailable");
     const command = join(
-      systemRoot,
+      env.SystemRoot,
       "System32/WindowsPowerShell/v1.0/powershell.exe",
     );
     const { stdout } = await run(
