@@ -1666,6 +1666,10 @@
             "sha256": "dc3fc58a1a21158d4b23cf31f20706c850e3c073864ac4f8a16a8532a13fcd31",
             "bytes": 50337
           }
+        },
+        "github:asset:win32-x64.json": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
