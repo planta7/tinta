@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
+import { setTimeout } from "node:timers/promises";
 
 /** Errors deliberately omit service response text, URLs, commands and tokens. */
-export function httpTransport(fetcher = fetch) {
+export function httpTransport(fetcher = fetch, { wait = setTimeout } = {}) {
   return async (
     url,
     {
@@ -12,13 +13,30 @@ export function httpTransport(fetcher = fetch) {
       missing = false,
     } = {},
   ) => {
-    const response = await fetcher(url, {
-      method,
-      headers,
-      body,
-      redirect: "error",
-      signal: AbortSignal.timeout(30000),
-    });
+    let response;
+    for (let attempt = 0; ; attempt += 1) {
+      try {
+        response = await fetcher(url, {
+          method,
+          headers,
+          body,
+          redirect: "error",
+          signal: AbortSignal.timeout(30000),
+        });
+      } catch (error) {
+        if (method !== "GET" || attempt >= 2) throw error;
+        await wait(1000 * 2 ** attempt);
+        continue;
+      }
+      if (
+        method !== "GET" ||
+        attempt >= 2 ||
+        ![408, 429, 500, 502, 503, 504].includes(response.status)
+      )
+        break;
+      await response.body?.cancel?.();
+      await wait(1000 * 2 ** attempt);
+    }
     if (missing && response.status === 404) return null;
     if (!response.ok) {
       const error = new Error(

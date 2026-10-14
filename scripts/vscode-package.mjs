@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { captureCandidate } from "./candidate.mjs";
+import assert from "node:assert/strict";
 
 const require = createRequire(
   new URL("../packages/artifacts/package.json", import.meta.url),
@@ -28,8 +29,27 @@ export const payloadFiles = [
 const envelopeFiles = ["[Content_Types].xml", "extension.vsixmanifest"];
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 
-export function inspectPackage(bytes, { release = false } = {}) {
-  const config = loadReleaseConfig();
+export function verifyExtensionChannel(bytes, channel) {
+  assert.ok(["stable", "pre-release"].includes(channel));
+  const entries = readZip(bytes);
+  const xml = Buffer.from(entries["extension.vsixmanifest"]).toString();
+  const properties = [
+    ...xml.matchAll(
+      /<Property Id="Microsoft\.VisualStudio\.Code\.PreRelease" Value="(true|false)"\s*\/>/g,
+    ),
+  ];
+  assert.ok(properties.length <= 1, "Duplicate extension channel property");
+  assert.equal(
+    properties[0]?.[1] === "true",
+    channel === "pre-release",
+    "VSIX channel differs from release plan",
+  );
+}
+
+export function inspectPackage(
+  bytes,
+  { release = false, config = loadReleaseConfig() } = {},
+) {
   const expectedVersion = release
     ? config.versions.extension
     : extensionVersion;
@@ -101,11 +121,13 @@ export function inspectPackage(bytes, { release = false } = {}) {
   const xml = Buffer.from(entries["extension.vsixmanifest"]).toString();
   if (
     !xml.includes(`Version="${expectedVersion}" Publisher="${publisher}"`) ||
-    !xml.includes(`Value="${config.policy.vscodeRange}"`) ||
-    (release &&
-      !xml.includes('Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"'))
+    !xml.includes(`Value="${config.policy.vscodeRange}"`)
   )
     throw new Error("Inconsistent VSIX metadata.");
+  verifyExtensionChannel(
+    bytes,
+    release ? config.versions.extensionChannel : "stable",
+  );
   return {
     sha256: digest(bytes),
     bytes: bytes.length,
@@ -118,8 +140,8 @@ export function inspectPackage(bytes, { release = false } = {}) {
 export async function packageExtension({
   release = false,
   destination = "build/vscode",
+  config = loadReleaseConfig(),
 } = {}) {
-  const config = loadReleaseConfig();
   const version = release ? config.versions.extension : extensionVersion;
   const publisher = release
     ? config.identities.marketplacePublisher.value
@@ -199,14 +221,14 @@ export async function packageExtension({
   <Metadata>
     <Identity Language="en-US" Id="tinta" Version="${version}" Publisher="${publisher}"/>
     <DisplayName>tinta</DisplayName>
-    <Description xml:space="preserve">Write interactive Markdown documents with controls, calculations and charts; preview and export standalone HTML.</Description>
+    <Description xml:space="preserve">${manifest.description}</Description>
     <Tags>markdown</Tags>
     <Categories>Programming Languages</Categories>
     <GalleryFlags>${release ? "Public Preview" : "Preview"}</GalleryFlags>
     <Properties>
       <Property Id="Microsoft.VisualStudio.Code.Engine" Value="^1.141.0"/>
       <Property Id="Microsoft.VisualStudio.Code.ExtensionKind" Value="workspace"/>
-      ${release ? '<Property Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"/>' : ""}
+      ${release && config.versions.extensionChannel === "pre-release" ? '<Property Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"/>' : ""}
     </Properties>
     <License>extension/LICENSE</License>
   </Metadata>
@@ -230,7 +252,7 @@ export async function packageExtension({
     ),
     { level: 9 },
   );
-  const report = inspectPackage(zipped, { release });
+  const report = inspectPackage(zipped, { release, config });
   await mkdir(destination, { recursive: true });
   await writeFile(`${destination}/tinta-${version}.vsix`, zipped);
   await writeFile(

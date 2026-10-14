@@ -10,7 +10,7 @@
     "@tinta-lang/artifacts": "workspace:*"
   },
   "displayName": "tinta",
-  "description": "Write interactive Markdown documents with controls, calculations and charts; preview and export standalone HTML.",
+  "description": "Tinta language support: interactive documents with controls, calculations and charts, Markdown compatibility, live preview and HTML export.",
   "icon": "icon.png",
   "publisher": "tinta-local",
   "engines": {

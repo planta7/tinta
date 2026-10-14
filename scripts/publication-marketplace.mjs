@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { checkFile } from "./release-candidate.mjs";
 import { digest, readZip } from "./distribution-archive.mjs";
 import { setTimeout } from "node:timers/promises";
+import { verifyExtensionChannel } from "./vscode-package.mjs";
 
 function hasFlag(value, name, bit) {
   return typeof value === "number"
@@ -45,6 +46,7 @@ export function marketplaceAdapter({
   directory,
   publisherId,
   wait = setTimeout,
+  now = Date.now,
 }) {
   const base = "https://marketplace.visualstudio.com";
   let headers;
@@ -65,6 +67,10 @@ export function marketplaceAdapter({
       assert.ok(target, "Extension is mandatory");
       const { publisher } = route(target);
       assert.notEqual(publisher, "tinta-local");
+      verifyExtensionChannel(
+        checkFile(directory, target.archive),
+        target.channel,
+      );
       headers = { Authorization: `Bearer ${await credential()}` };
       const identity = await call(
         `/_apis/gallery/publishers/${publisher}?api-version=7.2-preview.1`,
@@ -125,14 +131,16 @@ export function marketplaceAdapter({
           );
         },
         verify: async (remote) => {
-          for (let attempt = 0; attempt < 12; attempt += 1) {
+          const deadline = now() + 20 * 60 * 1000;
+          for (;;) {
             assert.ok(remote, "Extension version disappeared");
             assert.ok(
               !remote.version.validationResultMessage,
               "Marketplace validation failed",
             );
             if (hasFlag(remote.version.flags, "validated", 1)) break;
-            await wait(5000);
+            if (now() >= deadline) break;
+            await wait(Math.min(10000, deadline - now()));
             remote = await read();
           }
           assert.ok(

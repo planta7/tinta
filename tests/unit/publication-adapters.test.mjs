@@ -36,6 +36,9 @@ function workspace() {
         '{"publisher":"fixture","name":"extension","version":"0.1.0"}',
       ),
       "extension/code.js": Buffer.from("export const value = 1;"),
+      "extension.vsixmanifest": Buffer.from(
+        '<Properties><Property Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"/></Properties>',
+      ),
     }),
   );
   writeFileSync(join(directory, "fixture.vsix"), bytes);
@@ -240,6 +243,55 @@ describe("credential and dispatch boundaries", () => {
     );
     expect(calls[0].redirect).toBe("error");
   });
+  it.each([408, 429, 500, 502, 503, 504, "network"])(
+    "retries a transient %s read without replaying writes",
+    async (failure) => {
+      for (const method of ["GET", "POST", "PUT", "PATCH", "DELETE"]) {
+        let calls = 0;
+        const waits = [];
+        const request = httpTransport(
+          async () => {
+            calls += 1;
+            if (calls === 1) {
+              if (failure === "network") throw new TypeError("Connection lost");
+              return new Response(null, { status: failure });
+            }
+            return Response.json({ verified: true });
+          },
+          { wait: async (ms) => waits.push(ms) },
+        );
+        const result = request("https://fixture.invalid", { method });
+        if (method === "GET") {
+          await expect(result).resolves.toEqual({ verified: true });
+          expect(calls).toBe(2);
+          expect(waits).toEqual([1000]);
+        } else {
+          await expect(result).rejects.toThrow();
+          expect(calls).toBe(1);
+          expect(waits).toEqual([]);
+        }
+      }
+    },
+  );
+  it.each([401, 403, 404, 502])(
+    "bounds unsuccessful %s reads",
+    async (status) => {
+      let calls = 0;
+      const waits = [];
+      const request = httpTransport(
+        async () => {
+          calls += 1;
+          return new Response("sensitive", { status });
+        },
+        { wait: async (ms) => waits.push(ms) },
+      );
+      await expect(request("https://fixture.invalid")).rejects.not.toThrow(
+        "sensitive",
+      );
+      expect(calls).toBe(status === 502 ? 3 : 1);
+      expect(waits).toEqual(status === 502 ? [1000, 2000] : []);
+    },
+  );
 });
 
 describe("npm destination", () => {
@@ -680,6 +732,104 @@ describe("npm destination", () => {
 });
 
 describe("Marketplace destination", () => {
+  it("rejects a packaged channel mismatch before credentials or remote writes", async () => {
+    const w = workspace();
+    try {
+      let calls = 0;
+      const adapter = marketplaceAdapter({
+        directory: w.directory,
+        publisherId: "fixture-id",
+        request: async () => {
+          calls += 1;
+        },
+        credential: async () => {
+          calls += 1;
+        },
+      });
+      await expect(
+        adapter.preflight({
+          targets: [
+            {
+              kind: "vsix",
+              name: "fixture.extension",
+              channel: "stable",
+              archive: w.archive,
+            },
+          ],
+        }),
+      ).rejects.toThrow("VSIX channel differs");
+      expect(calls).toBe(0);
+    } finally {
+      w.close();
+    }
+  });
+  it.each([360000, 900000, 1200000, null])(
+    "observes validation at %s milliseconds without resubmitting",
+    async (validationDelay) => {
+      const w = workspace();
+      try {
+        let elapsed = 0;
+        const writes = [];
+        const target = {
+          name: "fixture.extension",
+          version: "0.1.0",
+          channel: "pre-release",
+          archive: w.archive,
+        };
+        const adapter = marketplaceAdapter({
+          directory: w.directory,
+          publisherId: "fixture-id",
+          now: () => elapsed,
+          wait: async (ms) => {
+            elapsed += ms;
+          },
+          request: async (_url, options) => {
+            if (options?.method) writes.push(options.method);
+            return {
+              publisher: {
+                publisherName: "fixture",
+                publisherId: "fixture-id",
+              },
+              extensionName: "extension",
+              extensionId: "extension-id",
+              versions: [
+                {
+                  version: target.version,
+                  flags:
+                    validationDelay !== null && elapsed >= validationDelay
+                      ? "validated"
+                      : "none",
+                  properties: [
+                    {
+                      key: "Microsoft.VisualStudio.Code.PreRelease",
+                      value: "true",
+                    },
+                    {
+                      key: "Microsoft.VisualStudio.Services.VsixSha256",
+                      value: w.archive.sha256,
+                    },
+                  ],
+                },
+              ],
+            };
+          },
+        });
+        const operation = adapter.upload(target);
+        const result = operation.verify(await operation.read());
+        if (validationDelay === null)
+          await expect(result).rejects.toThrow("still pending");
+        else
+          await expect(result).resolves.toMatchObject({
+            version: target.version,
+            registeredSha256: w.archive.sha256,
+          });
+        expect(elapsed).toBe(validationDelay ?? 1200000);
+        expect(writes).toEqual([]);
+      } finally {
+        w.close();
+      }
+    },
+  );
   it("compares payload files when signing changes container bytes", () => {
     const w = workspace();
     try {
@@ -688,6 +838,9 @@ describe("Marketplace destination", () => {
           '{"publisher":"fixture","name":"extension","version":"0.1.0"}',
         ),
         "extension/code.js": Buffer.from("export const value = 1;"),
+        "extension.vsixmanifest": Buffer.from(
+          '<Properties><Property Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"/></Properties>',
+        ),
         ".signature.p7s": Buffer.from("fixture-signature"),
       });
       expect(verifyMarketplacePayload(w.bytes, changed).byteIdentical).toBe(
@@ -827,6 +980,7 @@ describe("Marketplace destination", () => {
     const w = workspace();
     try {
       let waits = 0;
+      let elapsed = 0;
       const mutations = [];
       const version = {
         version: "0.1.0",
@@ -869,8 +1023,10 @@ describe("Marketplace destination", () => {
       const adapter = marketplaceAdapter({
         directory: w.directory,
         publisherId: "fixture-id",
-        wait: async () => {
+        now: () => elapsed,
+        wait: async (duration) => {
           waits += 1;
+          elapsed += duration;
         },
         request: async (_url, options) => {
           if (options?.method) mutations.push(options.method);
@@ -892,7 +1048,7 @@ describe("Marketplace destination", () => {
       await expect(adapter.visibility(target).write()).rejects.toThrow(
         failures[state],
       );
-      expect(waits).toBe(state === "pending" ? 12 : 0);
+      expect(waits).toBe(state === "pending" ? 120 : 0);
       expect(mutations).toEqual([]);
     } finally {
       w.close();

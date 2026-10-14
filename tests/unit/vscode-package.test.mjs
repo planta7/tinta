@@ -10,6 +10,7 @@ import {
   packageExtension,
   extensionVersion,
 } from "../../scripts/vscode-package.mjs";
+import { loadReleaseConfig } from "../../scripts/release-contract.mjs";
 
 const require = createRequire(
   new URL("../../packages/artifacts/package.json", import.meta.url),
@@ -18,39 +19,58 @@ const { unzipSync, zipSync } = require("fflate");
 const path = `build/vscode/tinta-${extensionVersion}.vsix`;
 
 describe("local extension archive", () => {
-  let releaseManifest;
-
   beforeAll(async () => {
     await packageExtension();
   });
 
-  beforeAll(async () => {
-    const directory = await mkdtemp(join(tmpdir(), "tinta-release-flags-"));
-    try {
-      const report = await packageExtension({
-        release: true,
-        destination: directory,
-      });
-      const entries = unzipSync(
-        await readFile(
-          join(directory, `tinta-${report.identity.extensionVersion}.vsix`),
-        ),
-      );
-      releaseManifest = Buffer.from(
-        entries["extension.vsixmanifest"],
-      ).toString();
-    } finally {
-      await rm(directory, { recursive: true, force: true });
-    }
-  });
+  it.each(["stable", "pre-release"])(
+    "packages the configured %s channel",
+    async (channel) => {
+      const config = loadReleaseConfig();
+      config.versions.extensionChannel = channel;
+      config.versions.extension = channel === "stable" ? "0.2.0" : "0.3.0";
+      const directory = await mkdtemp(join(tmpdir(), "tinta-release-flags-"));
+      try {
+        const report = await packageExtension({
+          release: true,
+          destination: directory,
+          config,
+        });
+        const entries = unzipSync(
+          await readFile(
+            join(directory, `tinta-${report.identity.extensionVersion}.vsix`),
+          ),
+        );
+        const releaseManifest = Buffer.from(
+          entries["extension.vsixmanifest"],
+        ).toString();
+        expect(releaseManifest).toContain(
+          "<GalleryFlags>Public Preview</GalleryFlags>",
+        );
+        expect(
+          releaseManifest.includes(
+            'Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"',
+          ),
+        ).toBe(channel === "pre-release");
+        const wrong = structuredClone(config);
+        wrong.versions.extensionChannel =
+          channel === "stable" ? "pre-release" : "stable";
+        expect(() =>
+          inspectPackage(zipSync(entries), { release: true, config: wrong }),
+        ).toThrow("VSIX channel differs");
+        const manifest = JSON.parse(
+          Buffer.from(entries["extension/package.json"]).toString(),
+        );
+        expect(releaseManifest).toContain(
+          `<Description xml:space="preserve">${manifest.description}</Description>`,
+        );
+      } finally {
+        await rm(directory, { recursive: true, force: true });
+      }
+    },
+  );
 
-  it("marks release archives public while retaining their prerelease channel", async () => {
-    expect(releaseManifest).toContain(
-      "<GalleryFlags>Public Preview</GalleryFlags>",
-    );
-    expect(releaseManifest).toContain(
-      '<Property Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"/>',
-    );
+  it("keeps local archives private", async () => {
     const local = unzipSync(await readFile(path));
     expect(Buffer.from(local["extension.vsixmanifest"]).toString()).toContain(
       "<GalleryFlags>Preview</GalleryFlags>",
@@ -88,7 +108,8 @@ describe("local extension archive", () => {
     const icon = Buffer.from(entries["extension/icon.png"]);
 
     expect(manifest.displayName).toBe("tinta");
-    expect(manifest.description).toContain("interactive Markdown documents");
+    expect(manifest.description).toContain("Tinta language support");
+    expect(manifest.description).toContain("Markdown compatibility");
     expect(manifest.icon).toBe("icon.png");
     expect(icon.subarray(0, 8).toString("hex")).toBe("89504e470d0a1a0a");
     expect(Buffer.from(entries["extension.vsixmanifest"]).toString()).toContain(

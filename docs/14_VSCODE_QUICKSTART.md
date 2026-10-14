@@ -1,6 +1,6 @@
 # tinta for VS Code
 
-Write interactive documents in the VS Code editor. Start with Markdown, then add controls, calculations, tables and charts. The extension highlights `.tinta` files, helps you write expressions and directives, reports errors in Problems, and shows a live preview beside your source.
+Tinta is a language for interactive documents with controls, calculations, conditions, tables and charts. It is compatible with Markdown, so you can use familiar text formatting alongside its interactive capabilities. The VS Code extension highlights `.tinta` files, helps you write expressions and directives, reports errors in Problems, and shows a live preview beside your source.
 
 Learn more about the language, examples and other tools in the [tinta project on GitHub](https://github.com/planta7/tinta). The [syntax cheatsheet](https://github.com/planta7/tinta/blob/main/docs/CHEATSHEET.md) is a useful reference while writing.
 
