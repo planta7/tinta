@@ -2394,8 +2394,14 @@
           }
         },
         "npm:@tinta-lang/local-files": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/local-files",
+            "version": "0.2.2",
+            "integrity": "sha512-S+2Pa+VRp1/nK4jX5kjiNRM0UOcOeRHOA45PnThA7qEzTZO097qCitM7xePtwANGX2V6yThgrpqph+0aPq73Kg==",
+            "sha256": "4bfe5f1b208e2807dae8399bfc760200ee56cac26eb70becf2a0aed76ac3bed4"
+          }
         },
         "npm:@tinta-lang/cli": {
           "status": "submitted",
