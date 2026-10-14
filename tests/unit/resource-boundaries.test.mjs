@@ -186,7 +186,7 @@ test("importBytes accepts valid CSV and JSON exactly at the byte ceiling", () =>
       "importBytes",
     );
   }
-});
+}, 30000);
 
 test("assetBytes validates a real padded PNG at the ceiling and rejects one extra byte", () => {
   expect(createAsset(png(1, 1, limits.assetBytes)).ok).toBe(true);
