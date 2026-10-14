@@ -2131,8 +2131,14 @@
           }
         },
         "github:asset:tinta-0.4.1.vsix": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639853114,
+            "name": "tinta-0.4.1.vsix",
+            "sha256": "bf513d035ddbde244fcb35d8f65fb0fb222abe08dc19c74a64a24cc8680f32b4",
+            "bytes": 960481
+          }
         }
       },
       "promotion": {
