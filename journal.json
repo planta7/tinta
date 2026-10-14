@@ -2812,6 +2812,10 @@
             "sha256": "6a2067310f872bc9c451b18bd3dd709a0e3f1070781e9bca42d519b653ade5db",
             "bytes": 677
           }
+        },
+        "github:asset:release-manifest.json": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
