@@ -2101,8 +2101,14 @@
           }
         },
         "github:asset:tinta-lang-cli-0.2.1.tgz": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639852499,
+            "name": "tinta-lang-cli-0.2.1.tgz",
+            "sha256": "123fbdf55058db40263b163e9aa28e07f0021c10bc2ddd4d8ee31bc813cc367f",
+            "bytes": 1188224
+          }
         }
       },
       "promotion": {
