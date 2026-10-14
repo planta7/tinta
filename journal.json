@@ -1781,8 +1781,14 @@
           }
         },
         "npm:@tinta-lang/local-files": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/local-files",
+            "version": "0.2.1",
+            "integrity": "sha512-i/AhjEDTDHFXB7VjzADAr/M3L6tnqqx3wF3nhpIB15csWlYEmF5MPdLSVY4h886N+iPlotH9JE7XxBhqHb6GWA==",
+            "sha256": "1c665dcbaf07a5b0d4503528ec204dba321727eb5bb531508cb3f76d357d74c3"
+          }
         },
         "npm:@tinta-lang/cli": {
           "status": "submitted",
