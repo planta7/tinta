@@ -2446,6 +2446,10 @@
             "submittedSha256": "d885ca715558f11347969970d7d687616965f5500e457de28b8719a6dbc19d28",
             "registeredSha256": "d885ca715558f11347969970d7d687616965f5500e457de28b8719a6dbc19d28"
           }
+        },
+        "marketplace:visibility": {
+          "status": "pending",
+          "attempts": 0
         }
       }
     }
