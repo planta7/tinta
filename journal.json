@@ -2762,6 +2762,10 @@
             "sha256": "8c2b157ff6a080fadf4484a758b206005873a788f40a594a88df445d97041bc0",
             "bytes": 1020228
           }
+        },
+        "github:asset:studio-standalone-0.2.2.zip": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
