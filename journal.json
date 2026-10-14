@@ -1833,6 +1833,10 @@
             "submittedSha256": "bf513d035ddbde244fcb35d8f65fb0fb222abe08dc19c74a64a24cc8680f32b4",
             "registeredSha256": "bf513d035ddbde244fcb35d8f65fb0fb222abe08dc19c74a64a24cc8680f32b4"
           }
+        },
+        "marketplace:visibility": {
+          "status": "pending",
+          "attempts": 0
         }
       }
     }
