@@ -1388,6 +1388,10 @@
             "old": "0.1.19",
             "new": "0.1.21"
           }
+        },
+        "channel:@tinta-lang/language-server": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
