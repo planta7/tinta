@@ -23,3 +23,9 @@ For a normative conflict, propose a decision record under `decisions/` with the 
 Use US English for authored prose. Use **tinta** for the language and CLI, **tinta studio** for the full editor name and **Studio** as its short form. Keep existing package names, format identifiers, command labels and third-party wording unchanged. Keep core parsing and evaluation portable and deterministic; preserve the documented capability boundaries. Changes to dependencies follow the [stack policy](architecture/STACK.md). New features must fit the approved local document scope.
 
 Preserve MIT copyright and third-party notices. Review file and archive contents before distribution; exclude local configuration, credentials and development outputs. Consistency checks do not establish runtime behavior or authorize publication.
+
+## Commit messages and versions
+
+Use Conventional Commits with a descriptive scope, such as `fix(parser): recover malformed input` or `feat(cli): add a command`. A `fix`, `perf` or `revert` requests a patch; a `feat` requests a minor. Mark incompatible changes with `!` before the colon or a `BREAKING CHANGE:` footer. Other commit types do not request publication unless they declare an incompatible change. Describe the actual compatibility impact rather than choosing a message to obtain a particular number.
+
+A push to a working branch checks commit messages and runs verification without publishing. On `main`, the highest impact among the changes since the previous complete release selects one coordinated npm release. During `0.x` development, incompatible changes advance the minor, and the transition to `1.0.0` is explicit. The extension keeps its independent stable-channel numbering. See [distribution](docs/15_DISTRIBUTION.md#automatic-versions-and-release-notes) for version reservations, retries and channel rules.

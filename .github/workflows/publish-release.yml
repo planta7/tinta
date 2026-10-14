@@ -30,6 +30,7 @@ jobs:
       actions: read
       attestations: read
     outputs:
+      publish: ${{ steps.versions.outputs.publish || 'true' }}
       runtime_id: ${{ steps.runtime.outputs.artifact-id }}
       dependencies_sha256: ${{ steps.prepare.outputs.dependencies_sha256 }}
       manifest_sha256: ${{ steps.prepare.outputs.manifest_sha256 }}
@@ -43,14 +44,22 @@ jobs:
         with:
           node-version: 24.21.0
           package-manager-cache: false
-      - run: npm install --global pnpm@10.34.6 --ignore-scripts
-      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Read the immutable release decision
+        if: hashFiles('scripts/release-version-store.mjs') != ''
+        id: versions
+        run: node scripts/automatic-release.mjs
+      - if: steps.versions.outputs.publish != 'false'
+        run: npm install --global pnpm@10.34.6 --ignore-scripts
+      - if: steps.versions.outputs.publish != 'false'
+        run: pnpm install --frozen-lockfile --ignore-scripts
       - id: prepare
+        if: steps.versions.outputs.publish != 'false'
         run: node scripts/publish-release.mjs prepare
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GH_TOKEN: ${{ github.token }}
       - id: runtime
+        if: steps.versions.outputs.publish != 'false'
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         with:
           name: publisher-${{ github.run_id }}-${{ github.run_attempt }}
@@ -64,7 +73,7 @@ jobs:
           compression-level: 0
   publish:
     needs: candidate-gate
-    if:
+    if: needs.candidate-gate.outputs.publish == 'true' &&
       github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
       && github.event.workflow_run.head_branch == 'main' &&
       github.event.workflow_run.head_repository.full_name == github.repository
