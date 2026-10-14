@@ -800,8 +800,14 @@
           }
         },
         "npm:@tinta-lang/charts": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/charts",
+            "version": "0.1.19",
+            "integrity": "sha512-TyaA+1cEmP+GJ/YcHL4faT36mxPHdz+unP8EHu98Q1zA4T0BmSr3wg5xlrQqVBHhhiMQY06pdNV3dubrOqJF3g==",
+            "sha256": "19003d6f52e4075e51852537898bfacba23a2f0f0885e2d68c76b8f3343fadd3"
+          }
         },
         "npm:@tinta-lang/reader": {
           "status": "submitted",
