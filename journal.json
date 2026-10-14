@@ -1068,6 +1068,10 @@
             "tag": "tinta-v0.1.19-vscode-0.2.19-stable",
             "sourceSha": "a33cce0e15596c04f9fd18bd3e882f13aa13489c"
           }
+        },
+        "github:draft": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
