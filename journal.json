@@ -2231,8 +2231,14 @@
           }
         },
         "github:asset:attestation.sigstore.json": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639855373,
+            "name": "attestation.sigstore.json",
+            "sha256": "570999013ebdb388436c0c532831e6490cf6fac144013ddb83dd51eba161fc8b",
+            "bytes": 10593
+          }
         }
       },
       "promotion": {
