@@ -2434,8 +2434,18 @@
           }
         },
         "marketplace": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "publisher": "planta7",
+            "publisherId": "d5a3d449-d8c6-482b-b95c-db2716610389",
+            "extensionId": "17af3710-cac9-42d4-9c2f-c6cc18e8f9d0",
+            "version": "0.4.2",
+            "channel": "stable",
+            "targetPlatform": "universal",
+            "submittedSha256": "d885ca715558f11347969970d7d687616965f5500e457de28b8719a6dbc19d28",
+            "registeredSha256": "d885ca715558f11347969970d7d687616965f5500e457de28b8719a6dbc19d28"
+          }
         }
       }
     }
