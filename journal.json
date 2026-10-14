@@ -850,8 +850,14 @@
           }
         },
         "npm:@tinta-lang/language-service": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/language-service",
+            "version": "0.1.19",
+            "integrity": "sha512-1A9yWmhAwYKza9PHdYnH/BjhsnFE+dwLqLI5WluvAvQroIurDejtXo4wiWkSwrCzVDz0HLP9AL0M97w1hclajg==",
+            "sha256": "c717846d8cb66811f8089c642cf6969fe7ed468f0ab73a3581e7a699e1401ef7"
+          }
         },
         "npm:@tinta-lang/language-server": {
           "status": "submitted",
