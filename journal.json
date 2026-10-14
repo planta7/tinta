@@ -2544,6 +2544,10 @@
             "old": "0.2.1",
             "new": "0.2.2"
           }
+        },
+        "channel:@tinta-lang/engine": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
