@@ -2091,8 +2091,14 @@
           }
         },
         "github:asset:tinta-lang-local-files-0.2.1.tgz": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639852344,
+            "name": "tinta-lang-local-files-0.2.1.tgz",
+            "sha256": "1c665dcbaf07a5b0d4503528ec204dba321727eb5bb531508cb3f76d357d74c3",
+            "bytes": 64444
+          }
         }
       },
       "promotion": {
