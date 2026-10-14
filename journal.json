@@ -2111,8 +2111,14 @@
           }
         },
         "github:asset:tinta-lang-language-service-0.2.1.tgz": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639852647,
+            "name": "tinta-lang-language-service-0.2.1.tgz",
+            "sha256": "9d5af95991c21e94dc592bedfb85b5ad4cb1049e67ec163eeb5cb90c5f8da6ea",
+            "bytes": 69043
+          }
         }
       },
       "promotion": {
