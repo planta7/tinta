@@ -1993,8 +1993,14 @@
           }
         },
         "channel:@tinta-lang/language-service": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "promoted",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/language-service",
+            "channel": "latest",
+            "old": "0.1.21",
+            "new": "0.2.1"
+          }
         }
       },
       "promotion": {
