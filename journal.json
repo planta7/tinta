@@ -2894,8 +2894,8 @@
           }
         },
         "github:asset:win32-x64.json": {
-          "status": "pending",
-          "attempts": 0
+          "status": "submitted",
+          "attempts": 1
         }
       },
       "promotion": {
