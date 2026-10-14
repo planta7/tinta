@@ -810,8 +810,14 @@
           }
         },
         "npm:@tinta-lang/reader": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/reader",
+            "version": "0.1.19",
+            "integrity": "sha512-17XL28YWtRfaBsEP/M9kEn9a2XBXaRUC8vjdC418Kgy/bFthC2XEdXEhwZE39FTXNz5/VKGrXoejcOE700U8Dg==",
+            "sha256": "07fd23109bfe5a99d9fb96a957eb4f76a8b2a232112bd869b3a4959b315e0c24"
+          }
         },
         "npm:@tinta-lang/artifacts": {
           "status": "submitted",
