@@ -1983,8 +1983,14 @@
           }
         },
         "channel:@tinta-lang/cli": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "promoted",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/cli",
+            "channel": "latest",
+            "old": "0.1.21",
+            "new": "0.2.1"
+          }
         }
       },
       "promotion": {
