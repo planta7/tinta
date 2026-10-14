@@ -2259,6 +2259,10 @@
             "sha256": "56ea93f122398d0b6349230e1b16413edb8f94dc09e2f642a57b687227d80cd9",
             "bytes": 3587
           }
+        },
+        "github:asset:darwin-arm64.json": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
