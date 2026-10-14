@@ -1636,6 +1636,10 @@
             "sha256": "2f9f62398bc2594d56669d44a691f47349169ec1fb4292feb3979a32ab770950",
             "bytes": 251201
           }
+        },
+        "github:asset:build.json": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
