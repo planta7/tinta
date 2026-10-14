@@ -1747,6 +1747,10 @@
         "npm:@tinta-lang/local-files": {
           "status": "submitted",
           "attempts": 1
+        },
+        "npm:@tinta-lang/cli": {
+          "status": "pending",
+          "attempts": 0
         }
       }
     }
