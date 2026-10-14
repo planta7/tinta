@@ -2019,6 +2019,10 @@
             "tag": "tinta-v0.2.1-vscode-0.4.1-stable",
             "sourceSha": "f9805e0fbb99582731497d2610d022d4fd53c2c3"
           }
+        },
+        "github:draft": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
