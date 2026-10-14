@@ -672,6 +672,10 @@
         "npm:@tinta-lang/charts": {
           "status": "submitted",
           "attempts": 1
+        },
+        "npm:@tinta-lang/reader": {
+          "status": "pending",
+          "attempts": 0
         }
       }
     }
