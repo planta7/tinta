@@ -1526,6 +1526,10 @@
             "sha256": "314c8a341114cfa5f29b457881f7f40e05d6b4ec98445388878492c855febf63",
             "bytes": 960486
           }
+        },
+        "github:asset:studio-directory-0.1.21.zip": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
