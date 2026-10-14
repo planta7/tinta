@@ -2874,8 +2874,14 @@
           }
         },
         "github:asset:darwin-arm64.json": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 640041610,
+            "name": "darwin-arm64.json",
+            "sha256": "53e929cccadc32618ee5b8314bdc52d9408fd6963ebf70026b9fc15fdbec65e2",
+            "bytes": 52273
+          }
         }
       },
       "promotion": {
