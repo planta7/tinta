@@ -2179,6 +2179,10 @@
             "sha256": "bda083c9adb92ca0696bb80db60ff35a52258b727a1bdbcac609d3edc3d8d9ea",
             "bytes": 1908320
           }
+        },
+        "github:asset:examples-0.2.1.zip": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
