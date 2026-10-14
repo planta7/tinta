@@ -1912,6 +1912,32 @@
             }
           }
         }
+      },
+      "promotion": {
+        "observed": {
+          "@tinta-lang/types": "0.1.21",
+          "@tinta-lang/syntax": "0.1.21",
+          "@tinta-lang/engine": "0.1.21",
+          "@tinta-lang/charts": "0.1.21",
+          "@tinta-lang/reader": "0.1.21",
+          "@tinta-lang/artifacts": "0.1.21",
+          "@tinta-lang/local-files": "0.1.21",
+          "@tinta-lang/cli": "0.1.21",
+          "@tinta-lang/language-service": "0.1.21",
+          "@tinta-lang/language-server": "0.1.21"
+        },
+        "desired": {
+          "@tinta-lang/types": "0.2.1",
+          "@tinta-lang/syntax": "0.2.1",
+          "@tinta-lang/engine": "0.2.1",
+          "@tinta-lang/charts": "0.2.1",
+          "@tinta-lang/reader": "0.2.1",
+          "@tinta-lang/artifacts": "0.2.1",
+          "@tinta-lang/local-files": "0.2.1",
+          "@tinta-lang/cli": "0.2.1",
+          "@tinta-lang/language-service": "0.2.1",
+          "@tinta-lang/language-server": "0.2.1"
+        }
       }
     }
   }
