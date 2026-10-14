@@ -2181,8 +2181,14 @@
           }
         },
         "github:asset:examples-0.2.1.zip": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639854186,
+            "name": "examples-0.2.1.zip",
+            "sha256": "f03ab671b399a5dee054919e38eaa1e3e5fcee3cd82750105cbae5516d468825",
+            "bytes": 2274892
+          }
         }
       },
       "promotion": {
