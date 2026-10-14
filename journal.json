@@ -2902,6 +2902,10 @@
             "sha256": "6135db14c38a7dbc35d5a79cab206b8ef2c9e3a0d0c8746d8c48a7c4eb24931a",
             "bytes": 52265
           }
+        },
+        "github:publish": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
