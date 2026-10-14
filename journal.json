@@ -2269,6 +2269,10 @@
             "sha256": "85966361428d825f2690582436f8be94cd7109e9f41b46eb2f4b2ee8d65d375f",
             "bytes": 54973
           }
+        },
+        "github:asset:linux-arm64.json": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
