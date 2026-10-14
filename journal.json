@@ -1618,8 +1618,14 @@
           }
         },
         "github:asset:attestation.sigstore.json": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639606201,
+            "name": "attestation.sigstore.json",
+            "sha256": "43c4275e61f0a2728cb7bf14e75ec7bbc5126d79ebc05776115d3da95b6586ac",
+            "bytes": 10229
+          }
         }
       },
       "promotion": {
