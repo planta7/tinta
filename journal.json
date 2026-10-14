@@ -2059,6 +2059,10 @@
             "sha256": "1d01ee9a0009d1ceb1dc994f8cbae7e81081c6b7ea4729a59663ab011f1cc2db",
             "bytes": 144090
           }
+        },
+        "github:asset:tinta-lang-charts-0.2.1.tgz": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
