@@ -2071,8 +2071,14 @@
           }
         },
         "github:asset:tinta-lang-reader-0.2.1.tgz": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639851886,
+            "name": "tinta-lang-reader-0.2.1.tgz",
+            "sha256": "e71de30ece347de5b7c520d851f3a5e25adc39d18ad2982753ad5a69ffcc38dc",
+            "bytes": 75785
+          }
         }
       },
       "promotion": {
