@@ -1723,6 +1723,10 @@
         "npm:@tinta-lang/types": {
           "status": "submitted",
           "attempts": 1
+        },
+        "npm:@tinta-lang/syntax": {
+          "status": "pending",
+          "attempts": 0
         }
       }
     }
