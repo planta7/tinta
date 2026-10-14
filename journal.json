@@ -2069,6 +2069,10 @@
             "sha256": "5662071ef9ab57099965f858ae10ff24bfe151878c055e03b3014cd8fae3bc2f",
             "bytes": 64080
           }
+        },
+        "github:asset:tinta-lang-reader-0.2.1.tgz": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
