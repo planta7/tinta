@@ -2754,8 +2754,14 @@
           }
         },
         "github:asset:studio-directory-0.2.2.zip": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 640038069,
+            "name": "studio-directory-0.2.2.zip",
+            "sha256": "8c2b157ff6a080fadf4484a758b206005873a788f40a594a88df445d97041bc0",
+            "bytes": 1020228
+          }
         }
       },
       "promotion": {
