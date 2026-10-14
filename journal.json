@@ -2784,8 +2784,14 @@
           }
         },
         "github:asset:source-0.2.2.zip": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 640038841,
+            "name": "source-0.2.2.zip",
+            "sha256": "9f1b99ca01dc45b3b7887e1dbffe6128ae28d1550898525ad56c5061aeefc0d0",
+            "bytes": 1905122
+          }
         }
       },
       "promotion": {
