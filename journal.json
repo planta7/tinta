@@ -1576,6 +1576,10 @@
             "sha256": "3406e9c861e2fb57de9da97734aadf4cef0df8f2e3a4a51f1bf6c96229957e3c",
             "bytes": 2274924
           }
+        },
+        "github:asset:release-plan.json": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
