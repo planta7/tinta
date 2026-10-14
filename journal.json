@@ -2081,8 +2081,14 @@
           }
         },
         "github:asset:tinta-lang-artifacts-0.2.1.tgz": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639852103,
+            "name": "tinta-lang-artifacts-0.2.1.tgz",
+            "sha256": "85e20d183333d99e2e18d6f8e9ba010c2b1a7fc475aaf94db8060145b59399e5",
+            "bytes": 133148
+          }
         }
       },
       "promotion": {
