@@ -1751,6 +1751,10 @@
         "npm:@tinta-lang/cli": {
           "status": "submitted",
           "attempts": 1
+        },
+        "npm:@tinta-lang/language-service": {
+          "status": "pending",
+          "attempts": 0
         }
       }
     }
