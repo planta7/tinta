@@ -1012,8 +1012,14 @@
           }
         },
         "channel:@tinta-lang/artifacts": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "promoted",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/artifacts",
+            "channel": "latest",
+            "old": "0.1.0-dev.0",
+            "new": "0.1.19"
+          }
         }
       },
       "promotion": {
