@@ -1821,8 +1821,18 @@
           }
         },
         "marketplace": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "publisher": "planta7",
+            "publisherId": "d5a3d449-d8c6-482b-b95c-db2716610389",
+            "extensionId": "17af3710-cac9-42d4-9c2f-c6cc18e8f9d0",
+            "version": "0.4.1",
+            "channel": "stable",
+            "targetPlatform": "universal",
+            "submittedSha256": "bf513d035ddbde244fcb35d8f65fb0fb222abe08dc19c74a64a24cc8680f32b4",
+            "registeredSha256": "bf513d035ddbde244fcb35d8f65fb0fb222abe08dc19c74a64a24cc8680f32b4"
+          }
         }
       }
     }
