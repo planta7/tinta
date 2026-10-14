@@ -708,8 +708,14 @@
           }
         },
         "npm:@tinta-lang/artifacts": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/artifacts",
+            "version": "0.1.16",
+            "integrity": "sha512-P/Ol+h5bU1WYXwk820ZIUTCD0t1RLGnNScaM/5wRcI/Wd8b7J5rcfucDq4VRc1W0TrurT4aUYzHNunjpNQ0J9Q==",
+            "sha256": "52d4e7de23c9e43aa4fff06d6689831aa922eca2ff0af388bfb4b4e6220318e0"
+          }
         },
         "npm:@tinta-lang/local-files": {
           "status": "submitted",
