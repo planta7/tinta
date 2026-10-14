@@ -2642,6 +2642,10 @@
             "candidate": "fd742ea952c850254432196bd021d5115a857310d0ce2f57f89621928fda722c",
             "draft": true
           }
+        },
+        "github:asset:tinta-lang-types-0.2.2.tgz": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
