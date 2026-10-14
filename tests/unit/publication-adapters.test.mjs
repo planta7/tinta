@@ -294,14 +294,15 @@ describe("npm destination", () => {
     }
   });
 
-  it.each([false, true])(
-    "waits for uploaded version indexing without repeating the upload: %s",
-    async (neverVisible) => {
+  it.each([20000, 300000, 900000, null])(
+    "waits for uploaded version availability without repeating the upload: %s ms",
+    async (visibleAfterMs) => {
       const w = workspace();
       try {
         let writes = 0;
         let reads = 0;
         let waits = 0;
+        let elapsed = 0;
         const target = {
           name: "@fixture/package",
           version: "1.0.0",
@@ -323,25 +324,56 @@ describe("npm destination", () => {
             expect(options.headers["Cache-Control"]).toBe("no-cache");
             if (!writes) return null;
             reads += 1;
-            return !neverVisible && reads >= 3 ? metadata : null;
+            return visibleAfterMs !== null && elapsed >= visibleAfterMs
+              ? metadata
+              : null;
           },
+          now: () => elapsed,
           wait: async (ms) => {
-            expect(ms).toBe(5000);
+            expect(ms).toBe(10000);
             waits += 1;
+            elapsed += ms;
           },
         }).upload(target, { candidate: "a".repeat(64) });
         expect(await operation.read()).toBeNull();
         expect(waits).toBe(0);
         await operation.write();
-        expect(await operation.read()).toEqual(neverVisible ? null : metadata);
+        expect(await operation.read()).toEqual(
+          visibleAfterMs === null ? null : metadata,
+        );
         expect(writes).toBe(1);
-        expect(reads).toBe(neverVisible ? 13 : 3);
-        expect(waits).toBe(neverVisible ? 12 : 2);
+        const expectedWaits = (visibleAfterMs ?? 20 * 60 * 1000) / 10000;
+        expect(reads).toBe(expectedWaits + 1);
+        expect(waits).toBe(expectedWaits);
+        expect(operation.retryAbsent).not.toBe(true);
       } finally {
         rmSync(w.directory, { recursive: true, force: true });
       }
     },
   );
+
+  it("waits for a recorded npm submission on resume without sending it again", async () => {
+    let elapsed = 0;
+    let writes = 0;
+    const metadata = { name: "@fixture/package", version: "1.0.0" };
+    const operation = npmAdapter({
+      directory: ".",
+      runner: {
+        run: () => {
+          writes += 1;
+        },
+      },
+      request: async () => (elapsed >= 300000 ? metadata : null),
+      now: () => elapsed,
+      wait: async (ms) => {
+        elapsed += ms;
+      },
+    }).upload(metadata, {});
+    expect(await operation.read({ pending: true })).toEqual(metadata);
+    expect(elapsed).toBe(300000);
+    expect(writes).toBe(0);
+    expect(operation.retryAbsent).not.toBe(true);
+  });
 
   it("uploads only the verified archive with explicit candidate tag and public access", async () => {
     const w = workspace();

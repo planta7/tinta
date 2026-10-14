@@ -83,6 +83,7 @@ export function npmAdapter({
   registry = "https://registry.npmjs.org",
   retainInitialLatestVersion = null,
   wait = setTimeout,
+  now = Date.now,
 }) {
   assert.ok(
     retainInitialLatestVersion === null ||
@@ -160,20 +161,23 @@ export function npmAdapter({
     },
     upload(target, plan) {
       let submissionStarted = false;
+      let visibilityDeadline;
       return {
-        retryAbsent: true,
-        read: async () => {
-          const attempts = submissionStarted ? 13 : 1;
-          for (let attempt = 0; attempt < attempts; attempt++) {
+        read: async ({ pending = false } = {}) => {
+          if (!submissionStarted && !pending) return version(target);
+          visibilityDeadline ??= now() + 20 * 60 * 1000;
+          while (true) {
             const remote = await version(target);
             if (remote !== null) return remote;
-            if (attempt + 1 < attempts) await wait(5000);
+            const remaining = visibilityDeadline - now();
+            if (remaining <= 0) return null;
+            await wait(Math.min(10000, remaining));
           }
-          return null;
         },
         write: async () => {
           checkFile(directory, target.archive);
           submissionStarted = true;
+          visibilityDeadline = now() + 20 * 60 * 1000;
           runner.run(
             [
               "publish",

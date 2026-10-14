@@ -158,6 +158,54 @@ function fixture() {
 }
 
 describe("resumable coordinated publication", () => {
+  it("submits the dependency batch before waiting for npm scanning", async () => {
+    const f = fixture();
+    const original = f.adapters.npm.upload;
+    const verifications = [];
+    f.adapters.npm.upload = (target) => {
+      const operation = original(target);
+      return {
+        ...operation,
+        read: async () => {
+          if (!f.remote.has(target.name)) return null;
+          expect(f.writes.slice(0, 2)).toEqual(["@fixture/a", "@fixture/b"]);
+          expect(
+            f.storage[f.plan.candidate].items[`npm:${target.name}`].status,
+          ).toBe("submitted");
+          return operation.read();
+        },
+        verify: async (value) => {
+          verifications.push(target.name);
+          return operation.verify(value);
+        },
+      };
+    };
+    expect((await f.run()).status).toBe("promoted");
+    expect(verifications).toEqual(["@fixture/a", "@fixture/b"]);
+  });
+
+  it("preserves unavailable npm submissions and blocks downstream destinations on resume", async () => {
+    const f = fixture();
+    const original = f.adapters.npm.upload;
+    let visible = false;
+    f.adapters.npm.upload = (target) => ({
+      ...original(target),
+      retryAbsent: false,
+      read: async () => (visible ? (f.remote.get(target.name) ?? null) : null),
+    });
+    await expect(f.run()).rejects.toThrow("indexing");
+    expect(f.writes).toEqual(["@fixture/a", "@fixture/b"]);
+    expect(f.storage[f.plan.candidate].items["npm:@fixture/a"].error).toBe(
+      "availability-pending",
+    );
+    await expect(f.run()).rejects.toThrow("reconcile");
+    expect(f.writes).toEqual(["@fixture/a", "@fixture/b"]);
+    visible = true;
+    expect((await f.run()).status).toBe("promoted");
+    expect(f.writes.filter((key) => key === "@fixture/a")).toHaveLength(1);
+    expect(f.writes.filter((key) => key === "@fixture/b")).toHaveLength(1);
+  });
+
   it("automatically resumes a recorded partial promotion without repeating uploads", async () => {
     const f = fixture();
     f.control.fail = "tag:@fixture/b";
@@ -498,13 +546,36 @@ it("rechecks expiration between writes and never treats a failed retry as comple
   await expect(f.run()).rejects.toThrow("collision");
   expect(f.storage[f.plan.candidate].status).not.toBe("promoted");
   const other = fixture();
-  let ticks = 0;
   await expect(
     other.run({
-      now: () => Date.parse(++ticks < 3 ? "2026-10-11" : "2026-12-01"),
+      now: () =>
+        Date.parse(other.writes.length === 0 ? "2026-10-11" : "2026-12-01"),
     }),
   ).rejects.toThrow("expired");
   expect(other.writes).toEqual(["@fixture/a"]);
+});
+
+it("rejects a candidate that expires while waiting for npm visibility", async () => {
+  const f = fixture();
+  let expired = false;
+  const original = f.adapters.npm.upload;
+  f.adapters.npm.upload = (target) => {
+    const operation = original(target);
+    return {
+      ...operation,
+      read: async () => {
+        if (f.remote.has(target.name)) expired = true;
+        return operation.read();
+      },
+    };
+  };
+  await expect(
+    f.run({
+      now: () => Date.parse(expired ? "2026-12-01" : "2026-10-11"),
+    }),
+  ).rejects.toThrow("expired");
+  expect(f.writes).toEqual(["@fixture/a", "@fixture/b"]);
+  expect(f.storage[f.plan.candidate].status).not.toBe("promoted");
 });
 
 it("requires a reviewed absent-state digest to retry an unknown Marketplace submission", async () => {

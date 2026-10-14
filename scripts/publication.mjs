@@ -112,12 +112,16 @@ export async function publishRelease({
       initialChannels[target.name] = await adapters.npm.channel(target);
     }
     promotionReview(initialChannels, packages);
-    const step = async (key, operation, promoted = false) => {
+    const step = async (
+      key,
+      operation,
+      { promoted = false, deferVerification = false } = {},
+    ) => {
       validateIntent(intent, plan, now());
       const item = record.items[key] ?? { status: "pending", attempts: 0 };
       record.items[key] = item;
       await save();
-      let remote = await operation.read();
+      let remote = await operation.read({ pending: item.attempts > 0 });
       if (remote === null) {
         const destination = key.startsWith("npm:")
           ? "npm"
@@ -147,6 +151,7 @@ export async function publishRelease({
             "Unknown submission; reconcile destination before retry",
           );
         }
+        validateIntent(intent, plan, now());
         assert.ok(item.attempts < 3, "Bounded submission attempts exhausted");
         item.status = "submitted";
         item.attempts += 1;
@@ -167,25 +172,39 @@ export async function publishRelease({
               { cause: error },
             );
         }
+      }
+      const verify = async () => {
+        validateIntent(intent, plan, now());
         if (remote === null) remote = await operation.read();
-      }
-      try {
-        assert.ok(remote !== null, "Destination indexing pending");
-        const receipt = await operation.verify(remote);
-        if (item.status !== "promoted") item.receipt = receipt;
-        item.status = promoted ? "promoted" : "verified";
-        delete item.error;
-        await save();
-      } catch (error) {
-        item.status = "failed";
-        item.error = "verification-failed";
-        await save();
-        throw error;
-      }
+        try {
+          validateIntent(intent, plan, now());
+          assert.ok(remote !== null, "Destination indexing pending");
+          const receipt = await operation.verify(remote);
+          if (item.status !== "promoted") item.receipt = receipt;
+          item.status = promoted ? "promoted" : "verified";
+          delete item.error;
+          await save();
+        } catch (error) {
+          item.status = "failed";
+          item.error =
+            remote === null ? "availability-pending" : "verification-failed";
+          await save();
+          throw error;
+        }
+      };
+      if (deferVerification && remote === null) return verify;
+      await verify();
     };
+    const pendingPackages = [];
     for (const target of packages) {
-      await step(`npm:${target.name}`, adapters.npm.upload(target, plan));
+      const verify = await step(
+        `npm:${target.name}`,
+        adapters.npm.upload(target, plan),
+        { deferVerification: true },
+      );
+      if (verify) pendingPackages.push(verify);
     }
+    for (const verify of pendingPackages) await verify();
     await adapters.npm.verifyInstall(packages, plan);
     if (phase === "npm") return structuredClone(record);
     await step(
@@ -243,16 +262,14 @@ export async function publishRelease({
       await step(
         `channel:${target.name}`,
         adapters.npm.promote(target, observed[target.name]),
-        true,
+        { promoted: true },
       );
     }
     if (phase === "promote") return structuredClone(record);
     for await (const operation of adapters.github.operations(plan)) {
-      await step(
-        `github:${operation.key}`,
-        operation,
-        operation.key === "publish",
-      );
+      await step(`github:${operation.key}`, operation, {
+        promoted: operation.key === "publish",
+      });
     }
     record.status = "promoted";
     await save();
