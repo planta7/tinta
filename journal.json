@@ -1438,8 +1438,14 @@
           }
         },
         "github:asset:tinta-lang-engine-0.1.21.tgz": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639601520,
+            "name": "tinta-lang-engine-0.1.21.tgz",
+            "sha256": "fe13b3a5401917e7e0409d2c63e05715333995bd8d42acbfb5baee14f9c8acab",
+            "bytes": 144090
+          }
         }
       },
       "promotion": {
