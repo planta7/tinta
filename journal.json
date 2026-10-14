@@ -2041,8 +2041,14 @@
           }
         },
         "github:asset:tinta-lang-syntax-0.2.1.tgz": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639851141,
+            "name": "tinta-lang-syntax-0.2.1.tgz",
+            "sha256": "4b3ecc27a07dab0586b620c0157a5a2bc64b58eb7b26ba272a3783bd5984d6d8",
+            "bytes": 296360
+          }
         }
       },
       "promotion": {
