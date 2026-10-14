@@ -2031,8 +2031,14 @@
           }
         },
         "github:asset:tinta-lang-types-0.2.1.tgz": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639850947,
+            "name": "tinta-lang-types-0.2.1.tgz",
+            "sha256": "76b187d228a496ee4b02fe66821e55f0a8c47665997a2106c62c421fede45570",
+            "bytes": 75568
+          }
         }
       },
       "promotion": {
