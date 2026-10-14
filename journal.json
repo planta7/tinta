@@ -1973,8 +1973,8 @@
           }
         },
         "channel:@tinta-lang/local-files": {
-          "status": "pending",
-          "attempts": 0
+          "status": "submitted",
+          "attempts": 1
         }
       },
       "promotion": {
