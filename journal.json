@@ -1725,8 +1725,8 @@
           "attempts": 1
         },
         "npm:@tinta-lang/syntax": {
-          "status": "pending",
-          "attempts": 0
+          "status": "submitted",
+          "attempts": 1
         }
       }
     }
