@@ -1743,6 +1743,10 @@
         "npm:@tinta-lang/artifacts": {
           "status": "submitted",
           "attempts": 1
+        },
+        "npm:@tinta-lang/local-files": {
+          "status": "pending",
+          "attempts": 0
         }
       }
     }
