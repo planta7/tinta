@@ -2191,8 +2191,14 @@
           }
         },
         "github:asset:release-plan.json": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639854438,
+            "name": "release-plan.json",
+            "sha256": "fa3504c6703246c3df64b38f3c81b4831f573e170998a3958e279e486768456e",
+            "bytes": 1078
+          }
         }
       },
       "promotion": {
