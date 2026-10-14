@@ -1320,8 +1320,14 @@
           }
         },
         "channel:@tinta-lang/engine": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "promoted",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/engine",
+            "channel": "latest",
+            "old": "0.1.19",
+            "new": "0.1.21"
+          }
         }
       },
       "promotion": {
