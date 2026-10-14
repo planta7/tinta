@@ -2271,8 +2271,14 @@
           }
         },
         "github:asset:linux-arm64.json": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639856334,
+            "name": "linux-arm64.json",
+            "sha256": "5859a85ecb52c171b643fb2f0faf1bc15802157b3a943c630718675260408efc",
+            "bytes": 50315
+          }
         }
       },
       "promotion": {
