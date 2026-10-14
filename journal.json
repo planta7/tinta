@@ -1126,6 +1126,10 @@
         "npm:@tinta-lang/reader": {
           "status": "submitted",
           "attempts": 1
+        },
+        "npm:@tinta-lang/artifacts": {
+          "status": "pending",
+          "attempts": 0
         }
       }
     }
