@@ -2782,6 +2782,10 @@
             "sha256": "21c789f893cb0ff62c44ac25d2fe13f124f492a00531c2fa40facc6cd3e043d7",
             "bytes": 105779
           }
+        },
+        "github:asset:source-0.2.2.zip": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
