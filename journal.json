@@ -1733,8 +1733,8 @@
           "attempts": 1
         },
         "npm:@tinta-lang/charts": {
-          "status": "pending",
-          "attempts": 0
+          "status": "submitted",
+          "attempts": 1
         }
       }
     }
