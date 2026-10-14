@@ -2241,8 +2241,14 @@
           }
         },
         "github:asset:inventory.json": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639855656,
+            "name": "inventory.json",
+            "sha256": "6907af26726f9c1a3d107380ef005c47a981fc6f0b47f4fe935b6df9684fc12c",
+            "bytes": 251546
+          }
         }
       },
       "promotion": {
