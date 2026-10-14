@@ -1206,6 +1206,10 @@
             "integrity": "sha512-jUCYue4CLkqRpFRU7ZfS86aahxPHCgTVZQpk8RaJZa3KIiZ2LFW5tBsGdHClwdUwHdHeV8LHQ50h64Kdlw4t3Q==",
             "sha256": "b66cef45faecdaa3ada3815c28dd2d20918b5fc268b7c231857654058314e020"
           }
+        },
+        "marketplace": {
+          "status": "pending",
+          "attempts": 0
         }
       }
     }
