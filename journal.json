@@ -2051,8 +2051,8 @@
           }
         },
         "github:asset:tinta-lang-engine-0.2.1.tgz": {
-          "status": "pending",
-          "attempts": 0
+          "status": "submitted",
+          "attempts": 1
         }
       },
       "promotion": {
