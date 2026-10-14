@@ -1418,8 +1418,14 @@
           }
         },
         "github:asset:tinta-lang-types-0.1.21.tgz": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639601046,
+            "name": "tinta-lang-types-0.1.21.tgz",
+            "sha256": "fb108142c9946e7bee67ad0f0bf5f3dce659259b61dbdd111e97834e1ff1c52b",
+            "bytes": 75568
+          }
         }
       },
       "promotion": {
