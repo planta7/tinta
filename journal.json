@@ -1943,8 +1943,14 @@
           }
         },
         "channel:@tinta-lang/charts": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "promoted",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/charts",
+            "channel": "latest",
+            "old": "0.1.21",
+            "new": "0.2.1"
+          }
         }
       },
       "promotion": {
