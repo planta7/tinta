@@ -2291,8 +2291,14 @@
           }
         },
         "github:publish": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "promoted",
+          "attempts": 1,
+          "receipt": {
+            "id": 412528724,
+            "tag": "tinta-v0.2.1-vscode-0.4.1-stable",
+            "candidate": "65c96a581bb022806e90440487f2b96b36d0cf779b1e0ba84ba9b8ded6c8fff3",
+            "draft": false
+          }
         }
       },
       "promotion": {
