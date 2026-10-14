@@ -1516,6 +1516,10 @@
             "sha256": "b66cef45faecdaa3ada3815c28dd2d20918b5fc268b7c231857654058314e020",
             "bytes": 361758
           }
+        },
+        "github:asset:tinta-0.2.21.vsix": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
