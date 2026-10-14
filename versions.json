@@ -7,9 +7,9 @@
     "extension": "0.2.21"
   },
   "latest": {
-    "sourceSha": "801e25a7295d5e95dda27a6435fa9415a40f6709",
-    "implementation": "0.2.0",
-    "extension": "0.4.0",
+    "sourceSha": "f9805e0fbb99582731497d2610d022d4fd53c2c3",
+    "implementation": "0.2.1",
+    "extension": "0.4.1",
     "npmChannel": "latest",
     "extensionChannel": "stable"
   },
@@ -25,6 +25,18 @@
       "npmChannel": "latest",
       "extensionChannel": "stable",
       "notes": "Changes since the previous complete release:\n\n- feat\\(distribution\\): derive release versions from conventional commits ([61a098d](https://github.com/planta7/tinta/commit/61a098db0ba839c34e0bf8c9a0cefbf654d185d7))\n- feat\\(distribution\\): derive release versions from conventional commits \\(\\#19\\) ([801e25a](https://github.com/planta7/tinta/commit/801e25a7295d5e95dda27a6435fa9415a40f6709))"
+    },
+    "f9805e0fbb99582731497d2610d022d4fd53c2c3": {
+      "schemaVersion": 1,
+      "sourceSha": "f9805e0fbb99582731497d2610d022d4fd53c2c3",
+      "before": "b5b7d31fc363619e7902c61634ff0d3298c8e1dd",
+      "publish": true,
+      "impact": "minor",
+      "implementation": "0.2.1",
+      "extension": "0.4.1",
+      "npmChannel": "latest",
+      "extensionChannel": "stable",
+      "notes": "Changes since the previous complete release:\n\n- feat\\(distribution\\): derive release versions from conventional commits ([61a098d](https://github.com/planta7/tinta/commit/61a098db0ba839c34e0bf8c9a0cefbf654d185d7))\n- feat\\(distribution\\): derive release versions from conventional commits \\(\\#19\\) ([801e25a](https://github.com/planta7/tinta/commit/801e25a7295d5e95dda27a6435fa9415a40f6709))\n- test\\(distribution\\): keep mixed-version fixtures distinct from release versions ([e4c9ba5](https://github.com/planta7/tinta/commit/e4c9ba5efbf53fccaab6e964c77d514323111750))\n- test\\(distribution\\): keep mixed-version fixtures distinct from release versions \\(\\#20\\) ([f9805e0](https://github.com/planta7/tinta/commit/f9805e0fbb99582731497d2610d022d4fd53c2c3))"
     }
   }
 }
