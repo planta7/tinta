@@ -1062,8 +1062,12 @@
           }
         },
         "github:tag": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "tag": "tinta-v0.1.19-vscode-0.2.19-stable",
+            "sourceSha": "a33cce0e15596c04f9fd18bd3e882f13aa13489c"
+          }
         }
       },
       "promotion": {
