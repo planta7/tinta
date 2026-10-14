@@ -55,7 +55,9 @@ describe("local extension archive", () => {
           entries["extension.vsixmanifest"],
         ).toString();
         expect(releaseManifest).toContain(
-          "<GalleryFlags>Public Preview</GalleryFlags>",
+          channel === "pre-release"
+            ? "<GalleryFlags>Public Preview</GalleryFlags>"
+            : "<GalleryFlags>Public</GalleryFlags>",
         );
         expect(
           releaseManifest.includes(

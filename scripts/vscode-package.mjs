@@ -144,6 +144,13 @@ export async function packageExtension({
   const publisher = release
     ? config.identities.marketplacePublisher.value
     : "tinta-local";
+  let galleryFlags = "Preview";
+  if (release) {
+    galleryFlags =
+      config.versions.extensionChannel === "pre-release"
+        ? "Public Preview"
+        : "Public";
+  }
   const candidate = captureCandidate();
   const workspace = JSON.parse(
     await readFile("apps/vscode/package.json", "utf8"),
@@ -222,7 +229,7 @@ export async function packageExtension({
     <Description xml:space="preserve">${manifest.description}</Description>
     <Tags>markdown</Tags>
     <Categories>Programming Languages</Categories>
-    <GalleryFlags>${release ? "Public Preview" : "Preview"}</GalleryFlags>
+    <GalleryFlags>${galleryFlags}</GalleryFlags>
     <Properties>
       <Property Id="Microsoft.VisualStudio.Code.Engine" Value="^1.141.0"/>
       <Property Id="Microsoft.VisualStudio.Code.ExtensionKind" Value="workspace"/>

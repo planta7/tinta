@@ -28,7 +28,7 @@ import {
   publicationFailure,
 } from "../../scripts/publish-release.mjs";
 
-function workspace() {
+function workspace(channel = "pre-release") {
   const directory = mkdtempSync(join(tmpdir(), "publication-adapter-"));
   const bytes = Buffer.from(
     zipEntries({
@@ -37,7 +37,7 @@ function workspace() {
       ),
       "extension/code.js": Buffer.from("export const value = 1;"),
       "extension.vsixmanifest": Buffer.from(
-        '<Properties><Property Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"/></Properties>',
+        `<Properties><Property Id="Microsoft.VisualStudio.Code.PreRelease" Value="${channel === "pre-release"}"/></Properties>`,
       ),
     }),
   );
@@ -732,6 +732,103 @@ describe("npm destination", () => {
 });
 
 describe("Marketplace destination", () => {
+  describe.each(["stable", "pre-release"])("%s listing", (channel) => {
+    it.each([
+      "validated",
+      "validated, preview",
+      "validated, public",
+      "validated, public, preview",
+    ])(
+      "reconciles %s flags without uploading the version again",
+      async (flags) => {
+        const w = workspace(channel);
+        try {
+          const preview = channel === "pre-release";
+          const target = {
+            kind: "vsix",
+            name: "fixture.extension",
+            version: "0.1.0",
+            channel,
+            archive: w.archive,
+          };
+          const publisher = {
+            publisherName: "fixture",
+            publisherId: "fixture-id",
+          };
+          const remote = {
+            publisher,
+            extensionName: "extension",
+            extensionId: "extension-id",
+            flags,
+            versions: [
+              {
+                version: target.version,
+                flags: "validated",
+                properties: [
+                  {
+                    key: "Microsoft.VisualStudio.Code.PreRelease",
+                    value: String(preview),
+                  },
+                  {
+                    key: "Microsoft.VisualStudio.Services.VsixSha256",
+                    value: w.archive.sha256,
+                  },
+                ],
+              },
+            ],
+          };
+          const originalVersions = structuredClone(remote.versions);
+          const mutations = [];
+          const adapter = marketplaceAdapter({
+            directory: w.directory,
+            publisherId: publisher.publisherId,
+            credential: async () => "fixture-access",
+            request: async (url, options) => {
+              if (options.method) {
+                mutations.push(options.method);
+                expect(options.method).toBe("PATCH");
+                expect(url).toContain(
+                  `flags=${preview ? 2304 : 256}&api-version=7.2-preview.2`,
+                );
+                expect(options.body).toBeUndefined();
+                remote.flags = preview
+                  ? "validated, public, preview"
+                  : "validated, public";
+              }
+              if (options.binary) return w.bytes;
+              return url.includes("/extensions/") ? remote : publisher;
+            },
+          });
+          await adapter.preflight({ targets: [target] });
+          const operation = adapter.visibility(target);
+          const matches =
+            flags.includes("public") && flags.includes("preview") === preview;
+          expect(await operation.read()).toEqual(
+            matches ? await adapter.upload(target).read() : null,
+          );
+          if (!matches) {
+            await expect(
+              operation.verify(await adapter.upload(target).read()),
+            ).rejects.toThrow();
+          }
+          await operation.write();
+          const receipt = await operation.verify(await operation.read());
+          expect(receipt).toMatchObject({
+            channel,
+            version: target.version,
+            visibility: "public",
+            publicDownload: { byteIdentical: true },
+          });
+          await operation.write();
+          expect(mutations).toEqual(matches ? [] : ["PATCH"]);
+          expect(remote.versions).toEqual(originalVersions);
+        } finally {
+          w.close();
+        }
+      },
+    );
+  });
+
   it("rejects a packaged channel mismatch before credentials or remote writes", async () => {
     const w = workspace();
     try {

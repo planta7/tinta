@@ -185,11 +185,16 @@ export function marketplaceAdapter({
     visibility(target) {
       const upload = adapter.upload(target);
       const { publisher, extension, path } = route(target);
+      const preview = target.channel === "pre-release";
+      const matches = (remote) =>
+        remote &&
+        hasFlag(remote.flags, "public", 256) &&
+        hasFlag(remote.flags, "preview", 2048) === preview;
       return {
         retryAbsent: true,
         read: async () => {
           const remote = await upload.read();
-          return remote && hasFlag(remote.flags, "public", 256) ? remote : null;
+          return matches(remote) ? remote : null;
         },
         write: async () => {
           const remote = await upload.read();
@@ -206,15 +211,19 @@ export function marketplaceAdapter({
                 ),
             "Unexpected Marketplace visibility flags",
           );
-          if (hasFlag(current.flags, "public", 256)) return;
-          const flags =
-            256 | (hasFlag(current.flags, "preview", 2048) ? 2048 : 0);
+          if (matches(current)) return;
+          const flags = 256 | (preview ? 2048 : 0);
           await call(`${path}?flags=${flags}&api-version=7.2-preview.2`, {
             method: "PATCH",
           });
         },
         verify: async (remote) => {
           assert.ok(hasFlag(remote.flags, "public", 256));
+          assert.equal(
+            hasFlag(remote.flags, "preview", 2048),
+            preview,
+            "Marketplace preview flag differs from release channel",
+          );
           const receipt = await upload.verify(remote);
           const downloaded = await request(
             `${base}/_apis/public/gallery/publishers/${publisher}/vsextensions/${extension}/${target.version}/vspackage`,
