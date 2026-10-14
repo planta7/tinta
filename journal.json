@@ -2692,6 +2692,10 @@
             "sha256": "097b63089478f3476b5bb67d49298b795613322c18b3db86660cf015924cdbf4",
             "bytes": 75785
           }
+        },
+        "github:asset:tinta-lang-artifacts-0.2.2.tgz": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
