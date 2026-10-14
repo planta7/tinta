@@ -42,6 +42,36 @@ export function stableStudioRelease(release) {
   return { implementation: match[1], extension: match[2] };
 }
 
+export async function locateStudioRelease({
+  receipt,
+  manifestSha256,
+  sourceSha,
+  config,
+  repository,
+  api,
+}) {
+  assert.match(manifestSha256, /^[a-f0-9]{64}$/);
+  assert.match(sourceSha, /^[a-f0-9]{40}$/);
+  assert.equal(repository, config.identities.repository.value);
+  const identity = releaseIdentity(config);
+  assert.equal(receipt.candidate, manifestSha256);
+  assert.equal(receipt.releaseId, identity.releaseId);
+  assert.equal(receipt.status, "promoted");
+  const operation = receipt.items["github:publish"];
+  assert.equal(operation.status, "promoted");
+  const published = operation.receipt;
+  assert.equal(published.candidate, manifestSha256);
+  assert.equal(published.tag, identity.tag);
+  assert.equal(published.draft, false);
+  assert.ok(Number.isSafeInteger(published.id) && published.id > 0);
+  const release = await api(`/repos/${repository}/releases/${published.id}`);
+  assert.equal(release.id, published.id);
+  assert.equal(release.tag_name, identity.tag);
+  assert.equal(release.target_commitish, sourceSha);
+  stableStudioRelease(release);
+  return release;
+}
+
 export async function currentStudioRelease(release, repository, api) {
   const selected = stableStudioRelease(release);
   for (let page = 1; page <= 10; page++) {
@@ -238,10 +268,16 @@ async function main(mode) {
       Buffer.from(requireCommandSync(["gh", "api", path]).stdout),
     );
   if (mode === "locate") {
-    const release = await api(
-      `/repos/${policy.repository}/releases/tags/${releaseIdentity(loadReleaseConfig()).tag}`,
-    );
-    stableStudioRelease(release);
+    const release = await locateStudioRelease({
+      receipt: readCandidateJson(
+        readFileSync("build/publication/receipt.json"),
+      ),
+      manifestSha256: process.env.TINTA_MANIFEST_SHA256,
+      sourceSha: process.env.TINTA_RELEASE_SOURCE_SHA,
+      config: loadReleaseConfig(),
+      repository: policy.repository,
+      api,
+    });
     appendFileSync(process.env.GITHUB_OUTPUT, `release_id=${release.id}\n`);
     return;
   }

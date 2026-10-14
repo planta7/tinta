@@ -146,4 +146,6 @@ After npm, Marketplace and channel checks pass, GitHub receives the immutable so
 
 GitHub release and asset creation responses provide IDs for subsequent reads. After a submission, observe its metadata for up to one minute before treating absence as incomplete. Release and asset listings may lag those writes; the complete asset set must still become visible and match every expected name, size and digest before the draft can become public. An observation retry performs no write.
 
+Studio receives the release ID from the completed publication receipt. The receipt must match the candidate digest and release identity, and the fetched release must match that ID, tag and source commit and be a published stable release. This handoff does not depend on immediate tag-index visibility.
+
 Hosted credentials, environment protections, signature issuance and native OS isolation cannot be proven by local fixture tests. See [GitHub workflow events](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows), [artifact attestations](https://github.com/actions/attest), [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/), and [Marketplace publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension).

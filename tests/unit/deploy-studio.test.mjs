@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { parse } from "yaml";
 import {
   stableStudioRelease,
+  locateStudioRelease,
   currentStudioRelease,
   prepareStudioRelease,
   verifyStudioSignature,
@@ -24,6 +25,150 @@ afterEach(() => {
   for (const path of directories.splice(0))
     rmSync(path, { recursive: true, force: true });
 });
+
+function publishedReceiptFixture() {
+  const repository = "fixture/tinta";
+  const sourceSha = "a".repeat(40);
+  const manifestSha256 = "b".repeat(64);
+  const tag = "tinta-v0.1.0-vscode-0.2.0-stable";
+  const releaseId = "tinta-0.1.0-vscode-0.2.0-stable";
+  const calls = [];
+  const release = {
+    id: 21,
+    tag_name: tag,
+    target_commitish: sourceSha,
+    draft: false,
+    prerelease: false,
+    published_at: "2026-10-14T06:00:00Z",
+  };
+  const receipt = {
+    candidate: manifestSha256,
+    releaseId,
+    status: "promoted",
+    items: {
+      "github:publish": {
+        status: "promoted",
+        receipt: { id: 21, tag, candidate: manifestSha256, draft: false },
+      },
+    },
+  };
+  return {
+    receipt,
+    manifestSha256,
+    sourceSha,
+    repository,
+    config: {
+      identities: { repository: { value: repository } },
+      versions: {
+        implementation: "0.1.0",
+        extension: "0.2.0",
+        extensionChannel: "stable",
+      },
+      policy: { tagPrefix: "tinta-v" },
+    },
+    release,
+    calls,
+    api: async (path) => {
+      calls.push(path);
+      expect(path).toBe(`/repos/${repository}/releases/21`);
+      return release;
+    },
+  };
+}
+
+it("locates the verified release by receipt ID without consulting the tag index", async () => {
+  const f = publishedReceiptFixture();
+  expect(await locateStudioRelease(f)).toBe(f.release);
+  expect(f.calls).toEqual(["/repos/fixture/tinta/releases/21"]);
+});
+
+it.each([
+  [
+    "candidate",
+    (f) => {
+      f.receipt.candidate = "c".repeat(64);
+    },
+  ],
+  [
+    "release identity",
+    (f) => {
+      f.receipt.releaseId = "different";
+    },
+  ],
+  [
+    "incomplete release",
+    (f) => {
+      f.receipt.status = "pending";
+    },
+  ],
+  [
+    "incomplete operation",
+    (f) => {
+      f.receipt.items["github:publish"].status = "submitted";
+    },
+  ],
+  [
+    "published candidate",
+    (f) => {
+      f.receipt.items["github:publish"].receipt.candidate = "c".repeat(64);
+    },
+  ],
+  [
+    "published tag",
+    (f) => {
+      f.receipt.items["github:publish"].receipt.tag = "different";
+    },
+  ],
+  [
+    "published draft",
+    (f) => {
+      f.receipt.items["github:publish"].receipt.draft = true;
+    },
+  ],
+  [
+    "invalid ID",
+    (f) => {
+      f.receipt.items["github:publish"].receipt.id = -1;
+    },
+  ],
+  [
+    "remote source",
+    (f) => {
+      f.release.target_commitish = "c".repeat(40);
+    },
+  ],
+  [
+    "remote tag",
+    (f) => {
+      f.release.tag_name = "different";
+    },
+  ],
+  [
+    "remote ID",
+    (f) => {
+      f.release.id = 22;
+    },
+  ],
+  [
+    "remote draft",
+    (f) => {
+      f.release.draft = true;
+    },
+  ],
+  [
+    "remote prerelease",
+    (f) => {
+      f.release.prerelease = true;
+    },
+  ],
+])(
+  "rejects an inconsistent %s during the Studio handoff",
+  async (_name, change) => {
+    const f = publishedReceiptFixture();
+    change(f);
+    await expect(locateStudioRelease(f)).rejects.toThrow();
+  },
+);
 
 function fixture() {
   const directory = mkdtempSync(join(tmpdir(), "tinta-release-demo-"));
