@@ -2546,8 +2546,14 @@
           }
         },
         "channel:@tinta-lang/engine": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "promoted",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/engine",
+            "channel": "latest",
+            "old": "0.2.1",
+            "new": "0.2.2"
+          }
         }
       },
       "promotion": {
