@@ -13,7 +13,3 @@ Functional assertion failures, watchdog expiry, collection errors and incomplete
 ## Compatibility and security
 
 This changes the interpretation of installed timing tests, not source semantics, runtime scheduling, language limits, numeric performance targets or resource limits. Source format and protocol revisions are unchanged. An unstable result remains evidence of timing variability; it is not a claim that the host meets its target consistently. No additional product capability, telemetry or network access is introduced.
-
-## Tests
-
-The confirmation tests cover passing scenarios without repetition, isolated failures with two confirmations, repeated failures, unchanged original samples and immediate propagation of functional or invalid-data failures. Installed measurement tests cover scenario selection, full sample blocks, responsiveness workload repetition and memory failures that continue to block.

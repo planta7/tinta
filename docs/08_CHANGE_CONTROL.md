@@ -40,4 +40,4 @@ The local VSIX uses development version `0.1.0-dev.0` and the internal installat
 
 ## Coordinated software distribution
 
-The [software distribution contract](15_DISTRIBUTION.md) defines public package and extension identities, an implementation version group, independent numeric Marketplace versions, channels and closed release metadata. Private source manifests retain their development placeholders; builds embed the selected implementation version from the distribution configuration. Source format and ABI versions remain separate from software versions.
+The [software distribution contract](15_DISTRIBUTION.md) defines public package and extension identities, an implementation version group, independent numeric Marketplace versions, channels and closed release metadata. Source format and ABI versions remain separate from software versions.

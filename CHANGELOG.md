@@ -14,7 +14,7 @@ npm channel: latest. Extension channel: stable.
 - Follow updated Studio and VS Code guides, with a refreshed Studio screenshot and clearer explanations of local files and exports.
 - Use clearer catalog actions, search hints, diagnostics, import messages and save dialogs; export privacy warnings remain explicit.
 - Report security vulnerabilities privately to roberto@planta7.io.
-- Get version-specific release notes and installation links, with more reliable package-channel updates and extension visibility checks.
+- Find release notes and installation links for each published version.
 
 ### Compatibility
 

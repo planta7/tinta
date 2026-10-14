@@ -14,10 +14,6 @@ Reviewed notice sources: esbuild and rolldown native packages use the same-versi
 
 Infrastructure coverage applies to the architecture scanner, capability selection and packaging primitives, with 85% statements/lines/functions and 80% branches. Build orchestration, inventory command-line scripts and configuration are exercised by their explicit aggregate commands. Empty product modules and type-only contracts do not count as runtime coverage. Product coverage thresholds remain as specified in the verification contract.
 
-The `Verify language` workflow checks pull requests and pushes to the repository's configured default branch. Its jobs have read-only repository permissions, do not retain checkout credentials, and do not deploy or publish artifacts. Checks run in their configured environments; results do not imply support for every browser or device.
-
-The separate `Deploy Studio demo` workflow deploys the `studio-directory` archive from a published stable release. It checks the release asset digests, signed candidate index, manifest, inventory and every extracted file before uploading the Pages artifact. Drafts, prereleases and superseded stable versions do not deploy. No Studio rebuild or browser-test rerun occurs. Manual publication uses the release event; the publisher explicitly dispatches the demo after stable publication because `GITHUB_TOKEN` release writes do not trigger another workflow. Both paths enforce the same checks. The deployment uses the `github-pages` environment and rechecks the stable version before publishing. GitHub Pages must use GitHub Actions as its publishing source. The hosted Studio remains a client-side editor; this workflow does not upload user documents or add document publication features.
-
 ## Native browser verification
 
 `pnpm verify` runs Chromium, Firefox and WebKit together through Playwright on the host. To run just these infrastructure tests after building, use `pnpm test:browser:infrastructure`.
