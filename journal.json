@@ -2652,6 +2652,10 @@
             "sha256": "f0de9473d204cf9b900df83c8d2bca700a4c1a728d32131b34af611526e4f01b",
             "bytes": 75568
           }
+        },
+        "github:asset:tinta-lang-syntax-0.2.2.tgz": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
