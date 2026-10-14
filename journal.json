@@ -1518,8 +1518,14 @@
           }
         },
         "github:asset:tinta-0.2.21.vsix": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639603573,
+            "name": "tinta-0.2.21.vsix",
+            "sha256": "314c8a341114cfa5f29b457881f7f40e05d6b4ec98445388878492c855febf63",
+            "bytes": 960486
+          }
         }
       },
       "promotion": {
