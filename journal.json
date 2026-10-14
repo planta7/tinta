@@ -2732,6 +2732,10 @@
             "sha256": "7338e3b6cb089172fe5c45366266bdd6b50d3cfbb2b4e13c1ca6e7dda1395e14",
             "bytes": 69043
           }
+        },
+        "github:asset:tinta-lang-language-server-0.2.2.tgz": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
