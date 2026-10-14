@@ -23,24 +23,34 @@ describe("local extension archive", () => {
     await packageExtension();
   });
 
-  it.each(["stable", "pre-release"])(
-    "packages the configured %s channel",
-    async (channel) => {
-      const config = loadReleaseConfig();
-      config.versions.extensionChannel = channel;
-      config.versions.extension = channel === "stable" ? "0.2.0" : "0.3.0";
-      const directory = await mkdtemp(join(tmpdir(), "tinta-release-flags-"));
-      try {
-        const report = await packageExtension({
-          release: true,
-          destination: directory,
-          config,
-        });
-        const entries = unzipSync(
-          await readFile(
+  describe.each(["stable", "pre-release"])(
+    "configured %s channel",
+    (channel) => {
+      let config;
+      let bytes;
+      let entries;
+
+      beforeAll(async () => {
+        config = loadReleaseConfig();
+        config.versions.extensionChannel = channel;
+        config.versions.extension = channel === "stable" ? "0.2.0" : "0.3.0";
+        const directory = await mkdtemp(join(tmpdir(), "tinta-release-flags-"));
+        try {
+          const report = await packageExtension({
+            release: true,
+            destination: directory,
+            config,
+          });
+          bytes = await readFile(
             join(directory, `tinta-${report.identity.extensionVersion}.vsix`),
-          ),
-        );
+          );
+          entries = unzipSync(bytes);
+        } finally {
+          await rm(directory, { recursive: true, force: true });
+        }
+      });
+
+      it("packages the public channel and shared description", () => {
         const releaseManifest = Buffer.from(
           entries["extension.vsixmanifest"],
         ).toString();
@@ -52,21 +62,22 @@ describe("local extension archive", () => {
             'Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"',
           ),
         ).toBe(channel === "pre-release");
-        const wrong = structuredClone(config);
-        wrong.versions.extensionChannel =
-          channel === "stable" ? "pre-release" : "stable";
-        expect(() =>
-          inspectPackage(zipSync(entries), { release: true, config: wrong }),
-        ).toThrow("VSIX channel differs");
         const manifest = JSON.parse(
           Buffer.from(entries["extension/package.json"]).toString(),
         );
         expect(releaseManifest).toContain(
           `<Description xml:space="preserve">${manifest.description}</Description>`,
         );
-      } finally {
-        await rm(directory, { recursive: true, force: true });
-      }
+      });
+
+      it("rejects the opposite release channel", () => {
+        const wrong = structuredClone(config);
+        wrong.versions.extensionChannel =
+          channel === "stable" ? "pre-release" : "stable";
+        expect(() =>
+          inspectPackage(bytes, { release: true, config: wrong }),
+        ).toThrow("VSIX channel differs");
+      });
     },
   );
 

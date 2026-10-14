@@ -67,8 +67,9 @@ export function marketplaceAdapter({
       assert.ok(target, "Extension is mandatory");
       const { publisher } = route(target);
       assert.notEqual(publisher, "tinta-local");
+      const entries = readZip(checkFile(directory, target.archive));
       verifyExtensionChannel(
-        checkFile(directory, target.archive),
+        Buffer.from(entries["extension.vsixmanifest"]).toString(),
         target.channel,
       );
       headers = { Authorization: `Bearer ${await credential()}` };

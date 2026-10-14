@@ -29,10 +29,8 @@ export const payloadFiles = [
 const envelopeFiles = ["[Content_Types].xml", "extension.vsixmanifest"];
 const digest = (bytes) => createHash("sha256").update(bytes).digest("hex");
 
-export function verifyExtensionChannel(bytes, channel) {
+export function verifyExtensionChannel(xml, channel) {
   assert.ok(["stable", "pre-release"].includes(channel));
-  const entries = readZip(bytes);
-  const xml = Buffer.from(entries["extension.vsixmanifest"]).toString();
   const properties = [
     ...xml.matchAll(
       /<Property Id="Microsoft\.VisualStudio\.Code\.PreRelease" Value="(true|false)"\s*\/>/g,
@@ -125,7 +123,7 @@ export function inspectPackage(
   )
     throw new Error("Inconsistent VSIX metadata.");
   verifyExtensionChannel(
-    bytes,
+    xml,
     release ? config.versions.extensionChannel : "stable",
   );
   return {
