@@ -1835,8 +1835,82 @@
           }
         },
         "marketplace:visibility": {
-          "status": "pending",
-          "attempts": 0
+          "status": "verified",
+          "attempts": 0,
+          "receipt": {
+            "publisher": "planta7",
+            "publisherId": "d5a3d449-d8c6-482b-b95c-db2716610389",
+            "extensionId": "17af3710-cac9-42d4-9c2f-c6cc18e8f9d0",
+            "version": "0.4.1",
+            "channel": "stable",
+            "targetPlatform": "universal",
+            "submittedSha256": "bf513d035ddbde244fcb35d8f65fb0fb222abe08dc19c74a64a24cc8680f32b4",
+            "registeredSha256": "bf513d035ddbde244fcb35d8f65fb0fb222abe08dc19c74a64a24cc8680f32b4",
+            "visibility": "public",
+            "publicDownload": {
+              "submittedSha256": "bf513d035ddbde244fcb35d8f65fb0fb222abe08dc19c74a64a24cc8680f32b4",
+              "downloadedSha256": "bf513d035ddbde244fcb35d8f65fb0fb222abe08dc19c74a64a24cc8680f32b4",
+              "byteIdentical": true,
+              "files": [
+                {
+                  "path": "extension/package.json",
+                  "sha256": "4905fb325c2388b20fce60d5a6e6cace9ff5c44b6452bdf0942e308467610afb"
+                },
+                {
+                  "path": "extension/README.md",
+                  "sha256": "92db2df6f79e6e29ec88e22cbc86ba1ba9223a648ed875f23bc0105cad3b2cf0"
+                },
+                {
+                  "path": "extension/icon.png",
+                  "sha256": "e1fefdc08a4354f0e43edbbe0db895020d0531ed44dc1421e5dcacbe7852130e"
+                },
+                {
+                  "path": "extension/LICENSE",
+                  "sha256": "5dcfa9efe11f232dfb42b4f528170c982b34c78e2ee1d2d7b6e0e0e967c6116d"
+                },
+                {
+                  "path": "extension/THIRD_PARTY_NOTICES.txt",
+                  "sha256": "ab28083d2d3ea2f0d8801560beac8d1cfddc5b9d07d505e41b44330226244d42"
+                },
+                {
+                  "path": "extension/language-configuration.json",
+                  "sha256": "142a0f591f6b2545c7817227aea7eda2f8b8a4bacb25e794f90a2291d1807f19"
+                },
+                {
+                  "path": "extension/syntaxes/tinta.tmLanguage.json",
+                  "sha256": "22767f93f86fd909adfa808da017c888595fa2eadb1170fba4de2f25716b12a9"
+                },
+                {
+                  "path": "extension/dist/extension.mjs",
+                  "sha256": "bda05710d847c905ad112e58149511352ee7eeb9c39ffdb421b406d153c42f3b"
+                },
+                {
+                  "path": "extension/dist/server.mjs",
+                  "sha256": "19b1e871d5dacfaa63c0b5c107b21771147e4fadf9b4165e9b2a642ae196d1dc"
+                },
+                {
+                  "path": "extension/dist/worker.mjs",
+                  "sha256": "084b2d1f4cdbccc0bbd2611aba94d48078808769ebf2d0fa32f7fe261772985c"
+                },
+                {
+                  "path": "extension/dist/artifact-worker.mjs",
+                  "sha256": "6ee3536c92f3c5e9f8f9b75e73c6e66afbc7e79de54b13b913825b466c8b1102"
+                },
+                {
+                  "path": "extension/build-identity.json",
+                  "sha256": "6d79350764734b58d448dc25d602b86d87ceaecaeba97c2a685a78c5feb0a3ba"
+                },
+                {
+                  "path": "[Content_Types].xml",
+                  "sha256": "60173c46e11b5d0d35f4e138cd83f5823a849230e9c5e5a3f5aeb5bd7bbea3da"
+                },
+                {
+                  "path": "extension.vsixmanifest",
+                  "sha256": "38c65a015daba027f43817a39603b02671ba3545b4e309a953cdbbc64480a2ab"
+                }
+              ]
+            }
+          }
         }
       }
     }
