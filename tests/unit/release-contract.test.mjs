@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import semver from "semver";
 import {
   dependencyClosure,
   loadReleaseConfig,
@@ -318,7 +319,8 @@ describe("release manifest metadata", () => {
     [
       "mixed versions",
       (m) => {
-        m.targets[0].version = "0.2.0";
+        m.targets[0].version = semver.inc(m.targets[0].version, "patch");
+        expect(m.targets[0].version).not.toBe(m.versions.implementation);
       },
     ],
     [
