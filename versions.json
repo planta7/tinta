@@ -1,0 +1,30 @@
+{
+  "format": "tinta-release-versions-1",
+  "baseline": {
+    "schemaVersion": 1,
+    "baseCommit": "b5b7d31fc363619e7902c61634ff0d3298c8e1dd",
+    "implementation": "0.1.21",
+    "extension": "0.2.21"
+  },
+  "latest": {
+    "sourceSha": "801e25a7295d5e95dda27a6435fa9415a40f6709",
+    "implementation": "0.2.0",
+    "extension": "0.4.0",
+    "npmChannel": "latest",
+    "extensionChannel": "stable"
+  },
+  "plans": {
+    "801e25a7295d5e95dda27a6435fa9415a40f6709": {
+      "schemaVersion": 1,
+      "sourceSha": "801e25a7295d5e95dda27a6435fa9415a40f6709",
+      "before": "b5b7d31fc363619e7902c61634ff0d3298c8e1dd",
+      "publish": true,
+      "impact": "minor",
+      "implementation": "0.2.0",
+      "extension": "0.4.0",
+      "npmChannel": "latest",
+      "extensionChannel": "stable",
+      "notes": "Changes since the previous complete release:\n\n- feat\\(distribution\\): derive release versions from conventional commits ([61a098d](https://github.com/planta7/tinta/commit/61a098db0ba839c34e0bf8c9a0cefbf654d185d7))\n- feat\\(distribution\\): derive release versions from conventional commits \\(\\#19\\) ([801e25a](https://github.com/planta7/tinta/commit/801e25a7295d5e95dda27a6435fa9415a40f6709))"
+    }
+  }
+}
