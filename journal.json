@@ -1108,8 +1108,14 @@
       "status": "pending",
       "items": {
         "npm:@tinta-lang/types": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/types",
+            "version": "0.1.21",
+            "integrity": "sha512-0W+j2RqA5Z2p4MTxuGMk2Hx6AAn/VPmgkB74mF7FnbQcQKfE6YpcD67VbUcZbpTKHINBUqQXfh4Y3WWaX07IZA==",
+            "sha256": "fb108142c9946e7bee67ad0f0bf5f3dce659259b61dbdd111e97834e1ff1c52b"
+          }
         },
         "npm:@tinta-lang/syntax": {
           "status": "submitted",
