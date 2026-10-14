@@ -2199,6 +2199,10 @@
             "sha256": "fa3504c6703246c3df64b38f3c81b4831f573e170998a3958e279e486768456e",
             "bytes": 1078
           }
+        },
+        "github:asset:release-manifest.json": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
