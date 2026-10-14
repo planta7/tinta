@@ -2674,8 +2674,14 @@
           }
         },
         "github:asset:tinta-lang-charts-0.2.2.tgz": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 640035685,
+            "name": "tinta-lang-charts-0.2.2.tgz",
+            "sha256": "46d9eafc83bee32603190e901f003e3be39ae378285db94255569a3690b24599",
+            "bytes": 64079
+          }
         }
       },
       "promotion": {
