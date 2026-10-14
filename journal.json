@@ -1668,8 +1668,14 @@
           }
         },
         "github:asset:win32-x64.json": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639607449,
+            "name": "win32-x64.json",
+            "sha256": "d96b935be2abfd53677c727a775ed10f07a7994c3aa7b03182dcecea740e50f2",
+            "bytes": 52239
+          }
         }
       },
       "promotion": {
