@@ -2251,8 +2251,14 @@
           }
         },
         "github:asset:build.json": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639855876,
+            "name": "build.json",
+            "sha256": "56ea93f122398d0b6349230e1b16413edb8f94dc09e2f642a57b687227d80cd9",
+            "bytes": 3587
+          }
         }
       },
       "promotion": {
