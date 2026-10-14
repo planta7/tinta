@@ -2742,6 +2742,10 @@
             "sha256": "280e04971907cfe02537f2aaff823328ac445d4316327653bed22bd12d040c24",
             "bytes": 361765
           }
+        },
+        "github:asset:tinta-0.4.2.vsix": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
