@@ -1588,8 +1588,14 @@
           }
         },
         "github:asset:release-manifest.json": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639605276,
+            "name": "release-manifest.json",
+            "sha256": "d338693217cca4bc4c4326f002da7a1e92c72f39d1d03a98d6e4b81f88f94626",
+            "bytes": 61034
+          }
         }
       },
       "promotion": {
