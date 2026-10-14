@@ -2159,6 +2159,10 @@
             "sha256": "89e48df1a20333f25fac743cde6400644958c676440f7ef1589a9130aa6b453c",
             "bytes": 1207481
           }
+        },
+        "github:asset:reader-runtime-0.2.1.zip": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
