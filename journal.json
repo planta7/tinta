@@ -1608,8 +1608,14 @@
           }
         },
         "github:asset:candidate-index.json": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639605852,
+            "name": "candidate-index.json",
+            "sha256": "8768d3add05c5f805ac348145eaa8a5784cdf08c6ff15e466c4ad1441d5192ac",
+            "bytes": 3149
+          }
         }
       },
       "promotion": {
