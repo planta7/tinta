@@ -4,8 +4,43 @@ on:
     branches:
       - "**"
       - "!publication-journal"
+      - "!release-versions"
 jobs:
+  release-plan:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    outputs:
+      publish: ${{ steps.plan.outputs.publish }}
+      plan_id: ${{ steps.plan-artifact.outputs.artifact-id }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - name: Reserve versions for this source revision
+        id: plan
+        run: node scripts/release-version-store.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        id: plan-artifact
+        with:
+          name: release-plan-${{ github.run_id }}-${{ github.run_attempt }}
+          path: reports/release/plan.json
+          if-no-files-found: error
+          retention-days: 30
   verify:
+    needs: release-plan
+    if: >-
+      !cancelled() && (needs.release-plan.result == 'success' ||
+      needs.release-plan.result == 'skipped')
     runs-on: ubuntu-24.04
     permissions:
       contents: read
@@ -18,6 +53,15 @@ jobs:
         with:
           node-version: 24.21.0
           package-manager-cache: false
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        if: github.ref == 'refs/heads/main'
+        with:
+          artifact-ids: ${{ needs.release-plan.outputs.plan_id }}
+          path: reports/release
+          merge-multiple: true
+      - name: Check Conventional Commits before integration
+        if: github.ref != 'refs/heads/main'
+        run: node scripts/release-version-store.mjs check
       - name: Resolve release versions and notes
         if: github.ref == 'refs/heads/main'
         run: node scripts/automatic-release.mjs
@@ -44,6 +88,7 @@ jobs:
     outputs:
       compiled_id: ${{ steps.compiled.outputs.artifact-id }}
   cli-portability:
+    if: "!cancelled() && needs.verify.result == 'success'"
     strategy:
       fail-fast: false
       matrix:
@@ -78,7 +123,7 @@ jobs:
     needs: verify
     timeout-minutes: 20
   provenance-capability:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && needs.release-plan.outputs.publish == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
@@ -95,7 +140,9 @@ jobs:
         with:
           subject-path: toolchain/release.json
           create-storage-record: false
-    needs: verify
+    needs:
+      - verify
+      - release-plan
   build:
     permissions:
       contents: read
@@ -104,7 +151,8 @@ jobs:
       - verify
       - cli-portability
       - provenance-capability
-    if: github.ref == 'refs/heads/main'
+      - release-plan
+    if: github.ref == 'refs/heads/main' && needs.release-plan.outputs.publish == 'true'
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     outputs:

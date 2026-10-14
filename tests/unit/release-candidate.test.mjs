@@ -771,6 +771,7 @@ describe("candidate workflow security topology", () => {
       "verify",
       "cli-portability",
       "provenance-capability",
+      "release-plan",
     ]);
     expect(
       workflow.jobs["provenance-capability"].steps.every((s) => !s.run),
@@ -837,7 +838,10 @@ describe("candidate workflow security topology", () => {
       "attest",
       "provenance-capability",
     ]) {
-      expect(ordinary.jobs[name].if).toBe("github.ref == 'refs/heads/main'");
+      const expected = ["build", "provenance-capability"].includes(name)
+        ? "github.ref == 'refs/heads/main' && needs.release-plan.outputs.publish == 'true'"
+        : "github.ref == 'refs/heads/main'";
+      expect(ordinary.jobs[name].if).toBe(expected);
     }
     expect(buildCommands).toContainEqual([
       "node",

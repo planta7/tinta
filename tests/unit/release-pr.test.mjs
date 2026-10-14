@@ -190,7 +190,7 @@ describe("release PR integration without external mutations", () => {
 });
 
 describe("workflow authority and validation topology", () => {
-  it("pins automatic CI actions and reserves publication permissions for CD", () => {
+  it("pins CI actions and isolates version reservation from publication credentials", () => {
     const workflow = parse(
       readFileSync(".github/workflows/verify.yml", "utf8"),
     );
@@ -198,7 +198,18 @@ describe("workflow authority and validation topology", () => {
     expect(workflow.permissions).toEqual({ contents: "read" });
     expect(workflow.concurrency["cancel-in-progress"]).toBe(false);
     expect(workflow.concurrency.queue).toBe("max");
-    expect(workflow.jobs.verify.if).toBeUndefined();
+    expect(workflow.jobs.verify.needs).toBe("release-plan");
+    expect(workflow.jobs.verify.if).toBe(
+      "!cancelled() && (needs.release-plan.result == 'success' || needs.release-plan.result == 'skipped')",
+    );
+    const reservation = workflow.jobs["release-plan"];
+    expect(reservation.if).toBe("github.ref == 'refs/heads/main'");
+    expect(reservation.permissions).toEqual({ contents: "write" });
+    expect(
+      reservation.steps.filter((step) => step.run).map((step) => step.run),
+    ).toEqual(["node scripts/release-version-store.mjs"]);
+    expect(reservation.environment).toBeUndefined();
+    expect(workflow.jobs.verify.permissions).toEqual({ contents: "read" });
     const cd = parse(
       readFileSync(".github/workflows/publish-release.yml", "utf8"),
     );
@@ -217,6 +228,7 @@ describe("workflow authority and validation topology", () => {
       "cli-portability",
       "installed",
       "provenance-capability",
+      "release-plan",
       "verify",
     ]);
     expect(
