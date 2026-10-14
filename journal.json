@@ -1458,8 +1458,14 @@
           }
         },
         "github:asset:tinta-lang-reader-0.1.21.tgz": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639602013,
+            "name": "tinta-lang-reader-0.1.21.tgz",
+            "sha256": "83c1febb0c18d1b6672faa5400f8fc5e22b185aca2cf6a583392a7dc02421fac",
+            "bytes": 75788
+          }
         }
       },
       "promotion": {
