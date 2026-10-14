@@ -1148,8 +1148,14 @@
           }
         },
         "npm:@tinta-lang/reader": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/reader",
+            "version": "0.1.21",
+            "integrity": "sha512-9hsz5IM5+O+kaA1nrJvhh2yBZIs6aKP89TdAxJUHY858iMoEHKsz67J43yS2wr6M1YNue+4TjOfdrqYlTZe4OQ==",
+            "sha256": "83c1febb0c18d1b6672faa5400f8fc5e22b185aca2cf6a583392a7dc02421fac"
+          }
         },
         "npm:@tinta-lang/artifacts": {
           "status": "submitted",
