@@ -1060,6 +1060,10 @@
             "old": "0.1.0-dev.0",
             "new": "0.1.19"
           }
+        },
+        "github:tag": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
