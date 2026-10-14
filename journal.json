@@ -1548,8 +1548,14 @@
           }
         },
         "github:asset:reader-runtime-0.1.21.zip": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639604372,
+            "name": "reader-runtime-0.1.21.zip",
+            "sha256": "21c789f893cb0ff62c44ac25d2fe13f124f492a00531c2fa40facc6cd3e043d7",
+            "bytes": 105779
+          }
         }
       },
       "promotion": {
