@@ -2151,8 +2151,14 @@
           }
         },
         "github:asset:studio-standalone-0.2.1.zip": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639853477,
+            "name": "studio-standalone-0.2.1.zip",
+            "sha256": "89e48df1a20333f25fac743cde6400644958c676440f7ef1589a9130aa6b453c",
+            "bytes": 1207481
+          }
         }
       },
       "promotion": {
