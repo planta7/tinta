@@ -2099,6 +2099,10 @@
             "sha256": "1c665dcbaf07a5b0d4503528ec204dba321727eb5bb531508cb3f76d357d74c3",
             "bytes": 64444
           }
+        },
+        "github:asset:tinta-lang-cli-0.2.1.tgz": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
