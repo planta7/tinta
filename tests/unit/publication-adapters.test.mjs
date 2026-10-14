@@ -1136,6 +1136,8 @@ it("uploads immutable GitHub assets, detects collisions and finalizes only the f
         return release?.draft ? null : release;
       if (path.includes("/releases?")) return release ? [release] : [];
       if (method === "GET" && path.endsWith("/releases/1")) return release;
+      if (method === "GET" && path.endsWith("/releases/assets/2"))
+        return assets[0];
       if (path.includes("/assets?")) return assets;
       if (method === "POST") {
         release = { ...body, id: 1 };
@@ -1156,6 +1158,7 @@ it("uploads immutable GitHub assets, detects collisions and finalizes only the f
         size: w.bytes.length,
         digest: `sha256:${digest(options.body)}`,
       });
+      return assets.at(-1);
     };
     let writeAccess = false;
     const adapter = releaseAdapter({
@@ -1202,6 +1205,135 @@ it("uploads immutable GitHub assets, detects collisions and finalizes only the f
   } finally {
     w.close();
   }
+});
+
+it("observes GitHub write results by ID while release and asset indexes lag", async () => {
+  const w = workspace();
+  try {
+    const plan = {
+      repository: "fixture/repo",
+      tag: "fixture-tag",
+      sourceSha: "a".repeat(40),
+      candidate: w.archive.sha256,
+      releaseId: "fixture-release",
+      targets: [{ kind: "npm", channel: "latest", archive: w.archive }],
+      metadata: [],
+    };
+    const writes = [];
+    const waits = [];
+    let tag;
+    let release;
+    let asset;
+    let tagReads = 0;
+    let draftReads = 0;
+    let assetReads = 0;
+    let assetIndexReads = 0;
+    let publishedReads = 0;
+    let releaseIndexReads = 0;
+    const adapter = releaseAdapter({
+      directory: w.directory,
+      token: "fixture-token",
+      notes: () => "Fixture release notes.",
+      journal: { assertWriteAccess() {} },
+      wait: async (ms) => waits.push(ms),
+      api: async (method, path, body) => {
+        if (method !== "GET") writes.push({ method, path });
+        if (path.endsWith("/fixture/repo"))
+          return { full_name: plan.repository, private: false };
+        if (path.includes("/git/ref/"))
+          return tag && ++tagReads > 2 ? tag : null;
+        if (path.endsWith("/git/refs")) {
+          tag = { object: { type: "commit", sha: body.sha } };
+          return tag;
+        }
+        if (path.includes("/releases/tags/")) return null;
+        if (path.includes("/releases?")) {
+          releaseIndexReads += 1;
+          return [];
+        }
+        if (path.endsWith("/releases/assets/43"))
+          return ++assetReads > 2 ? asset : null;
+        if (path.includes("/assets?"))
+          return asset && ++assetIndexReads > 2 ? [asset] : [];
+        if (path.endsWith("/releases") && method === "POST") {
+          release = { ...body, id: 42 };
+          return release;
+        }
+        if (path.endsWith("/releases/42")) {
+          if (method === "PATCH") {
+            release = { ...release, ...body };
+            return release;
+          }
+          if (++draftReads <= 2) return null;
+          if (!release.draft && ++publishedReads <= 2)
+            return { ...release, draft: true };
+          return release;
+        }
+        throw new Error("Unexpected fixture route");
+      },
+      request: async (url, options) => {
+        expect(options.body).toEqual(w.bytes);
+        writes.push({ method: options.method, path: url });
+        asset = {
+          id: 43,
+          name: w.archive.path,
+          size: w.archive.bytes,
+          state: "uploaded",
+          digest: `sha256:${w.archive.sha256}`,
+        };
+        return asset;
+      },
+    });
+    await adapter.preflight(plan);
+    for await (const operation of adapter.operations(plan)) {
+      if (!(await operation.read())) await operation.write();
+      await operation.verify(await operation.read());
+    }
+    expect(release.draft).toBe(false);
+    expect(releaseIndexReads).toBe(2);
+    expect(waits).toEqual(Array(10).fill(5000));
+    expect(writes.map(({ method }) => method)).toEqual([
+      "POST",
+      "POST",
+      "POST",
+      "PATCH",
+    ]);
+  } finally {
+    w.close();
+  }
+});
+
+it("bounds a resumed GitHub draft observation without repeating its creation", async () => {
+  const plan = {
+    repository: "fixture/repo",
+    tag: "fixture-tag",
+    sourceSha: "a".repeat(40),
+    targets: [{ kind: "npm", channel: "latest" }],
+  };
+  const waits = [];
+  const writes = [];
+  const adapter = releaseAdapter({
+    notes: () => "Fixture notes.",
+    journal: { assertWriteAccess() {} },
+    wait: async (ms) => waits.push(ms),
+    api: async (method, path) => {
+      if (method !== "GET") writes.push(method);
+      if (path.endsWith("/fixture/repo"))
+        return { full_name: plan.repository, private: false };
+      if (path.includes("/releases?")) return [];
+      return null;
+    },
+  });
+  await adapter.preflight(plan);
+  const operations = adapter.operations(plan);
+  await operations.next();
+  const { value: draft } = await operations.next();
+  expect(await draft.read()).toBeNull();
+  expect(waits).toEqual([]);
+  expect(await draft.read({ pending: true })).toBeNull();
+  expect(waits).toEqual(Array(12).fill(5000));
+  expect(writes).toEqual([]);
+  await operations.return();
 });
 
 it("selects candidate storage by run/attempt and authenticates container bytes", async () => {

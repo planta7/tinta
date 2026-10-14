@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { checkFile } from "./release-candidate.mjs";
 import { digest, readZip } from "./distribution-archive.mjs";
+import { setTimeout } from "node:timers/promises";
 
 export function candidateReleaseNotes(plan, directory) {
   const source = plan.targets.find((target) => target.id === "source");
@@ -61,11 +62,19 @@ export function releaseAdapter({
   directory,
   journal,
   notes = (plan) => candidateReleaseNotes(plan, directory),
+  wait = setTimeout,
 }) {
   let body;
   let repository;
   const root = () => `/repos/${repository}`;
   let releaseId;
+  const observe = async (read, ready, pending) => {
+    for (let attempt = 0; ; attempt += 1) {
+      const value = await read();
+      if (ready(value) || !pending || attempt === 12) return value;
+      await wait(5000);
+    }
+  };
   const readRelease = async (plan) => {
     if (releaseId !== undefined)
       return api("GET", `${root()}/releases/${releaseId}`);
@@ -132,15 +141,19 @@ export function releaseAdapter({
     },
     async *operations(plan) {
       const tagPath = `${root()}/git/ref/tags/${encodeURIComponent(plan.tag)}`;
+      let tagSubmitted = false;
       yield {
         key: "tag",
         retryAbsent: true,
-        read: () => api("GET", tagPath),
-        write: () =>
-          api("POST", `${root()}/git/refs`, {
+        read: ({ pending = false } = {}) =>
+          observe(() => api("GET", tagPath), Boolean, tagSubmitted || pending),
+        write: async () => {
+          tagSubmitted = true;
+          await api("POST", `${root()}/git/refs`, {
             ref: `refs/tags/${plan.tag}`,
             sha: plan.sourceSha,
-          }),
+          });
+        },
         verify: async (tag) => {
           assert.equal(tag.object.type, "commit");
           assert.equal(
@@ -151,12 +164,15 @@ export function releaseAdapter({
           return { tag: plan.tag, sourceSha: tag.object.sha };
         },
       };
+      let draftSubmitted = false;
       yield {
         key: "draft",
         retryAbsent: true,
-        read: () => readRelease(plan),
-        write: () =>
-          api("POST", `${root()}/releases`, {
+        read: ({ pending = false } = {}) =>
+          observe(() => readRelease(plan), Boolean, draftSubmitted || pending),
+        write: async () => {
+          draftSubmitted = true;
+          const created = await api("POST", `${root()}/releases`, {
             tag_name: plan.tag,
             target_commitish: plan.sourceSha,
             name: plan.releaseId,
@@ -165,7 +181,10 @@ export function releaseAdapter({
             prerelease:
               plan.targets.find((t) => t.kind === "npm").channel !== "latest",
             make_latest: "false",
-          }),
+          });
+          assert.ok(Number.isSafeInteger(created?.id) && created.id > 0);
+          releaseId = created.id;
+        },
         verify: async (release) => checkRelease(release, plan),
       };
       const release = await readRelease(plan);
@@ -174,29 +193,44 @@ export function releaseAdapter({
         api("GET", `${root()}/releases/${release.id}/assets?per_page=100`);
       const records = [...plan.targets.map((t) => t.archive), ...plan.metadata];
       assert.ok(records.length < 100);
-      const find = async (record) => {
+      const list = async () => {
         const values = await assets();
         assert.ok(values.length < 100, "Ambiguous asset pagination");
         assert.ok(
           values.every((asset) => records.some((r) => r.path === asset.name)),
           "Unexpected release asset",
         );
-        const matches = values.filter((asset) => asset.name === record.path);
-        assert.ok(matches.length <= 1);
-        return matches[0] ?? null;
+        assert.equal(
+          new Set(values.map((asset) => asset.name)).size,
+          values.length,
+        );
+        return values;
       };
+      const find = async (record) =>
+        (await list()).find((asset) => asset.name === record.path) ?? null;
       for (const record of records) {
+        let assetId;
+        let assetSubmitted = false;
         yield {
           key: `asset:${record.path}`,
           retryAbsent: true,
-          read: () => find(record),
+          read: ({ pending = false } = {}) =>
+            observe(
+              () =>
+                assetId === undefined
+                  ? find(record)
+                  : api("GET", `${root()}/releases/assets/${assetId}`),
+              Boolean,
+              assetSubmitted || pending,
+            ),
           write: async () => {
             assert.equal(
               (await readRelease(plan)).draft,
               true,
               "Cannot add to a completed release",
             );
-            await request(
+            assetSubmitted = true;
+            const created = await request(
               `https://uploads.github.com${root()}/releases/${release.id}/assets?name=${encodeURIComponent(record.path)}`,
               {
                 method: "POST",
@@ -208,8 +242,11 @@ export function releaseAdapter({
                 body: checkFile(directory, record),
               },
             );
+            assert.ok(Number.isSafeInteger(created?.id) && created.id > 0);
+            assetId = created.id;
           },
           verify: async (asset) => {
+            assert.equal(asset.name, record.path);
             assert.equal(asset.size, record.bytes);
             assert.equal(asset.state, "uploaded");
             assert.equal(
@@ -227,22 +264,37 @@ export function releaseAdapter({
           },
         };
       }
+      let publishSubmitted = false;
       yield {
         key: "publish",
         retryAbsent: true,
-        read: async () => {
-          const current = await readRelease(plan);
+        read: async ({ pending = false } = {}) => {
+          const current = await observe(
+            () => readRelease(plan),
+            (value) => value && !value.draft,
+            publishSubmitted || pending,
+          );
+          if (!current) return null;
           checkRelease(current, plan);
           return current.draft ? null : current;
         },
         write: async () => {
+          const values = await observe(
+            list,
+            (items) =>
+              records.every((record) =>
+                items.some((item) => item.name === record.path),
+              ),
+            true,
+          );
           for (const record of records) {
             assert.equal(
-              (await find(record))?.digest,
+              values.find((asset) => asset.name === record.path)?.digest,
               `sha256:${record.sha256}`,
             );
             assert.equal(digest(checkFile(directory, record)), record.sha256);
           }
+          publishSubmitted = true;
           await api("PATCH", `${root()}/releases/${release.id}`, {
             draft: false,
             make_latest: "false",
