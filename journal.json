@@ -678,8 +678,14 @@
           }
         },
         "npm:@tinta-lang/engine": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/engine",
+            "version": "0.1.16",
+            "integrity": "sha512-cfPPzHAc5+YEPgDmQXiFLQdpQqp3g7BbU3ETfZnA5GvwInJjV713DJfISZmk96B4lR7IEfHtMcciZL7ElDDbwA==",
+            "sha256": "c5bf3fc174d6158b8924785f76d3cef5e7d59f5042d0b96a62fe0f2599b9dc11"
+          }
         },
         "npm:@tinta-lang/charts": {
           "status": "submitted",
