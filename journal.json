@@ -2219,6 +2219,10 @@
             "sha256": "9525af91cc22953f105034f529891162a8f91f89b2b53921fac06b48942d529f",
             "bytes": 65
           }
+        },
+        "github:asset:candidate-index.json": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
