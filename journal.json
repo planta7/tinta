@@ -2662,6 +2662,10 @@
             "sha256": "650fdd0a7044aaff463e68c13a068348ca14fd4c52dcdc4db91135bdc64af9b7",
             "bytes": 296361
           }
+        },
+        "github:asset:tinta-lang-engine-0.2.2.tgz": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
