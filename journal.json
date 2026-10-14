@@ -2794,8 +2794,14 @@
           }
         },
         "github:asset:examples-0.2.2.zip": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 640039157,
+            "name": "examples-0.2.2.zip",
+            "sha256": "a06fad90efc4d3230256aa271a44f482dd3eb98d664e58170d81d160e31b4e63",
+            "bytes": 2274907
+          }
         }
       },
       "promotion": {
