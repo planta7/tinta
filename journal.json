@@ -1101,6 +1101,12 @@
           "@tinta-lang/language-server": "0.1.19"
         }
       }
+    },
+    "d338693217cca4bc4c4326f002da7a1e92c72f39d1d03a98d6e4b81f88f94626": {
+      "candidate": "d338693217cca4bc4c4326f002da7a1e92c72f39d1d03a98d6e4b81f88f94626",
+      "releaseId": "tinta-0.1.21-vscode-0.2.21-stable",
+      "status": "pending",
+      "items": {}
     }
   }
 }
