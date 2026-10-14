@@ -2332,7 +2332,12 @@
       "candidate": "fd742ea952c850254432196bd021d5115a857310d0ce2f57f89621928fda722c",
       "releaseId": "tinta-0.2.2-vscode-0.4.2-stable",
       "status": "pending",
-      "items": {}
+      "items": {
+        "npm:@tinta-lang/types": {
+          "status": "pending",
+          "attempts": 0
+        }
+      }
     }
   }
 }
