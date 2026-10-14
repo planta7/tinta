@@ -1400,8 +1400,12 @@
           }
         },
         "github:tag": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "tag": "tinta-v0.1.21-vscode-0.2.21-stable",
+            "sourceSha": "b5b7d31fc363619e7902c61634ff0d3298c8e1dd"
+          }
         }
       },
       "promotion": {
