@@ -1811,8 +1811,14 @@
           }
         },
         "npm:@tinta-lang/language-server": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "name": "@tinta-lang/language-server",
+            "version": "0.2.1",
+            "integrity": "sha512-W+VKVmdEf+72jaSbEQASmahUUzGqxFojlQVEHCR50bGYho2y/tjeyyPbYG6nZuu/1vUIZGVQQERAOXLtlX0KVg==",
+            "sha256": "2c9b18ae0c00aa88e3a619f5f7b87b8de41d7c8181098601b26e6494f8bd0841"
+          }
         }
       }
     }
