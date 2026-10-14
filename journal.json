@@ -2632,6 +2632,10 @@
             "tag": "tinta-v0.2.2-vscode-0.4.2-stable",
             "sourceSha": "879e34fcc36319d892fe445967a50b500e696271"
           }
+        },
+        "github:draft": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
