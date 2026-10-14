@@ -1528,8 +1528,14 @@
           }
         },
         "github:asset:studio-directory-0.1.21.zip": {
-          "status": "submitted",
-          "attempts": 1
+          "status": "verified",
+          "attempts": 1,
+          "receipt": {
+            "id": 639603883,
+            "name": "studio-directory-0.1.21.zip",
+            "sha256": "27144c56fd577292265ba94e069ba33ad6ff51b051b3a52d3e1f4c1607a26b30",
+            "bytes": 1020223
+          }
         }
       },
       "promotion": {
