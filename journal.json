@@ -2684,8 +2684,8 @@
           }
         },
         "github:asset:tinta-lang-reader-0.2.2.tgz": {
-          "status": "pending",
-          "attempts": 0
+          "status": "submitted",
+          "attempts": 1
         }
       },
       "promotion": {
