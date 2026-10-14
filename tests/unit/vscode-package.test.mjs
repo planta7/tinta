@@ -90,6 +90,30 @@ describe("local extension archive", () => {
     );
   });
 
+  it("ships source, split and preview buttons in the native title", async () => {
+    const local = unzipSync(await readFile(path));
+    const manifest = JSON.parse(
+      Buffer.from(local["extension/package.json"]).toString(),
+    );
+    const menu = manifest.contributes.menus["editor/title"];
+    expect(menu.map((item) => item.command)).toEqual([
+      "tinta.showSource",
+      "tinta.openPreview",
+      "tinta.showPreview",
+    ]);
+    for (const [index, item] of menu.entries()) {
+      expect(item.when).toBe(
+        "(resourceLangId == tinta && (resourceScheme == file || resourceScheme == untitled)) || activeWebviewPanelId == tinta.preview",
+      );
+      expect(item.group).toBe(`navigation@${index + 1}`);
+      const command = manifest.contributes.commands.find(
+        (entry) => entry.command === item.command,
+      );
+      expect(command.icon).toMatch(/^\$\([a-z-]+\)$/);
+      expect(command.title).toMatch(/^tinta: /);
+    }
+  });
+
   it("provides independently valid quickstart examples", async () => {
     const guide = await readFile("docs/14_VSCODE_QUICKSTART.md", "utf8");
     const snippets = [...guide.matchAll(/```tinta\n([\s\S]*?)```/g)];

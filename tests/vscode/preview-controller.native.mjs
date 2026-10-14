@@ -110,6 +110,122 @@ afterEach(() => {
 });
 
 describe("native preview controller boundaries", () => {
+  it("switches source, split and preview without closing the source", async () => {
+    const doc = document();
+    await controller.open(doc, true);
+    vscode.window.activeTextEditor = { document: doc, viewColumn: 2 };
+    await vscode.handlers["tinta.showPreview"]();
+    const state = controller.panels.get(doc);
+    expect(vscode.window.createWebviewPanel.mock.calls[0][2]).toBe(2);
+    const sourceOptions = {
+      viewColumn: 2,
+      preserveFocus: false,
+      preview: false,
+    };
+    expect(vscode.window.showTextDocument).toHaveBeenCalledWith(
+      doc,
+      sourceOptions,
+    );
+    await ready(state);
+    const snapshot = state.source;
+    state.panel.active = true;
+    vscode.window.activeTextEditor = undefined;
+    await vscode.handlers["tinta.openPreview"]();
+    expect(state.panel.reveal).toHaveBeenLastCalledWith(
+      vscode.ViewColumn.Beside,
+      true,
+    );
+    await vscode.handlers["tinta.showSource"]();
+    expect(state.panel.reveal).toHaveBeenLastCalledWith(2, true);
+    expect(vscode.window.showTextDocument).toHaveBeenLastCalledWith(
+      doc,
+      sourceOptions,
+    );
+    await vscode.handlers["tinta.showPreview"]();
+    expect(state.panel.reveal).toHaveBeenLastCalledWith(2, false);
+    expect(state.panel.dispose).not.toHaveBeenCalled();
+    expect(controller.sources.get(doc).snapshot).toBe(snapshot);
+    expect(vscode.window.createWebviewPanel).toHaveBeenCalledTimes(1);
+  });
+
+  it("uses the toolbar resource instead of another active document", async () => {
+    const selected = document("# Selected");
+    const other = document("# Other");
+    other.uri = { scheme: "untitled", toString: () => "untitled:other" };
+    await controller.open(selected, true);
+    await controller.open(other, true);
+    vscode.workspace.textDocuments = [selected, other];
+    vscode.window.activeTextEditor = { document: other, viewColumn: 1 };
+    await vscode.handlers["tinta.showPreview"](selected.uri);
+    expect(controller.panels.has(selected)).toBe(true);
+    expect(controller.panels.has(other)).toBe(false);
+    await vscode.handlers["tinta.showSource"](selected.uri);
+    expect(vscode.window.showTextDocument.mock.lastCall[0]).toBe(selected);
+  });
+
+  it("selects the active preview before text in another group", async () => {
+    const doc = document();
+    await controller.open(doc, true);
+    vscode.window.activeTextEditor = { document: doc, viewColumn: 1 };
+    await controller.show();
+    const state = controller.panels.get(doc);
+    state.panel.active = true;
+    vscode.window.activeTextEditor = { document: document("# Other") };
+    await vscode.handlers["tinta.showPreview"]({
+      scheme: "webview-panel",
+      toString: () => "webview-panel:opaque-native-resource",
+    });
+    expect(state.panel.reveal).toHaveBeenLastCalledWith(1, false);
+    expect(vscode.window.createWebviewPanel).toHaveBeenCalledTimes(1);
+    state.panel.active = false;
+    await vscode.handlers["tinta.openPreview"]({
+      scheme: "webview-panel",
+      toString: () => "webview-panel:foreign-resource",
+    });
+    expect(vscode.window.createWebviewPanel).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps source navigation available when verification fails", async () => {
+    const doc = { ...document("Dirty", "file"), isDirty: true };
+    await controller.open(doc, false);
+    vscode.window.activeTextEditor = { document: doc, viewColumn: 1 };
+    await vscode.handlers["tinta.showPreview"]();
+    expect(vscode.window.createWebviewPanel).not.toHaveBeenCalled();
+    await vscode.handlers["tinta.showSource"]();
+    expect(vscode.window.showTextDocument.mock.lastCall[0]).toBe(doc);
+  });
+
+  it("ignores closed toolbar resources and unsupported Markdown", async () => {
+    const markdown = { ...document(), languageId: "markdown" };
+    vscode.workspace.textDocuments = [markdown];
+    vscode.window.activeTextEditor = { document: markdown };
+    for (const command of [
+      "tinta.showSource",
+      "tinta.openPreview",
+      "tinta.showPreview",
+    ]) {
+      await vscode.handlers[command](markdown.uri);
+      await vscode.handlers[command]({
+        scheme: "file",
+        toString: () => "file:closed",
+      });
+    }
+    expect(vscode.window.createWebviewPanel).not.toHaveBeenCalled();
+    expect(vscode.window.showTextDocument).not.toHaveBeenCalled();
+  });
+
+  it("does not open preview if source closes during a view switch", async () => {
+    const doc = document();
+    await controller.open(doc, true);
+    vscode.window.activeTextEditor = { document: doc, viewColumn: 1 };
+    vscode.window.showTextDocument.mockImplementationOnce(async () => {
+      controller.close(doc);
+      doc.isClosed = true;
+    });
+    await vscode.handlers["tinta.showPreview"]();
+    expect(vscode.window.createWebviewPanel).not.toHaveBeenCalled();
+  });
+
   it.each(["source", "preview"])(
     "waits for the opening file verification before serving %s",
     async (operation) => {

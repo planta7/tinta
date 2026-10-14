@@ -37,6 +37,7 @@ interface SourceState {
 interface PanelState {
   readonly panel: vscode.WebviewPanel;
   readonly document: vscode.TextDocument;
+  sourceColumn: vscode.ViewColumn;
   identity: WebviewIdentity;
   ready: boolean;
   sessionRevision: number;
@@ -86,7 +87,15 @@ export class PreviewController implements vscode.Disposable {
       vscode.workspace.onDidCloseTextDocument((document) =>
         this.close(document),
       ),
-      vscode.commands.registerCommand("tinta.openPreview", () => this.show()),
+      vscode.commands.registerCommand("tinta.showSource", (uri?: vscode.Uri) =>
+        this.showSource(uri),
+      ),
+      vscode.commands.registerCommand("tinta.openPreview", (uri?: vscode.Uri) =>
+        this.show(uri),
+      ),
+      vscode.commands.registerCommand("tinta.showPreview", (uri?: vscode.Uri) =>
+        this.show(uri, false),
+      ),
       vscode.commands.registerCommand("tinta.previewCopy", () => this.copy()),
       vscode.commands.registerCommand("tinta.resetReading", () => this.reset()),
     );
@@ -269,8 +278,31 @@ export class PreviewController implements vscode.Disposable {
     await vscode.window.showTextDocument(copy);
   }
 
-  private async show(): Promise<void> {
-    const document = vscode.window.activeTextEditor?.document;
+  private selectedDocument(uri?: vscode.Uri): vscode.TextDocument | undefined {
+    if (uri?.scheme === "webview-panel")
+      return [...this.panels.values()].find((state) => state.panel.active)
+        ?.document;
+    return uri?.scheme
+      ? vscode.workspace.textDocuments.find(
+          (document) => document.uri.toString() === uri.toString(),
+        )
+      : this.activeDocument();
+  }
+
+  private async showSource(uri?: vscode.Uri): Promise<void> {
+    const document = this.selectedDocument(uri);
+    if (!document || !this.supported(document)) return;
+    const state = this.panels.get(document);
+    state?.panel.reveal(state.sourceColumn, true);
+    await vscode.window.showTextDocument(document, {
+      viewColumn: state?.sourceColumn ?? vscode.ViewColumn.Active,
+      preserveFocus: false,
+      preview: false,
+    });
+  }
+
+  private async show(uri?: vscode.Uri, beside = true): Promise<void> {
+    const document = this.selectedDocument(uri);
     if (!document || !this.supported(document)) return;
     await this.open(document, false);
     const snapshot = this.sources.get(document)?.snapshot;
@@ -282,20 +314,33 @@ export class PreviewController implements vscode.Disposable {
       return;
     }
     const existing = this.panels.get(document);
-    if (existing) {
-      existing.panel.reveal(vscode.ViewColumn.Beside, true);
-      return;
-    }
-    if (this.panels.size >= 4) {
+    if (!existing && this.panels.size >= 4) {
       void vscode.window.showWarningMessage(
         "At most four tinta previews may be open.",
       );
       return;
     }
+    const editor = vscode.window.activeTextEditor;
+    const sourceColumn =
+      (editor?.document === document ? editor.viewColumn : undefined) ??
+      existing?.sourceColumn ??
+      vscode.window.tabGroups.activeTabGroup.viewColumn;
+    await vscode.window.showTextDocument(document, {
+      viewColumn: sourceColumn,
+      preserveFocus: false,
+      preview: false,
+    });
+    if (document.isClosed || !this.sources.get(document)?.snapshot) return;
+    const previewColumn = beside ? vscode.ViewColumn.Beside : sourceColumn;
+    if (existing) {
+      existing.sourceColumn = sourceColumn;
+      existing.panel.reveal(previewColumn, beside);
+      return;
+    }
     const panel = vscode.window.createWebviewPanel(
       "tinta.preview",
       "tinta Preview — Checking source",
-      vscode.ViewColumn.Beside,
+      previewColumn,
       {
         enableScripts: true,
         enableCommandUris: false,
@@ -306,6 +351,7 @@ export class PreviewController implements vscode.Disposable {
     const state: PanelState = {
       panel,
       document,
+      sourceColumn,
       identity: {
         protocol: "tinta-vscode-1",
         panelId: token(),
@@ -608,8 +654,8 @@ export class PreviewController implements vscode.Disposable {
 
   activeDocument(): vscode.TextDocument | undefined {
     return (
-      vscode.window.activeTextEditor?.document ??
-      [...this.panels.values()].find((state) => state.panel.active)?.document
+      [...this.panels.values()].find((state) => state.panel.active)?.document ??
+      vscode.window.activeTextEditor?.document
     );
   }
 

@@ -21,6 +21,8 @@ Twice the amount is {{ doubled }}.
 
 Run **tinta: Open Preview** and move the slider. The result changes as you read. Use **tinta: Reset Reading** to return to the document's starting values.
 
+The top right of the editor has three buttons: **Show Source** (code icon), **Open Preview** (split preview icon), and **Show Preview** (preview icon). Use them to switch between source, source beside preview, and preview in the same editor group. The buttons also appear in the preview. Your source stays open, including unsaved edits; hiding and recreating the preview resets reading answers.
+
 Type `@` to see available directives. Completion also helps inside expressions and options. Hover over a name for help, or use **Go to Definition** and **Find All References** to navigate names in the document. Run **tinta: Check** to update diagnostics immediately.
 
 Add a chart with a small table:

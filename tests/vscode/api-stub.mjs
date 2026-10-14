@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 export const env = { uiKind: 1, remoteName: undefined };
-export const ViewColumn = { Beside: -2 };
+export const ViewColumn = { Active: -1, Beside: -2 };
 export const UIKind = { Desktop: 1 };
 export const StatusBarAlignment = { Right: 2 };
 export const DiagnosticSeverity = { Error: 0 };
@@ -63,7 +63,11 @@ export const window = {
   createStatusBarItem: () => status,
   createOutputChannel: () => output,
   onDidChangeActiveTextEditor: subscribe("active"),
-  tabGroups: { all: [], onDidChangeTabs: subscribe("tabs") },
+  tabGroups: {
+    all: [],
+    activeTabGroup: { viewColumn: 1 },
+    onDidChangeTabs: subscribe("tabs"),
+  },
 };
 export const commands = {
   registerCommand: (_name, callback) => {

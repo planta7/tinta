@@ -212,6 +212,70 @@ export async function run() {
       "webview reconstruction resets answers with a fresh capability",
     );
 
+    const retainedSource = controller.sources.get(document).snapshot;
+    const retainedText = document.getText();
+    assert.equal(document.isDirty, true);
+    await vscode.commands.executeCommand("tinta.showPreview");
+    await waitFor(
+      () => state.panel.active && state.panel.viewColumn === editor.viewColumn,
+      "preview in the source group",
+    );
+    const webviewResource = vscode.Uri.from({
+      scheme: "webview-panel",
+      path: "webview-panel/opaque-native-resource",
+    });
+    assert.ok(
+      !vscode.window.visibleTextEditors.some(
+        (visible) => visible.document === document,
+      ),
+    );
+    assert.ok(
+      vscode.window.tabGroups.all.some((group) =>
+        group.tabs.some(
+          (tab) =>
+            tab.input instanceof vscode.TabInputText &&
+            tab.input.uri.toString() === document.uri.toString(),
+        ),
+      ),
+    );
+    await vscode.commands.executeCommand("tinta.openPreview", webviewResource);
+    await waitFor(
+      () =>
+        state.panel.visible &&
+        vscode.window.visibleTextEditors.some(
+          (visible) =>
+            visible.document === document &&
+            visible.viewColumn !== state.panel.viewColumn,
+        ),
+      "source and preview in adjacent groups",
+    );
+    await state.panel.reveal(state.panel.viewColumn, false);
+    await waitFor(() => state.panel.active, "focused preview toolbar");
+    await vscode.commands.executeCommand("tinta.showSource", webviewResource);
+    await waitFor(
+      () =>
+        !state.panel.visible &&
+        vscode.window.activeTextEditor?.document === document,
+      "source view hides preview",
+    );
+    assert.equal(document.getText(), retainedText);
+    assert.equal(document.isDirty, true);
+    assert.equal(controller.sources.get(document).snapshot, retainedSource);
+    assert.equal(controller.panels.get(document), state);
+    const hiddenCapability = state.identity.capability;
+    await vscode.commands.executeCommand("tinta.showPreview", document.uri);
+    await waitFor(
+      () =>
+        state.identity.capability !== hiddenCapability &&
+        state.panel.active &&
+        state.enabled,
+      "recreated preview after returning from source",
+    );
+    await inspect(state, (value) => value.text.includes("Ratio: 0.5"));
+    report.groups.push(
+      "source, split and preview views retain the dirty source and document instance",
+    );
+
     const other = await vscode.workspace.openTextDocument({
       language: "tinta",
       content: "# Independent",

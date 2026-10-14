@@ -55,8 +55,19 @@
         "title": "tinta: Check"
       },
       {
+        "command": "tinta.showSource",
+        "title": "tinta: Show Source",
+        "icon": "$(code)"
+      },
+      {
         "command": "tinta.openPreview",
-        "title": "tinta: Open Preview"
+        "title": "tinta: Open Preview",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "tinta.showPreview",
+        "title": "tinta: Show Preview",
+        "icon": "$(preview)"
       },
       {
         "command": "tinta.previewCopy",
@@ -110,6 +121,25 @@
         "editor.autoIndent": "keep",
         "editor.wordBasedSuggestions": "off"
       }
+    },
+    "menus": {
+      "editor/title": [
+        {
+          "command": "tinta.showSource",
+          "when": "(resourceLangId == tinta && (resourceScheme == file || resourceScheme == untitled)) || activeWebviewPanelId == tinta.preview",
+          "group": "navigation@1"
+        },
+        {
+          "command": "tinta.openPreview",
+          "when": "(resourceLangId == tinta && (resourceScheme == file || resourceScheme == untitled)) || activeWebviewPanelId == tinta.preview",
+          "group": "navigation@2"
+        },
+        {
+          "command": "tinta.showPreview",
+          "when": "(resourceLangId == tinta && (resourceScheme == file || resourceScheme == untitled)) || activeWebviewPanelId == tinta.preview",
+          "group": "navigation@3"
+        }
+      ]
     }
   },
   "devDependencies": {

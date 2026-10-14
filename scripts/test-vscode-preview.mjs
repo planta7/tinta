@@ -82,6 +82,7 @@ await build({
   ],
 });
 await mkdir(`${root}/extension`);
+const manifest = JSON.parse(await readFile("apps/vscode/package.json", "utf8"));
 await writeFile(
   `${root}/extension/package.json`,
   JSON.stringify({
@@ -91,7 +92,11 @@ await writeFile(
     engines: { vscode: "^1.141.0" },
     main: "./extension.cjs",
     activationEvents: ["*"],
-    contributes: { languages: [{ id: "tinta", extensions: [".tinta"] }] },
+    contributes: {
+      languages: [{ id: "tinta", extensions: [".tinta"] }],
+      commands: manifest.contributes.commands,
+      menus: manifest.contributes.menus,
+    },
   }),
 );
 await writeFile(
