@@ -1566,6 +1566,10 @@
             "sha256": "80c3c06e77493011f689083d926fae28d6caf17d91f505cc1e37f6926bc67735",
             "bytes": 1897099
           }
+        },
+        "github:asset:examples-0.1.21.zip": {
+          "status": "pending",
+          "attempts": 0
         }
       },
       "promotion": {
