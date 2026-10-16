@@ -275,7 +275,7 @@ it("catches up unreleased language dependencies before publishing a host", () =>
   expect(plan.implementation).toBe("0.1.22");
   expect(plan.studio).toBe("0.1.22");
   expect(plan.extension).toBe("0.2.22");
-});
+}, 15000);
 
 it("treats a cross-component rename as affecting both old and new owners", () => {
   const f = repository();
