@@ -1,316 +1,68 @@
 name: Verify language
 on:
   push:
-    branches:
-      - "**"
-      - "!publication-journal"
-      - "!release-versions"
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
-  release-plan:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    permissions:
-      contents: write
-    outputs:
-      publish: ${{ steps.plan.outputs.publish }}
-      plan_id: ${{ steps.plan-artifact.outputs.artifact-id }}
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
-        with:
-          node-version: 24.21.0
-          package-manager-cache: false
-      - name: Reserve versions for this source revision
-        id: plan
-        run: node scripts/release-version-store.mjs
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
-        id: plan-artifact
-        with:
-          name: release-plan-${{ github.run_id }}-${{ github.run_attempt }}
-          path: reports/release/plan.json
-          if-no-files-found: error
-          retention-days: 30
   verify:
-    needs: release-plan
-    if: >-
-      !cancelled() && (needs.release-plan.result == 'success' ||
-      needs.release-plan.result == 'skipped')
     runs-on: ubuntu-24.04
-    permissions:
-      contents: read
+    timeout-minutes: 60
+    outputs:
+      compiled_id: ${{ steps.compiled.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           persist-credentials: false
-          fetch-depth: 0
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version: 24.21.0
           package-manager-cache: false
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
-        if: github.ref == 'refs/heads/main'
-        with:
-          artifact-ids: ${{ needs.release-plan.outputs.plan_id }}
-          path: reports/release
-          merge-multiple: true
-      - name: Check Conventional Commits before integration
-        if: github.ref != 'refs/heads/main'
-        run: node scripts/release-version-store.mjs check
-      - name: Resolve release versions and notes
-        if: github.ref == 'refs/heads/main'
-        run: node scripts/automatic-release.mjs
-      - run: npm install --global pnpm@10.34.6
+      - run: npm install --global pnpm@10.34.6 --ignore-scripts
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm verify --suite editing
       - run: pnpm test:vscode:browser
-      - name: Transfer compiled files without recompilation
-        run: >-
-          mkdir -p reports/release build/transfer
-
-          tar -czf build/transfer/compiled.tgz --exclude=build/transfer build packages/*/dist
-          apps/vscode/dist packages/cli/assets/tinta-studio.html reports/release
+      - name: Transfer the compilation for native CLI tests
+        run: |
+          mkdir -p build/transfer
+          tar -czf build/transfer/compiled.tgz --exclude=build/transfer build packages/*/dist apps/vscode/dist packages/cli/assets/tinta-studio.html
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         id: compiled
         with:
           name: compiled-${{ github.run_id }}-${{ github.run_attempt }}
           path: build/transfer/compiled.tgz
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 7
           compression-level: 0
-    timeout-minutes: 60
-    outputs:
-      compiled_id: ${{ steps.compiled.outputs.artifact-id }}
   cli-portability:
-    if: "!cancelled() && needs.verify.result == 'success'"
+    needs: verify
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - macos-15
-          - windows-2022
-    runs-on: ${{ matrix.os }}
-    permissions:
-      contents: read
+        os: [macos-15, windows-2022]
     steps:
       - run: git config --global core.autocrlf false
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           persist-credentials: false
-          fetch-depth: 0
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version: 24.21.0
           package-manager-cache: false
-      - run: npm install --global pnpm@10.34.6
-      - run: pnpm install --frozen-lockfile
-      - &a1
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+      - run: npm install --global pnpm@10.34.6 --ignore-scripts
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
           artifact-ids: ${{ needs.verify.outputs.compiled_id }}
           path: build/transfer
           merge-multiple: true
-      - &a2
-        name: Restore the verified compilation
-        run: tar -xzf build/transfer/compiled.tgz
+      - run: tar -xzf build/transfer/compiled.tgz
       - run: pnpm exec vitest run tests/unit/cli.test.mjs tests/unit/cli-failures.test.mjs
-    needs: verify
-    timeout-minutes: 20
-  provenance-capability:
-    if: github.ref == 'refs/heads/main' && needs.release-plan.outputs.publish == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    permissions:
-      contents: read
-      id-token: write
-      attestations: write
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          ref: ${{ github.sha }}
-          persist-credentials: false
-      - name: Check signing service before spending time on the matrix
-        uses: actions/attest@c32b4b8b198b65d0bd9d63490e847ff7b53989d4
-        with:
-          subject-path: toolchain/release.json
-          create-storage-record: false
-    needs:
-      - verify
-      - release-plan
-  build:
-    permissions:
-      contents: read
-      actions: read
-    needs:
-      - verify
-      - cli-portability
-      - provenance-capability
-      - release-plan
-    if: github.ref == 'refs/heads/main' && needs.release-plan.outputs.publish == 'true'
-    runs-on: ubuntu-24.04
-    timeout-minutes: 60
-    outputs:
-      payload_id: ${{ steps.payload.outputs.artifact-id }}
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          ref: ${{ github.sha }}
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
-        with:
-          node-version: 24.21.0
-          package-manager-cache: false
-      - run: npm install --global npm@11.19.0 pnpm@10.34.6
-      - run: pnpm install --frozen-lockfile
-      - name: Locate pinned global tools
-        shell: bash
-        run: echo "TINTA_GLOBAL_MODULES=$(npm root --global)" >> "$GITHUB_ENV"
-      - run: pnpm exec node scripts/candidate-tools.mjs
-      - *a1
-      - *a2
-      - name: Reuse successful Verify for this commit
-        run: pnpm exec node scripts/candidate-ci.mjs verification
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - run: pnpm exec node scripts/candidate-ci.mjs build
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
-        id: payload
-        with:
-          name: payloads-${{ github.run_id }}-${{ github.run_attempt }}
-          path: build/distribution/
-          if-no-files-found: error
-          retention-days: 30
-          compression-level: 0
-  installed:
-    needs: build
-    timeout-minutes: 45
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - cell: darwin-arm64
-            os: macos-15
-          - cell: linux-arm64
-            os: ubuntu-24.04-arm
-          - cell: win32-x64
-            os: windows-2022
-    runs-on: ${{ matrix.os }}
-    env:
-      TINTA_MATRIX_CELL: ${{ matrix.cell }}
-    steps:
-      - name: Preserve committed bytes on every platform
-        run: git config --global core.autocrlf false
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          ref: ${{ github.sha }}
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
-        with:
-          node-version: 24.21.0
-          package-manager-cache: false
-      - run: npm install --global npm@11.19.0 pnpm@10.34.6
-      - run: pnpm install --frozen-lockfile
-      - name: Locate pinned global tools
-        shell: bash
-        run: echo "TINTA_GLOBAL_MODULES=$(npm root --global)" >> "$GITHUB_ENV"
-      - run: pnpm exec node scripts/candidate-tools.mjs --desktop
-      - run: pnpm exec playwright install --with-deps chromium firefox webkit
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
-        with:
-          artifact-ids: ${{ needs.build.outputs.payload_id }}
-          path: build/supplied
-          merge-multiple: true
-      - if: runner.os == 'Linux'
-        run: xvfb-run --auto-servernum pnpm exec node scripts/candidate-ci.mjs matrix
-      - if: runner.os != 'Linux'
-        run: pnpm exec node scripts/candidate-ci.mjs matrix
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
-        if: always()
-        with:
-          name: results-${{ matrix.cell }}-${{ github.run_id }}-${{ github.run_attempt }}
-          path: reports/candidate/
-          if-no-files-found: error
-          retention-days: 30
-    if: github.ref == 'refs/heads/main'
-  attest:
-    needs:
-      - build
-      - installed
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    permissions:
-      contents: read
-      actions: read
-      id-token: write
-      attestations: write
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          ref: ${{ github.sha }}
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
-        with:
-          node-version: 24.21.0
-          package-manager-cache: false
-      - run: npm install --global npm@11.19.0 pnpm@10.34.6
-      - run: pnpm install --frozen-lockfile --ignore-scripts
-      - name: Locate pinned global tools
-        shell: bash
-        run: echo "TINTA_GLOBAL_MODULES=$(npm root --global)" >> "$GITHUB_ENV"
-      - run: pnpm exec node scripts/candidate-tools.mjs
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
-        with:
-          artifact-ids: ${{ needs.build.outputs.payload_id }}
-          path: build/supplied
-          merge-multiple: true
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
-        with:
-          name: results-darwin-arm64-${{ github.run_id }}-${{ github.run_attempt }}
-          path: build/results/darwin-arm64
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
-        with:
-          name: results-linux-arm64-${{ github.run_id }}-${{ github.run_attempt }}
-          path: build/results/linux-arm64
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
-        with:
-          name: results-win32-x64-${{ github.run_id }}-${{ github.run_attempt }}
-          path: build/results/win32-x64
-      - run: pnpm exec node scripts/candidate-ci.mjs assemble
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          TINTA_PAYLOAD_ID: ${{ needs.build.outputs.payload_id }}
-      - uses: actions/attest@c32b4b8b198b65d0bd9d63490e847ff7b53989d4
-        id: provenance
-        with:
-          subject-path: build/supplied/candidate-index.json
-          create-storage-record: false
-      - name: Preserve verification bundle
-        shell: bash
-        run: cp "$ATTESTATION_BUNDLE" build/supplied/attestation.sigstore.json
-        env:
-          ATTESTATION_BUNDLE: ${{ steps.provenance.outputs.bundle-path }}
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
-        with:
-          name: candidate-${{ github.run_id }}-${{ github.run_attempt }}
-          path: build/supplied/
-          if-no-files-found: error
-          retention-days: 30
-          compression-level: 0
-    if: github.ref == 'refs/heads/main'
-permissions:
-  contents: read
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: false
-  queue: max
-env:
-  TINTA_RELEASE_SOURCE_SHA: ${{ github.ref == 'refs/heads/main' && github.sha || '' }}

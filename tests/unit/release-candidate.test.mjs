@@ -3,22 +3,18 @@ import { readFileSync } from "node:fs";
 import { parse } from "yaml";
 import {
   buildCommands,
-  successfulVerification,
   validateVerification,
   verificationWorkflow,
-  verificationJobs,
   nativeModes,
   matrixCells,
   candidateWorkflow,
   readCandidateJson,
   checkReports,
   assembleManifest,
-  verifyProducer,
   validateProducerIdentity,
 } from "../../scripts/release-candidate.mjs";
 import { digest } from "../../scripts/distribution-archive.mjs";
 import { offlineInstalled } from "../../scripts/candidate-offline.mjs";
-import { verifyAttestation } from "../../scripts/verify-release-candidate.mjs";
 import { loadReleaseConfig } from "../../scripts/release-contract.mjs";
 
 const hash = "a".repeat(64);
@@ -32,7 +28,7 @@ const producer = {
   workflowSha: source,
   sourceSha: source,
   sourceTree: "c".repeat(40),
-  event: "push",
+  event: "workflow_run",
   runId: "123",
   attempt: 2,
   ref: "refs/heads/main",
@@ -42,23 +38,10 @@ const file = (path) => ({ path, bytes: 10, sha256: hash, integrity });
 function verificationFixture() {
   return {
     workflow: verificationWorkflow,
-    workflowId: 7,
-    workflowSha256: digest(readFileSync(verificationWorkflow)),
-    repository: producer.repository,
-    repositoryId: producer.repositoryId,
     sourceSha: producer.sourceSha,
-    ref: producer.ref,
-    event: "push",
-    status: "completed",
     conclusion: "success",
     runId: "77",
     attempt: 2,
-    jobs: verificationJobs.map((name, index) => ({
-      id: index + 1,
-      name,
-      status: "completed",
-      conclusion: "success",
-    })),
   };
 }
 
@@ -163,318 +146,16 @@ function fixture() {
   return structuredClone({ inventory, build, reports });
 }
 
-function transportFixture() {
-  const records = [
-    "payloads",
-    ...matrixCells.map((c) => `results-${c}`),
-    "candidate",
-  ].map((prefix, n) => ({
-    id: n + 1,
-    name: `${prefix}-123-2`,
-    digest: `sha256:${hash}`,
-    expired: false,
-    expires_at: "2026-11-10T00:00:00Z",
-    workflow_run: { id: 123, head_sha: source },
-  }));
-  const index = {
-    format: "tinta-candidate-1",
-    producer: structuredClone(producer),
-    retentionDays: 30,
-    createdAt: "2026-10-11T00:00:00Z",
-    expiresAt: "2026-11-10T00:00:00Z",
-    storage: records
-      .slice(0, 4)
-      .map(({ id, name, digest }) => ({ id, name, digest })),
-  };
-  const run = {
-    id: 123,
-    run_attempt: 2,
-    repository: { id: 42, full_name: "fixture/tinta" },
-    head_sha: source,
-    event: "push",
-    path: candidateWorkflow,
-    status: "completed",
-    conclusion: "success",
-    created_at: "2026-10-10T23:00:00Z",
-    updated_at: "2026-10-11T01:00:00Z",
-  };
-  let signatures = 0;
-  return {
-    index,
-    run,
-    records,
-    expected: {
-      producer: structuredClone(producer),
-      candidateArtifact: records[4],
-      indexPath: "fixture-index.json",
-    },
-    services: {
-      now: Date.parse("2026-10-12T00:00:00Z"),
-      api: async (path) => {
-        if (path.endsWith("/attempts/2")) return run;
-        if (path.includes("/artifacts/"))
-          return records.find((r) => path.endsWith(`/${r.id}`));
-        return { id: 42, full_name: "fixture/tinta", default_branch: "main" };
-      },
-      attest: async () => {
-        signatures++;
-      },
-    },
-    signatures: () => signatures,
-  };
-}
-
-describe("same-commit Verify reuse", () => {
-  function services() {
-    const receipt = verificationFixture();
-    const run = {
-      id: 77,
-      run_number: 12,
-      run_attempt: 2,
-      workflow_id: receipt.workflowId,
-      path: verificationWorkflow,
-      repository: { id: 42, full_name: producer.repository },
-      head_repository: { id: 42, full_name: producer.repository },
-      head_sha: source,
-      head_branch: "main",
-      event: "push",
-      status: "completed",
-      conclusion: "success",
-    };
-    const jobs = receipt.jobs.map((job) => ({
-      ...job,
-      run_id: 77,
-      head_sha: source,
-    }));
-    const calls = [];
-    const listing = { total_count: 1, workflow_runs: [run] };
-    const jobResponse = { total_count: jobs.length, jobs };
-    const api = async (path) => {
-      calls.push(path);
-      if (path.endsWith("/workflows/verify.yml"))
-        return { id: 7, path: verificationWorkflow };
-      if (path.includes("/workflows/7/runs?")) return listing;
-      if (path.includes("/jobs?")) return jobResponse;
-      return run;
-    };
-    return { receipt, run, jobs, listing, jobResponse, calls, api };
-  }
-
-  it("records the exact successful push run and its complete attempt", async () => {
-    const f = services();
-    await expect(successfulVerification(producer, f)).resolves.toEqual(
-      f.receipt,
-    );
-    expect(f.calls).toContain(
-      "/repos/fixture/tinta/actions/runs/77/attempts/2/jobs?per_page=100",
-    );
-    expect(f.calls.filter((path) => path.endsWith("/runs/77"))).toHaveLength(2);
-  });
-
-  it("reuses completed source jobs while distribution jobs in the same run are pending", async () => {
-    const f = services();
-    const current = { ...producer, runId: "77" };
-    f.run.status = "in_progress";
-    f.run.conclusion = null;
-    f.jobs.push({
-      id: 99,
-      name: "build",
-      status: "in_progress",
-      conclusion: null,
-    });
-    f.jobResponse.total_count = f.jobs.length;
-    await expect(successfulVerification(current, f)).resolves.toEqual(
-      f.receipt,
-    );
-    f.jobs[0].conclusion = "failure";
-    await expect(successfulVerification(current, f)).rejects.toThrow();
-    f.jobs[0].conclusion = "success";
-    f.run.run_attempt += 1;
-    await expect(successfulVerification(current, f)).rejects.toThrow("attempt");
-  });
-
-  it.each([
-    [
-      "no run",
-      (f) => {
-        f.listing.total_count = 0;
-        f.listing.workflow_runs = [];
-      },
-    ],
-    [
-      "different source",
-      (f) => {
-        f.run.head_sha = "d".repeat(40);
-      },
-    ],
-    [
-      "PR result",
-      (f) => {
-        f.run.event = "pull_request";
-      },
-    ],
-    [
-      "different branch",
-      (f) => {
-        f.run.head_branch = "feature/example";
-      },
-    ],
-    [
-      "different workflow",
-      (f) => {
-        f.run.path = ".github/workflows/unrelated.yml";
-      },
-    ],
-    [
-      "foreign repository",
-      (f) => {
-        f.run.head_repository.id = 99;
-      },
-    ],
-    [
-      "pending run",
-      (f) => {
-        f.run.status = "in_progress";
-      },
-    ],
-    [
-      "failed run",
-      (f) => {
-        f.run.conclusion = "failure";
-      },
-    ],
-    [
-      "missing job",
-      (f) => {
-        f.jobs.pop();
-        f.jobResponse.total_count--;
-      },
-    ],
-    [
-      "skipped job",
-      (f) => {
-        f.jobs[0].conclusion = "skipped";
-      },
-    ],
-    [
-      "pending job",
-      (f) => {
-        f.jobs[0].status = "queued";
-      },
-    ],
-    [
-      "duplicate job",
-      (f) => {
-        f.jobs[1].name = f.jobs[0].name;
-      },
-    ],
-    [
-      "different job commit",
-      (f) => {
-        f.jobs[0].head_sha = "d".repeat(40);
-      },
-    ],
-    [
-      "different job run",
-      (f) => {
-        f.jobs[0].run_id = 88;
-      },
-    ],
-    [
-      "truncated jobs",
-      (f) => {
-        f.jobResponse.total_count++;
-      },
-    ],
-    [
-      "truncated runs",
-      (f) => {
-        f.listing.total_count++;
-      },
-    ],
-  ])("rejects %s", async (_name, change) => {
-    const f = services();
-    change(f);
-    await expect(successfulVerification(producer, f)).rejects.toThrow();
-  });
-
-  it("does not fall back to an older successful run", async () => {
-    const f = services();
-    f.listing.workflow_runs.push({ ...f.run, id: 76, run_number: 11 });
-    f.listing.total_count = 2;
-    f.run.conclusion = "failure";
-    await expect(successfulVerification(producer, f)).rejects.toThrow(
-      /Verify did not pass/,
-    );
-  });
-
-  it("rejects a rerun started while jobs are being checked", async () => {
-    const f = services();
-    const api = async (path) => {
-      const result = await f.api(path);
-      if (path.includes("/jobs?")) f.run.run_attempt++;
-      return structuredClone(result);
-    };
-    await expect(successfulVerification(producer, { api })).rejects.toThrow(
-      /rerun changed/,
-    );
-  });
-
-  it("requires the reused result in the signed build report", () => {
-    const f = fixture();
-    delete f.build.verification;
-    expect(() =>
-      checkReports(f.inventory, producer, f.build, f.reports),
-    ).toThrow(/Missing successful Verify/);
-    const changed = verificationFixture();
-    changed.sourceSha = "d".repeat(40);
-    expect(() => validateVerification(changed, producer)).toThrow(
-      /source mismatch/,
-    );
-  });
-
-  it("keeps candidate-specific package and preview checks without repeating source suites", () => {
-    expect(buildCommands).toContainEqual([
-      "node",
-      "scripts/distribution-package.mjs",
-      "--built",
-    ]);
-    expect(buildCommands).not.toContainEqual(["pnpm", "test:vscode:browser"]);
-    expect(
-      parse(readFileSync(verificationWorkflow, "utf8")).jobs.verify.steps,
-    ).toContainEqual({ run: "pnpm test:vscode:browser" });
-    expect(
-      buildCommands.filter((command) => command.includes("test:vscode:unit")),
-    ).toEqual([]);
-    expect(buildCommands.some((command) => command.includes("verify"))).toBe(
-      false,
-    );
-    const workflow = parse(readFileSync(verificationWorkflow, "utf8"));
-    const names = Object.entries(workflow.jobs)
-      .filter(([name]) => ["verify", "cli-portability"].includes(name))
-      .flatMap(([name, job]) =>
-        job.strategy?.matrix?.os
-          ? job.strategy.matrix.os.map((os) => `${name} (${os})`)
-          : [name],
-      );
-    expect(names.sort()).toEqual([...verificationJobs].sort());
-    const candidate = parse(readFileSync(candidateWorkflow, "utf8"));
-    expect(candidate.jobs.build.permissions).toEqual({
-      contents: "read",
-      actions: "read",
-    });
-    const steps = candidate.jobs.build.steps;
-    const gate = steps.findIndex(
-      (step) =>
-        step.run === "pnpm exec node scripts/candidate-ci.mjs verification",
-    );
-    const build = steps.findIndex(
-      (step) => step.run === "pnpm exec node scripts/candidate-ci.mjs build",
-    );
-    expect(gate).toBeGreaterThan(0);
-    expect(gate).toBeLessThan(build);
-    expect(steps[gate].env.GITHUB_TOKEN).toBe("${{ github.token }}");
-  });
+it("requires successful matching source verification in the build report", () => {
+  const f = fixture();
+  delete f.build.verification;
+  expect(() => checkReports(f.inventory, producer, f.build, f.reports)).toThrow(
+    "Missing successful source verification",
+  );
+  const changed = { ...verificationFixture(), sourceSha: "d".repeat(40) };
+  expect(() => validateVerification(changed, producer)).toThrow(
+    "source mismatch",
+  );
 });
 
 describe("frozen candidate metadata", () => {
@@ -608,247 +289,82 @@ describe("frozen candidate metadata", () => {
   });
 });
 
-describe("trusted producer with fixture CI, storage and signature services", () => {
-  it("requires successful exact run, storage identity, expiry and cryptographic verification", async () => {
-    const f = transportFixture();
-    await expect(verifyProducer(f.index, f.expected, f.services)).resolves.toBe(
-      true,
-    );
-    expect(f.signatures()).toBe(1);
-  });
-  it.each([
-    [
-      "repository",
-      (f) => {
-        f.run.repository.id = 99;
-      },
-    ],
-    [
-      "run",
-      (f) => {
-        f.run.id = 456;
-      },
-    ],
-    [
-      "attempt",
-      (f) => {
-        f.run.run_attempt = 1;
-      },
-    ],
-    [
-      "source",
-      (f) => {
-        f.run.head_sha = "e".repeat(40);
-      },
-    ],
-    [
-      "workflow",
-      (f) => {
-        f.run.path = ".github/workflows/unrelated.yml";
-      },
-    ],
-    [
-      "event",
-      (f) => {
-        f.run.event = "pull_request";
-      },
-    ],
-    [
-      "failure",
-      (f) => {
-        f.run.conclusion = "failure";
-      },
-    ],
-    [
-      "incomplete run",
-      (f) => {
-        f.run.status = "in_progress";
-      },
-    ],
-    [
-      "expired candidate",
-      (f) => {
-        f.services.now = Date.parse(f.index.expiresAt);
-      },
-    ],
-    [
-      "extended retention",
-      (f) => {
-        f.index.expiresAt = "2026-12-11T00:00:00Z";
-      },
-    ],
-    [
-      "expired storage",
-      (f) => {
-        f.records[0].expired = true;
-      },
-    ],
-    [
-      "changed storage",
-      (f) => {
-        f.records[0].digest = `sha256:${"d".repeat(64)}`;
-      },
-    ],
-    [
-      "wrong artifact run",
-      (f) => {
-        f.records[0].workflow_run.id = 124;
-      },
-    ],
-    [
-      "old artifact attempt",
-      (f) => {
-        f.records[0].name = "payloads-123-1";
-      },
-    ],
-    [
-      "API denied",
-      (f) => {
-        f.services.api = async () => {
-          throw new Error("403");
-        };
-      },
-    ],
-    [
-      "invalid signature",
-      (f) => {
-        f.services.attest = async () => {
-          throw new Error("signature");
-        };
-      },
-    ],
-  ])("rejects %s", async (_name, change) => {
-    const f = transportFixture();
-    change(f);
-    await expect(
-      verifyProducer(f.index, f.expected, f.services),
-    ).rejects.toThrow();
-  });
-  it("pins signer/source and requires the verified invocation, never a raw copied predicate", () => {
-    const calls = [];
-    const execute = (command) => {
-      calls.push(command);
-      return {
-        stdout:
-          command[1] === "--version"
-            ? "gh version 2.102.0 (fixture)"
-            : JSON.stringify([
-                {
-                  verificationResult: {
-                    statement: {
-                      predicate: {
-                        runDetails: {
-                          metadata: {
-                            invocationId:
-                              "https://github.com/fixture/tinta/actions/runs/123/attempts/2",
-                          },
-                        },
-                      },
-                    },
-                  },
-                },
-              ]),
-      };
-    };
-    verifyAttestation("fixture.json", producer, execute);
-    expect(calls[1]).toContain("--signer-digest");
-    expect(calls[1]).toContain("--source-digest");
-    expect(() =>
-      verifyAttestation("fixture.json", { ...producer, attempt: 3 }, execute),
-    ).toThrow();
-    expect(() =>
-      verifyAttestation("fixture.json", producer, () => ({ stdout: "[]" })),
-    ).toThrow();
-  });
-});
-
-describe("candidate workflow security topology", () => {
-  it("isolates attestation, binds exact downloads and never rebuilds in consumers", () => {
-    const workflow = parse(readFileSync(candidateWorkflow, "utf8"));
-    expect(Object.keys(workflow.on)).toEqual(["push"]);
-    expect(workflow.permissions).toEqual({ contents: "read" });
-    expect(workflow.jobs.build.needs).toEqual([
-      "verify",
-      "cli-portability",
-      "provenance-capability",
-      "release-plan",
-    ]);
-    expect(
-      workflow.jobs["provenance-capability"].steps.every((s) => !s.run),
-    ).toBe(true);
-    expect(workflow.jobs.attest.needs).toEqual(["build", "installed"]);
-    expect(workflow.jobs.attest.permissions).toEqual({
+it("binds official publication jobs to tested archives and the trusted workflow run", () => {
+  const workflow = parse(readFileSync(candidateWorkflow, "utf8"));
+  expect(Object.keys(workflow.on)).toEqual(["workflow_run"]);
+  expect(workflow.permissions).toEqual({});
+  for (const condition of [
+    "conclusion == 'success'",
+    "event == 'push'",
+    "head_branch == 'main'",
+    "head_sha == github.sha",
+    "head_repository.full_name == github.repository",
+  ])
+    expect(workflow.jobs.build.if).toContain(condition);
+  for (const name of ["build", "installed"])
+    expect(workflow.jobs[name].permissions).toEqual({ contents: "read" });
+  for (const name of ["npm", "marketplace"]) {
+    expect(workflow.jobs[name].environment).toBe("release");
+    expect(workflow.jobs[name].permissions).toEqual({
       contents: "read",
-      actions: "read",
       "id-token": "write",
-      attestations: "write",
     });
-    expect(
-      workflow.jobs.installed.strategy.matrix.include.map((c) => c.cell),
-    ).toEqual(matrixCells);
-    const installedSteps = workflow.jobs.installed.steps;
-    const checkout = installedSteps.findIndex((step) =>
-      step.uses?.startsWith("actions/checkout@"),
-    );
-    expect(checkout).toBeGreaterThan(0);
-    expect(installedSteps[checkout - 1].run).toBe(
-      "git config --global core.autocrlf false",
-    );
-    const pins = JSON.parse(readFileSync("toolchain/actions.json", "utf8"));
-    for (const [name, job] of Object.entries(workflow.jobs)) {
-      expect(job["timeout-minutes"]).toBeGreaterThan(0);
-      for (const step of job.steps) {
-        if (step.uses) {
-          const [action, sha] = step.uses.split("@");
-          expect(
-            pins.some(
-              (p) =>
-                p.repository === `https://github.com/${action}` &&
-                p.commit === sha,
-            ),
-          ).toBe(true);
-          if (action === "actions/upload-artifact") {
-            expect(step.with["retention-days"]).toBe(30);
-            expect(step.with.overwrite).not.toBe(true);
-          }
-        }
-        if (step.run) {
-          expect(step.run).not.toContain("${{");
-          if (!["build", "verify"].includes(name))
-            expect(step.run).not.toMatch(
-              /distribution-package|pnpm build|package:vscode/,
-            );
-        }
+  }
+  expect(workflow.jobs.installed.strategy["fail-fast"]).toBe(false);
+  expect(workflow.jobs.npm.strategy.matrix.package).toEqual(
+    config.packages.map((target) => target.id),
+  );
+  expect(workflow.jobs.release.needs).toEqual(["build", "installed"]);
+  expect(workflow.jobs.npm.needs).toEqual(["build", "release"]);
+  expect(workflow.jobs.marketplace.needs).toEqual(["build", "release", "npm"]);
+  expect(workflow.jobs.complete.needs).toEqual([
+    "build",
+    "release",
+    "marketplace",
+  ]);
+  expect(
+    workflow.jobs.installed.strategy.matrix.include.map((cell) => cell.cell),
+  ).toEqual(matrixCells);
+  for (const [name, job] of Object.entries(workflow.jobs)) {
+    expect(job["timeout-minutes"]).toBeGreaterThan(0);
+    for (const step of job.steps) {
+      if (step.uses) expect(step.uses).toMatch(/@[a-f0-9]{40}$/);
+      if (
+        step.uses?.startsWith("actions/download-artifact@") &&
+        step.with["artifact-ids"]
+      )
+        expect(step.with["artifact-ids"]).toMatch(
+          /^\$\{\{ needs\.(build|release)\.outputs\./,
+        );
+      if (step.uses?.startsWith("actions/upload-artifact@"))
+        expect(step.with.overwrite).not.toBe(true);
+      if (step.run) {
+        expect(step.run).not.toContain("${{");
+        expect(step.run).not.toMatch(/--(?:clobber|skip-duplicate)/);
+        if (name !== "build")
+          expect(step.run).not.toMatch(
+            /distribution-package|pnpm build|package:vscode/,
+          );
       }
     }
-    const ordinary = parse(
-      readFileSync(".github/workflows/verify.yml", "utf8"),
-    );
-    for (const name of ["verify", "cli-portability"]) {
-      const job = ordinary.jobs[name];
-      expect(job.permissions).toEqual({ contents: "read" });
-      expect(job.steps.some((step) => /attest@/.test(step.uses ?? ""))).toBe(
-        false,
-      );
-    }
-    expect(ordinary.jobs).not.toHaveProperty("release-preparation");
-    for (const name of [
-      "build",
-      "installed",
-      "attest",
-      "provenance-capability",
-    ]) {
-      const expected = ["build", "provenance-capability"].includes(name)
-        ? "github.ref == 'refs/heads/main' && needs.release-plan.outputs.publish == 'true'"
-        : "github.ref == 'refs/heads/main'";
-      expect(ordinary.jobs[name].if).toBe(expected);
-    }
-    expect(buildCommands).toContainEqual([
-      "node",
-      "scripts/check-release-artifacts.mjs",
-      "build/distribution",
-    ]);
+  }
+  const ci = parse(readFileSync(verificationWorkflow, "utf8"));
+  expect(ci.on).toEqual({
+    push: { branches: ["main"] },
+    pull_request: { branches: ["main"] },
   });
+  expect(ci.permissions).toEqual({ contents: "read" });
+  expect(ci.jobs.verify.steps).toContainEqual({
+    run: "pnpm verify --suite editing",
+  });
+  expect(ci.jobs.verify.steps).toContainEqual({
+    run: "pnpm test:vscode:browser",
+  });
+  expect(buildCommands).toContainEqual([
+    "node",
+    "scripts/distribution-package.mjs",
+    "--built",
+  ]);
 });
 
 it("refuses to disconnect local or self-hosted computers", () => {
@@ -901,12 +417,30 @@ it("refuses an actual dirty Git checkout before building a candidate", async () 
     git("add", "toolchain/release.json");
     git("-c", "commit.gpgsign=false", "commit", "-m", "Synthetic test fixture");
     const sha = git("rev-parse", "HEAD");
+    mkdirSync(join(root, "reports/release"), { recursive: true });
+    writeFileSync(
+      join(root, "reports/release/plan.json"),
+      JSON.stringify({
+        sourceSha: sha,
+        implementation: "0.1.22",
+        extension: "0.2.22",
+        npmChannel: "latest",
+        extensionChannel: "stable",
+      }),
+    );
     const event = join(root, "event.json");
     writeFileSync(
       event,
       JSON.stringify({
-        repository: { default_branch: "main" },
-        after: sha,
+        workflow_run: {
+          path: ".github/workflows/verify.yml",
+          event: "push",
+          status: "completed",
+          conclusion: "success",
+          head_branch: "main",
+          head_sha: sha,
+          head_repository: { full_name: "fixture/tinta", id: 42 },
+        },
         inputs: {
           source_sha: sha,
           config_sha256: createHash("sha256")
@@ -923,10 +457,12 @@ it("refuses an actual dirty Git checkout before building a candidate", async () 
         encoding: "utf8",
         env: {
           ...process.env,
-          TINTA_RELEASE_SOURCE_SHA: "",
+          TINTA_RELEASE_SOURCE_SHA: sha,
+          GITHUB_REPOSITORY: "fixture/tinta",
+          GITHUB_REPOSITORY_ID: "42",
           GITHUB_ACTIONS: "true",
           GITHUB_EVENT_PATH: event,
-          GITHUB_EVENT_NAME: "push",
+          GITHUB_EVENT_NAME: "workflow_run",
           GITHUB_REF: "refs/heads/main",
           GITHUB_SHA: sha,
         },
@@ -969,6 +505,141 @@ it("locates global package managers without a pnpm exec environment variable", a
       `TINTA_NPM_CLI=${join(root, "npm/bin/npm-cli.js")}`,
     );
     expect(output).toContain(`npm_execpath=${join(root, "pnpm/bin/pnpm.cjs")}`);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+it("executes the Pages guards and rejects incomplete, stale or changed downloads", async () => {
+  const { mkdtempSync, mkdirSync, writeFileSync, rmSync, existsSync } =
+    await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const { spawnSync } = await import("node:child_process");
+  const { zipEntries } = await import("../../scripts/distribution-archive.mjs");
+  const root = mkdtempSync(join(tmpdir(), "tinta pipeline fixture "));
+  const workflow = parse(readFileSync(candidateWorkflow, "utf8"));
+  const steps = workflow.jobs["deploy-studio"].steps;
+  const current = steps.find((step) => step.id === "current").run;
+  const download = steps.find((step) =>
+    step.name?.startsWith("Download and"),
+  ).run;
+  const tag = "tinta-v0.1.22-vscode-0.2.22-stable";
+  const archive = "studio-directory-0.1.22.zip";
+  const bytes = zipEntries({ "index.html": Buffer.from("<p>Fixture</p>") });
+  const run = (script, env = {}) =>
+    spawnSync("bash", ["-euo", "pipefail", "-c", script], {
+      cwd: root,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        PATH: join(root, "bin") + ":" + process.env.PATH,
+        RELEASE_TAG: tag,
+        TINTA_RELEASE_SOURCE_SHA: source,
+        GH_REPO: "fixture/tinta",
+        GITHUB_OUTPUT: join(root, "output"),
+        FIXTURE_ROOT: root,
+        FIXTURE_RELEASES: JSON.stringify([
+          { tag_name: tag, draft: false, prerelease: false },
+        ]),
+        ...env,
+      },
+    });
+  const release = (change = {}) =>
+    writeFileSync(
+      join(root, "release.json"),
+      JSON.stringify({
+        tagName: tag,
+        targetCommitish: source,
+        isDraft: false,
+        isPrerelease: false,
+        ...change,
+      }),
+    );
+  try {
+    mkdirSync(join(root, "bin"));
+    mkdirSync(join(root, "build/verified"), { recursive: true });
+    writeFileSync(join(root, archive), bytes);
+    writeFileSync(
+      join(root, "build/verified/inventory.json"),
+      JSON.stringify({
+        targets: [{ id: "studio-directory", archive, sha256: digest(bytes) }],
+      }),
+    );
+    writeFileSync(
+      join(root, "bin/gh"),
+      `#!/bin/sh
+set -eu
+case "$1 $2" in
+  "release view") cat "$FIXTURE_ROOT/release.json" ;;
+  "api --paginate")
+    while [ "$1" != "--jq" ]; do shift; done
+    printf '%s\\n' "$FIXTURE_RELEASES" | jq -r "$2"
+    ;;
+  "release download") cp "$FIXTURE_ROOT/${archive}" "$FIXTURE_ROOT/build/demo-release/" ;;
+  *) exit 90 ;;
+esac
+`,
+      { mode: 0o755 },
+    );
+    for (const change of [
+      { isDraft: true },
+      { isPrerelease: true },
+      { targetCommitish: "d".repeat(40) },
+      { tagName: "different" },
+    ]) {
+      release(change);
+      expect(run(current).status).not.toBe(0);
+    }
+    release();
+    expect(
+      run(current, {
+        FIXTURE_RELEASES: JSON.stringify([
+          { tag_name: tag, draft: false, prerelease: false },
+          {
+            tag_name: "tinta-v0.2.0-vscode-0.4.0-stable",
+            draft: false,
+            prerelease: false,
+          },
+        ]),
+      }).status,
+    ).toBe(0);
+    expect(readFileSync(join(root, "output"), "utf8")).toContain(
+      "publish=false",
+    );
+    expect(run(current).status).toBe(0);
+    expect(readFileSync(join(root, "output"), "utf8")).toContain(
+      "publish=true",
+    );
+    writeFileSync(join(root, archive), Buffer.from("changed archive"));
+    expect(run(download).status).not.toBe(0);
+    expect(existsSync(join(root, "build/demo-release/studio/index.html"))).toBe(
+      false,
+    );
+    rmSync(join(root, "build/demo-release"), { recursive: true });
+    writeFileSync(join(root, archive), bytes);
+    const downloaded = run(download);
+    expect(downloaded.status, downloaded.stderr).toBe(0);
+    expect(
+      readFileSync(join(root, "build/demo-release/studio/index.html"), "utf8"),
+    ).toBe("<p>Fixture</p>");
+    expect(
+      run(steps.find((step) => step.id === "recheck").run, {
+        FIXTURE_RELEASES: JSON.stringify([
+          { tag_name: tag, draft: false, prerelease: false },
+          {
+            tag_name: "tinta-v0.2.0-vscode-0.4.0-stable",
+            draft: false,
+            prerelease: false,
+          },
+        ]),
+      }).status,
+    ).toBe(0);
+    expect(
+      readFileSync(join(root, "output"), "utf8")
+        .trim()
+        .endsWith("publish=false"),
+    ).toBe(true);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

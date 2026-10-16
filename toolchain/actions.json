@@ -85,5 +85,16 @@
     "license": "MIT",
     "licenseUrl": "https://raw.githubusercontent.com/actions/deploy-pages/368f82528645a54fb793d4d04e342629a3f51346/LICENSE",
     "licenseSha256": "741d1031b351a6dc8421130e3282456afe884068596134683fd5e5f8188363ee"
+  },
+  {
+    "repository": "https://github.com/Azure/login",
+    "ref": "a641126d1b8aa4d1fa005f4f92df94a3a4c4c906",
+    "commit": "a641126d1b8aa4d1fa005f4f92df94a3a4c4c906",
+    "actionDefinitionSha256": "aa1f4cf750a70f88eaaa03d4505afcd73b299c690d5df6efaff84b2b8ea6fa30",
+    "license": "MIT",
+    "licenseUrl": "https://raw.githubusercontent.com/Azure/login/a641126d1b8aa4d1fa005f4f92df94a3a4c4c906/LICENSE",
+    "licenseSha256": "9906940f61b1f0b533fa7d99baf55178b2808fbe113ea51dfbfad8572ccd5f2b",
+    "resolvedAtUTC": "2026-10-16T06:22:07.943637+00:00",
+    "review": "Official Azure CLI federated login with an isolated configuration directory and post-job credential cleanup. No secret credential or subscription is required. Used only by the Marketplace identity and publication jobs."
   }
 ]

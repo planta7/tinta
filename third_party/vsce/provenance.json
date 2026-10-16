@@ -1,0 +1,39 @@
+[
+  {
+    "package": "boolbase@1.0.0",
+    "reason": "The npm archive omits its ISC license text. Preserve the original license and attribution from the upstream repository without changing the package.",
+    "repository": "https://github.com/fb55/boolbase",
+    "commit": "be0bcd8a4e917a0a5895e95b523fbbed05a64871",
+    "licenseUrl": "https://raw.githubusercontent.com/fb55/boolbase/be0bcd8a4e917a0a5895e95b523fbbed05a64871/LICENSE",
+    "licenseSha256": "cdf4d87ae0a6c160227263bf4e39a0a10e30e89ae7256e0f7ac7bde0836552c6",
+    "resolvedAtUTC": "2026-10-16T06:24:54.923272+00:00"
+  },
+  {
+    "package": "proxy-agent-negotiate@1.1.0",
+    "reason": "The npm archive omits its license text; preserve the original upstream project license and attribution.",
+    "commit": "5923589c2e5206504772c250ac4f20fc31122d3b",
+    "licenseUrl": "https://raw.githubusercontent.com/TooTallNate/proxy-agents/5923589c2e5206504772c250ac4f20fc31122d3b/packages/proxy-agent/LICENSE",
+    "licenseSha256": "8d8c55319c7729d57be811c747452636688d54f19701ee0752b6b15ad3771d9a"
+  },
+  {
+    "package": "quickjs-wasi@2.2.0",
+    "reason": "The npm archive omits its license text; preserve the original upstream project license and attribution.",
+    "commit": "066475d399936cd40a38cabde6935d5f7b080dec",
+    "licenseUrl": "https://raw.githubusercontent.com/vercel-labs/quickjs-wasi/066475d399936cd40a38cabde6935d5f7b080dec/LICENSE",
+    "licenseSha256": "f7735da3b2531ddf451937117343cfadb853fd8054b499e7a70695dc57ffd184",
+    "embeddedComponent": {
+      "name": "QuickJS-NG",
+      "licenseUrl": "https://raw.githubusercontent.com/quickjs-ng/quickjs/05c5738fd182d8598de259cc5d5107d2946caffc/LICENSE",
+      "commit": "05c5738fd182d8598de259cc5d5107d2946caffc",
+      "licenseSha256": "96f73f9d2a16c21a36b418f06073be26e7d6d5e7c1bc99756b21a4f2c74ef171"
+    },
+    "noticeFileSha256": "cea346b388961c9bb4cfe93853a16645e538b240fe836b3fab2907680653fcc1"
+  },
+  {
+    "package": "type-fest@2.19.0",
+    "reason": "The npm archive omits its license text; preserve the original upstream project license and attribution.",
+    "commit": "1b00d2853028fc966f933f689d6ab1807b657011",
+    "licenseUrl": "https://raw.githubusercontent.com/sindresorhus/type-fest/1b00d2853028fc966f933f689d6ab1807b657011/license-mit",
+    "licenseSha256": "5c932d88256b4ab958f64a856fa48e8bd1f55bc1d96b8149c65689e0c61789d3"
+  }
+]

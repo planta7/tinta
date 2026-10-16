@@ -31,7 +31,11 @@ for (const [key, value] of Object.entries(lock.packages)) {
   const record = inventory.find((r) => `${r.name}@${r.version}` === key);
   if (!record || record.integrity !== value.resolution.integrity)
     throw new Error(`Missing locked provenance: ${key}`);
-  if (!accepted.has(record.license))
+  const reviewedToolLicense =
+    (key === "argparse@2.0.1" && record.license === "Python-2.0") ||
+    (key === "rc@1.2.8" &&
+      record.license === "(BSD-2-Clause OR MIT OR Apache-2.0)");
+  if (!accepted.has(record.license) && !reviewedToolLicense)
     throw new Error(`License requires review: ${key}: ${record.license}`);
   if (
     record.license === "MPL-2.0" &&
@@ -101,6 +105,14 @@ for (const original of packages.values()) {
     const core = [...packages.values()].find((p) => p.name === "@humanfs/core");
     texts = [readFileSync(join(core.path, "LICENSE"), "utf8")];
   }
+  const omittedNotices = new Set([
+    "boolbase@1.0.0",
+    "proxy-agent-negotiate@1.1.0",
+    "quickjs-wasi@2.2.0",
+    "type-fest@2.19.0",
+  ]);
+  if (!texts.length && omittedNotices.has(`${pkg.name}@${pkg.version}`))
+    texts = [readFileSync(`third_party/vsce/${pkg.name}-LICENSE`, "utf8")];
   if (!texts.length || texts.some((t) => !t))
     throw new Error(`Missing license text: ${pkg.name}`);
   notices.add(

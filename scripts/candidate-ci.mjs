@@ -15,11 +15,8 @@ import { requireCommandSync, runCommandSync } from "./commands.mjs";
 import { loadReleaseConfig } from "./release-contract.mjs";
 import {
   candidateWorkflow,
-  retentionDays,
   nativeModes,
   buildCommands,
-  successfulVerification,
-  validateVerification,
   readCandidateJson,
   fileRecord,
   checkInventory,
@@ -32,7 +29,6 @@ const read = (path) => readCandidateJson(readFileSync(path));
 const save = (path, value) =>
   writeFileSync(path, JSON.stringify(value, null, 2) + "\n");
 const git = (...args) => requireCommandSync(["git", ...args]).stdout.trim();
-const config = loadReleaseConfig();
 const output = "reports/candidate";
 mkdirSync(output, { recursive: true });
 
@@ -43,59 +39,66 @@ function preflight() {
     "Hosted push required; local tests are fixtures only",
   );
   const event = read(process.env.GITHUB_EVENT_PATH);
-  assert.equal(process.env.GITHUB_EVENT_NAME, "push");
+  const run = event.workflow_run;
+  assert.equal(process.env.GITHUB_EVENT_NAME, "workflow_run");
+  assert.equal(run.path, ".github/workflows/verify.yml");
+  assert.equal(run.event, "push");
+  assert.equal(run.status, "completed");
+  assert.equal(run.conclusion, "success");
+  assert.equal(run.head_branch, "main");
+  assert.equal(run.head_repository.full_name, process.env.GITHUB_REPOSITORY);
   assert.equal(
-    process.env.GITHUB_REF,
-    `refs/heads/${event.repository.default_branch}`,
+    String(run.head_repository.id),
+    process.env.GITHUB_REPOSITORY_ID,
   );
-  assert.equal(
-    event.after,
-    process.env.GITHUB_SHA,
-    "Source must be the pushed default-branch commit",
-  );
-  assert.equal(git("rev-parse", "HEAD"), event.after);
+  assert.equal(git("rev-parse", "HEAD"), run.head_sha);
+  assert.equal(process.env.TINTA_RELEASE_SOURCE_SHA, run.head_sha);
   assert.equal(
     git("status", "--porcelain"),
     "",
     "Clean committed source required",
   );
-  requireCommandSync([
-    "git",
-    "merge-base",
-    "--is-ancestor",
-    event.after,
-    `origin/${event.repository.default_branch}`,
-  ]);
   const producer = {
     repository: process.env.GITHUB_REPOSITORY,
     repositoryId: process.env.GITHUB_REPOSITORY_ID,
     workflow: candidateWorkflow,
     workflowSha: process.env.GITHUB_WORKFLOW_SHA,
-    sourceSha: event.after,
+    sourceSha: run.head_sha,
     sourceTree: git("rev-parse", "HEAD^{tree}"),
     event: process.env.GITHUB_EVENT_NAME,
     runId: process.env.GITHUB_RUN_ID,
     attempt: Number(process.env.GITHUB_RUN_ATTEMPT),
-    ref: process.env.GITHUB_REF,
+    ref: "refs/heads/main",
   };
   validateProducerIdentity(producer);
+  assert.equal(producer.workflowSha, producer.sourceSha);
   assert.equal(
     process.env.GITHUB_WORKFLOW_REF,
     `${producer.repository}/${candidateWorkflow}@${producer.ref}`,
   );
   assert.equal(process.versions.node, "24.21.0");
-  assert.equal(
-    requireCommandSync(["pnpm", "--version"]).stdout.trim(),
-    "10.34.6",
-  );
-  assert.equal(
-    requireCommandSync([
-      "node",
-      process.env.TINTA_NPM_CLI,
-      "--version",
-    ]).stdout.trim(),
-    "11.19.0",
-  );
+  if (process.argv[2] !== "assemble") {
+    assert.equal(
+      requireCommandSync(["pnpm", "--version"]).stdout.trim(),
+      "10.34.6",
+    );
+    assert.equal(
+      requireCommandSync([
+        "node",
+        process.env.TINTA_NPM_CLI,
+        "--version",
+      ]).stdout.trim(),
+      "11.19.0",
+    );
+  }
+  if (process.argv[2] !== "build") {
+    const original = read("build/supplied/build.json").producer;
+    validateProducerIdentity(original);
+    for (const key of Object.keys(producer).filter((key) => key !== "attempt"))
+      assert.equal(original[key], producer[key], `Producer mismatch: ${key}`);
+    assert.ok(original.attempt <= producer.attempt);
+    return original;
+  }
   return producer;
 }
 
@@ -142,36 +145,20 @@ function tools() {
   ];
 }
 
-async function api(path) {
-  assert.match(path, /^\/repos\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(?:\/|$)/);
-  const response = await fetch(`https://api.github.com${path}`, {
-    headers: {
-      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-      "X-GitHub-Api-Version": "2022-11-28",
-    },
-    redirect: "error",
-    signal: AbortSignal.timeout(30000),
-  });
-  assert.ok(response.ok, `GitHub metadata request failed: ${response.status}`);
-  return response.json();
-}
-
 const producer = preflight();
+const config = loadReleaseConfig();
 const command = process.argv[2];
-if (command === "verification") {
-  const receipt = await successfulVerification(producer, { api });
-  save(join(output, "verification.json"), receipt);
-  console.log(
-    `Reusing Verify run ${receipt.runId}, attempt ${receipt.attempt}.`,
-  );
-} else if (command === "build") {
+if (command === "build") {
   const report = {
     producer,
     status: "FAIL",
-    verification: validateVerification(
-      read(join(output, "verification.json")),
-      producer,
-    ),
+    verification: {
+      workflow: ".github/workflows/verify.yml",
+      runId: String(read(process.env.GITHUB_EVENT_PATH).workflow_run.id),
+      attempt: read(process.env.GITHUB_EVENT_PATH).workflow_run.run_attempt,
+      sourceSha: producer.sourceSha,
+      conclusion: "success",
+    },
     osRelease: release(),
     tools: tools(),
     commands: [],
@@ -307,7 +294,9 @@ if (command === "verification") {
   };
   const reports = [];
   for (const cell of ["darwin-arm64", "linux-arm64", "win32-x64"]) {
-    const bytes = readFileSync(`build/results/${cell}/${cell}.json`);
+    const bytes = readFileSync(
+      `build/results/results-${cell}-${process.env.TINTA_PAYLOAD_ID}/${cell}.json`,
+    );
     reports.push(readCandidateJson(bytes));
     writeFileSync(join(directory, `${cell}.json`), bytes);
     reportFiles[cell] = fileRecord(`${cell}.json`, bytes);
@@ -324,47 +313,6 @@ if (command === "verification") {
   save(manifestPath, manifest);
   const manifestBytes = readFileSync(manifestPath);
   writeFileSync(manifestPath + ".sha256", digest(manifestBytes) + "\n");
-  const response = await api(
-    `/repos/${producer.repository}/actions/runs/${producer.runId}/artifacts?per_page=100`,
-  );
-  assert.ok(response.total_count <= 100, "Artifact pagination limit");
-  const names = ["payloads", ...reports.map((r) => `results-${r.cell}`)];
-  const storage = names.map((prefix) => {
-    const name = `${prefix}-${producer.runId}-${producer.attempt}`;
-    const found = response.artifacts.filter((a) => a.name === name);
-    assert.equal(found.length, 1, "Missing or ambiguous artifact");
-    const artifact = found[0];
-    assert.equal(artifact.expired, false);
-    assert.match(artifact.digest, /^sha256:[a-f0-9]{64}$/);
-    if (prefix === "payloads")
-      assert.equal(String(artifact.id), process.env.TINTA_PAYLOAD_ID);
-    return {
-      id: artifact.id,
-      name,
-      digest: artifact.digest,
-      expiresAt: artifact.expires_at,
-    };
-  });
-  const now = Date.now();
-  const expires = Math.min(
-    now + retentionDays * 86400000,
-    ...storage.map((s) => Date.parse(s.expiresAt)),
-  );
-  assert.ok(expires > now);
-  save(join(directory, "candidate-index.json"), {
-    format: "tinta-candidate-1",
-    producer,
-    createdAt: new Date(now).toISOString(),
-    expiresAt: new Date(expires).toISOString(),
-    retentionDays,
-    storage,
-    manifest: fileRecord("release-manifest.json", manifestBytes),
-    inventory: fileRecord(
-      "inventory.json",
-      readFileSync(join(directory, "inventory.json")),
-    ),
-    reports: reportFiles,
-  });
 } else {
   throw new Error("Expected build, matrix or assemble");
 }

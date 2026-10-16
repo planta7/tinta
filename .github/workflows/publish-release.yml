@@ -1,39 +1,32 @@
 name: Publish release
 on:
   workflow_run:
-    workflows:
-      - Verify language
-    types:
-      - completed
-    branches:
-      - main
+    workflows: [Verify language]
+    types: [completed]
+    branches: [main]
 permissions: {}
 concurrency:
   group: publication
   cancel-in-progress: false
   queue: max
 env:
-  TINTA_CANDIDATE_RUN: ${{ github.event.workflow_run.id }}
-  TINTA_CANDIDATE_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
   TINTA_RELEASE_SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
-  TINTA_DEFAULT_BRANCH: main
 jobs:
-  candidate-gate:
-    if:
-      github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
-      && github.event.workflow_run.head_branch == 'main' &&
+  build:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_sha == github.sha &&
       github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 60
     permissions:
       contents: read
-      actions: read
-      attestations: read
     outputs:
-      publish: ${{ steps.versions.outputs.publish || 'true' }}
-      runtime_id: ${{ steps.runtime.outputs.artifact-id }}
-      dependencies_sha256: ${{ steps.prepare.outputs.dependencies_sha256 }}
-      manifest_sha256: ${{ steps.prepare.outputs.manifest_sha256 }}
+      publish: ${{ steps.plan.outputs.publish }}
+      tag: ${{ steps.plan.outputs.tag }}
+      payload_id: ${{ steps.payload.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
@@ -44,112 +37,207 @@ jobs:
         with:
           node-version: 24.21.0
           package-manager-cache: false
-      - name: Read the immutable release decision
-        if: hashFiles('scripts/release-version-store.mjs') != ''
-        id: versions
-        run: node scripts/automatic-release.mjs
-      - if: steps.versions.outputs.publish != 'false'
-        run: npm install --global pnpm@10.34.6 --ignore-scripts
-      - if: steps.versions.outputs.publish != 'false'
-        run: pnpm install --frozen-lockfile --ignore-scripts
-      - id: prepare
-        if: steps.versions.outputs.publish != 'false'
-        run: node scripts/publish-release.mjs prepare
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GH_TOKEN: ${{ github.token }}
-      - id: runtime
-        if: steps.versions.outputs.publish != 'false'
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      - run: npm install --global npm@11.19.0 pnpm@10.34.6 --ignore-scripts
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: echo "TINTA_GLOBAL_MODULES=$(npm root --global)" >> "$GITHUB_ENV"
+      - run: node scripts/candidate-tools.mjs
+      - name: Calculate versions and release notes
+        id: plan
+        run: node scripts/release-plan.mjs
+      - if: steps.plan.outputs.publish == 'true'
+        run: pnpm build
+      - if: steps.plan.outputs.publish == 'true'
+        run: node scripts/candidate-ci.mjs build
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        if: steps.plan.outputs.publish == 'true'
+        id: payload
         with:
-          name: publisher-${{ github.run_id }}-${{ github.run_attempt }}
+          name: payloads-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
-            build/publication/candidate/
-            build/publication/expected.json
-            build/publication/npm.tgz
-            build/publication/dependencies.tgz
+            build/distribution/
+            reports/release/plan.json
+            reports/release/notes.md
           if-no-files-found: error
           retention-days: 30
           compression-level: 0
-  publish:
-    needs: candidate-gate
-    if: needs.candidate-gate.outputs.publish == 'true' &&
-      github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
-      && github.event.workflow_run.head_branch == 'main' &&
-      github.event.workflow_run.head_repository.full_name == github.repository
+  installed:
+    needs: build
+    if: needs.build.outputs.publish == 'true'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - cell: darwin-arm64
+            os: macos-15
+          - cell: linux-arm64
+            os: ubuntu-24.04-arm
+          - cell: win32-x64
+            os: windows-2022
+    env:
+      TINTA_MATRIX_CELL: ${{ matrix.cell }}
+      TINTA_PAYLOAD_ID: ${{ needs.build.outputs.payload_id }}
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - run: npm install --global npm@11.19.0 pnpm@10.34.6 --ignore-scripts
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - shell: bash
+        run: echo "TINTA_GLOBAL_MODULES=$(npm root --global)" >> "$GITHUB_ENV"
+      - run: node scripts/candidate-tools.mjs --desktop
+      - run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          artifact-ids: ${{ needs.build.outputs.payload_id }}
+          path: build/input
+          merge-multiple: true
+      - name: Restore the versioned archives and plan
+        shell: bash
+        run: |
+          mkdir -p build/supplied reports/release
+          cp build/input/build/distribution/* build/supplied/
+          cp build/input/reports/release/* reports/release/
+      - if: runner.os == 'Linux'
+        run: xvfb-run --auto-servernum node scripts/candidate-ci.mjs matrix
+      - if: runner.os != 'Linux'
+        run: node scripts/candidate-ci.mjs matrix
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        with:
+          name: results-${{ matrix.cell }}-${{ needs.build.outputs.payload_id }}
+          path: reports/candidate/
+          if-no-files-found: error
+          retention-days: 30
+  release:
+    needs: [build, installed]
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 15
     environment: release
     permissions:
       contents: write
-      actions: read
-      attestations: read
+      id-token: write
+      attestations: write
+    outputs:
+      artifact_id: ${{ steps.verified.outputs.artifact-id }}
+    env:
+      RELEASE_TAG: ${{ needs.build.outputs.tag }}
+      TINTA_PAYLOAD_ID: ${{ needs.build.outputs.payload_id }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - run: npm install --global pnpm@10.34.6 --ignore-scripts
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          artifact-ids: ${{ needs.build.outputs.payload_id }}
+          path: build/input
+          merge-multiple: true
+      - name: Restore the archives and plan
+        run: |
+          mkdir -p build/supplied reports/release
+          cp build/input/build/distribution/* build/supplied/
+          cp build/input/reports/release/* reports/release/
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          pattern: results-*-${{ needs.build.outputs.payload_id }}
+          path: build/results
+      - run: node scripts/candidate-ci.mjs assemble
+      - uses: actions/attest@c32b4b8b198b65d0bd9d63490e847ff7b53989d4
+        with:
+          subject-path: build/supplied/*
+          create-storage-record: false
+      - name: Create the immutable source tag and draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          if gh api "repos/$GH_REPO/git/ref/tags/$RELEASE_TAG" > build/tag.json; then
+            test "$(jq -r '.object.type' build/tag.json)" = commit
+            test "$(jq -r '.object.sha' build/tag.json)" = "$TINTA_RELEASE_SOURCE_SHA"
+          else
+            gh api "repos/$GH_REPO/git/refs" -f "ref=refs/tags/$RELEASE_TAG" -f "sha=$TINTA_RELEASE_SOURCE_SHA"
+          fi
+          gh release create "$RELEASE_TAG" build/supplied/* --verify-tag --target "$TINTA_RELEASE_SOURCE_SHA" --draft --notes-file reports/release/notes.md
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        id: verified
+        with:
+          name: release-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/supplied/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+  npm:
+    needs: [build, release]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: release
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          [
+            types,
+            syntax,
+            engine,
+            charts,
+            reader,
+            artifacts,
+            local-files,
+            cli,
+            language-service,
+            language-server,
+          ]
+    steps:
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - run: npm install --global npm@11.21.0 --ignore-scripts
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          artifact-ids: ${{ needs.release.outputs.artifact_id }}
+          path: build/release
+          merge-multiple: true
+      - name: Publish the tested npm archive
+        env:
+          PACKAGE_ID: ${{ matrix.package }}
+        run: |
+          archive=$(jq -er --arg id "$PACKAGE_ID" '.targets[] | select(.id == $id) | .archive' build/release/inventory.json)
+          cd build/release
+          jq -r --arg id "$PACKAGE_ID" '.targets[] | select(.id == $id) | .sha256 + "  " + .archive' inventory.json | sha256sum -c -
+          npm publish "$archive" --access public --tag latest --ignore-scripts
+  marketplace:
+    needs: [build, release, npm]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: release
+    permissions:
+      contents: read
       id-token: write
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
-          persist-credentials: false
-          fetch-depth: 0
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
-        with:
-          node-version: 24.21.0
-          package-manager-cache: false
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
-        with:
-          artifact-ids: ${{ needs.candidate-gate.outputs.runtime_id }}
-          path: build/publication
-          merge-multiple: true
-      - name: Verify and restore reviewed tools without installation hooks
-        env:
-          TINTA_DEPENDENCIES_SHA256: ${{ needs.candidate-gate.outputs.dependencies_sha256 }}
-        run: |
-          node --input-type=module <<'JS'
-          import { readFileSync } from "node:fs";
-          import { createHash } from "node:crypto";
-          import assert from "node:assert/strict";
-          const bytes = readFileSync("build/publication/dependencies.tgz");
-          const digest = createHash("sha256").update(bytes).digest("hex");
-          assert.equal(digest, process.env.TINTA_DEPENDENCIES_SHA256);
-          JS
-          tar -xzf build/publication/dependencies.tgz
-      - name: Publish and verify the complete release
-        run: node scripts/publish-release.mjs all
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          GH_TOKEN: ${{ github.token }}
-          TINTA_DEPENDENCIES_SHA256: ${{ needs.candidate-gate.outputs.dependencies_sha256 }}
-      - name: Locate the published Studio release
-        id: release
-        run: node scripts/deploy-studio.mjs locate
-        env:
-          GH_TOKEN: ${{ github.token }}
-      - name: Preserve local receipt in addition to durable journal
-        if: always()
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
-        with:
-          name: publication-receipt-${{ github.run_id }}-${{ github.run_attempt }}
-          path: build/publication/receipt.json
-          if-no-files-found: warn
-          retention-days: 30
-    env:
-      TINTA_MANIFEST_SHA256: ${{ needs.candidate-gate.outputs.manifest_sha256 }}
-    outputs:
-      release_id: ${{ steps.release.outputs.release_id }}
-  prepare-studio:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
-    permissions:
-      contents: read
-      actions: read
-      attestations: read
-    outputs:
-      publish: ${{ steps.release.outputs.publish }}
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-          fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
@@ -157,52 +245,94 @@ jobs:
           package-manager-cache: false
       - run: npm install --global pnpm@10.34.6 --ignore-scripts
       - run: pnpm install --frozen-lockfile --ignore-scripts
-      - name: Verify and extract the published Studio archive
-        id: release
-        run: node scripts/deploy-studio.mjs prepare
-      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
-        if: steps.release.outputs.publish == 'true'
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
-          path: build/demo-release/studio/
-          retention-days: 7
-    needs: publish
+          artifact-ids: ${{ needs.release.outputs.artifact_id }}
+          path: build/release
+          merge-multiple: true
+      - name: Isolate Azure CLI credentials
+        run: echo "AZURE_CONFIG_DIR=$RUNNER_TEMP/tinta-azure" >> "$GITHUB_ENV"
+      - uses: Azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906
+        with:
+          client-id: b9f5a8d5-3a91-42b5-a732-b44101964561
+          tenant-id: 965b4876-de8a-43b7-b14d-6561c23374b3
+          allow-no-subscriptions: true
+          audience: api://AzureADTokenExchange
+      - name: Publish the tested VSIX
+        run: |
+          archive=$(jq -er '.targets[] | select(.id == "vscode") | .archive' build/release/inventory.json)
+          (cd build/release && jq -r '.targets[] | select(.id == "vscode") | .sha256 + "  " + .archive' inventory.json | sha256sum -c -)
+          pnpm exec vsce publish --packagePath "build/release/$archive" --azure-credential
+  complete:
+    needs: [build, release, marketplace]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    environment: release
+    permissions:
+      contents: write
     env:
       GH_TOKEN: ${{ github.token }}
-      TINTA_STUDIO_RELEASE_ID: ${{ needs.publish.outputs.release_id }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ needs.build.outputs.tag }}
+    steps:
+      - name: Publish the GitHub release
+        run: gh release edit "$RELEASE_TAG" --draft=false
   deploy-studio:
-    needs:
-      - publish
-      - prepare-studio
-    if: needs.prepare-studio.outputs.publish == 'true'
+    needs: [build, release, complete]
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
       contents: read
-      actions: read
       pages: write
       id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
-        with:
-          node-version: 24.21.0
-          package-manager-cache: false
-      - run: npm install --global pnpm@10.34.6 --ignore-scripts
-      - run: pnpm install --frozen-lockfile --ignore-scripts
-      - name: Recheck the published release is current
-        id: release
-        run: node scripts/deploy-studio.mjs current
-      - name: Deploy to GitHub Pages
-        if: steps.release.outputs.publish == 'true'
-        id: deployment
-        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
     env:
       GH_TOKEN: ${{ github.token }}
-      TINTA_STUDIO_RELEASE_ID: ${{ needs.publish.outputs.release_id }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ needs.build.outputs.tag }}
+    steps:
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          artifact-ids: ${{ needs.release.outputs.artifact_id }}
+          path: build/verified
+          merge-multiple: true
+      - name: Check the completed release is current
+        id: current
+        run: |
+          gh release view "$RELEASE_TAG" --json tagName,isDraft,isPrerelease,targetCommitish > build/release.json
+          jq -e --arg tag "$RELEASE_TAG" --arg sha "$TINTA_RELEASE_SOURCE_SHA" '.tagName == $tag and .isDraft == false and .isPrerelease == false and .targetCommitish == $sha' build/release.json
+          current=$(gh api --paginate --slurp "repos/$GH_REPO/releases?per_page=100" --jq '
+            flatten | map(select(.draft == false and .prerelease == false)) |
+            map(select(.tag_name | test("^tinta-v[0-9]+[.][0-9]+[.][0-9]+-vscode-[0-9]+[.][0-9]+[.][0-9]+-stable$"))) |
+            max_by(.tag_name | capture("^tinta-v(?<version>[0-9.]+)-vscode-").version | split(".") | map(tonumber)) |
+            .tag_name
+          ')
+          echo "publish=$([ "$current" = "$RELEASE_TAG" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - name: Download and verify the published Studio archive
+        if: steps.current.outputs.publish == 'true'
+        run: |
+          mkdir -p build/demo-release/studio
+          archive=$(jq -er '.targets[] | select(.id == "studio-directory") | .archive' build/verified/inventory.json)
+          gh release download "$RELEASE_TAG" --pattern "$archive" --dir build/demo-release
+          (cd build/demo-release && jq -r '.targets[] | select(.id == "studio-directory") | .sha256 + "  " + .archive' ../verified/inventory.json | sha256sum -c -)
+          unzip -q "build/demo-release/$archive" -d build/demo-release/studio
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
+        if: steps.current.outputs.publish == 'true'
+        with:
+          path: build/demo-release/studio/
+      - name: Recheck the release before deployment
+        if: steps.current.outputs.publish == 'true'
+        id: recheck
+        run: |
+          current=$(gh api --paginate --slurp "repos/$GH_REPO/releases?per_page=100" --jq '
+            flatten | map(select(.draft == false and .prerelease == false)) |
+            map(select(.tag_name | test("^tinta-v[0-9]+[.][0-9]+[.][0-9]+-vscode-[0-9]+[.][0-9]+[.][0-9]+-stable$"))) |
+            max_by(.tag_name | capture("^tinta-v(?<version>[0-9.]+)-vscode-").version | split(".") | map(tonumber)) |
+            .tag_name
+          ')
+          echo "publish=$([ "$current" = "$RELEASE_TAG" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
+        if: steps.recheck.outputs.publish == 'true'
+        id: deployment

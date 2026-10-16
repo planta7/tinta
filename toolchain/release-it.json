@@ -1,0 +1,23 @@
+{
+  "git": {
+    "requireCleanWorkingDir": false,
+    "requireUpstream": false,
+    "commit": false,
+    "tag": false,
+    "push": false,
+    "tagMatch": "tinta-v*-vscode-*-stable"
+  },
+  "npm": {
+    "publish": false
+  },
+  "github": false,
+  "gitlab": false,
+  "plugins": {
+    "@release-it/conventional-changelog": {
+      "preset": {
+        "name": "conventionalcommits"
+      },
+      "infile": false
+    }
+  }
+}

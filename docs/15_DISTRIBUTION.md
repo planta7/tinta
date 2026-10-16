@@ -112,7 +112,7 @@ Use `node scripts/test-vscode-installed.mjs <desktop> <desktop-cli> <exact-vsix>
 
 ## Automatic versions and release notes
 
-Use [Conventional Commits](../CONTRIBUTING.md#commit-messages-and-versions) to describe each change. Versions are calculated from the changes since the previous complete release; the highest impact determines the next coordinated version for all ten npm packages.
+Use [Conventional Commits](../CONTRIBUTING.md#commit-messages-and-versions) to describe each change. Versions are calculated from the changes since the latest reachable stable release tag; the highest impact determines the next coordinated version for all ten npm packages.
 
 | Commit | Version change |
 | --- | --- |
@@ -121,9 +121,9 @@ Use [Conventional Commits](../CONTRIBUTING.md#commit-messages-and-versions) to d
 | `!`, `BREAKING CHANGE:`, `BREAKING-CHANGE:` | Major, or minor while the major version is zero |
 | Other types without an incompatible change | No release |
 
-Minor and major changes reset the patch to zero. Stable extension minor versions advance by two to keep even minor numbers. For example, a feature after npm `0.1.21` and extension `0.2.21` selects npm `0.2.0` and extension `0.4.0`. Moving to `1.0.0` is a separate compatibility decision. Software versions do not change the source-format or protocol versions.
+Use lowercase Conventional Commit types. The standard preset ignores unrecognized messages and cancels matching reverted changes; there is no custom commit-message validator. Minor and major changes reset the patch to zero. Stable extension minor versions advance by two to keep even minor numbers. For example, a feature after npm `0.1.21` and extension `0.2.21` selects npm `0.2.0` and extension `0.4.0`. Moving to `1.0.0` is a separate compatibility decision. Software versions do not change the source-format or protocol versions.
 
-Release notes list the changes since the previous complete release. Failed releases can leave gaps in the version sequence; a version is never reused for different source.
+Release notes list the changes since the latest reachable stable release tag. Failed releases can leave gaps in the version sequence; a version is never reused for different source.
 
 ## Publish a release
 
@@ -134,4 +134,10 @@ Release notes list the changes since the previous complete release. Failed relea
 
 No manual version edit or version-only commit is required. Changes such as documentation or tests do not publish a release unless they declare an incompatible change.
 
-If publication fails, inspect the failed step in `Publish release` and rerun that workflow after resolving the cause. A retry keeps the same version and resumes the existing publication. Some destinations may already contain that version even when the workflow failed; do not delete or re-upload it to retry. A new source change receives its own version.
+`Verify language` runs the source checks on pull requests and `main`, including the native CLI portability jobs. `Publish release` accepts only a successful same-repository push verification for `main` whose source SHA also matches the workflow revision. A superseded verification is skipped; a later verified revision includes its unreleased changes. The serialized release workflow calculates versions with release-it, builds the versioned outputs once, and runs the supplied-archive consumer and native VS Code matrix before any destination write. Exact artifact IDs and content hashes bind each subsequent job to those tested bytes. Credentials are available only in their destination jobs, with the existing `publish-release.yml` and `release` environment trusted-publisher binding.
+
+The Git tag fixes the source and versions before the draft GitHub release and destination uploads. It is never moved. That allocated tag becomes the next version baseline even if a later upload fails. Historical reservation and publication branches remain historical data; the pipeline does not read or update them. There is no cross-service transaction: each npm package is published directly to `latest`, followed by the extension and completed GitHub release. A partial failure may leave some packages visible. Studio deploys only the highest-version completed stable coordinated release and verifies its downloaded ZIP against the tested inventory.
+
+If a job fails, use **Re-run failed jobs** after resolving its cause. Successful build and package jobs retain their original artifacts and versions; native result artifacts are keyed to the immutable payload artifact ID. Do not rerun all jobs after a version has been allocated. Artifacts expire after 30 days; expired inputs require investigation rather than reconstruction under an existing version.
+
+A collision or a lost upload response fails the job. Before retrying a write, inspect the destination's version, source tag and archive digest against the retained inventory. An identical existing upload must be handled as an explicit recovery action; the workflow does not infer success or overwrite it. A partially created draft release must be completed manually from the retained verified assets, without `--clobber`; rerunning its creation job will reject the existing release. The workflow has no override that marks an uncertain upload successful. Complete any remaining destinations manually after inspection, or use a new verified source revision. If the release cannot be completed, leave its tag and versions intact and use a new verified source revision. Recovery across destinations is manual; deleting a version, moving a tag or rebuilding different bytes under it is unsupported.

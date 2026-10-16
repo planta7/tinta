@@ -1508,5 +1508,170 @@
     "registry": "https://registry.npmjs.org/vscode-languageserver/10.1.2",
     "releaseLine": "10",
     "resolvedAtUTC": "2026-10-10T07:35:32.455756+00:00"
+  },
+  {
+    "name": "release-it",
+    "version": "21.1.1",
+    "license": "MIT",
+    "dist": {
+      "shasum": "b184607fab087f0390e5bc13f3d78cdf3a9e457c",
+      "tarball": "https://registry.npmjs.org/release-it/-/release-it-21.1.1.tgz",
+      "fileCount": 88,
+      "integrity": "sha512-jOhoWMK3hm5UAYfxREcLW1BRlNzMhKfjN8m4sxjnOOPXDWk6b//mZIk2ABv9Cno/eH1M911iyGaCMtapnwS7Ng==",
+      "signatures": [
+        {
+          "sig": "MEYCIQDAgcMlftxr20kNUqFTxrAUYkNyOSk986qOXYAf+iI3GgIhAMNA57sx5b34yYAHWOFgIGkUKxw/EOPKYHM29jXy+V3f",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 383022
+    },
+    "engines": {
+      "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+    },
+    "registry": "https://registry.npmjs.org/release-it/21.1.1",
+    "releaseLine": "21",
+    "resolvedAtUTC": "2026-10-16T06:22:07.943637+00:00"
+  },
+  {
+    "name": "@release-it/conventional-changelog",
+    "version": "12.0.2",
+    "license": "MIT",
+    "dist": {
+      "shasum": "19aacb88c5da56fc0a2dd2b34faae0f956e3c2a5",
+      "tarball": "https://registry.npmjs.org/@release-it/conventional-changelog/-/conventional-changelog-12.0.2.tgz",
+      "fileCount": 8,
+      "integrity": "sha512-mJsfycScVqud9O+GzVLT1wQBsIR2WO3kEe6Xm7ucf9yP9KyKRTY9yqoFe/kjLCNSu0lP0PzpuOooUYyzHm1oFw==",
+      "signatures": [
+        {
+          "sig": "MEUCIQCXKPExtRTqpq+FCQELtWJYjwr9H69p2sBzrvD84mhVPAIgSq22xYOMbUBmTs29atprZiMwnjVr2bk7bb6igq1+GRU=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 47919
+    },
+    "engines": {
+      "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+    },
+    "peerDependencies": {
+      "release-it": "^18.0.0 || ^19.0.0 || ^20.0.0 || ^21.0.0"
+    },
+    "registry": "https://registry.npmjs.org/@release-it%2Fconventional-changelog/12.0.2",
+    "releaseLine": "12",
+    "resolvedAtUTC": "2026-10-16T06:22:07.943637+00:00"
+  },
+  {
+    "name": "conventional-changelog-conventionalcommits",
+    "version": "10.4.1",
+    "license": "ISC",
+    "dist": {
+      "shasum": "7f53704de03014b113fb67d6fe82d5221dfeb703",
+      "tarball": "https://registry.npmjs.org/conventional-changelog-conventionalcommits/-/conventional-changelog-conventionalcommits-10.4.1.tgz",
+      "fileCount": 12,
+      "integrity": "sha512-jS1LRFSbRoAr6JbhhRy1JYfNNUj5LM3+v49hRE03CgccsiYqgdVj/RTmrw4J1rylrqijHwdOlJWiJa61JHOgHg==",
+      "signatures": [
+        {
+          "sig": "MEYCIQClG7X+v4uf+VhzOz4+9MEn0uiuhDbGk6qLnABJzdXiuAIhAOF2MHHO+wg0CNSSMV0KJtU2cYGEkyf0jwhxmN9tR2za",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEUCIQD3/85OsAthPCYOO/9aAY0kDU5OI4Nlvz6eu/i0GZWF7AIgWm9/UnZo5wt8LqJo6av8qfVi5AtWmbcSS59TOGP/jU4=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "attestations": {
+        "url": "https://registry.npmjs.org/-/npm/v1/attestations/conventional-changelog-conventionalcommits@10.4.1",
+        "provenance": {
+          "predicateType": "https://slsa.dev/provenance/v1"
+        }
+      },
+      "unpackedSize": 17914
+    },
+    "engines": {
+      "node": ">=22"
+    },
+    "registry": "https://registry.npmjs.org/conventional-changelog-conventionalcommits/10.4.1",
+    "releaseLine": "10",
+    "resolvedAtUTC": "2026-10-16T06:22:07.943637+00:00"
+  },
+  {
+    "name": "@vscode/vsce",
+    "version": "2.26.1",
+    "license": "MIT",
+    "dist": {
+      "shasum": "c4f13b04225e5cd16d0a80eb5bb98b96451ce431",
+      "tarball": "https://registry.npmjs.org/@vscode/vsce/-/vsce-2.26.1.tgz",
+      "fileCount": 23,
+      "integrity": "sha512-QOG6Ht7V93nhwcBxPWcG33UK0qDGEoJdg0xtVeaTN27W6PGdMJUJGTPhB/sNHUIFKwvwzv/zMAHvDgMNXbcwlA==",
+      "signatures": [
+        {
+          "sig": "MEQCICyhRqsAfQntYHk4jLLaO9YHzxu8IG8C4mG3r3EwsF1oAiAjVshVWzmyZaTriZAtQ9A2e/90eSNxCayhPLPfaLS+rQ==",
+          "keyid": "SHA256:jl3bwswu80PjjokCgh0o2w5c2U4LhQAE57gj9cz1kzA"
+        }
+      ],
+      "unpackedSize": 160799
+    },
+    "engines": {
+      "node": ">= 16"
+    },
+    "registry": "https://registry.npmjs.org/@vscode%2Fvsce/2.26.1",
+    "releaseLine": "2",
+    "resolvedAtUTC": "2026-10-16T06:22:07.943637+00:00"
+  },
+  {
+    "name": "npm",
+    "version": "11.19.0",
+    "license": "Artistic-2.0",
+    "dist": {
+      "shasum": "fab2326bd1c6dddae18072326c738d2be8774bae",
+      "tarball": "https://registry.npmjs.org/npm/-/npm-11.19.0.tgz",
+      "fileCount": 1943,
+      "integrity": "sha512-SDd/hHg3KqHE5Ht2NHWxNYNtqCQ2pXAPLl6OtQhPyED5PHsRfrOtO199MZTIG2cQoQ1ZRI9t28shrD+2cr3AAw==",
+      "signatures": [
+        {
+          "sig": "MEUCIG494GNV1+RsIzhUNWNvDYRPMVZRRT8m4XMyoKBhYk78AiEAjUHzQ4Nvs3TI1uki9IeRa2OukTIBFCRG9WNh7YIuCx0=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEYCIQDr8FB5eTdbEY3Np6PmjAL4SbIPWMYf5OWaAcgEaArV3AIhAMDdKfeSSDE27w7bYYxNCnUzEJ1NnP2iTxymikb+hP50",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 12200542
+    },
+    "engines": {
+      "node": "^20.17.0 || >=22.9.0"
+    },
+    "registry": "https://registry.npmjs.org/npm/11.19.0",
+    "releaseLine": "11",
+    "resolvedAtUTC": "2026-10-16T06:32:23.429472+00:00"
+  },
+  {
+    "name": "npm",
+    "version": "11.21.0",
+    "license": "Artistic-2.0",
+    "dist": {
+      "shasum": "7184c24ba6c6d8c1419ed1c4a187377bc05b254c",
+      "tarball": "https://registry.npmjs.org/npm/-/npm-11.21.0.tgz",
+      "fileCount": 1961,
+      "integrity": "sha512-Zov8KhamNneiLdELtj5YALtNmJW4L4fCLTzjfpzXG2w6MSHcf0UxgdlK5uloCuksWT+7mGUU7wi79cO6RqivPg==",
+      "signatures": [
+        {
+          "sig": "MEQCIFWjOc7rv8c2qPZ0jGyrA/WjxPWQOsMycsRi1SO4AeODAiBHORWX+wboVyTcE4PeYQI0BSExzakAW7QT94OXjPWnVA==",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        },
+        {
+          "sig": "MEUCIA2a2AhYwRFus+dCOP+Oj91eAbmv6mpWiD7iN73wfOXwAiEA0ZHhp9awF7wDfrP6GTUnj7lvZhJiNwAugi9eDhnMDQs=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 12999206
+    },
+    "engines": {
+      "node": "^20.17.0 || >=22.9.0"
+    },
+    "registry": "https://registry.npmjs.org/npm/11.21.0",
+    "releaseLine": "11",
+    "resolvedAtUTC": "2026-10-16T06:32:23.429472+00:00"
   }
 ]

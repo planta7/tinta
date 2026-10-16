@@ -6,3 +6,6 @@ onlyBuiltDependencies:
 patchedDependencies:
   micromark@4.0.3: patches/micromark@4.0.3.patch
 strictPeerDependencies: true
+overrides:
+  "@vscode/vsce>markdown-it": 14.3.1
+  "get-uri>basic-ftp": 6.2.1

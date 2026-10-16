@@ -16,7 +16,7 @@ import {
   validateReleaseManifest,
 } from "./release-contract.mjs";
 
-export const candidateWorkflow = ".github/workflows/verify.yml";
+export const candidateWorkflow = ".github/workflows/publish-release.yml";
 export const retentionDays = 30;
 export const matrixCells = ["darwin-arm64", "linux-arm64", "win32-x64"];
 export const nativeModes = [
@@ -39,179 +39,14 @@ export const buildCommands = [
 ];
 
 export const verificationWorkflow = ".github/workflows/verify.yml";
-export const verificationJobs = [
-  "verify",
-  "cli-portability (macos-15)",
-  "cli-portability (windows-2022)",
-];
-
 export function validateVerification(receipt, producer) {
-  assert.ok(receipt, "Missing successful Verify run");
-  assert.deepEqual(
-    Object.keys(receipt).sort(),
-    [
-      "attempt",
-      "conclusion",
-      "event",
-      "jobs",
-      "ref",
-      "repository",
-      "repositoryId",
-      "runId",
-      "sourceSha",
-      "status",
-      "workflow",
-      "workflowId",
-      "workflowSha256",
-    ].sort(),
-    "Closed verification receipt",
-  );
+  assert.ok(receipt, "Missing successful source verification");
   assert.equal(receipt.workflow, verificationWorkflow);
-  assert.equal(
-    receipt.workflowSha256,
-    digest(
-      readFileSync(new URL("../.github/workflows/verify.yml", import.meta.url)),
-    ),
-    "Verification workflow changed",
-  );
-  assert.equal(receipt.repository, producer.repository);
-  assert.equal(receipt.repositoryId, producer.repositoryId);
   assert.equal(receipt.sourceSha, producer.sourceSha, "Verify source mismatch");
-  assert.equal(receipt.ref, producer.ref);
-  assert.equal(receipt.event, "push");
-  assert.equal(receipt.status, "completed");
   assert.equal(receipt.conclusion, "success");
   assert.match(receipt.runId, /^[1-9][0-9]*$/);
-  assert.ok(Number.isSafeInteger(receipt.workflowId) && receipt.workflowId > 0);
   assert.ok(Number.isSafeInteger(receipt.attempt) && receipt.attempt > 0);
-  assert.deepEqual(
-    receipt.jobs.map((job) => job.name).sort(),
-    [...verificationJobs].sort(),
-    "Missing or duplicate Verify job",
-  );
-  assert.equal(
-    new Set(receipt.jobs.map((job) => job.id)).size,
-    verificationJobs.length,
-  );
-  for (const job of receipt.jobs) {
-    assert.deepEqual(Object.keys(job).sort(), [
-      "conclusion",
-      "id",
-      "name",
-      "status",
-    ]);
-    assert.equal(job.status, "completed");
-    assert.equal(job.conclusion, "success");
-    assert.ok(Number.isSafeInteger(job.id) && job.id > 0);
-  }
   return receipt;
-}
-
-export async function successfulVerification(producer, { api }) {
-  const base = `/repos/${producer.repository}/actions`;
-  const workflow = await api(`${base}/workflows/verify.yml`);
-  assert.equal(workflow.path, verificationWorkflow);
-  assert.ok(Number.isSafeInteger(workflow.id) && workflow.id > 0);
-  const branch = producer.ref.slice("refs/heads/".length);
-  const query = `event=push&branch=${encodeURIComponent(branch)}&head_sha=${producer.sourceSha}&per_page=100`;
-  const listing = await api(`${base}/workflows/${workflow.id}/runs?${query}`);
-  assert.ok(
-    Number.isSafeInteger(listing.total_count) && listing.total_count <= 100,
-    "Verify run pagination limit",
-  );
-  assert.equal(listing.workflow_runs.length, listing.total_count);
-  const matches = listing.workflow_runs
-    .filter(
-      (run) =>
-        run.head_sha === producer.sourceSha &&
-        run.head_branch === branch &&
-        run.event === "push" &&
-        run.workflow_id === workflow.id,
-    )
-    .sort((a, b) => b.run_number - a.run_number);
-  assert.ok(matches.length > 0, "No Verify push run for this commit");
-  // The latest attempt must succeed; an earlier success cannot mask a rerun.
-  const selected =
-    matches.find((run) => String(run.id) === producer.runId) ?? matches[0];
-  const run = await api(`${base}/runs/${selected.id}`);
-  assert.equal(run.id, selected.id);
-  assert.equal(run.workflow_id, workflow.id);
-  assert.equal(run.path, verificationWorkflow);
-  assert.equal(run.head_sha, producer.sourceSha);
-  assert.equal(run.head_branch, branch);
-  assert.equal(run.event, "push");
-  for (const repository of [run.repository, run.head_repository]) {
-    assert.equal(repository.full_name, producer.repository);
-    assert.equal(String(repository.id), producer.repositoryId);
-  }
-  const sameRun = String(run.id) === producer.runId;
-  if (!sameRun) {
-    assert.equal(run.status, "completed", "Verify has not completed");
-    assert.equal(run.conclusion, "success", "Verify did not pass");
-  } else {
-    assert.equal(
-      run.run_attempt,
-      producer.attempt,
-      "Source job attempt mismatch",
-    );
-    assert.ok(["in_progress", "completed"].includes(run.status));
-    if (run.status === "completed") assert.equal(run.conclusion, "success");
-  }
-  assert.ok(Number.isSafeInteger(run.run_attempt) && run.run_attempt > 0);
-  const response = await api(
-    `${base}/runs/${run.id}/attempts/${run.run_attempt}/jobs?per_page=100`,
-  );
-  assert.ok(
-    Number.isSafeInteger(response.total_count) && response.total_count <= 100,
-    "Verify job pagination limit",
-  );
-  assert.equal(response.jobs.length, response.total_count);
-  const jobs = sameRun
-    ? response.jobs.filter((job) => verificationJobs.includes(job.name))
-    : response.jobs;
-  for (const job of jobs) {
-    assert.equal(job.run_id, run.id);
-    assert.equal(job.head_sha, producer.sourceSha);
-    assert.equal(job.status, "completed", "Incomplete Verify job");
-    assert.equal(job.conclusion, "success", "Failed or skipped Verify job");
-  }
-  const current = await api(`${base}/runs/${run.id}`);
-  assert.equal(
-    current.run_attempt,
-    run.run_attempt,
-    "Verify rerun changed during lookup",
-  );
-  if (!sameRun) {
-    assert.equal(current.status, "completed");
-    assert.equal(current.conclusion, "success");
-  }
-  return validateVerification(
-    {
-      workflow: verificationWorkflow,
-      workflowId: workflow.id,
-      workflowSha256: digest(
-        readFileSync(
-          new URL("../.github/workflows/verify.yml", import.meta.url),
-        ),
-      ),
-      repository: producer.repository,
-      repositoryId: producer.repositoryId,
-      sourceSha: run.head_sha,
-      ref: producer.ref,
-      event: run.event,
-      status: "completed",
-      conclusion: "success",
-      runId: String(run.id),
-      attempt: run.run_attempt,
-      jobs: jobs.map(({ id, name, status, conclusion }) => ({
-        id,
-        name,
-        status,
-        conclusion,
-      })),
-    },
-    producer,
-  );
 }
 
 export function readCandidateJson(bytes) {
@@ -383,13 +218,8 @@ export function validateProducerIdentity(producer) {
     assert.match(producer[key], /^[1-9][0-9]*$/);
   for (const key of ["workflowSha", "sourceSha", "sourceTree"])
     assert.match(producer[key], /^[a-f0-9]{40}$/);
-  assert.equal(
-    producer.workflowSha,
-    producer.sourceSha,
-    "Workflow and source must be the reviewed default-branch revision",
-  );
   assert.equal(producer.workflow, candidateWorkflow);
-  assert.equal(producer.event, "push");
+  assert.equal(producer.event, "workflow_run");
   assert.match(producer.ref, /^refs\/heads\/[A-Za-z0-9/_.-]+$/);
   assert.ok(Number.isSafeInteger(producer.attempt) && producer.attempt > 0);
 }
@@ -631,75 +461,7 @@ export function assembleManifest(
         }),
       ),
     },
-    limitations: [
-      "Public namespace ownership and publication authorization are separate from artifact verification.",
-    ],
+    limitations: ["Publication across independent services is not atomic."],
   };
   return validateReleaseManifest(manifest, config, inventory);
-}
-
-/** API and signature verification are supplied by the trusted caller, never by candidate JSON. */
-export async function verifyProducer(index, expected, { api, attest, now }) {
-  const p = index.producer;
-  validateProducerIdentity(p);
-  sameProducer(p, expected.producer);
-  assert.equal(index.format, "tinta-candidate-1");
-  assert.equal(index.retentionDays, retentionDays);
-  const base = `/repos/${p.repository}`;
-  const repository = await api(`${base}`);
-  assert.equal(
-    String(repository.id),
-    p.repositoryId,
-    "Repository renamed or replaced",
-  );
-  assert.equal(repository.full_name, p.repository);
-  assert.equal(p.ref, `refs/heads/${repository.default_branch}`);
-  const run = await api(
-    `${base}/actions/runs/${p.runId}/attempts/${p.attempt}`,
-  );
-  assert.equal(String(run.id), p.runId);
-  assert.equal(run.run_attempt, p.attempt, "Wrong attempt");
-  assert.equal(run.repository.full_name, p.repository);
-  assert.equal(String(run.repository.id), p.repositoryId);
-  assert.equal(run.head_sha, p.sourceSha);
-  assert.equal(run.event, p.event);
-  assert.equal(run.path, p.workflow);
-  assert.equal(run.status, "completed");
-  assert.equal(run.conclusion, "success", "Unsuccessful producer");
-  const expiry = Date.parse(index.expiresAt);
-  const created = Date.parse(index.createdAt);
-  assert.ok(
-    Number.isFinite(now) &&
-      Number.isFinite(created) &&
-      created <= now &&
-      now < expiry,
-    "Expired candidate",
-  );
-  assert.ok(
-    expiry - created > 0 && expiry - created <= retentionDays * 86400000,
-    "Invalid retention",
-  );
-  assert.ok(created >= Date.parse(run.created_at), "Candidate predates run");
-  assert.ok(created <= Date.parse(run.updated_at), "Candidate postdates run");
-  for (const record of [...index.storage, expected.candidateArtifact]) {
-    assert.ok(Number.isSafeInteger(record.id) && record.id > 0);
-    const artifact = await api(`${base}/actions/artifacts/${record.id}`);
-    assert.equal(artifact.id, record.id);
-    assert.equal(artifact.name, record.name);
-    assert.equal(artifact.digest, record.digest, "Storage digest mismatch");
-    assert.equal(artifact.workflow_run.id, Number(p.runId));
-    assert.equal(artifact.workflow_run.head_sha, p.sourceSha);
-    assert.equal(artifact.expired, false, "Expired storage");
-    assert.ok(now < Date.parse(artifact.expires_at), "Expired storage");
-    assert.ok(
-      record.name.endsWith(`-${p.runId}-${p.attempt}`),
-      "Wrong artifact attempt",
-    );
-  }
-  assert.equal(
-    expected.candidateArtifact.name,
-    `candidate-${p.runId}-${p.attempt}`,
-  );
-  await attest(expected.indexPath, p);
-  return true;
 }
