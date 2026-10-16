@@ -436,6 +436,9 @@ it("binds official publication jobs to tested archives and the trusted workflow 
   expect(nativePerformance["runs-on"]).toBe("windows-2022");
   expect(nativePerformance.environment).toBeUndefined();
   expect(nativePerformance.permissions).toBeUndefined();
+  expect(nativePerformance.steps.map((step) => step.run)).toContain(
+    "npm install --global npm@11.19.0 pnpm@10.34.6 --ignore-scripts",
+  );
   expect(
     ci.jobs.verify.steps.find(
       (step) => step.name === "Package the extension for native checks",
@@ -449,6 +452,11 @@ it("binds official publication jobs to tested archives and the trusted workflow 
       (step) => step.name === "Measure installed extension performance",
     ).run,
   ).toContain("--performance");
+  expect(
+    nativePerformance.steps.find(
+      (step) => step.name === "Measure installed extension performance",
+    ).shell,
+  ).toBe("pwsh");
   expect(
     nativePerformance.steps.find((step) => step.with?.["artifact-ids"]).with[
       "artifact-ids"
