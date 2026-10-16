@@ -280,12 +280,13 @@ jobs:
           merge-multiple: true
       - name: Check the completed release is current
         id: current
+        shell: bash
         run: |
           RELEASE_TAG=$(jq -er '.components.studio.tag' build/input/reports/release/plan.json)
           echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
           gh release view "$RELEASE_TAG" --json tagName,isDraft,isPrerelease,targetCommitish > build/release.json
           jq -e --arg tag "$RELEASE_TAG" --arg sha "$TINTA_RELEASE_SOURCE_SHA" '.tagName == $tag and .isDraft == false and .isPrerelease == false and .targetCommitish == $sha' build/release.json
-          current=$(gh api --paginate --slurp "repos/$GH_REPO/releases?per_page=100" --jq '
+          current=$(gh api --paginate --slurp "repos/$GH_REPO/releases?per_page=100" | jq -r '
             flatten | map(select(.draft == false and .prerelease == false)) |
             map(select(.tag_name | test("^tinta-studio-v[0-9]+[.][0-9]+[.][0-9]+$"))) |
             max_by(.tag_name | capture("^tinta-studio-v(?<version>[0-9.]+)$").version | split(".") | map(tonumber)) |
@@ -307,8 +308,9 @@ jobs:
       - name: Recheck the release before deployment
         if: steps.current.outputs.publish == 'true'
         id: recheck
+        shell: bash
         run: |
-          current=$(gh api --paginate --slurp "repos/$GH_REPO/releases?per_page=100" --jq '
+          current=$(gh api --paginate --slurp "repos/$GH_REPO/releases?per_page=100" | jq -r '
             flatten | map(select(.draft == false and .prerelease == false)) |
             map(select(.tag_name | test("^tinta-studio-v[0-9]+[.][0-9]+[.][0-9]+$"))) |
             max_by(.tag_name | capture("^tinta-studio-v(?<version>[0-9.]+)$").version | split(".") | map(tonumber)) |

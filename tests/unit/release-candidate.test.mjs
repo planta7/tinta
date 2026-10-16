@@ -635,8 +635,10 @@ set -eu
 case "$1 $2" in
   "release view") cat "$FIXTURE_ROOT/release.json" ;;
   "api --paginate")
-    while [ "$1" != "--jq" ]; do shift; done
-    printf '%s\\n' "$FIXTURE_RELEASES" | jq -r "$2"
+    for argument in "$@"; do
+      case "$argument" in --jq|--template) exit 91 ;; esac
+    done
+    printf '[%s]\\n' "$FIXTURE_RELEASES"
     ;;
   "release download") cp "$FIXTURE_ROOT/${archive}" "$FIXTURE_ROOT/build/demo-release/" ;;
   *) exit 90 ;;
