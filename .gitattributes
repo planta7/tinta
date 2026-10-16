@@ -16,6 +16,11 @@ apps/studio/** -ci-language ci-studio -ci-vscode
 packages/cli/** -ci-language ci-studio -ci-vscode
 apps/vscode/** -ci-language -ci-studio ci-vscode
 
+# Extension tooling and its packaged Marketplace guide belong to VS Code.
+scripts/*vscode*.mjs -ci-language -ci-studio ci-vscode
+scripts/vscode-*.config.js -ci-language -ci-studio ci-vscode
+docs/14_VSCODE_QUICKSTART.md -ci-language -ci-studio ci-vscode
+
 # This preview is embedded by both hosts; the editor shell is Studio-only.
 apps/studio/src/preview.ts ci-vscode
 apps/studio/src/protocol.ts ci-vscode

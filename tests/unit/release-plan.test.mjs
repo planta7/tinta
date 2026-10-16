@@ -248,6 +248,47 @@ it("a Studio-only release leaves library and extension versions unchanged", () =
 });
 
 it.each([
+  ["scripts/build-vscode.mjs", true],
+  ["scripts/package-vscode.mjs", true],
+  ["scripts/vscode-package.mjs", true],
+  ["docs/14_VSCODE_QUICKSTART.md", true],
+  ["scripts/probe-vscode.mjs", false],
+  ["scripts/verify-vscode.mjs", false],
+  ["scripts/test-vscode-editing.mjs", false],
+  ["scripts/test-vscode-files.mjs", false],
+  ["scripts/test-vscode-installed.mjs", false],
+  ["scripts/test-vscode-preview.mjs", false],
+  ["scripts/vscode-installed-ui.mjs", false],
+  ["scripts/vscode-playwright.config.js", false],
+  ["scripts/vscode-vitest.config.js", false],
+])(
+  "scopes extension input %s without changing other product versions",
+  (path, product) => {
+    const f = repository();
+    const before = f.git("rev-parse", "HEAD");
+    f.change(path, "fix(vscode): repair extension input");
+    const source = f.git("rev-parse", "HEAD");
+    expect(affectedComponents(before, source, f.cwd)).toEqual(["vscode"]);
+    expect(
+      affectedComponents(before, source, f.cwd, { productOnly: true }),
+    ).toEqual(product ? ["vscode"] : []);
+    const plan = generateReleasePlan(f.cwd);
+    expect(plan.matrix.component).toEqual(product ? ["vscode"] : []);
+    expect(plan.publish).toBe(product);
+    expect(plan.implementation).toBe("0.1.21");
+    expect(plan.studio).toBe("0.1.21");
+    expect(plan.extension).toBe(product ? "0.2.22" : "0.2.21");
+    expect(plan.components.vscode.changed).toBe(product);
+    for (const name of ["language", "studio"]) {
+      expect(plan.components[name].changed).toBe(false);
+      expect(plan.components[name].publish).toBe(false);
+      expect(plan.components[name].notes).toBe("No release changes.");
+    }
+  },
+  15000,
+);
+
+it.each([
   [".github/workflows/publish-release.yml", "fix(ci): repair Pages"],
   ["scripts/release-plan.mjs", "feat(ci): improve release selection"],
   ["tests/unit/release-candidate.test.mjs", "fix(ci)!: change pipeline checks"],
