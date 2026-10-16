@@ -154,9 +154,10 @@ describe("local extension archive", () => {
     );
     expect(manifest.type).toBe("module");
     expect(manifest.main).toBe("./dist/extension.bundle.js");
-    expect(Buffer.from(entries["extension/dist/extension.bundle.js"])).toEqual(
-      await readFile("apps/vscode/dist/extension.bundle.js"),
-    );
+    const bundle = await readFile("apps/vscode/dist/extension.bundle.js");
+    expect(
+      Buffer.from(entries["extension/dist/extension.bundle.js"]).equals(bundle),
+    ).toBe(true);
     expect(Buffer.from(entries["extension/LICENSE.txt"])).toEqual(
       await readFile("LICENSE"),
     );
