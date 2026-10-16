@@ -1,5 +1,5 @@
 # Unclassified and shared inputs affect every delivery component.
-* ci-language ci-studio ci-vscode
+* ci-language ci-studio ci-vscode product
 
 # Prose alone uses metadata checks; normative contracts and packaged README files
 # remain shared inputs. Component application rules below retain their ownership.
@@ -33,3 +33,42 @@ tests/unit/cli*.test.mjs -ci-language ci-studio -ci-vscode
 tests/unit/editor-*.test.mjs -ci-language ci-studio -ci-vscode
 tests/browser/studio*.test.mjs -ci-language ci-studio -ci-vscode
 tests/unit/preview-build.test.mjs -ci-language ci-studio ci-vscode
+
+# Infrastructure and tests retain their verification scope but do not version
+# products. Build, packaging and dependency inputs remain product changes.
+.gitattributes -product
+.gitignore -product
+.github/** -product
+tests/** -product
+conformance/** -product
+eslint.config.js -product
+*vitest.config.js -product
+*playwright.config.js -product
+.prettier* -product
+scripts/verify*.mjs -product
+scripts/check* -product
+scripts/tests/** -product
+scripts/candidate-*.mjs -product
+scripts/release-plan.mjs -product
+scripts/release-candidate.mjs -product
+scripts/consumer-*.mjs -product
+scripts/installed-*.mjs -product
+scripts/test-*.mjs -product
+scripts/probe-*.mjs -product
+scripts/vscode-installed-ui.mjs -product
+scripts/*coverage*.mjs -product
+scripts/*size.mjs -product
+scripts/performance*.mjs -product
+scripts/traceability*.mjs -product
+scripts/architecture.mjs -product
+scripts/dependencies.mjs -product
+scripts/licenses.mjs -product
+scripts/capabilities.mjs -product
+scripts/hardening.mjs -product
+scripts/benchmark.mjs -product
+toolchain/actions.json -product
+toolchain/browsers.json -product
+toolchain/vscode-downloads.json -product
+toolchain/components.json -product
+toolchain/release-it.json -product
+toolchain/distribution-source*.json -product

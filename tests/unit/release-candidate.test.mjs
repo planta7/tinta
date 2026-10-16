@@ -295,7 +295,20 @@ describe("frozen candidate metadata", () => {
 
 it("binds official publication jobs to tested archives and the trusted workflow run", () => {
   const workflow = parse(readFileSync(candidateWorkflow, "utf8"));
-  expect(Object.keys(workflow.on)).toEqual(["workflow_run"]);
+  expect(Object.keys(workflow.on)).toEqual([
+    "workflow_dispatch",
+    "workflow_run",
+  ]);
+  expect(workflow.on.workflow_dispatch.inputs.studio_tag).toMatchObject({
+    required: true,
+    type: "string",
+  });
+  expect(workflow.jobs.build.if).toContain(
+    "github.event_name == 'workflow_run'",
+  );
+  expect(workflow.jobs["deploy-studio"].if).toContain(
+    "github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'",
+  );
   expect(workflow.permissions).toEqual({});
   for (const condition of [
     "conclusion == 'success'",
@@ -590,6 +603,7 @@ it("executes the Pages guards and rejects incomplete, stale or changed downloads
         PATH: join(root, "bin") + ":" + process.env.PATH,
         RELEASE_TAG: tag,
         TINTA_RELEASE_SOURCE_SHA: source,
+        STUDIO_SOURCE_SHA: source,
         GH_REPO: "fixture/tinta",
         GITHUB_OUTPUT: join(root, "output"),
         GITHUB_ENV: join(root, "environment"),
@@ -613,18 +627,18 @@ it("executes the Pages guards and rejects incomplete, stale or changed downloads
     );
   try {
     mkdirSync(join(root, "bin"));
-    mkdirSync(join(root, "build/input/build/payloads/studio"), {
-      recursive: true,
-    });
-    mkdirSync(join(root, "build/input/reports/release"), { recursive: true });
+    mkdirSync(join(root, "build"));
     writeFileSync(
-      join(root, "build/input/reports/release/plan.json"),
-      JSON.stringify({ components: { studio: { tag } } }),
+      join(root, "tag.json"),
+      JSON.stringify({ object: { type: "commit", sha: source } }),
     );
     writeFileSync(join(root, archive), bytes);
     writeFileSync(
-      join(root, "build/input/build/payloads/studio/inventory.json"),
+      join(root, "inventory.json"),
       JSON.stringify({
+        component: "studio",
+        source: { dirty: false, commit: source },
+        versions: { studio: "0.1.22" },
         targets: [{ id: "studio-directory", archive, sha256: digest(bytes) }],
       }),
     );
@@ -634,13 +648,22 @@ it("executes the Pages guards and rejects incomplete, stale or changed downloads
 set -eu
 case "$1 $2" in
   "release view") cat "$FIXTURE_ROOT/release.json" ;;
+  "api repos/fixture/tinta/git/ref/tags/${tag}") cat "$FIXTURE_ROOT/tag.json" ;;
   "api --paginate")
     for argument in "$@"; do
       case "$argument" in --jq|--template) exit 91 ;; esac
     done
     printf '[%s]\\n' "$FIXTURE_RELEASES"
     ;;
-  "release download") cp "$FIXTURE_ROOT/${archive}" "$FIXTURE_ROOT/build/demo-release/" ;;
+  "attestation verify")
+    test "\${FIXTURE_ATTESTATION:-valid}" = valid
+    printf '%s\\n' "$@" > "$FIXTURE_ROOT/attestation-arguments"
+    ;;
+  "release download")
+    while [ "$1" != "--pattern" ]; do shift; done
+    mkdir -p "$FIXTURE_ROOT/build/demo-release"
+    cp "$FIXTURE_ROOT/$2" "$FIXTURE_ROOT/build/demo-release/"
+    ;;
   *) exit 90 ;;
 esac
 `,
@@ -675,6 +698,41 @@ esac
     expect(readFileSync(join(root, "output"), "utf8")).toContain(
       "publish=true",
     );
+    expect(run(current, { TINTA_RELEASE_SOURCE_SHA: "" }).status).toBe(0);
+    expect(
+      run(current, { RELEASE_TAG: "tinta-vscode-v0.2.22" }).status,
+    ).not.toBe(0);
+    expect(run(current, { RELEASE_TAG: `${tag}; invalid` }).status).not.toBe(0);
+    expect(
+      run(current, { TINTA_RELEASE_SOURCE_SHA: "d".repeat(40) }).status,
+    ).not.toBe(0);
+    expect(run(download, { FIXTURE_ATTESTATION: "invalid" }).status).not.toBe(
+      0,
+    );
+    expect(existsSync(join(root, "build/demo-release/studio/index.html"))).toBe(
+      false,
+    );
+    const inventoryPath = join(root, "inventory.json");
+    const inventory = JSON.parse(readFileSync(inventoryPath, "utf8"));
+    for (const change of [
+      { component: "language" },
+      { source: { dirty: true, commit: source } },
+      { source: { dirty: false, commit: "d".repeat(40) } },
+      { versions: { studio: "0.1.23" } },
+      { targets: [...inventory.targets, ...inventory.targets] },
+      { targets: [{ ...inventory.targets[0], archive: "../outside.zip" }] },
+    ]) {
+      writeFileSync(inventoryPath, JSON.stringify({ ...inventory, ...change }));
+      rmSync(join(root, "build/demo-release"), {
+        recursive: true,
+        force: true,
+      });
+      expect(run(download).status).not.toBe(0);
+      expect(
+        existsSync(join(root, "build/demo-release/studio/index.html")),
+      ).toBe(false);
+    }
+    writeFileSync(inventoryPath, JSON.stringify(inventory));
     writeFileSync(join(root, archive), Buffer.from("changed archive"));
     expect(run(download).status).not.toBe(0);
     expect(existsSync(join(root, "build/demo-release/studio/index.html"))).toBe(
@@ -687,6 +745,19 @@ esac
     expect(
       readFileSync(join(root, "build/demo-release/studio/index.html"), "utf8"),
     ).toBe("<p>Fixture</p>");
+    const attestationArguments = readFileSync(
+      join(root, "attestation-arguments"),
+      "utf8",
+    );
+    for (const argument of [
+      "--repo\nfixture/tinta",
+      "--signer-workflow\nfixture/tinta/.github/workflows/publish-release.yml",
+      `--source-digest\n${source}`,
+      `--signer-digest\n${source}`,
+      "--source-ref\nrefs/heads/main",
+      "--deny-self-hosted-runners",
+    ])
+      expect(attestationArguments).toContain(argument);
     expect(
       run(steps.find((step) => step.id === "recheck").run, {
         FIXTURE_RELEASES: JSON.stringify([

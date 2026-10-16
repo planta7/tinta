@@ -14,12 +14,18 @@ export const releaseComponents = JSON.parse(
   readFileSync(new URL("../toolchain/components.json", import.meta.url)),
 );
 const names = Object.keys(releaseComponents);
-const pathspec = (component) => `:(top,attr:ci-${component})`;
+const pathspec = (component, { productOnly = false } = {}) =>
+  `:(top,attr:ci-${component}${productOnly ? " product" : ""})`;
 const run = (cwd, command) =>
   requireCommandSync(command, { cwd }).stdout.trim();
 const git = (cwd, ...args) => run(cwd, ["git", ...args]);
 
-export function affectedComponents(before, sourceSha, cwd = process.cwd()) {
+export function affectedComponents(
+  before,
+  sourceSha,
+  cwd = process.cwd(),
+  options,
+) {
   assert.match(before, /^[a-f0-9]{40}$/);
   assert.match(sourceSha, /^[a-f0-9]{40}$/);
   return names.filter((component) => {
@@ -33,7 +39,7 @@ export function affectedComponents(before, sourceSha, cwd = process.cwd()) {
         before,
         sourceSha,
         "--",
-        pathspec(component),
+        pathspec(component, options),
       ],
       { cwd },
     );
@@ -128,7 +134,10 @@ export function generateReleasePlan(cwd = process.cwd()) {
     );
     const settings = structuredClone(config);
     settings.git.tagMatch = tag ? `${tagPrefix}*` : legacy;
-    const commits = { from: before, path: pathspec(component) };
+    const commits = {
+      from: before,
+      path: pathspec(component, { productOnly: true }),
+    };
     const options = settings.plugins["@release-it/conventional-changelog"];
     settings.plugins = {
       [plugin]: {
@@ -154,7 +163,9 @@ export function generateReleasePlan(cwd = process.cwd()) {
     plans[component] = {
       previous,
       before,
-      changed: affectedComponents(before, sourceSha, cwd).includes(component),
+      changed: affectedComponents(before, sourceSha, cwd, {
+        productOnly: true,
+      }).includes(component),
       publish: Boolean(recommended),
       version: recommended
         ? nextComponentVersion(component, previous, recommended)
@@ -222,6 +233,7 @@ if (
         process.env.GITHUB_OUTPUT,
         `publish=${plan.publish}\nmatrix=${JSON.stringify(plan.matrix)}\n` +
           `host_publish=${plan.matrix.component.some((name) => name !== "language")}\n` +
+          `studio_tag=${plan.components.studio.tag}\n` +
           `hosts=${JSON.stringify({ component: plan.matrix.component.filter((name) => name !== "language") })}\n` +
           names
             .map((name) => `${name}=${plan.components[name].publish}\n`)

@@ -247,6 +247,71 @@ it("a Studio-only release leaves library and extension versions unchanged", () =
   expect(plan.components.studio.notes).toContain("restore navigation");
 });
 
+it.each([
+  [".github/workflows/publish-release.yml", "fix(ci): repair Pages"],
+  ["scripts/release-plan.mjs", "feat(ci): improve release selection"],
+  ["tests/unit/release-candidate.test.mjs", "fix(ci)!: change pipeline checks"],
+  ["toolchain/distribution-source.json", "fix(ci): update source inventory"],
+  ["scripts/studio-vitest.config.js", "fix(ci): select Studio tests"],
+])(
+  "verifies %s without requesting a product version",
+  (path, message) => {
+    const f = repository();
+    const before = f.git("rev-parse", "HEAD");
+    f.change(path, message);
+    expect(
+      affectedComponents(before, f.git("rev-parse", "HEAD"), f.cwd),
+    ).toEqual(["language", "studio", "vscode"]);
+    const plan = generateReleasePlan(f.cwd);
+    expect(plan.publish).toBe(false);
+    expect(plan.matrix.component).toEqual([]);
+    expect(plan.implementation).toBe("0.1.21");
+    expect(plan.studio).toBe("0.1.21");
+    expect(plan.extension).toBe("0.2.21");
+    for (const component of Object.values(plan.components)) {
+      expect(component.changed).toBe(false);
+      expect(component.notes).toBe("No release changes.");
+    }
+  },
+  15000,
+);
+
+it("does not turn pending CI changes into language dependencies of Studio", () => {
+  const f = repository();
+  f.change("scripts/candidate-ci.mjs", "fix(ci): repair installed checks");
+  f.change("apps/studio/src/editor.ts", "fix(studio): repair navigation");
+  const plan = generateReleasePlan(f.cwd);
+  expect(plan.matrix.component).toEqual(["studio"]);
+  expect(plan.implementation).toBe("0.1.21");
+  expect(plan.studio).toBe("0.1.22");
+  expect(plan.extension).toBe("0.2.21");
+  expect(plan.components.studio.notes).toContain("repair navigation");
+  expect(plan.components.studio.notes).not.toContain("installed checks");
+}, 15000);
+
+it("keeps product edits in a mixed CI commit eligible for a release", () => {
+  const f = repository();
+  mkdirSync(join(f.cwd, "apps/studio/src"), { recursive: true });
+  writeFileSync(join(f.cwd, "apps/studio/src/editor.ts"), "Product change\n");
+  f.git("add", "apps/studio/src/editor.ts");
+  f.change(".github/workflows/verify.yml", "fix(ci): repair editor build");
+  expect(generateReleasePlan(f.cwd).matrix.component).toEqual(["studio"]);
+}, 15000);
+
+it.each(["scripts/build.mjs", "scripts/packaging.mjs", "pnpm-lock.yaml"])(
+  "keeps product build input %s eligible for a release",
+  (path) => {
+    const f = repository();
+    f.change(path, "fix(build): repair generated product");
+    expect(generateReleasePlan(f.cwd).matrix.component).toEqual([
+      "language",
+      "studio",
+      "vscode",
+    ]);
+  },
+  15000,
+);
+
 it("keeps an independent cumulative history across another component's tag", () => {
   const f = repository();
   f.change("apps/studio/src/navigation.ts", "feat(studio): add navigation");

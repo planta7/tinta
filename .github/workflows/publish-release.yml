@@ -1,5 +1,11 @@
 name: Publish release
 on:
+  workflow_dispatch:
+    inputs:
+      studio_tag:
+        description: Latest completed Studio release tag to redeploy
+        required: true
+        type: string
   workflow_run:
     workflows:
       - Verify language
@@ -17,6 +23,7 @@ env:
 jobs:
   build:
     if: >-
+      github.event_name == 'workflow_run' &&
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push' &&
       github.event.workflow_run.head_branch == 'main' &&
@@ -34,6 +41,7 @@ jobs:
       host_publish: ${{ steps.plan.outputs.host_publish }}
       language: ${{ steps.plan.outputs.language }}
       studio: ${{ steps.plan.outputs.studio }}
+      studio_tag: ${{ steps.plan.outputs.studio_tag }}
       vscode: ${{ steps.plan.outputs.vscode }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
@@ -264,6 +272,7 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
+      attestations: read
       pages: write
       id-token: write
     environment:
@@ -272,20 +281,24 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ inputs.studio_tag || needs.build.outputs.studio_tag }}
     steps:
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
-        with:
-          artifact-ids: ${{ needs.build.outputs.payload_id }}
-          path: build/input
-          merge-multiple: true
       - name: Check the completed release is current
         id: current
         shell: bash
         run: |
-          RELEASE_TAG=$(jq -er '.components.studio.tag' build/input/reports/release/plan.json)
-          echo "RELEASE_TAG=$RELEASE_TAG" >> "$GITHUB_ENV"
+          [[ "$RELEASE_TAG" =~ ^tinta-studio-v[0-9]+[.][0-9]+[.][0-9]+$ ]]
+          mkdir -p build/demo-release
+          gh api "repos/$GH_REPO/git/ref/tags/$RELEASE_TAG" > build/tag.json
+          source_sha=$(jq -er 'select(.object.type == "commit") | .object.sha' build/tag.json)
+          [[ "$source_sha" =~ ^[a-f0-9]{40}$ ]]
+          test -z "$TINTA_RELEASE_SOURCE_SHA" || test "$source_sha" = "$TINTA_RELEASE_SOURCE_SHA"
+          echo "STUDIO_SOURCE_SHA=$source_sha" >> "$GITHUB_ENV"
           gh release view "$RELEASE_TAG" --json tagName,isDraft,isPrerelease,targetCommitish > build/release.json
-          jq -e --arg tag "$RELEASE_TAG" --arg sha "$TINTA_RELEASE_SOURCE_SHA" '.tagName == $tag and .isDraft == false and .isPrerelease == false and .targetCommitish == $sha' build/release.json
+          jq -e --arg tag "$RELEASE_TAG" --arg sha "$source_sha" '
+            .tagName == $tag and .isDraft == false and
+            .isPrerelease == false and .targetCommitish == $sha
+          ' build/release.json
           current=$(gh api --paginate --slurp "repos/$GH_REPO/releases?per_page=100" | jq -r '
             flatten | map(select(.draft == false and .prerelease == false)) |
             map(select(.tag_name | test("^tinta-studio-v[0-9]+[.][0-9]+[.][0-9]+$"))) |
@@ -295,11 +308,30 @@ jobs:
           echo "publish=$([ "$current" = "$RELEASE_TAG" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
       - name: Download and verify the published Studio archive
         if: steps.current.outputs.publish == 'true'
+        shell: bash
         run: |
-          mkdir -p build/demo-release/studio
-          archive=$(jq -er '.targets[] | select(.id == "studio-directory") | .archive' build/input/build/payloads/studio/inventory.json)
+          gh release download "$RELEASE_TAG" --pattern inventory.json --dir build/demo-release
+          gh attestation verify build/demo-release/inventory.json \
+            --repo "$GH_REPO" \
+            --signer-workflow "$GH_REPO/.github/workflows/publish-release.yml" \
+            --source-digest "$STUDIO_SOURCE_SHA" \
+            --signer-digest "$STUDIO_SOURCE_SHA" \
+            --source-ref refs/heads/main \
+            --deny-self-hosted-runners
+          jq -e --arg sha "$STUDIO_SOURCE_SHA" \
+            --arg version "${RELEASE_TAG#tinta-studio-v}" '
+              .component == "studio" and .source.dirty == false and
+              .source.commit == $sha and
+              (.versions.studio // .versions.implementation) == $version
+            ' build/demo-release/inventory.json
+          archive=$(jq -er '
+            [.targets[] | select(.id == "studio-directory")] |
+            select(length == 1) | .[0].archive
+          ' build/demo-release/inventory.json)
+          test "$archive" = "studio-directory-${RELEASE_TAG#tinta-studio-v}.zip"
           gh release download "$RELEASE_TAG" --pattern "$archive" --dir build/demo-release
-          (cd build/demo-release && jq -r '.targets[] | select(.id == "studio-directory") | .sha256 + "  " + .archive' ../input/build/payloads/studio/inventory.json | sha256sum -c -)
+          (cd build/demo-release && jq -r '.targets[] | select(.id == "studio-directory") | .sha256 + "  " + .archive' inventory.json | sha256sum -c -)
+          mkdir -p build/demo-release/studio
           unzip -q "build/demo-release/$archive" -d build/demo-release/studio
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
         if: steps.current.outputs.publish == 'true'
@@ -320,4 +352,8 @@ jobs:
       - uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346
         if: steps.recheck.outputs.publish == 'true'
         id: deployment
-    if: always() && needs.build.result == 'success' && needs.build.outputs.studio == 'true'
+    if: >-
+      always() && (
+        (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+        (needs.build.result == 'success' && needs.build.outputs.studio == 'true')
+      )
