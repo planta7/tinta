@@ -118,6 +118,8 @@ jobs:
         if: matrix.component == 'vscode'
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
         if: matrix.component != 'vscode'
+      - run: pnpm exec playwright install --with-deps chromium
+        if: matrix.component == 'vscode'
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
           artifact-ids: ${{ needs.build.outputs.payload_id }}
