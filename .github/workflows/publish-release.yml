@@ -148,6 +148,7 @@ jobs:
       - if: runner.os != 'Linux'
         run: node scripts/candidate-ci.mjs matrix
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        if: always()
         with:
           name: results-${{ matrix.component }}-${{ matrix.native.cell }}-${{ needs.build.outputs.payload_id }}
           path: reports/candidate/

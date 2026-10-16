@@ -352,7 +352,7 @@ it("binds official publication jobs to tested archives and the trusted workflow 
     workflow.jobs.installed.steps.find((step) =>
       step.uses?.startsWith("actions/upload-artifact@"),
     ).if,
-  ).toBeUndefined();
+  ).toBe("always()");
   expect(workflow.jobs.release.strategy["fail-fast"]).toBe(false);
   expect(workflow.jobs["release-language"].needs).toEqual([
     "build",
