@@ -1252,8 +1252,29 @@ test("workspace reflows, retains the source cursor and exposes insertion from th
       page.locator(".cm-scroller").evaluate((element) => element.scrollTop),
     )
     .toBe(before);
+  const expectSourceCursor = async (source) => {
+    await expect
+      .poll(() =>
+        editor.evaluate((element) => {
+          const { doc, selection } = element.cmTile.root.view.state;
+          return {
+            source: doc.toString(),
+            anchor: selection.main.anchor,
+            head: selection.main.head,
+          };
+        }),
+      )
+      .toEqual({ source, anchor: source.length, head: source.length });
+  };
+  let expectedSource =
+    (await readFile("examples/article.tinta", "utf8")) + "\n";
   await editor.press("Enter");
-  await editor.pressSequentially("Cursor retained");
+  await expectSourceCursor(expectedSource);
+  for (const character of "Cursor retained") {
+    await editor.press(character === " " ? "Space" : character);
+    expectedSource += character;
+    await expectSourceCursor(expectedSource);
+  }
   await expect(editor).toContainText("Cursor retained");
   await expect
     .poll(() =>
