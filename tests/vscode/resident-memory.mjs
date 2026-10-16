@@ -12,21 +12,27 @@ export async function residentBytes({
   run = execute,
 } = {}) {
   let rows;
+  let collectorPid;
+  const collect = (command, args) => {
+    const collection = run(command, args, {
+      encoding: "utf8",
+      timeout: 10000,
+      maxBuffer: 4 * 1024 * 1024,
+    });
+    collectorPid = collection.child?.pid;
+    return collection;
+  };
   if (platform === "win32") {
     const command = join(
       env.SystemRoot,
       "System32/WindowsPowerShell/v1.0/powershell.exe",
     );
-    const { stdout } = await run(
-      command,
-      [
-        "-NoProfile",
-        "-NonInteractive",
-        "-Command",
-        "ConvertTo-Json -Compress -InputObject @(Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,WorkingSetSize)",
-      ],
-      { encoding: "utf8", timeout: 10000, maxBuffer: 4 * 1024 * 1024 },
-    );
+    const { stdout } = await collect(command, [
+      "-NoProfile",
+      "-NonInteractive",
+      "-Command",
+      "ConvertTo-Json -Compress -InputObject @(Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,WorkingSetSize)",
+    ]);
     const processes = JSON.parse(stdout);
     assert.ok(Array.isArray(processes), "Invalid process memory inventory");
     rows = processes.map((entry) => [
@@ -35,11 +41,7 @@ export async function residentBytes({
       Number(entry.WorkingSetSize),
     ]);
   } else {
-    const { stdout } = await run("ps", ["-axo", "pid=,ppid=,rss="], {
-      encoding: "utf8",
-      timeout: 10000,
-      maxBuffer: 4 * 1024 * 1024,
-    });
+    const { stdout } = await collect("ps", ["-axo", "pid=,ppid=,rss="]);
     rows = stdout
       .trim()
       .split("\n")
@@ -66,7 +68,8 @@ export async function residentBytes({
   }
   const descendants = new Set([pid]);
   for (const id of descendants)
-    for (const child of children.get(id) ?? []) descendants.add(child);
+    for (const child of children.get(id) ?? [])
+      if (child !== collectorPid) descendants.add(child);
   return rows
     .filter(([id]) => descendants.has(id))
     .reduce((sum, row) => sum + row[2], 0);

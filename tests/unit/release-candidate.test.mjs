@@ -427,6 +427,42 @@ it("binds official publication jobs to tested archives and the trusted workflow 
     ci.jobs.verify.steps.find((step) => step.run === "pnpm test:vscode:browser")
       .if,
   ).toBe("steps.affected.outputs.vscode == 'true'");
+  expect(ci.jobs.verify.outputs.vscode).toBe(
+    "${{ steps.affected.outputs.vscode }}",
+  );
+  const nativePerformance = ci.jobs["vscode-performance"];
+  expect(nativePerformance.needs).toBe("verify");
+  expect(nativePerformance.if).toBe("needs.verify.outputs.vscode == 'true'");
+  expect(nativePerformance["runs-on"]).toBe("windows-2022");
+  expect(nativePerformance.environment).toBeUndefined();
+  expect(nativePerformance.permissions).toBeUndefined();
+  expect(
+    ci.jobs.verify.steps.find(
+      (step) => step.name === "Package the extension for native checks",
+    ).if,
+  ).toBe("steps.affected.outputs.vscode == 'true'");
+  expect(
+    ci.jobs.verify.steps.find((step) => step.id === "compiled").with.path,
+  ).toBe("build/transfer/");
+  expect(
+    nativePerformance.steps.find(
+      (step) => step.name === "Measure installed extension performance",
+    ).run,
+  ).toContain("--performance");
+  expect(
+    nativePerformance.steps.find((step) => step.with?.["artifact-ids"]).with[
+      "artifact-ids"
+    ],
+  ).toBe("${{ needs.verify.outputs.compiled_id }}");
+  const performanceEvidence = nativePerformance.steps.at(-1);
+  expect(performanceEvidence.if).toBe("always()");
+  expect(performanceEvidence.with.path).toBe(
+    "${{ runner.temp }}/tinta-performance/result.json",
+  );
+  for (const step of nativePerformance.steps) {
+    expect(step["continue-on-error"]).toBeUndefined();
+    expect(step.run ?? "").not.toMatch(/publish|release-plan|retry|rerun/i);
+  }
   expect(ci.jobs["cli-portability"].strategy.matrix.os).toEqual([
     "macos-15",
     "windows-2022",

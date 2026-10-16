@@ -18,6 +18,7 @@ jobs:
     outputs:
       compiled_id: ${{ steps.compiled.outputs.artifact-id }}
       studio: ${{ steps.affected.outputs.studio }}
+      vscode: ${{ steps.affected.outputs.vscode }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
@@ -74,15 +75,59 @@ jobs:
           mkdir -p build/transfer
           tar -czf build/transfer/compiled.tgz --exclude=build/transfer build packages/*/dist packages/cli/assets/tinta-studio.html
         if: steps.affected.outputs.studio == 'true'
+      - name: Package the extension for native checks
+        if: steps.affected.outputs.vscode == 'true'
+        run: |-
+          node scripts/package-vscode.mjs
+          mkdir -p build/transfer
+          cp build/vscode/tinta-0.1.0-dev.0.vsix build/transfer/tinta.vsix
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         id: compiled
         with:
           name: compiled-${{ github.run_id }}-${{ github.run_attempt }}
-          path: build/transfer/compiled.tgz
+          path: build/transfer/
           if-no-files-found: error
           retention-days: 7
           compression-level: 0
-        if: steps.affected.outputs.studio == 'true'
+        if: steps.affected.outputs.studio == 'true' || steps.affected.outputs.vscode == 'true'
+  vscode-performance:
+    needs: verify
+    if: needs.verify.outputs.vscode == 'true'
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - run: git config --global core.autocrlf false
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - run: npm install --global pnpm@10.34.6 --ignore-scripts
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - shell: bash
+        run: echo "TINTA_GLOBAL_MODULES=$(npm root --global)" >> "$GITHUB_ENV"
+      - run: node scripts/candidate-tools.mjs --desktop
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
+        with:
+          artifact-ids: ${{ needs.verify.outputs.compiled_id }}
+          path: build/transfer
+          merge-multiple: true
+      - name: Measure installed extension performance
+        shell: bash
+        run: >-
+          node scripts/test-vscode-installed.mjs
+          "$TINTA_VSCODE_EXECUTABLE" "$TINTA_VSCODE_CLI"
+          build/transfer/tinta.vsix "$RUNNER_TEMP/tinta-performance"
+          --performance
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        if: always()
+        with:
+          name: vscode-performance-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/tinta-performance/result.json
+          if-no-files-found: error
+          retention-days: 7
   cli-portability:
     needs: verify
     runs-on: ${{ matrix.os }}

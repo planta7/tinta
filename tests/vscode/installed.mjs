@@ -153,5 +153,10 @@ export async function run() {
       JSON.stringify(report, null, 2) + "\n",
     );
   }
-  assert.equal(report.status, "PASS", report.error ?? "Host budgets failed.");
+  assert.equal(
+    report.status,
+    "PASS",
+    report.error ??
+      `Host budgets failed.\n${JSON.stringify(report.performance, null, 2)}`,
+  );
 }

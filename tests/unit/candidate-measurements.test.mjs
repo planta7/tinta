@@ -57,6 +57,54 @@ describe("native resident memory measurements", () => {
     complete({ stdout: "20 10 1" });
     expect(await measurement).toBe(1024);
   });
+  it.each(["darwin", "linux", "win32"])(
+    "excludes only the memory collector and its descendants on %s",
+    async (platform) => {
+      const collectorBytes = 600 * 1024 ** 2;
+      const inventory = [
+        ...processes,
+        { ProcessId: 50, ParentProcessId: 20, WorkingSetSize: collectorBytes },
+        { ProcessId: 51, ParentProcessId: 50, WorkingSetSize: collectorBytes },
+      ];
+      const stdout =
+        platform === "win32"
+          ? JSON.stringify(inventory)
+          : inventory
+              .map(
+                ({ ProcessId, ParentProcessId, WorkingSetSize }) =>
+                  `${ProcessId} ${ParentProcessId} ${Number(WorkingSetSize) / 1024}`,
+              )
+              .join("\n");
+      const run = () =>
+        Object.assign(Promise.resolve({ stdout }), { child: { pid: 50 } });
+      expect(
+        await residentBytes({
+          platform,
+          pid: 20,
+          env: { SystemRoot: "C:/Windows" },
+          run,
+        }),
+      ).toBe(7168);
+    },
+  );
+  it("still counts an oversized language server after excluding its collector", async () => {
+    const serverBytes = 513 * 1024 ** 2;
+    const stdout = JSON.stringify([
+      { ProcessId: 20, ParentProcessId: 10, WorkingSetSize: 1024 },
+      { ProcessId: 30, ParentProcessId: 20, WorkingSetSize: serverBytes },
+      { ProcessId: 50, ParentProcessId: 20, WorkingSetSize: 4096 },
+    ]);
+    const run = () =>
+      Object.assign(Promise.resolve({ stdout }), { child: { pid: 50 } });
+    const measured = await residentBytes({
+      platform: "win32",
+      pid: 20,
+      env: { SystemRoot: "C:/Windows" },
+      run,
+    });
+    expect(measured).toBe(serverBytes + 1024);
+    expect(measured).toBeGreaterThan(512 * 1024 ** 2);
+  });
   it.each(["", "99 1 8", "20 10 NaN", "20 10 -1"])(
     "rejects missing or invalid measurements",
     async (stdout) => {

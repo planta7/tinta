@@ -230,7 +230,8 @@ export async function measureInstalled(open, record = () => {}) {
         "textValueUnits); all sizes must compile and initially evaluate. " +
         "Installed analysis worker round trips exclude debounce; completion " +
         "through native provider; RSS collection runs in a dedicated worker " +
-        "without overlapping samples; post-GC heap is extension host only; RSS sums host " +
+        "without overlapping samples and excludes collector processes; " +
+        "post-GC heap is extension host only; RSS sums host " +
         "descendants including server and worker threads in their owner process.",
     });
     await sampler.dispose();
