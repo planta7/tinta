@@ -1,5 +1,10 @@
-import { writeImplementationVersion } from "./implementation-version.mjs";
-import { buildStudio } from "./studio.mjs";
+import {
+  writeImplementationVersion,
+  writeCliVersion,
+} from "./implementation-version.mjs";
+import { buildStudio, buildPreview } from "./studio.mjs";
+import assert from "node:assert/strict";
+import { existsSync } from "node:fs";
 import {
   mkdir,
   writeFile,
@@ -10,6 +15,12 @@ import {
 import { resolve, dirname, join } from "node:path";
 import { build as viteBuild } from "vite";
 import { classicBundle } from "./packaging.mjs";
+
+const component = process.argv[2];
+assert.ok(
+  component === undefined ||
+    ["language", "studio", "vscode"].includes(component),
+);
 
 await mkdir("build", { recursive: true });
 await writeImplementationVersion();
@@ -51,11 +62,9 @@ await writeFile(
   "build/export-runtime.json",
   JSON.stringify(exportRuntime, null, 2),
 );
-const { worker, studio } = await buildStudio();
 
 await writeFile("build/reader.js", reader.code);
 await copyFile("packages/reader/src/reader.css", "build/reader.css");
-await writeFile("build/worker.js", worker.code);
 
 for (const name of [
   "types",
@@ -69,24 +78,27 @@ for (const name of [
   "cli",
 ]) {
   const target = `packages/${name}/dist/LICENSE`;
-  await mkdir(dirname(target), { recursive: true });
-  await copyFile("LICENSE", target);
+  if (existsSync(dirname(target))) await copyFile("LICENSE", target);
 }
 
-await writeFile(
-  "build/composition.json",
-  JSON.stringify({ reader, worker, studio }, null, 2),
-);
-
-await viteBuild({
-  root: resolve("apps/studio"),
-  configFile: resolve("apps/studio/vite.config.js"),
-});
-
-await copyFile(
-  "THIRD_PARTY_NOTICES.txt",
-  "build/studio/THIRD_PARTY_NOTICES.txt",
-);
-await copyFile("LICENSE", "build/studio/LICENSE");
-
-await import("./build-vscode.mjs");
+if (component === undefined || component === "studio") {
+  const { worker, studio } = await buildStudio();
+  await writeCliVersion();
+  await writeFile("build/worker.js", worker.code);
+  await writeFile(
+    "build/composition.json",
+    JSON.stringify({ reader, worker, studio }, null, 2),
+  );
+  await viteBuild({
+    root: resolve("apps/studio"),
+    configFile: resolve("apps/studio/vite.config.js"),
+  });
+  await copyFile(
+    "THIRD_PARTY_NOTICES.txt",
+    "build/studio/THIRD_PARTY_NOTICES.txt",
+  );
+  await copyFile("LICENSE", "build/studio/LICENSE");
+}
+if (component === "vscode") await buildPreview();
+if (component === undefined || component === "vscode")
+  await import("./build-vscode.mjs");

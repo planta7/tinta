@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { parse } from "yaml";
+import vscodeConfig from "../../scripts/vscode-vitest.config.js";
 import {
   buildCommands,
   validateVerification,
@@ -15,7 +16,10 @@ import {
 } from "../../scripts/release-candidate.mjs";
 import { digest } from "../../scripts/distribution-archive.mjs";
 import { offlineInstalled } from "../../scripts/candidate-offline.mjs";
-import { loadReleaseConfig } from "../../scripts/release-contract.mjs";
+import {
+  loadReleaseConfig,
+  selectedTargets,
+} from "../../scripts/release-contract.mjs";
 
 const hash = "a".repeat(64);
 const source = "b".repeat(40);
@@ -303,28 +307,55 @@ it("binds official publication jobs to tested archives and the trusted workflow 
     expect(workflow.jobs.build.if).toContain(condition);
   for (const name of ["build", "installed"])
     expect(workflow.jobs[name].permissions).toEqual({ contents: "read" });
-  for (const name of ["npm", "marketplace"]) {
+  for (const name of ["release-language", "release"]) {
     expect(workflow.jobs[name].environment).toBe("release");
     expect(workflow.jobs[name].permissions).toEqual({
-      contents: "read",
+      contents: "write",
       "id-token": "write",
+      attestations: "write",
     });
+    expect(
+      workflow.jobs[name].steps.find(
+        (step) => step.name === "Publish the tested npm targets",
+      ).run,
+    ).toContain('.targets[] | select(.archive | endswith(".tgz"))');
+    expect(
+      workflow.jobs[name].steps.find((step) =>
+        step.uses?.startsWith("Azure/login@"),
+      ).if,
+    ).toBe("env.TINTA_COMPONENT == 'vscode'");
   }
   expect(workflow.jobs.installed.strategy["fail-fast"]).toBe(false);
-  expect(workflow.jobs.npm.strategy.matrix.package).toEqual(
-    config.packages.map((target) => target.id),
-  );
-  expect(workflow.jobs.release.needs).toEqual(["build", "installed"]);
-  expect(workflow.jobs.npm.needs).toEqual(["build", "release"]);
-  expect(workflow.jobs.marketplace.needs).toEqual(["build", "release", "npm"]);
-  expect(workflow.jobs.complete.needs).toEqual([
-    "build",
-    "release",
-    "marketplace",
-  ]);
   expect(
-    workflow.jobs.installed.strategy.matrix.include.map((cell) => cell.cell),
+    workflow.jobs.installed.steps.find((step) =>
+      step.uses?.startsWith("actions/upload-artifact@"),
+    ).if,
+  ).toBeUndefined();
+  expect(workflow.jobs.release.strategy["fail-fast"]).toBe(false);
+  expect(workflow.jobs["release-language"].needs).toEqual([
+    "build",
+    "installed",
+  ]);
+  expect(workflow.jobs.release.needs).toEqual([
+    "build",
+    "installed",
+    "release-language",
+  ]);
+  expect(workflow.jobs.release.if).toContain(
+    "needs.release-language.result == 'success'",
+  );
+  expect(workflow.jobs.release.if).toContain(
+    "needs.release-language.result == 'skipped'",
+  );
+  expect(
+    workflow.jobs.installed.strategy.matrix.native.map((cell) => cell.cell),
   ).toEqual(matrixCells);
+  expect(workflow.jobs.installed.strategy.matrix.component).toBe(
+    "${{ fromJSON(needs.build.outputs.matrix).component }}",
+  );
+  expect(workflow.jobs.release.steps).toEqual(
+    workflow.jobs["release-language"].steps,
+  );
   for (const [name, job] of Object.entries(workflow.jobs)) {
     expect(job["timeout-minutes"]).toBeGreaterThan(0);
     for (const step of job.steps) {
@@ -354,12 +385,35 @@ it("binds official publication jobs to tested archives and the trusted workflow 
     pull_request: { branches: ["main"] },
   });
   expect(ci.permissions).toEqual({ contents: "read" });
-  expect(ci.jobs.verify.steps).toContainEqual({
-    run: "pnpm verify --suite editing",
-  });
-  expect(ci.jobs.verify.steps).toContainEqual({
-    run: "pnpm test:vscode:browser",
-  });
+  const selection = ci.jobs.verify.steps.find((step) => step.id === "affected");
+  expect(selection.run).toContain('if [ "$GITHUB_EVENT_NAME" = push ]; then');
+  expect(selection.run).toContain(
+    'node scripts/release-plan.mjs --affected "$BEFORE" "$SOURCE" --pending',
+  );
+  expect(vscodeConfig.test.include).toEqual(
+    expect.arrayContaining([
+      "tests/unit/vscode-package.test.mjs",
+      "tests/unit/installed-preview.test.mjs",
+    ]),
+  );
+  expect(
+    ci.jobs.verify.steps.find(
+      (step) => step.run === "pnpm verify --suite editing",
+    ).if,
+  ).toBe("steps.affected.outputs.language == 'true'");
+  expect(
+    ci.jobs.verify.steps.find((step) => step.run === "pnpm test:vscode:browser")
+      .if,
+  ).toBe("steps.affected.outputs.vscode == 'true'");
+  expect(ci.jobs["cli-portability"].strategy.matrix.os).toEqual([
+    "macos-15",
+    "windows-2022",
+  ]);
+  expect(
+    ci.jobs["cli-portability"].steps.find(
+      (step) => step.name === "Report component selection",
+    ).run,
+  ).toContain("not applicable");
   expect(buildCommands).toContainEqual([
     "node",
     "scripts/distribution-package.mjs",
@@ -524,7 +578,7 @@ it("executes the Pages guards and rejects incomplete, stale or changed downloads
   const download = steps.find((step) =>
     step.name?.startsWith("Download and"),
   ).run;
-  const tag = "tinta-v0.1.22-vscode-0.2.22-stable";
+  const tag = "tinta-studio-v0.1.22";
   const archive = "studio-directory-0.1.22.zip";
   const bytes = zipEntries({ "index.html": Buffer.from("<p>Fixture</p>") });
   const run = (script, env = {}) =>
@@ -538,6 +592,7 @@ it("executes the Pages guards and rejects incomplete, stale or changed downloads
         TINTA_RELEASE_SOURCE_SHA: source,
         GH_REPO: "fixture/tinta",
         GITHUB_OUTPUT: join(root, "output"),
+        GITHUB_ENV: join(root, "environment"),
         FIXTURE_ROOT: root,
         FIXTURE_RELEASES: JSON.stringify([
           { tag_name: tag, draft: false, prerelease: false },
@@ -558,10 +613,17 @@ it("executes the Pages guards and rejects incomplete, stale or changed downloads
     );
   try {
     mkdirSync(join(root, "bin"));
-    mkdirSync(join(root, "build/verified"), { recursive: true });
+    mkdirSync(join(root, "build/input/build/payloads/studio"), {
+      recursive: true,
+    });
+    mkdirSync(join(root, "build/input/reports/release"), { recursive: true });
+    writeFileSync(
+      join(root, "build/input/reports/release/plan.json"),
+      JSON.stringify({ components: { studio: { tag } } }),
+    );
     writeFileSync(join(root, archive), bytes);
     writeFileSync(
-      join(root, "build/verified/inventory.json"),
+      join(root, "build/input/build/payloads/studio/inventory.json"),
       JSON.stringify({
         targets: [{ id: "studio-directory", archive, sha256: digest(bytes) }],
       }),
@@ -597,7 +659,7 @@ esac
         FIXTURE_RELEASES: JSON.stringify([
           { tag_name: tag, draft: false, prerelease: false },
           {
-            tag_name: "tinta-v0.2.0-vscode-0.4.0-stable",
+            tag_name: "tinta-studio-v0.2.0",
             draft: false,
             prerelease: false,
           },
@@ -628,7 +690,7 @@ esac
         FIXTURE_RELEASES: JSON.stringify([
           { tag_name: tag, draft: false, prerelease: false },
           {
-            tag_name: "tinta-v0.2.0-vscode-0.4.0-stable",
+            tag_name: "tinta-studio-v0.2.0",
             draft: false,
             prerelease: false,
           },
@@ -644,3 +706,145 @@ esac
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+it.each(["language", "studio", "vscode"])(
+  "binds %s reports to exactly its applicable consumers",
+  (component) => {
+    const previous = process.env.TINTA_COMPONENT;
+    try {
+      process.env.TINTA_COMPONENT = component;
+      const f = fixture();
+      f.inventory.component = component;
+      const ids = selectedTargets(config).map((target) => target.id);
+      f.inventory.targets = f.inventory.targets.filter((target) =>
+        ids.includes(target.id),
+      );
+      for (const report of f.reports) {
+        report.archives = report.archives.filter((archive) =>
+          ids.includes(archive.id),
+        );
+        if (component !== "vscode") {
+          report.modes = [];
+          delete report.vscode;
+        } else {
+          report.routes = [];
+          report.browsers = [];
+        }
+        for (const route of report.routes)
+          route.groups = [
+            ...f.inventory.targets
+              .filter((target) => target.archive.endsWith(".tgz"))
+              .map((target) => `export:@tinta-lang/${target.id}`),
+            "declarations:strict-node-next",
+            "parser:budget-depth-recovery-spans",
+            "engine:compile-evaluate",
+            ...(component === "language"
+              ? [
+                  "language-service:queries",
+                  "ipc:server-worker-handshake",
+                  "ipc:watchdog-restart-production-worker",
+                  "artifacts:installed-exports",
+                ]
+              : ["cli:images-grants-exports-bundle-studio"]),
+          ];
+      }
+      expect(
+        checkReports(f.inventory, producer, f.build, f.reports),
+      ).toBeUndefined();
+      if (component === "vscode") f.reports[0].modes.pop();
+      else f.reports[0].routes[0].groups.pop();
+      expect(() =>
+        checkReports(f.inventory, producer, f.build, f.reports),
+      ).toThrow(/Missing/);
+    } finally {
+      if (previous === undefined) delete process.env.TINTA_COMPONENT;
+      else process.env.TINTA_COMPONENT = previous;
+    }
+  },
+);
+
+it.each(["language", "studio"])(
+  "publishes only %s inventory targets and checks bytes before npm",
+  async (component) => {
+    const {
+      mkdtempSync,
+      mkdirSync,
+      writeFileSync,
+      readFileSync,
+      rmSync,
+      existsSync,
+    } = await import("node:fs");
+    const { tmpdir } = await import("node:os");
+    const { join } = await import("node:path");
+    const { spawnSync } = await import("node:child_process");
+    const root = mkdtempSync(join(tmpdir(), "tinta publication fixture "));
+    try {
+      mkdirSync(join(root, "bin"));
+      mkdirSync(join(root, "build/supplied/verification"), { recursive: true });
+      const group = JSON.parse(
+        readFileSync("toolchain/components.json", "utf8"),
+      )[component];
+      const targets = config.packages
+        .filter((target) => group.targets.includes(target.id))
+        .map((target) => {
+          const archive = `${target.id}-0.1.22.tgz`;
+          const bytes = Buffer.from(`Fixture ${target.id}`);
+          writeFileSync(join(root, "build/supplied", archive), bytes);
+          return { id: target.id, archive, sha256: digest(bytes) };
+        });
+      writeFileSync(
+        join(root, "build/supplied/unselected-0.1.22.tgz"),
+        "Unselected payload",
+      );
+      writeFileSync(
+        join(root, "build/supplied/verification/engine-0.1.21.tgz"),
+        "Installed dependency only",
+      );
+      writeFileSync(
+        join(root, "build/supplied/inventory.json"),
+        JSON.stringify({
+          targets,
+          verificationPackages: [{ archive: "verification/engine-0.1.21.tgz" }],
+        }),
+      );
+      writeFileSync(
+        join(root, "bin/npm"),
+        '#!/bin/sh\nprintf "%s\\n" "$*" >> "$FIXTURE_ROOT/published"\n',
+        { mode: 0o755 },
+      );
+      const workflow = parse(readFileSync(candidateWorkflow, "utf8"));
+      const script = workflow.jobs.release.steps.find(
+        (step) => step.name === "Publish the tested npm targets",
+      ).run;
+      const run = () =>
+        spawnSync("bash", ["-euo", "pipefail", "-c", script], {
+          cwd: root,
+          encoding: "utf8",
+          env: {
+            ...process.env,
+            PATH: join(root, "bin") + ":" + process.env.PATH,
+            FIXTURE_ROOT: root,
+          },
+        });
+      const result = run();
+      expect(result.status, result.stderr).toBe(0);
+      expect(
+        readFileSync(join(root, "published"), "utf8").trim().split("\n"),
+      ).toEqual(
+        targets.map(
+          (target) =>
+            `publish ${target.archive} --access public --tag latest --ignore-scripts`,
+        ),
+      );
+      rmSync(join(root, "published"));
+      writeFileSync(
+        join(root, "build/supplied", targets[0].archive),
+        "Changed payload",
+      );
+      expect(run().status).not.toBe(0);
+      expect(existsSync(join(root, "published"))).toBe(false);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  },
+);

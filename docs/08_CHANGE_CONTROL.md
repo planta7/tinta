@@ -38,6 +38,6 @@ The [VS Code host](13_VSCODE.md) introduces portable editor-analysis DTOs and an
 
 The local VSIX uses development version `0.1.0-dev.0` and the internal installation identity `tinta-local.tinta`. Its generated manifest is separate from the private `@tinta-lang/vscode` workspace package. Workspace source versions remain `0.0.0`. Builds generate the embedded implementation version from `toolchain/release.json`, and interactive envelopes must exactly match their embedded reader. The build identity records both versions, contract revision, source hash, commit/dirty state and payload hashes. Repeated local builds retain the development version and are distinguished by hashes. No intentional distribution, version increment, Marketplace identity or publication is implied by creating or testing a local archive.
 
-## Coordinated software distribution
+## Software distribution groups
 
-The [software distribution contract](15_DISTRIBUTION.md) defines public package and extension identities, an implementation version group, independent numeric Marketplace versions, channels and closed release metadata. Source format and ABI versions remain separate from software versions.
+The [software distribution contract](15_DISTRIBUTION.md) defines public package and extension identities, a coordinated language-library version group, an independent Studio/CLI delivery version, independent numeric Marketplace versions, channels and closed release metadata. Source format and ABI versions remain separate from software versions.

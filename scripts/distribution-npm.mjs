@@ -11,7 +11,11 @@ import { isDeepStrictEqual } from "node:util";
 import { createRequire, builtinModules } from "node:module";
 import ts from "typescript";
 import { posix } from "node:path";
-import { dependencyClosure } from "./release-contract.mjs";
+import {
+  dependencyClosure,
+  selectedTargets,
+  targetVersion,
+} from "./release-contract.mjs";
 import { requireCommandSync } from "./commands.mjs";
 import {
   digest,
@@ -34,7 +38,7 @@ export function packageOrder(config) {
 export function stagingManifest(config, target, source, files) {
   const manifest = {
     name: target.proposedName,
-    version: config.versions.implementation,
+    version: targetVersion(config, target.id),
     description: source.description,
     keywords: source.keywords,
     homepage: source.homepage,
@@ -89,7 +93,7 @@ export function inspectNpm(
     !isDeepStrictEqual(manifest, expectedManifest) ||
     manifest.private !== false ||
     manifest.name !== target.proposedName ||
-    manifest.version !== config.versions.implementation ||
+    manifest.version !== targetVersion(config, target.id) ||
     /(?:workspace|file|link):/.test(JSON.stringify(manifest)) ||
     manifest.scripts
   )
@@ -250,14 +254,35 @@ async function parserBundle(entries) {
 
 export async function packageNpm(config, destination) {
   const reports = [];
-  for (const id of packageOrder(config)) {
+  for (const id of packageOrder(config).filter((id) =>
+    selectedTargets(config).some((target) => target.id === id),
+  )) {
     const target = config.packages.find((item) => item.id === id);
     const source = await json(`${target.source}/package.json`);
     const entries = {};
     entries["README.md"] = await readFile(`${target.source}/README.md`);
     if (id === "language-server") {
-      for (const name of ["server.mjs", "worker.mjs"])
-        entries[`dist/${name}`] = await readFile(`apps/vscode/dist/${name}`);
+      for (const name of ["server", "worker"]) {
+        const result = await build({
+          entryPoints: [`packages/language-server/src/${name}.ts`],
+          bundle: true,
+          platform: "node",
+          format: "esm",
+          target: "node24",
+          write: false,
+          sourcemap: false,
+          ...(name === "server"
+            ? {
+                banner: {
+                  js:
+                    'import { createRequire as tintaCreateRequire } from "node:module";\n' +
+                    "const require = tintaCreateRequire(import.meta.url);",
+                },
+              }
+            : {}),
+        });
+        entries[`dist/${name}.mjs`] = result.outputFiles[0].contents;
+      }
     } else if (id === "syntax") {
       await parserBundle(entries);
       await declarationFiles(target.source, "index.js", entries);
@@ -314,7 +339,7 @@ export async function packageNpm(config, destination) {
       resolve(destination),
     ]);
     const packageBasename = target.proposedName.slice(1).replace("/", "-");
-    const archive = `${packageBasename}-${config.versions.implementation}.tgz`;
+    const archive = `${packageBasename}-${targetVersion(config, id)}.tgz`;
     const bytes = await readFile(join(destination, archive));
     const packed = readTarball(bytes);
     const files = inspectNpm(packed, config, target, manifest, expected);

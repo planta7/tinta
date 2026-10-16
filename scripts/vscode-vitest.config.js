@@ -19,6 +19,8 @@ export default defineConfig({
       "tests/vscode/files.native.mjs",
       "tests/vscode/artifacts.native.mjs",
       "tests/unit/native-preview-source.test.mjs",
+      "tests/unit/vscode-package.test.mjs",
+      "tests/unit/installed-preview.test.mjs",
     ],
     coverage: {
       provider: "v8",

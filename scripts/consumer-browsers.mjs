@@ -52,33 +52,36 @@ async function staticDirectory(root) {
   };
 }
 
-export async function testConsumerBrowsers(temporary) {
+export async function testConsumerBrowsers(temporary, component) {
+  const language = component !== "studio";
+  const studio = component !== "language";
   const results = [];
-  for (const manager of ["npm", "pnpm"]) {
-    const root = join(temporary, manager);
-    await copyFile(
-      new URL("../tests/consumer/browser.mjs", import.meta.url),
-      join(root, "browser.mjs"),
-    );
-    const built = await build({
-      absWorkingDir: root,
-      entryPoints: ["browser.mjs"],
-      bundle: true,
-      platform: "browser",
-      format: "iife",
-      globalName: "TintaConsumer",
-      write: false,
-      metafile: true,
-    });
-    for (const path of Object.keys(built.metafile.inputs)) {
-      const rel = relative(root, resolve(root, path));
-      expect(rel.startsWith(`..${sep}`)).toBe(false);
+  if (language)
+    for (const manager of ["npm", "pnpm"]) {
+      const root = join(temporary, manager);
+      await copyFile(
+        new URL("../tests/consumer/browser.mjs", import.meta.url),
+        join(root, "browser.mjs"),
+      );
+      const built = await build({
+        absWorkingDir: root,
+        entryPoints: ["browser.mjs"],
+        bundle: true,
+        platform: "browser",
+        format: "iife",
+        globalName: "TintaConsumer",
+        write: false,
+        metafile: true,
+      });
+      for (const path of Object.keys(built.metafile.inputs)) {
+        const rel = relative(root, resolve(root, path));
+        expect(rel.startsWith(`..${sep}`)).toBe(false);
+      }
+      await writeFile(join(root, "browser.js"), built.outputFiles[0].contents);
     }
-    await writeFile(join(root, "browser.js"), built.outputFiles[0].contents);
-  }
-  const staticHost = await staticDirectory(
-    join(temporary, "downloads/studio-directory"),
-  );
+  const staticHost = studio
+    ? await staticDirectory(join(temporary, "downloads/studio-directory"))
+    : undefined;
   try {
     for (const [name, launcher] of Object.entries({
       chromium,
@@ -128,84 +131,101 @@ export async function testConsumerBrowsers(temporary) {
               await expect(page.locator("body")).toContainText("Value: 3");
             } else await expect(page.getByRole("slider")).toHaveCount(0);
           }
-          const installed = await readFile(
-            join(temporary, manager, "tinta-studio.html"),
-          );
-          const standalone = await readFile(
-            join(temporary, "downloads/studio-standalone/tinta-studio.html"),
-          );
-          expect(installed.equals(standalone)).toBe(true);
-          for (const standaloneReader of [false, true]) {
-            const integration = await context.newPage();
-            integration.on("pageerror", (error) => errors.push(error.message));
-            await integration.addScriptTag({
-              path: join(temporary, manager, "browser.js"),
-            });
-            await integration.addScriptTag({
-              path: join(temporary, "downloads/reader-runtime/reader.js"),
-            });
-            await integration.addStyleTag({
-              path: join(temporary, "downloads/reader-runtime/reader.css"),
-            });
-            await integration.evaluate((standalone) => {
-              globalThis.consumerCleanup = globalThis.TintaConsumer.mount(
-                document.body,
-                standalone
-                  ? globalThis.TintaReaderRuntime.TintaReader.mountReader
-                  : undefined,
-              );
-            }, standaloneReader);
-            await expect(integration.locator("svg")).toBeVisible();
-            const slider = integration.getByRole("slider", { name: "Amount" });
-            await slider.focus();
-            await slider.press("ArrowRight");
-            await expect(integration.locator("body")).toContainText("Value: 3");
-            await integration.evaluate(() => globalThis.consumerCleanup());
-            await integration.close();
+          if (studio) {
+            const installed = await readFile(
+              join(temporary, manager, "tinta-studio.html"),
+            );
+            const standalone = await readFile(
+              join(temporary, "downloads/studio-standalone/tinta-studio.html"),
+            );
+            expect(installed.equals(standalone)).toBe(true);
           }
+          if (language)
+            for (const standaloneReader of [false, true]) {
+              const integration = await context.newPage();
+              integration.on("pageerror", (error) =>
+                errors.push(error.message),
+              );
+              await integration.addScriptTag({
+                path: join(temporary, manager, "browser.js"),
+              });
+              await integration.addScriptTag({
+                path: join(temporary, "downloads/reader-runtime/reader.js"),
+              });
+              await integration.addStyleTag({
+                path: join(temporary, "downloads/reader-runtime/reader.css"),
+              });
+              await integration.evaluate((standalone) => {
+                globalThis.consumerCleanup = globalThis.TintaConsumer.mount(
+                  document.body,
+                  standalone
+                    ? globalThis.TintaReaderRuntime.TintaReader.mountReader
+                    : undefined,
+                );
+              }, standaloneReader);
+              await expect(integration.locator("svg")).toBeVisible();
+              const slider = integration.getByRole("slider", {
+                name: "Amount",
+              });
+              await slider.focus();
+              await slider.press("ArrowRight");
+              await expect(integration.locator("body")).toContainText(
+                "Value: 3",
+              );
+              await integration.evaluate(() => globalThis.consumerCleanup());
+              await integration.close();
+            }
         }
-        await page.goto(
-          pathToFileURL(
-            join(
-              temporary,
-              "downloads/examples/article.tinta.interactive.html",
-            ),
-          ).href,
-        );
-        await expect(page.locator(".tinta-reader")).toBeVisible();
-        await page.goto(
-          pathToFileURL(
-            join(temporary, "downloads/studio-standalone/tinta-studio.html"),
-          ).href,
-        );
-        await exerciseStudio(page);
-        const local = await browser.newContext();
-        const blocked = [];
-        // WebKit interception disrupts local Blob workers. The browser's dead
-        // loopback proxy blocks nonlocal HTTP; observation still rejects attempts.
-        local.on("request", (request) => {
-          const url = request.url();
-          if (/^https?:/.test(url) && !url.startsWith(staticHost.origin + "/"))
-            blocked.push(url);
-        });
-        const staticPage = await local.newPage();
-        staticPage.on("pageerror", (error) => errors.push(error.message));
-        await staticPage.goto(staticHost.origin + "/nested/index.html");
-        try {
-          await exerciseStudio(staticPage);
-        } catch (error) {
-          throw new Error(
-            JSON.stringify({
-              browser: name,
-              error: String(error),
-              blocked,
-              errors,
-              body: await staticPage.locator("body").innerText(),
-            }),
-            { cause: error },
+        if (language) {
+          await page.goto(
+            pathToFileURL(
+              join(
+                temporary,
+                "downloads/examples/article.tinta.interactive.html",
+              ),
+            ).href,
           );
+          await expect(page.locator(".tinta-reader")).toBeVisible();
         }
-        expect(blocked).toEqual([]);
+        if (studio) {
+          await page.goto(
+            pathToFileURL(
+              join(temporary, "downloads/studio-standalone/tinta-studio.html"),
+            ).href,
+          );
+          await exerciseStudio(page);
+          const local = await browser.newContext();
+          const blocked = [];
+          // WebKit interception disrupts local Blob workers. The browser's dead
+          // loopback proxy blocks nonlocal HTTP; observation still rejects attempts.
+          local.on("request", (request) => {
+            const url = request.url();
+            if (
+              /^https?:/.test(url) &&
+              !url.startsWith(staticHost.origin + "/")
+            )
+              blocked.push(url);
+          });
+          const staticPage = await local.newPage();
+          staticPage.on("pageerror", (error) => errors.push(error.message));
+          await staticPage.goto(staticHost.origin + "/nested/index.html");
+          try {
+            await exerciseStudio(staticPage);
+          } catch (error) {
+            throw new Error(
+              JSON.stringify({
+                browser: name,
+                error: String(error),
+                blocked,
+                errors,
+                body: await staticPage.locator("body").innerText(),
+              }),
+              { cause: error },
+            );
+          }
+          expect(blocked).toEqual([]);
+          await local.close();
+        }
         expect(errors).toEqual([]);
         expect(offlineRequests).toEqual([]);
         results.push({
@@ -214,11 +234,19 @@ export async function testConsumerBrowsers(temporary) {
           status: "PASS",
           checks: [
             "npm/pnpm exports at file origin offline",
-            "installed reader and charts",
-            "standalone reader JS/CSS",
-            "example HTML",
-            "standalone Studio offline",
-            "directory Studio nested relative resources on loopback only",
+            ...(language
+              ? [
+                  "installed reader and charts",
+                  "standalone reader JS/CSS",
+                  "example HTML",
+                ]
+              : []),
+            ...(studio
+              ? [
+                  "standalone Studio offline",
+                  "directory Studio nested relative resources on loopback only",
+                ]
+              : []),
           ],
         });
       } finally {
@@ -226,7 +254,7 @@ export async function testConsumerBrowsers(temporary) {
       }
     }
   } finally {
-    await staticHost.close();
+    await staticHost?.close();
   }
   return results;
 }

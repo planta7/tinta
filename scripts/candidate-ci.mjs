@@ -227,7 +227,7 @@ if (command === "build") {
     const consumer = read(join(output, "consumer.json"));
     assert.equal(consumer.status, "PASS");
     assert.equal(consumer.inventorySha256, report.inventorySha256);
-    report.routes = consumer.routes;
+    report.routes = consumer.routes ?? [];
     report.archives = consumer.archives;
     report.browsers = consumer.browsers.map((b) => ({
       ...b,
@@ -239,44 +239,46 @@ if (command === "build") {
           ),
         ),
     }));
-    const desktop = process.env.TINTA_VSCODE_EXECUTABLE;
-    const cli = process.env.TINTA_VSCODE_CLI;
-    assert.ok(desktop && cli, "Pinned desktop and CLI required");
-    const product = read(process.env.TINTA_VSCODE_PRODUCT);
-    const application = read(process.env.TINTA_VSCODE_PACKAGE);
-    assert.equal(product.commit, "2a59476c9bfcb90b3ddc372c36762471b7dfad1c");
-    assert.equal(application.version, "1.141.0");
-    report.vscode = {
-      version: application.version,
-      commit: product.commit,
-      sha256: digest(readFileSync(desktop)),
-    };
-    const temporary = mkdtempSync(
-      join(process.platform === "darwin" ? "/tmp" : tmpdir(), "tinta-ci-"),
-    );
-    const vsix = join(
-      directory,
-      inventory.targets.find((t) => t.id === "vscode").archive,
-    );
-    runNativeModes(nativeModes, (mode) => {
-      const root = join(temporary, mode);
-      const invocation = [
-        process.execPath,
-        "scripts/test-vscode-installed.mjs",
-        desktop,
-        cli,
-        vsix,
-        root,
-        "--release",
-        `--${mode}`,
-      ];
-      runNativeMode(invocation, root, join(output, `native-${mode}.json`), {
-        offline: mode === "os-offline",
+    if (inventory.targets.some((target) => target.id === "vscode")) {
+      const desktop = process.env.TINTA_VSCODE_EXECUTABLE;
+      const cli = process.env.TINTA_VSCODE_CLI;
+      assert.ok(desktop && cli, "Pinned desktop and CLI required");
+      const product = read(process.env.TINTA_VSCODE_PRODUCT);
+      const application = read(process.env.TINTA_VSCODE_PACKAGE);
+      assert.equal(product.commit, "2a59476c9bfcb90b3ddc372c36762471b7dfad1c");
+      assert.equal(application.version, "1.141.0");
+      report.vscode = {
+        version: application.version,
+        commit: product.commit,
+        sha256: digest(readFileSync(desktop)),
+      };
+      const temporary = mkdtempSync(
+        join(process.platform === "darwin" ? "/tmp" : tmpdir(), "tinta-ci-"),
+      );
+      const vsix = join(
+        directory,
+        inventory.targets.find((t) => t.id === "vscode").archive,
+      );
+      runNativeModes(nativeModes, (mode) => {
+        const root = join(temporary, mode);
+        const invocation = [
+          process.execPath,
+          "scripts/test-vscode-installed.mjs",
+          desktop,
+          cli,
+          vsix,
+          root,
+          "--release",
+          `--${mode}`,
+        ];
+        runNativeMode(invocation, root, join(output, `native-${mode}.json`), {
+          offline: mode === "os-offline",
+        });
+        const result = read(join(root, "result.json"));
+        report.modes.push({ mode, ...result });
+        save(reportPath, report);
       });
-      const result = read(join(root, "result.json"));
-      report.modes.push({ mode, ...result });
-      save(reportPath, report);
-    });
+    }
     checkInventory(directory, config, { clean: true });
     report.status = "PASS";
   } finally {
@@ -295,7 +297,7 @@ if (command === "build") {
   const reports = [];
   for (const cell of ["darwin-arm64", "linux-arm64", "win32-x64"]) {
     const bytes = readFileSync(
-      `build/results/results-${cell}-${process.env.TINTA_PAYLOAD_ID}/${cell}.json`,
+      `build/results/results-${process.env.TINTA_COMPONENT ? process.env.TINTA_COMPONENT + "-" : ""}${cell}-${process.env.TINTA_PAYLOAD_ID}/${cell}.json`,
     );
     reports.push(readCandidateJson(bytes));
     writeFileSync(join(directory, `${cell}.json`), bytes);

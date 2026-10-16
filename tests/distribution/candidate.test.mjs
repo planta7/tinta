@@ -61,11 +61,25 @@ describe("public supplied-archive checker", () => {
           sourceSha: inventory.source.commit,
           implementation: config.versions.implementation,
           extension: config.versions.extension,
+          studio: config.versions.studio,
           notes: "Fixture release notes",
+          ...(process.env.TINTA_COMPONENT
+            ? {
+                components: {
+                  [process.env.TINTA_COMPONENT]: {
+                    notes: "Fixture release notes",
+                  },
+                },
+              }
+            : {}),
         };
         if (kind === "release-plan-source") plan.sourceSha = "0".repeat(40);
         if (kind === "release-plan-version") plan.extension = "999.0.0";
-        if (kind === "release-plan-notes") plan.notes = "";
+        if (kind === "release-plan-notes") {
+          plan.notes = "";
+          if (plan.components)
+            plan.components[process.env.TINTA_COMPONENT].notes = "";
+        }
         const bytes = Buffer.from(JSON.stringify(plan));
         writeFileSync(join(root, "release-plan.json"), bytes);
         inventory.releasePlan = {

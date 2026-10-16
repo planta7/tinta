@@ -13,6 +13,10 @@ import {
 } from "./distribution-archive.mjs";
 import {
   releaseIdentity,
+  selectedTargets,
+  selectedEnvironments,
+  targetVersion,
+  dependencyClosure,
   validateReleaseManifest,
 } from "./release-contract.mjs";
 
@@ -93,6 +97,11 @@ export function checkInventory(directory, config, { clean = false } = {}) {
   );
   assert.deepEqual(inventory.versions, config.versions, "Mixed versions");
   assert.equal(
+    inventory.component,
+    process.env.TINTA_COMPONENT,
+    "Mixed component",
+  );
+  assert.equal(
     inventory.configSha256,
     digest(readFileSync(new URL("../toolchain/release.json", import.meta.url))),
     "Configuration digest",
@@ -111,10 +120,27 @@ export function checkInventory(directory, config, { clean = false } = {}) {
     assert.equal(plan.sourceSha, inventory.source.commit);
     assert.equal(plan.implementation, config.versions.implementation);
     assert.equal(plan.extension, config.versions.extension);
-    assert.equal(typeof plan.notes, "string");
-    assert.ok(plan.notes.trim());
+    assert.equal(plan.studio, config.versions.studio);
+    const notes = inventory.component
+      ? plan.components[inventory.component].notes
+      : plan.notes;
+    assert.equal(typeof notes, "string");
+    assert.ok(notes.trim());
   }
-  const expected = [...config.packages, ...config.artifacts];
+  const expected = selectedTargets(config);
+  const prerequisites =
+    inventory.component === "studio"
+      ? config.packages.filter(
+          (target) =>
+            dependencyClosure(config, "cli").includes(target.id) &&
+            target.id !== "cli",
+        )
+      : [];
+  assert.deepEqual(
+    (inventory.verificationPackages ?? []).map((target) => target.id).sort(),
+    prerequisites.map((target) => target.id).sort(),
+    "Verification dependency inventory",
+  );
   assert.deepEqual(
     inventory.targets.map((t) => t.id).sort(),
     expected.map((t) => t.id).sort(),
@@ -122,7 +148,10 @@ export function checkInventory(directory, config, { clean = false } = {}) {
   );
   const paths = inventory.targets.map((t) => t.archive);
   assert.equal(new Set(paths).size, paths.length, "Duplicate archive path");
-  for (const target of inventory.targets) {
+  for (const target of [
+    ...inventory.targets,
+    ...(inventory.verificationPackages ?? []),
+  ]) {
     const bytes = checkFile(directory, {
       path: target.archive,
       bytes: target.bytes,
@@ -175,7 +204,7 @@ export function checkInventory(directory, config, { clean = false } = {}) {
       const manifest = readCandidateJson(entries["package.json"]);
       const definition = config.packages.find((p) => p.id === target.id);
       assert.equal(manifest.name, definition.proposedName);
-      assert.equal(manifest.version, config.versions.implementation);
+      assert.equal(manifest.version, targetVersion(config, target.id));
       assert.equal(manifest.private, false);
       assert.equal(manifest.scripts, undefined, "No installation hooks");
       assert.deepEqual(manifest.dependencies, {
@@ -226,6 +255,11 @@ export function validateProducerIdentity(producer) {
 
 export function checkReports(inventory, producer, build, reports) {
   validateProducerIdentity(producer);
+  assert.equal(
+    inventory.component,
+    process.env.TINTA_COMPONENT,
+    "Report component mismatch",
+  );
   assert.equal(inventory.source.dirty, false, "Dirty source");
   assert.equal(inventory.source.commit, producer.sourceSha, "Wrong source");
   sameProducer(build.producer, producer);
@@ -275,6 +309,10 @@ export function checkReports(inventory, producer, build, reports) {
     [...matrixCells].sort(),
     "Missing or duplicate matrix cell",
   );
+  const extension = inventory.targets.some((target) => target.id === "vscode");
+  const node = inventory.targets.some((target) =>
+    target.archive.endsWith(".tgz"),
+  );
   for (const report of reports) {
     sameProducer(report.producer, producer);
     assert.equal(report.status, "PASS", "Matrix gate failed");
@@ -300,7 +338,7 @@ export function checkReports(inventory, producer, build, reports) {
     );
     assert.deepEqual(
       report.modes.map((m) => m.mode),
-      nativeModes,
+      extension ? nativeModes : [],
       "Missing native gate",
     );
     for (const mode of report.modes) {
@@ -320,26 +358,58 @@ export function checkReports(inventory, producer, build, reports) {
         inventory.targets.find((t) => t.id === "vscode").sha256,
       );
     }
-    assert.deepEqual(report.routes.map((r) => r.manager).sort(), [
-      "npm",
-      "pnpm",
-    ]);
+    assert.deepEqual(
+      report.routes.map((r) => r.manager).sort(),
+      node ? ["npm", "pnpm"] : [],
+    );
     for (const route of report.routes) {
       assert.equal(route.status, "PASS", "Consumer route failed");
-      assert.ok(route.groups.length >= 26, "Missing consumer checks");
+      if (!inventory.component)
+        assert.ok(route.groups.length >= 26, "Missing consumer checks");
+      else {
+        for (const group of [
+          "declarations:strict-node-next",
+          "parser:budget-depth-recovery-spans",
+          "engine:compile-evaluate",
+          ...(inventory.component === "language"
+            ? [
+                "language-service:queries",
+                "ipc:server-worker-handshake",
+                "ipc:watchdog-restart-production-worker",
+                "artifacts:installed-exports",
+              ]
+            : ["cli:images-grants-exports-bundle-studio"]),
+        ])
+          assert.ok(
+            route.groups.includes(group),
+            `Missing consumer check: ${group}`,
+          );
+        assert.ok(
+          inventory.targets
+            .filter((target) => target.archive.endsWith(".tgz"))
+            .every((target) =>
+              route.groups.some((group) =>
+                group.startsWith(`export:@tinta-lang/${target.id}`),
+              ),
+            ),
+          "Missing package export checks",
+        );
+      }
       assert.ok(
         route.commands.length > 0 &&
           route.commands.every((r) => r.exitCode === (r.expectedExitCode ?? 0)),
         "Consumer command failed",
       );
     }
-    assert.equal(report.vscode.version, "1.141.0");
-    assert.equal(
-      report.vscode.commit,
-      "2a59476c9bfcb90b3ddc372c36762471b7dfad1c",
-    );
-    assert.match(report.vscode.sha256, /^[a-f0-9]{64}$/);
-    if (report.cell === "darwin-arm64") {
+    if (extension) {
+      assert.equal(report.vscode.version, "1.141.0");
+      assert.equal(
+        report.vscode.commit,
+        "2a59476c9bfcb90b3ddc372c36762471b7dfad1c",
+      );
+      assert.match(report.vscode.sha256, /^[a-f0-9]{64}$/);
+    } else assert.equal(report.vscode, undefined);
+    if (report.cell === "darwin-arm64" && node) {
       assert.deepEqual(report.browsers.map((b) => b.browser).sort(), [
         "chromium",
         "firefox",
@@ -363,7 +433,7 @@ export function assembleManifest(
   reportFiles,
 ) {
   checkReports(inventory, producer, build, reports);
-  const environments = config.environments.map((environment) => {
+  const environments = selectedEnvironments(config).map((environment) => {
     const report = reports.find(
       (r) => r.cell === `${environment.platform}-${environment.architecture}`,
     );
@@ -384,7 +454,7 @@ export function assembleManifest(
           : (report?.nodeSha256 ?? inventory.source.sha256)),
     };
   });
-  const targets = [...config.packages, ...config.artifacts].map((target) => {
+  const targets = selectedTargets(config).map((target) => {
     const packed = inventory.targets.find((t) => t.id === target.id);
     const npm = config.packages.includes(target);
     const extension = target.id === "vscode";
@@ -396,9 +466,7 @@ export function assembleManifest(
         : extension
           ? `${config.identities.marketplacePublisher.value}.${config.identities.extensionName.value}`
           : target.id,
-      version: extension
-        ? config.versions.extension
-        : config.versions.implementation,
+      version: targetVersion(config, target.id),
       channel: extension
         ? config.versions.extensionChannel
         : config.versions.npmChannel,
@@ -424,7 +492,8 @@ export function assembleManifest(
     };
   });
   const manifest = {
-    schemaVersion: 1,
+    schemaVersion: inventory.component ? 2 : 1,
+    ...(inventory.component ? { component: inventory.component } : {}),
     ...releaseIdentity(config),
     source: {
       commit: producer.sourceSha,

@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import { previewHtml } from "../../apps/studio/dist/runtime/previewHtml.js";
@@ -49,6 +50,16 @@ describe("supported opaque preview build output", () => {
     expect(
       manifest.inputs.filter((path) => path.startsWith("apps/studio/")),
     ).toEqual(["apps/studio/dist/protocol.js", "apps/studio/dist/preview.js"]);
+    for (const path of manifest.inputs.filter((path) =>
+      path.startsWith("apps/studio/"),
+    )) {
+      const source = path.replace("/dist/", "/src/").replace(/\.js$/, ".ts");
+      expect(
+        execFileSync("git", ["check-attr", "ci-vscode", "--", source], {
+          encoding: "utf8",
+        }),
+      ).toContain(": ci-vscode: set");
+    }
     expect(
       manifest.inputs.some((path) =>
         /node_modules\/(?:react|react-dom|@codemirror)\//.test(path),

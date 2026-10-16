@@ -18,6 +18,7 @@ import {
   readZip,
   safePath,
 } from "./distribution-archive.mjs";
+import { loadReleaseConfig, selectedTargets } from "./release-contract.mjs";
 import { consumerTools } from "./consumer-dependencies.mjs";
 import {
   registryPackages,
@@ -118,26 +119,17 @@ async function run(command, cwd, env, expected = 0) {
 let registry;
 try {
   assert.equal(process.versions.node, "24.21.0");
-  const ids = [
-    "types",
-    "syntax",
-    "engine",
-    "charts",
-    "reader",
-    "artifacts",
-    "local-files",
-    "cli",
-    "language-service",
-    "language-server",
-    "vscode",
-    "studio-directory",
-    "studio-standalone",
-    "reader-runtime",
-    "source",
-    "examples",
-  ];
+  assert.equal(
+    inventory.component,
+    process.env.TINTA_COMPONENT,
+    "Consumer component mismatch",
+  );
+  const ids = selectedTargets(loadReleaseConfig()).map((target) => target.id);
   assert.deepEqual(inventory.targets.map((item) => item.id).sort(), ids.sort());
-  for (const target of inventory.targets) {
+  for (const target of [
+    ...inventory.targets,
+    ...(inventory.verificationPackages ?? []),
+  ]) {
     safePath(target.archive);
     const bytes = await readFile(join(archives, target.archive));
     assert.equal(digest(bytes), target.sha256);
@@ -152,219 +144,231 @@ try {
     );
     for (const file of target.files)
       assert.equal(digest(entries[file.path]), file.sha256);
-    report.archives.push({
-      id: target.id,
-      sha256: target.sha256,
-      bytes: bytes.length,
-    });
+    if (inventory.targets.includes(target))
+      report.archives.push({
+        id: target.id,
+        sha256: target.sha256,
+        bytes: bytes.length,
+      });
   }
-  const tools = await consumerTools();
-  report.tools = tools;
-  const packages = await registryPackages(
-    inventory,
-    archives,
-    dependencyDirectory,
-    tools,
-  );
-  registry = await startRegistry(packages);
-  loopbackRegistry(registry.origin);
-  const manifests = packages
-    .filter((item) => item.manifest.name.startsWith("@tinta-lang/"))
-    .map((item) => item.manifest);
-  const downloads = join(temporary, "downloads");
-  for (const target of inventory.targets.filter((item) =>
-    [
-      "studio-directory",
-      "studio-standalone",
-      "reader-runtime",
-      "examples",
-    ].includes(item.id),
-  )) {
-    const entries = readZip(await readFile(join(archives, target.archive)));
-    for (const [path, bytes] of Object.entries(entries)) {
-      safePath(path);
-      const output = join(downloads, target.id, path);
-      await mkdir(dirname(output), { recursive: true });
-      await writeFile(output, bytes);
-    }
-  }
-  for (const manager of ["npm", "pnpm"]) {
-    const directory = join(temporary, manager);
-    await mkdir(join(directory, "home"), { recursive: true });
-    await writeFile(join(directory, "empty-config"), "");
-    await writeFile(join(directory, "empty-global-config"), "");
-    const env = {
-      PATH: process.env.PATH,
-      HOME: join(directory, "home"),
-      USERPROFILE: join(directory, "home"),
-      ...(process.platform === "win32"
-        ? { SystemRoot: process.env.SystemRoot, COMSPEC: process.env.COMSPEC }
-        : {}),
-      COREPACK_ENABLE_NETWORK: "0",
-      COREPACK_ENABLE_PROJECT_SPEC: "0",
-      NODE_PATH: "",
-      NODE_OPTIONS: "",
-      CI: "true",
-      npm_config_userconfig: join(directory, "empty-config"),
-      npm_config_globalconfig: join(directory, "empty-global-config"),
-      npm_config_cache: join(directory, "cache"),
-      npm_config_registry: registry.origin,
-      npm_config_ignore_scripts: "true",
-      npm_config_audit: "false",
-      npm_config_fund: "false",
-    };
-    await writeFile(
-      join(directory, ".npmrc"),
-      `registry=${registry.origin}/\n@tinta-lang:registry=${registry.origin}/\nignore-scripts=true\naudit=false\nfund=false\n`,
+  if (inventory.component !== "vscode") {
+    const tools = await consumerTools();
+    report.tools = tools;
+    const packages = await registryPackages(
+      inventory,
+      archives,
+      dependencyDirectory,
+      tools,
     );
-    await writeFile(
-      join(directory, "package.json"),
-      JSON.stringify(
-        {
-          name: "tinta-consumer-check",
-          version: "1.0.0",
-          private: true,
-          type: "module",
-          dependencies: Object.fromEntries([
-            ...manifests.map((item) => [item.name, item.version]),
-            ...tools.map((item) => [item.name, item.version]),
-          ]),
-        },
-        null,
-        2,
-      ),
-    );
-    await writeFile(
-      join(directory, "manifests.json"),
-      JSON.stringify(manifests),
-    );
-    for (const name of ["probe.mjs", "parser.mjs", "ipc-watchdog.mjs"])
-      await copyFile(
-        new URL(`../tests/consumer/${name}`, import.meta.url),
-        join(directory, name),
-      );
-    const image = Object.entries(
-      readZip(
-        await readFile(
-          join(
-            archives,
-            inventory.targets.find((item) => item.id === "examples").archive,
-          ),
-        ),
-      ),
-    ).find(([name]) => name.endsWith(".png"));
-    assert.ok(image, "Examples must contain a raster resource");
-    await writeFile(join(directory, "photo.png"), image[1]);
-    const managerCommand =
-      manager === "pnpm"
-        ? [process.execPath, pnpmCli]
-        : process.env.TINTA_NPM_CLI
-          ? [process.execPath, process.env.TINTA_NPM_CLI]
-          : ["npm"];
-    const version = await run([...managerCommand, "--version"], directory, env);
-    assert.equal(
-      version.stdout.trim(),
-      manager === "npm" ? "11.19.0" : "10.34.6",
-    );
-    await run(
+    registry = await startRegistry(packages);
+    loopbackRegistry(registry.origin);
+    const manifests = packages
+      .filter((item) => item.manifest.name.startsWith("@tinta-lang/"))
+      .map((item) => item.manifest);
+    const downloads = join(temporary, "downloads");
+    for (const target of inventory.targets.filter((item) =>
       [
-        ...managerCommand,
-        "install",
-        "--ignore-scripts",
-        ...(manager === "pnpm"
-          ? [
-              "--store-dir",
-              join(directory, "store"),
-              "--config.node-linker=isolated",
-              "--config.hoist=false",
-              "--config.shamefully-hoist=false",
-            ]
-          : ["--install-strategy=nested"]),
-      ],
-      directory,
-      env,
-    );
-    const lock = await readFile(
-      join(
-        directory,
-        manager === "npm" ? "package-lock.json" : "pnpm-lock.yaml",
-      ),
-      "utf8",
-    );
-    const lockData = manager === "npm" ? JSON.parse(lock) : parseYaml(lock);
-    function checkResolved(value) {
-      if (!value || typeof value !== "object") return;
-      for (const [key, entry] of Object.entries(value)) {
-        if (["resolved", "tarball"].includes(key))
-          assert.ok(
-            entry.startsWith(registry.origin + "/"),
-            "Non-loopback dependency resolution",
-          );
-        else checkResolved(entry);
+        "studio-directory",
+        "studio-standalone",
+        "reader-runtime",
+        "examples",
+      ].includes(item.id),
+    )) {
+      const entries = readZip(await readFile(join(archives, target.archive)));
+      for (const [path, bytes] of Object.entries(entries)) {
+        safePath(path);
+        const output = join(downloads, target.id, path);
+        await mkdir(dirname(output), { recursive: true });
+        await writeFile(output, bytes);
       }
     }
-    checkResolved(lockData);
-    const requestsBeforeProcessing = registry.requests.length;
-    await run([process.execPath, "probe.mjs"], directory, env);
-    assert.equal(
-      registry.requests.length,
-      requestsBeforeProcessing,
-      "Document processing accessed the registry",
-    );
-    const result = JSON.parse(
-      await readFile(join(directory, "probe-result.json")),
-    );
-    const syntax = await realpath(
-      join(directory, "node_modules/@tinta-lang/syntax/dist/index.js"),
-    );
-    const original = await readFile(syntax, "utf8");
-    const hooks = original.match(/observeTokenizer\?\.\([^;]+;/g);
-    assert.equal(hooks?.length, 2, "Unexpected bundled tokenizer hook layout");
-    try {
+    for (const manager of ["npm", "pnpm"]) {
+      const directory = join(temporary, manager);
+      await mkdir(join(directory, "home"), { recursive: true });
+      await writeFile(join(directory, "empty-config"), "");
+      await writeFile(join(directory, "empty-global-config"), "");
+      const env = {
+        PATH: process.env.PATH,
+        HOME: join(directory, "home"),
+        USERPROFILE: join(directory, "home"),
+        ...(process.platform === "win32"
+          ? { SystemRoot: process.env.SystemRoot, COMSPEC: process.env.COMSPEC }
+          : {}),
+        COREPACK_ENABLE_NETWORK: "0",
+        COREPACK_ENABLE_PROJECT_SPEC: "0",
+        NODE_PATH: "",
+        NODE_OPTIONS: "",
+        CI: "true",
+        npm_config_userconfig: join(directory, "empty-config"),
+        npm_config_globalconfig: join(directory, "empty-global-config"),
+        npm_config_cache: join(directory, "cache"),
+        npm_config_registry: registry.origin,
+        npm_config_ignore_scripts: "true",
+        npm_config_audit: "false",
+        npm_config_fund: "false",
+      };
       await writeFile(
-        syntax,
-        original.replace(/observeTokenizer\?\.\([^;]+;/g, ""),
+        join(directory, ".npmrc"),
+        `registry=${registry.origin}/\n@tinta-lang:registry=${registry.origin}/\nignore-scripts=true\naudit=false\nfund=false\n`,
       );
-      const negative = await run(
+      await writeFile(
+        join(directory, "package.json"),
+        JSON.stringify(
+          {
+            name: "tinta-consumer-check",
+            version: "1.0.0",
+            private: true,
+            type: "module",
+            dependencies: Object.fromEntries([
+              ...manifests.map((item) => [item.name, item.version]),
+              ...tools.map((item) => [item.name, item.version]),
+            ]),
+          },
+          null,
+          2,
+        ),
+      );
+      await writeFile(
+        join(directory, "manifests.json"),
+        JSON.stringify(manifests),
+      );
+      for (const name of ["probe.mjs", "parser.mjs", "ipc-watchdog.mjs"])
+        await copyFile(
+          new URL(`../tests/consumer/${name}`, import.meta.url),
+          join(directory, name),
+        );
+      const fixture = inventory.targets.find((item) => item.id === "source");
+      const image = Object.entries(
+        readZip(await readFile(join(archives, fixture.archive))),
+      ).find(([name]) => /^examples\/assets\/.+\.png$/.test(name));
+      assert.ok(image, "Examples must contain a raster resource");
+      await writeFile(join(directory, "photo.png"), image[1]);
+      const managerCommand =
+        manager === "pnpm"
+          ? [process.execPath, pnpmCli]
+          : process.env.TINTA_NPM_CLI
+            ? [process.execPath, process.env.TINTA_NPM_CLI]
+            : ["npm"];
+      const version = await run(
+        [...managerCommand, "--version"],
+        directory,
+        env,
+      );
+      assert.equal(
+        version.stdout.trim(),
+        manager === "npm" ? "11.19.0" : "10.34.6",
+      );
+      await run(
+        [
+          ...managerCommand,
+          "install",
+          "--ignore-scripts",
+          ...(manager === "pnpm"
+            ? [
+                "--store-dir",
+                join(directory, "store"),
+                "--config.node-linker=isolated",
+                "--config.hoist=false",
+                "--config.shamefully-hoist=false",
+              ]
+            : ["--install-strategy=nested"]),
+        ],
+        directory,
+        env,
+      );
+      const lock = await readFile(
+        join(
+          directory,
+          manager === "npm" ? "package-lock.json" : "pnpm-lock.yaml",
+        ),
+        "utf8",
+      );
+      const lockData = manager === "npm" ? JSON.parse(lock) : parseYaml(lock);
+      function checkResolved(value) {
+        if (!value || typeof value !== "object") return;
+        for (const [key, entry] of Object.entries(value)) {
+          if (["resolved", "tarball"].includes(key))
+            assert.ok(
+              entry.startsWith(registry.origin + "/"),
+              "Non-loopback dependency resolution",
+            );
+          else checkResolved(entry);
+        }
+      }
+      checkResolved(lockData);
+      const requestsBeforeProcessing = registry.requests.length;
+      await run([process.execPath, "probe.mjs"], directory, env);
+      assert.equal(
+        registry.requests.length,
+        requestsBeforeProcessing,
+        "Document processing accessed the registry",
+      );
+      const result = JSON.parse(
+        await readFile(join(directory, "probe-result.json")),
+      );
+      const syntax = await realpath(
+        join(directory, "node_modules/@tinta-lang/syntax/dist/index.js"),
+      );
+      const original = await readFile(syntax, "utf8");
+      const hooks = original.match(/observeTokenizer\?\.\([^;]+;/g);
+      assert.equal(
+        hooks?.length,
+        2,
+        "Unexpected bundled tokenizer hook layout",
+      );
+      try {
+        await writeFile(
+          syntax,
+          original.replace(/observeTokenizer\?\.\([^;]+;/g, ""),
+        );
+        const negative = await run(
+          [process.execPath, "parser.mjs", "--installed"],
+          directory,
+          env,
+          1,
+        );
+        assert.match(
+          negative.stderr,
+          /Missing ordinary Markdown tokenizer budget hook/,
+        );
+      } finally {
+        await writeFile(syntax, original);
+      }
+      await run(
         [process.execPath, "parser.mjs", "--installed"],
         directory,
         env,
-        1,
       );
-      assert.match(
-        negative.stderr,
-        /Missing ordinary Markdown tokenizer budget hook/,
-      );
-    } finally {
-      await writeFile(syntax, original);
-    }
-    await run([process.execPath, "parser.mjs", "--installed"], directory, env);
-    result.negativeUnpatchedHook =
-      "PASS: removing both upstream tokenizer hooks is detected";
-    for (const target of inventory.targets.filter((item) =>
-      item.archive.endsWith(".tgz"),
-    )) {
-      const root = await realpath(
-        join(directory, "node_modules/@tinta-lang", target.id),
-      );
-      assert.ok(isInsideDirectory(directory, root));
-      for (const file of target.files)
-        assert.equal(
-          digest(await readFile(join(root, file.path))),
-          file.sha256,
-          `Installed bytes changed: ${target.id}/${file.path}`,
+      result.negativeUnpatchedHook =
+        "PASS: removing both upstream tokenizer hooks is detected";
+      for (const target of inventory.targets.filter((item) =>
+        item.archive.endsWith(".tgz"),
+      )) {
+        const root = await realpath(
+          join(directory, "node_modules/@tinta-lang", target.id),
         );
+        assert.ok(isInsideDirectory(directory, root));
+        for (const file of target.files)
+          assert.equal(
+            digest(await readFile(join(root, file.path))),
+            file.sha256,
+            `Installed bytes changed: ${target.id}/${file.path}`,
+          );
+      }
+      result.installedPayloadHashes =
+        "PASS: every installed package file matches its supplied archive";
+      result.manager = manager;
+      report.routes.push(result);
+      await save();
     }
-    result.installedPayloadHashes =
-      "PASS: every installed package file matches its supplied archive";
-    result.manager = manager;
-    report.routes.push(result);
-    await save();
-  }
-  report.registryRequests = registry.requests;
-  await registry.close();
-  registry = undefined;
-  report.browsers = await testConsumerBrowsers(temporary);
+    report.registryRequests = registry.requests;
+    await registry.close();
+    registry = undefined;
+    report.browsers = await testConsumerBrowsers(
+      temporary,
+      inventory.component,
+    );
+  } else report.browsers = [];
   report.status = "PASS";
 } catch (error) {
   report.status = "FAIL";

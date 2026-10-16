@@ -1,4 +1,7 @@
-import { implementationVersion } from "./implementation-version.mjs";
+import {
+  implementationVersion,
+  studioVersion,
+} from "./implementation-version.mjs";
 import { readFile, writeFile, mkdir, readdir } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { classicBundle } from "./packaging.mjs";
@@ -7,13 +10,7 @@ const digest = (text) => createHash("sha256").update(text).digest("base64");
 const script = (text) =>
   text.replace(/<\/script/gi, "<\\/script").replace(/<!--/g, "<\\!--");
 
-export async function buildStudio() {
-  const worker = await classicBundle(
-    "apps/studio/dist/worker.js",
-    undefined,
-    "neutral",
-    { minify: true },
-  );
+export async function buildPreview() {
   const preview = await classicBundle(
     "apps/studio/dist/preview.js",
     undefined,
@@ -51,6 +48,18 @@ export async function buildStudio() {
       2,
     ) + "\n",
   );
+  return { preview, previewHtml, previewCode };
+}
+
+export async function buildStudio() {
+  const worker = await classicBundle(
+    "apps/studio/dist/worker.js",
+    undefined,
+    "neutral",
+    { minify: true },
+  );
+  const { preview, previewHtml, previewCode } = await buildPreview();
+
   const examples = {};
   for (const name of ["article", "report", "guide", "chart-atlas"])
     examples[name] = await readFile(`examples/${name}.tinta`, "utf8");
@@ -116,7 +125,6 @@ export async function buildStudio() {
     percent: "percent(0.5)",
     money: "money(10)",
   };
-  const studioVersion = implementationVersion;
   const icon = await readFile("docs/assets/logo.svg", "utf8");
   const snippets = Object.fromEntries(
     registry.directives.map((name) => ["@" + name, templates[name]]),

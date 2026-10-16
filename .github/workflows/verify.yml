@@ -1,9 +1,11 @@
 name: Verify language
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 permissions:
   contents: read
 concurrency:
@@ -15,23 +17,63 @@ jobs:
     timeout-minutes: 60
     outputs:
       compiled_id: ${{ steps.compiled.outputs.artifact-id }}
+      studio: ${{ steps.affected.outputs.studio }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version: 24.21.0
           package-manager-cache: false
       - run: npm install --global pnpm@10.34.6 --ignore-scripts
       - run: pnpm install --frozen-lockfile
+      - name: Select affected components
+        id: affected
+        env:
+          BEFORE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          SOURCE: ${{ github.sha }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = push ]; then
+            node scripts/release-plan.mjs --affected "$BEFORE" "$SOURCE" --pending
+          else
+            node scripts/release-plan.mjs --affected "$BEFORE" "$SOURCE"
+          fi
+      - name: Shared source checks
+        if: steps.affected.outputs.language != 'true'
+        run: |-
+          python3 scripts/check_spec.py
+          python3 -m unittest discover -s scripts/tests -v
+          pnpm format:check
+          pnpm lint
+          pnpm check:dependencies
+          pnpm check:architecture
+          pnpm check:licenses
+          pnpm exec vitest run tests/unit/release-plan.test.mjs tests/unit/release-contract.test.mjs tests/unit/release-candidate.test.mjs
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
+        if: steps.affected.outputs.studio == 'true' || steps.affected.outputs.vscode == 'true'
       - run: pnpm verify --suite editing
+        if: steps.affected.outputs.language == 'true'
+      - name: Build and test Studio and CLI
+        if: steps.affected.outputs.language != 'true' && steps.affected.outputs.studio == 'true'
+        run: |-
+          pnpm build:studio
+          pnpm exec vitest run --config scripts/studio-vitest.config.js --coverage
+          pnpm exec playwright test studio scheduling incident-diagnostics
+          node scripts/studio-coverage.mjs
+      - name: Build and test the extension
+        if: steps.affected.outputs.language != 'true' && steps.affected.outputs.vscode == 'true'
+        run: |-
+          pnpm build:vscode
+          pnpm test:vscode:unit
       - run: pnpm test:vscode:browser
+        if: steps.affected.outputs.vscode == 'true'
       - name: Transfer the compilation for native CLI tests
         run: |
           mkdir -p build/transfer
-          tar -czf build/transfer/compiled.tgz --exclude=build/transfer build packages/*/dist apps/vscode/dist packages/cli/assets/tinta-studio.html
+          tar -czf build/transfer/compiled.tgz --exclude=build/transfer build packages/*/dist packages/cli/assets/tinta-studio.html
+        if: steps.affected.outputs.studio == 'true'
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         id: compiled
         with:
@@ -40,6 +82,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
           compression-level: 0
+        if: steps.affected.outputs.studio == 'true'
   cli-portability:
     needs: verify
     runs-on: ${{ matrix.os }}
@@ -47,22 +90,36 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15, windows-2022]
+        os:
+          - macos-15
+          - windows-2022
     steps:
+      - name: Report component selection
+        if: needs.verify.outputs.studio != 'true'
+        run: 'echo "CLI portability: not applicable; Studio/CLI inputs are unchanged." >> "$GITHUB_STEP_SUMMARY"'
+        shell: bash
       - run: git config --global core.autocrlf false
+        if: needs.verify.outputs.studio == 'true'
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
         with:
           persist-credentials: false
+        if: needs.verify.outputs.studio == 'true'
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version: 24.21.0
           package-manager-cache: false
+        if: needs.verify.outputs.studio == 'true'
       - run: npm install --global pnpm@10.34.6 --ignore-scripts
+        if: needs.verify.outputs.studio == 'true'
       - run: pnpm install --frozen-lockfile --ignore-scripts
+        if: needs.verify.outputs.studio == 'true'
       - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131
         with:
           artifact-ids: ${{ needs.verify.outputs.compiled_id }}
           path: build/transfer
           merge-multiple: true
+        if: needs.verify.outputs.studio == 'true'
       - run: tar -xzf build/transfer/compiled.tgz
+        if: needs.verify.outputs.studio == 'true'
       - run: pnpm exec vitest run tests/unit/cli.test.mjs tests/unit/cli-failures.test.mjs
+        if: needs.verify.outputs.studio == 'true'

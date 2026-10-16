@@ -1,0 +1,29 @@
+{
+  "language": {
+    "versionKey": "implementation",
+    "tagPrefix": "tinta-language-v",
+    "targets": [
+      "types",
+      "syntax",
+      "engine",
+      "charts",
+      "reader",
+      "artifacts",
+      "local-files",
+      "language-service",
+      "language-server",
+      "reader-runtime",
+      "examples"
+    ]
+  },
+  "studio": {
+    "versionKey": "studio",
+    "tagPrefix": "tinta-studio-v",
+    "targets": ["cli", "studio-directory", "studio-standalone"]
+  },
+  "vscode": {
+    "versionKey": "extension",
+    "tagPrefix": "tinta-vscode-v",
+    "targets": ["vscode"]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "dist/.preview.tsbuildinfo"
+  },
+  "include": ["src/preview.ts", "src/protocol.ts"],
+  "references": [
+    { "path": "../../packages/reader" },
+    { "path": "../../packages/artifacts" }
+  ]
+}

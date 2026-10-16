@@ -37,9 +37,10 @@ export async function registryPackages(
   { extract = spawnSync } = {},
 ) {
   const packages = [];
-  for (const target of inventory.targets.filter((item) =>
-    item.archive.endsWith(".tgz"),
-  )) {
+  for (const target of [
+    ...inventory.targets,
+    ...(inventory.verificationPackages ?? []),
+  ].filter((item) => item.archive.endsWith(".tgz"))) {
     const bytes = await readFile(join(archives, target.archive));
     assert.equal(
       createHash("sha256").update(bytes).digest("hex"),

@@ -1,4 +1,4 @@
-import { implementationVersion } from "@tinta-lang/types/version";
+import { cliVersion } from "./version.js";
 import { randomUUID } from "node:crypto";
 import { identifyInternalDiagnostic } from "@tinta-lang/types/common";
 import { dirname, extname, resolve } from "node:path";
@@ -49,7 +49,7 @@ export interface CliResult {
   readonly stderr: string;
 }
 
-const version = `tinta ${implementationVersion}; source format 1.0; IR ABI tinta-ir-1\n`;
+const version = `tinta ${cliVersion}; source format 1.0; IR ABI tinta-ir-1\n`;
 
 function decodeInput(bytes: Uint8Array): string {
   try {

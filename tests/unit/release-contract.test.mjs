@@ -5,6 +5,9 @@ import {
   dependencyClosure,
   loadReleaseConfig,
   releaseIdentity,
+  selectedTargets,
+  selectedEnvironments,
+  targetVersion,
   sha256,
   validateConfig,
   validateReleaseManifest,
@@ -478,4 +481,60 @@ describe("release manifest metadata", () => {
     manifest.targets[0].archive.path = path;
     expect(() => validate(manifest)).toThrow();
   });
+});
+
+it.each(["language", "studio", "vscode"])(
+  "requires the complete %s delivery inventory and its native environments",
+  (component) => {
+    const previous = process.env.TINTA_COMPONENT;
+    try {
+      const manifest = manifestFixture();
+      process.env.TINTA_COMPONENT = component;
+      const ids = selectedTargets(config).map((target) => target.id);
+      manifest.component = component;
+      manifest.schemaVersion = 2;
+      Object.assign(manifest, releaseIdentity(config));
+      manifest.targets = manifest.targets.filter((target) =>
+        ids.includes(target.id),
+      );
+      for (const target of manifest.targets)
+        target.version = targetVersion(config, target.id);
+      const environments = selectedEnvironments(config).map(
+        (environment) => environment.id,
+      );
+      manifest.verification.environments =
+        manifest.verification.environments.filter((environment) =>
+          environments.includes(environment.id),
+        );
+      manifest.verification.results = manifest.verification.results.filter(
+        (result) => ids.includes(result.target),
+      );
+      expect(validate(manifest)).toEqual(manifest);
+      expect(manifest.targets).toHaveLength(
+        { language: 12, studio: 4, vscode: 2 }[component],
+      );
+      manifest.targets.pop();
+      expect(() => validate(manifest)).toThrow();
+    } finally {
+      if (previous === undefined) delete process.env.TINTA_COMPONENT;
+      else process.env.TINTA_COMPONENT = previous;
+    }
+  },
+);
+
+it("keeps delivery versions independent from the exact language dependency version", () => {
+  const independent = structuredClone(config);
+  independent.versions.studio = "0.7.3";
+  expect(validateConfig(independent)).toEqual(independent);
+  expect(() => releaseIdentity(independent)).toThrow(/component metadata/);
+  expect(releaseIdentity(independent, "studio").tag).toBe(
+    "tinta-studio-v0.7.3",
+  );
+  for (const id of ["cli", "studio-directory", "studio-standalone"])
+    expect(targetVersion(independent, id)).toBe("0.7.3");
+  expect(targetVersion(independent, "engine")).toBe(
+    config.versions.implementation,
+  );
+  expect(targetVersion(independent, "vscode")).toBe(config.versions.extension);
+  expect(() => selectedTargets(config, "unknown")).toThrow(/Unknown component/);
 });

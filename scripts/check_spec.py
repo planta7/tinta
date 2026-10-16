@@ -40,6 +40,7 @@ PUBLIC_TOP = (
     'LICENSE',
     'SECURITY.md',
     '.gitignore',
+    '.gitattributes',
 )
 checks: list[dict[str, object]] = []
 

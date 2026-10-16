@@ -45,6 +45,7 @@ export function captureCandidate() {
       "LICENSE",
       "THIRD_PARTY_NOTICES.txt",
       ".gitignore",
+      ".gitattributes",
       ".prettierignore",
       ".prettierrc.json",
       ".npmrc",

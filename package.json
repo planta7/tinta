@@ -25,10 +25,12 @@
     "benchmark": "node scripts/benchmark.mjs",
     "dev": "pnpm build && vite apps/studio --config apps/studio/vite.config.js",
     "preview": "vite preview apps/studio --config apps/studio/vite.config.js",
-    "build:vscode": "tsc -b && node scripts/build-vscode.mjs",
+    "build:vscode": "tsc -b apps/vscode apps/studio/tsconfig.preview.json packages/language-server && node scripts/build.mjs vscode",
     "test:vscode:unit": "vitest run --config scripts/vscode-vitest.config.js --coverage",
     "test:vscode:browser": "playwright test --config scripts/vscode-playwright.config.js",
-    "package:vscode": "pnpm build && node scripts/package-vscode.mjs"
+    "package:vscode": "pnpm build && node scripts/package-vscode.mjs",
+    "build:language": "tsc -b packages/language-server packages/local-files packages/reader && node scripts/build.mjs language",
+    "build:studio": "tsc -b apps/studio packages/cli && node scripts/build.mjs studio"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",

@@ -1,4 +1,4 @@
-import { readReleaseVersions } from "./release-plan.mjs";
+import { releaseComponents, readReleaseVersions } from "./release-plan.mjs";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -38,6 +38,13 @@ function unique(values, label) {
 function versionPolicy(versions) {
   const implementation = semver.parse(versions.implementation);
   requireValue(implementation !== null, "Invalid implementation version");
+  const studio = semver.parse(versions.studio ?? versions.implementation);
+  requireValue(studio !== null, "Invalid Studio version");
+  same(
+    studio.prerelease.length > 0,
+    implementation.prerelease.length > 0,
+    "npm version channels",
+  );
   const development = implementation.prerelease.length > 0;
   same(versions.npmChannel, development ? "next" : "latest", "npm channel");
   const extension = semver.parse(versions.extension);
@@ -49,7 +56,65 @@ function versionPolicy(versions) {
   );
 }
 
-export function releaseIdentity(config) {
+export function selectedTargets(
+  config,
+  component = process.env.TINTA_COMPONENT,
+) {
+  const targets = [...config.packages, ...config.artifacts];
+  if (!component) return targets;
+  const group = releaseComponents[component];
+  requireValue(group, `Unknown component: ${component}`);
+  const ids = [...group.targets, "source"];
+  for (const id of ids)
+    requireValue(
+      targets.some((target) => target.id === id),
+      `Missing target: ${id}`,
+    );
+  return targets.filter((target) => ids.includes(target.id));
+}
+
+export function targetVersion(config, id) {
+  if (id === "vscode") return config.versions.extension;
+  if (["cli", "studio-directory", "studio-standalone"].includes(id))
+    return config.versions.studio ?? config.versions.implementation;
+  if (id === "source" && process.env.TINTA_COMPONENT)
+    return (
+      config.versions[
+        releaseComponents[process.env.TINTA_COMPONENT].versionKey
+      ] ?? config.versions.implementation
+    );
+  return config.versions.implementation;
+}
+
+export function selectedEnvironments(
+  config,
+  component = process.env.TINTA_COMPONENT,
+) {
+  const ids = new Set(
+    selectedTargets(config, component).flatMap((target) => target.environments),
+  );
+  return config.environments.filter((environment) => ids.has(environment.id));
+}
+
+export function releaseIdentity(
+  config,
+  component = process.env.TINTA_COMPONENT,
+) {
+  if (component) {
+    const group = releaseComponents[component];
+    requireValue(group, `Unknown component: ${component}`);
+    const version =
+      config.versions[group.versionKey] ?? config.versions.implementation;
+    return {
+      releaseId: `tinta-${component}-${version}`,
+      tag: `${group.tagPrefix}${version}`,
+    };
+  }
+  requireValue(
+    !config.versions.studio ||
+      config.versions.studio === config.versions.implementation,
+    "Independent Studio versions require component metadata",
+  );
   const { implementation, extension, extensionChannel } = config.versions;
   return {
     releaseId: `tinta-${implementation}-vscode-${extension}-${extensionChannel}`,
@@ -106,6 +171,23 @@ export function validateConfig(config, manifests) {
   unique(
     targets.map((target) => target.id),
     "target",
+  );
+  same(
+    Object.keys(releaseComponents).toSorted(),
+    ["language", "studio", "vscode"],
+    "delivery components",
+  );
+  const assigned = Object.values(releaseComponents).flatMap(
+    (component) => component.targets,
+  );
+  unique(assigned, "component target");
+  same(
+    assigned.toSorted(),
+    targets
+      .filter((target) => target.id !== "source")
+      .map((target) => target.id)
+      .toSorted(),
+    "component inventory",
   );
   unique(
     config.packages.map((target) => target.proposedName),
@@ -251,6 +333,7 @@ export function validateReleaseManifest(manifest, config, digests) {
   validateConfig(config);
   shape(manifestShape, manifest);
   same(manifest.versions, config.versions, "release versions");
+  same(manifest.component, process.env.TINTA_COMPONENT, "release component");
   const identity = releaseIdentity(config);
   same(manifest.releaseId, identity.releaseId, "release identity");
   same(manifest.tag, identity.tag, "release tag");
@@ -260,7 +343,7 @@ export function validateReleaseManifest(manifest, config, digests) {
     manifest.source.commit.length === manifest.source.tree.length,
     "Mixed Git hash algorithms",
   );
-  const targets = [...config.packages, ...config.artifacts];
+  const targets = selectedTargets(config);
   unique(
     manifest.targets.map((target) => target.id),
     "manifest target",
@@ -277,10 +360,12 @@ export function validateReleaseManifest(manifest, config, digests) {
   );
   same(
     environments.map((item) => item.id).sort(),
-    config.environments.map((item) => item.id).sort(),
+    selectedEnvironments(config)
+      .map((item) => item.id)
+      .sort(),
     "environment inventory",
   );
-  for (const expected of config.environments) {
+  for (const expected of selectedEnvironments(config)) {
     const actual = environments.find((item) => item.id === expected.id);
     for (const field of ["runtime", "platform", "architecture"])
       same(actual[field], expected[field], `environment ${field}`);
@@ -330,11 +415,7 @@ export function validateReleaseManifest(manifest, config, digests) {
           : expected.id,
       "target identity",
     );
-    same(
-      target.version,
-      isExtension ? config.versions.extension : config.versions.implementation,
-      "target version",
-    );
+    same(target.version, targetVersion(config, target.id), "target version");
     same(
       target.channel,
       isExtension

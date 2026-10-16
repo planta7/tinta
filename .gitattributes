@@ -1,0 +1,35 @@
+# Unclassified and shared inputs affect every delivery component.
+* ci-language ci-studio ci-vscode
+
+# Prose alone uses metadata checks; normative contracts and packaged README files
+# remain shared inputs. Component application rules below retain their ownership.
+*.md -ci-language -ci-studio -ci-vscode
+DECISIONS.md ci-language ci-studio ci-vscode
+architecture/** ci-language ci-studio ci-vscode
+spec/** ci-language ci-studio ci-vscode
+contracts/** ci-language ci-studio ci-vscode
+patches/** ci-language ci-studio ci-vscode
+packages/**/README.md ci-language ci-studio ci-vscode
+tests/** ci-language ci-studio ci-vscode
+
+apps/studio/** -ci-language ci-studio -ci-vscode
+packages/cli/** -ci-language ci-studio -ci-vscode
+apps/vscode/** -ci-language -ci-studio ci-vscode
+
+# This preview is embedded by both hosts; the editor shell is Studio-only.
+apps/studio/src/preview.ts ci-vscode
+apps/studio/src/protocol.ts ci-vscode
+apps/studio/src/preview.css ci-vscode
+apps/studio/tsconfig.json ci-vscode
+apps/studio/tsconfig.preview.json ci-vscode
+
+# Example downloads belong to the language group and are embedded in Studio.
+examples/** ci-language ci-studio -ci-vscode
+docs/assets/logo.svg -ci-language ci-studio -ci-vscode
+
+tests/vscode/** -ci-language -ci-studio ci-vscode
+tests/unit/studio*.test.mjs -ci-language ci-studio -ci-vscode
+tests/unit/cli*.test.mjs -ci-language ci-studio -ci-vscode
+tests/unit/editor-*.test.mjs -ci-language ci-studio -ci-vscode
+tests/browser/studio*.test.mjs -ci-language ci-studio -ci-vscode
+tests/unit/preview-build.test.mjs -ci-language ci-studio ci-vscode
