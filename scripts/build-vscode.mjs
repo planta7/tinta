@@ -40,21 +40,21 @@ await writeFile(
     .join("\n") + "\n",
 );
 for (const [entry, output, external] of [
-  ["apps/vscode/dist/extension.js", "extension", ["vscode"]],
-  ["packages/language-server/src/server.ts", "server", []],
-  ["packages/language-server/src/worker.ts", "worker", []],
-  ["apps/vscode/dist/artifact-worker/index.js", "artifact-worker", []],
+  ["apps/vscode/dist/extension.js", "extension.bundle.js", ["vscode"]],
+  ["packages/language-server/src/server.ts", "server.mjs", []],
+  ["packages/language-server/src/worker.ts", "worker.mjs", []],
+  ["apps/vscode/dist/artifact-worker/index.js", "artifact-worker.mjs", []],
 ]) {
   await build({
     entryPoints: [entry],
-    outfile: `apps/vscode/dist/${output}.mjs`,
+    outfile: `apps/vscode/dist/${output}`,
     bundle: true,
     platform: "node",
     format: "esm",
     target: "node24",
     external,
     // The upstream SDK is CommonJS. Only its fixed host bundle gets a Node loader.
-    ...(["worker", "artifact-worker"].includes(output)
+    ...(["worker.mjs", "artifact-worker.mjs"].includes(output)
       ? {}
       : {
           banner: {

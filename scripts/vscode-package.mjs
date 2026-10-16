@@ -3,25 +3,25 @@ import { loadReleaseConfig } from "./release-contract.mjs";
 import { implementationVersion } from "./implementation-version.mjs";
 import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
-import { readFile, mkdir, writeFile } from "node:fs/promises";
+import { readFile, mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
+import { requireCommandSync } from "./commands.mjs";
 import { captureCandidate } from "./candidate.mjs";
 import assert from "node:assert/strict";
 
-const require = createRequire(
-  new URL("../packages/artifacts/package.json", import.meta.url),
-);
-const { zipSync } = require("fflate");
+const require = createRequire(import.meta.url);
 export const extensionVersion = "0.1.0-dev.0";
 export const payloadFiles = [
   "package.json",
   "README.md",
   "icon.png",
-  "LICENSE",
+  "LICENSE.txt",
   "THIRD_PARTY_NOTICES.txt",
   "build-identity.json",
   "language-configuration.json",
   "syntaxes/tinta.tmLanguage.json",
-  "dist/extension.mjs",
+  "dist/extension.bundle.js",
   "dist/server.mjs",
   "dist/worker.mjs",
   "dist/artifact-worker.mjs",
@@ -77,7 +77,7 @@ export function inspectPackage(
     )
       throw new Error(`Private or development content in ${path}.`);
     if (
-      path.endsWith(".mjs") &&
+      /\.[cm]?js$/.test(path) &&
       /node_modules\/(?:react|react-dom|@codemirror)\//.test(text)
     )
       throw new Error(`Editor framework in ${path}.`);
@@ -91,7 +91,8 @@ export function inspectPackage(
     manifest.version !== expectedVersion ||
     manifest.publisher !== publisher ||
     manifest.engines?.vscode !== config.policy.vscodeRange ||
-    manifest.main !== "./dist/extension.mjs" ||
+    manifest.main !== "./dist/extension.bundle.js" ||
+    manifest.type !== "module" ||
     !manifest.private ||
     manifest.dependencies ||
     manifest.devDependencies
@@ -144,13 +145,6 @@ export async function packageExtension({
   const publisher = release
     ? config.identities.marketplacePublisher.value
     : "tinta-local";
-  let galleryFlags = "Preview";
-  if (release) {
-    galleryFlags =
-      config.versions.extensionChannel === "pre-release"
-        ? "Public Preview"
-        : "Public";
-  }
   const candidate = captureCandidate();
   const workspace = JSON.parse(
     await readFile("apps/vscode/package.json", "utf8"),
@@ -165,6 +159,11 @@ export async function packageExtension({
     publisher,
     categories: ["Programming Languages"],
     license: "MIT",
+    repository: {
+      type: "git",
+      url: `https://github.com/${config.identities.repository.value}.git`,
+    },
+    preview: !release || config.versions.extensionChannel === "pre-release",
   };
   const registry = JSON.parse(await readFile("spec/registry.json", "utf8"));
   const entries = {};
@@ -179,9 +178,11 @@ export async function packageExtension({
               ? "docs/14_VSCODE_QUICKSTART.md"
               : name === "icon.png"
                 ? "apps/vscode/icon.png"
-                : ["LICENSE", "THIRD_PARTY_NOTICES.txt"].includes(name)
-                  ? name
-                  : `apps/vscode/${name}`,
+                : name === "LICENSE.txt"
+                  ? "LICENSE"
+                  : name === "THIRD_PARTY_NOTICES.txt"
+                    ? name
+                    : `apps/vscode/${name}`,
           );
     entries[`extension/${name}`] = bytes;
   }
@@ -209,54 +210,34 @@ export async function packageExtension({
   entries["extension/build-identity.json"] = Buffer.from(
     JSON.stringify(identity, null, 2) + "\n",
   );
-  entries["[Content_Types].xml"] =
-    Buffer.from(`<?xml version="1.0" encoding="utf-8"?>
-<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
-  <Default Extension="json" ContentType="application/json"/>
-  <Default Extension="mjs" ContentType="application/javascript"/>
-  <Default Extension="md" ContentType="text/markdown"/>
-  <Default Extension="txt" ContentType="text/plain"/>
-  <Default Extension="png" ContentType="image/png"/>
-  <Default Extension="vsixmanifest" ContentType="text/xml"/>
-  <Override PartName="/extension/LICENSE" ContentType="text/plain"/>
-</Types>`);
-  entries["extension.vsixmanifest"] =
-    Buffer.from(`<?xml version="1.0" encoding="utf-8"?>
-<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
-  <Metadata>
-    <Identity Language="en-US" Id="tinta" Version="${version}" Publisher="${publisher}"/>
-    <DisplayName>tinta</DisplayName>
-    <Description xml:space="preserve">${manifest.description}</Description>
-    <Tags>markdown</Tags>
-    <Categories>Programming Languages</Categories>
-    <GalleryFlags>${galleryFlags}</GalleryFlags>
-    <Properties>
-      <Property Id="Microsoft.VisualStudio.Code.Engine" Value="^1.141.0"/>
-      <Property Id="Microsoft.VisualStudio.Code.ExtensionKind" Value="workspace"/>
-      ${release && config.versions.extensionChannel === "pre-release" ? '<Property Id="Microsoft.VisualStudio.Code.PreRelease" Value="true"/>' : ""}
-    </Properties>
-    <License>extension/LICENSE</License>
-  </Metadata>
-  <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Code"/>
-  </Installation>
-  <Dependencies/>
-  <Assets>
-    <Asset Type="Microsoft.VisualStudio.Code.Manifest" Path="extension/package.json" Addressable="true"/>
-    <Asset Type="Microsoft.VisualStudio.Services.Content.Details" Path="extension/README.md" Addressable="true"/>
-    <Asset Type="Microsoft.VisualStudio.Services.Icons.Default" Path="extension/icon.png" Addressable="true"/>
-    <Asset Type="Microsoft.VisualStudio.Services.Content.License" Path="extension/LICENSE" Addressable="true"/>
-  </Assets>
-</PackageManifest>`);
-  const zipped = zipSync(
-    Object.fromEntries(
-      Object.entries(entries).map(([path, bytes]) => [
-        path,
-        [bytes, { mtime: new Date("2000-01-01T00:00:00Z") }],
-      ]),
-    ),
-    { level: 9 },
-  );
+  const staging = await mkdtemp(join(tmpdir(), "tinta-vsix-"));
+  let zipped;
+  try {
+    for (const [path, bytes] of Object.entries(entries)) {
+      const output = join(staging, "extension", path.slice(10));
+      await mkdir(dirname(output), { recursive: true });
+      await writeFile(output, bytes);
+    }
+    const output = join(staging, "extension.vsix");
+    requireCommandSync(
+      [
+        "node",
+        require.resolve("@vscode/vsce/vsce"),
+        "package",
+        "--no-dependencies",
+        "--no-rewrite-relative-links",
+        "--out",
+        output,
+        ...(release && config.versions.extensionChannel === "pre-release"
+          ? ["--pre-release"]
+          : []),
+      ],
+      { cwd: join(staging, "extension") },
+    );
+    zipped = await readFile(output);
+  } finally {
+    await rm(staging, { recursive: true, force: true });
+  }
   const report = inspectPackage(zipped, { release, config });
   await mkdir(destination, { recursive: true });
   await writeFile(`${destination}/tinta-${version}.vsix`, zipped);

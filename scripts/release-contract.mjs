@@ -451,7 +451,10 @@ export function validateReleaseManifest(manifest, config, digests) {
       target.licenses.map((license) => license.path),
       "license path",
     );
-    for (const name of ["LICENSE", "THIRD_PARTY_NOTICES.txt"])
+    for (const name of [
+      isExtension ? "LICENSE.txt" : "LICENSE",
+      "THIRD_PARTY_NOTICES.txt",
+    ])
       requireValue(
         target.licenses.some((item) => item.path === name),
         `Missing license: ${name}`,

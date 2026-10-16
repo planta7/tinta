@@ -67,7 +67,10 @@ function fixture() {
       bytes: 10,
       sha256: hash,
       integrity,
-      files: ["LICENSE", "THIRD_PARTY_NOTICES.txt"].map((path) => ({
+      files: [
+        t.id === "vscode" ? "LICENSE.txt" : "LICENSE",
+        "THIRD_PARTY_NOTICES.txt",
+      ].map((path) => ({
         path: (t.id === "vscode" ? "extension/" : "") + path,
         sha256: hash,
       })),
@@ -177,6 +180,12 @@ describe("frozen candidate metadata", () => {
       reports,
     );
     expect(manifest.targets).toHaveLength(16);
+    expect(
+      manifest.targets.find((target) => target.id === "vscode").licenses,
+    ).toEqual([
+      { path: "LICENSE.txt", sha256: hash },
+      { path: "THIRD_PARTY_NOTICES.txt", sha256: hash },
+    ]);
     expect(manifest.verification.results).toHaveLength(
       config.packages
         .concat(config.artifacts)

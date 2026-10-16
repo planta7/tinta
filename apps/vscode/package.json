@@ -16,7 +16,7 @@
   "engines": {
     "vscode": "^1.141.0"
   },
-  "main": "./dist/extension.mjs",
+  "main": "./dist/extension.bundle.js",
   "extensionKind": [
     "workspace"
   ],

@@ -12,7 +12,7 @@ Root, Studio, VS Code and every package's **source** manifest stay private, with
 
 ## Package inventory
 
-Every package is ESM. Portable libraries include TypeScript declarations and documented exports; resource and Node packages also include the resources required by their supported entry points. Every payload carries `LICENSE` and `THIRD_PARTY_NOTICES.txt`. External direct dependency pins are listed in the configuration; their transitive closure, integrity and licenses come from the frozen lockfile and notice inventory.
+Every package is ESM. Portable libraries include TypeScript declarations and documented exports; resource and Node packages also include the resources required by their supported entry points. Every payload carries `LICENSE` (`LICENSE.txt` in the VSIX) and `THIRD_PARTY_NOTICES.txt`. External direct dependency pins are listed in the configuration; their transitive closure, integrity and licenses come from the frozen lockfile and notice inventory.
 
 | npm name | Direct internal dependencies | Additional distribution content | Environment requirements |
 | --- | --- | --- | --- |
@@ -95,7 +95,7 @@ The npm staging manifests provide ESM exports and declarations, an exact interna
 
 `toolchain/distribution-source.json` is the exact source-file allowlist. Packaging rejects missing, additional or symbolic-link source entries, and source bytes must remain unchanged throughout the build. Content inspections reject private paths, credentials and source maps. The narrow source-test exceptions in `toolchain/distribution-source-exceptions.json` are exact line digests for deliberately hostile fixtures and detector expressions; they do not exempt whole source files. Every npm and download payload carries its own license and third-party notices.
 
-ZIP entries have fixed timestamps and sorted names. npm archives use the pinned pnpm packer without lifecycle scripts in generated manifests. `inventory.json` records every archive size, SHA-256, SHA-512 integrity, unpacked file hash, complete frozen external dependency closure and source dirty state. It is a local content inventory, not a release attestation or installed-consumer test result. Generated packages include the repository configured for the release.
+Download ZIP entries have fixed timestamps and sorted names. VSIX archives use the pinned `vsce package --no-dependencies` command on an isolated, allowlisted payload, with README rewriting disabled. The resulting archive is inspected for exact entries, content and build-identity hashes before installed tests and publication; VSIX metadata and ZIP timestamps follow vsce. npm archives use the pinned pnpm packer without lifecycle scripts in generated manifests. `inventory.json` records every archive size, SHA-256, SHA-512 integrity, unpacked file hash, complete frozen external dependency closure and source dirty state. It is a local content inventory, not a release attestation or installed-consumer test result. Generated packages include the repository configured for the release.
 
 After constructing the archives, run `pnpm exec vitest run --config scripts/distribution-vitest.config.js` for packaging, corruption, parser-budget and IPC regressions. Installed consumer routes and platform compatibility require separate tests of the exact archives. Rebuilding under another implementation version produces a different payload and requires those tests again.
 

@@ -291,6 +291,8 @@ it.each([
 it.each([
   [".github/workflows/publish-release.yml", "fix(ci): repair Pages"],
   ["scripts/release-plan.mjs", "feat(ci): improve release selection"],
+  ["scripts/release-contract.mjs", "fix(ci): validate standard VSIX licenses"],
+  ["architecture/STACK.md", "fix(docs): describe standard VSIX tooling"],
   ["tests/unit/release-candidate.test.mjs", "fix(ci)!: change pipeline checks"],
   ["toolchain/distribution-source.json", "fix(ci): update source inventory"],
   ["scripts/studio-vitest.config.js", "fix(ci): select Studio tests"],

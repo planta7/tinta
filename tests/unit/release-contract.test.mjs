@@ -46,7 +46,10 @@ function manifestFixture() {
       embeddedTargets: target.embeddedTargets,
       externalDependencies: target.externalDependencies,
       archive: file(`archives/${target.id}.${suffix}`),
-      licenses: ["LICENSE", "THIRD_PARTY_NOTICES.txt"].map((path) => ({
+      licenses: [
+        extension ? "LICENSE.txt" : "LICENSE",
+        "THIRD_PARTY_NOTICES.txt",
+      ].map((path) => ({
         path,
         sha256: hash,
       })),

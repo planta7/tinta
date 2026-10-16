@@ -198,7 +198,10 @@ export function checkInventory(directory, config, { clean = false } = {}) {
       assert.equal(digest(entries["pnpm-lock.yaml"]), inventory.lockSha256);
     }
     const prefix = target.id === "vscode" ? "extension/" : "";
-    for (const name of ["LICENSE", "THIRD_PARTY_NOTICES.txt"])
+    for (const name of [
+      target.id === "vscode" ? "LICENSE.txt" : "LICENSE",
+      "THIRD_PARTY_NOTICES.txt",
+    ])
       assert.ok(entries[prefix + name]?.length, "Missing notices");
     if (config.packages.some((p) => p.id === target.id)) {
       const manifest = readCandidateJson(entries["package.json"]);
@@ -483,7 +486,10 @@ export function assembleManifest(
         sha256: packed.sha256,
         integrity: packed.integrity,
       },
-      licenses: ["LICENSE", "THIRD_PARTY_NOTICES.txt"].map((path) => ({
+      licenses: [
+        extension ? "LICENSE.txt" : "LICENSE",
+        "THIRD_PARTY_NOTICES.txt",
+      ].map((path) => ({
         path,
         sha256: packed.files.find(
           (f) => f.path === (extension ? "extension/" : "") + path,

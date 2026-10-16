@@ -20,7 +20,9 @@ const path = `build/vscode/tinta-${extensionVersion}.vsix`;
 
 describe("local extension archive", () => {
   beforeAll(async () => {
+    const source = await readFile("apps/vscode/package.json");
     await packageExtension();
+    expect(await readFile("apps/vscode/package.json")).toEqual(source);
   });
 
   describe.each(["stable", "pre-release"])(
@@ -83,11 +85,17 @@ describe("local extension archive", () => {
     },
   );
 
-  it("keeps local archives private", async () => {
+  it("keeps local archives private under the local publisher", async () => {
     const local = unzipSync(await readFile(path));
     expect(Buffer.from(local["extension.vsixmanifest"]).toString()).toContain(
-      "<GalleryFlags>Preview</GalleryFlags>",
+      "<GalleryFlags>Public Preview</GalleryFlags>",
     );
+    const manifest = JSON.parse(
+      Buffer.from(local["extension/package.json"]).toString(),
+    );
+    expect(manifest.private).toBe(true);
+    expect(manifest.publisher).toBe("tinta-local");
+    expect(manifest.version).toBe(extensionVersion);
   });
 
   it("ships source, split and preview buttons in the native title", async () => {
@@ -116,6 +124,8 @@ describe("local extension archive", () => {
 
   it("provides independently valid quickstart examples", async () => {
     const guide = await readFile("docs/14_VSCODE_QUICKSTART.md", "utf8");
+    const local = unzipSync(await readFile(path));
+    expect(Buffer.from(local["extension/README.md"]).toString()).toBe(guide);
     const snippets = [...guide.matchAll(/```tinta\n([\s\S]*?)```/g)];
     expect(snippets).toHaveLength(2);
     for (const [, text] of snippets) {
@@ -135,6 +145,24 @@ describe("local extension archive", () => {
     expect(
       report.files.some((file) => file.path.includes("node_modules")),
     ).toBe(false);
+  });
+
+  it("preserves the ESM entry point and license bytes", async () => {
+    const entries = unzipSync(await readFile(path));
+    const manifest = JSON.parse(
+      Buffer.from(entries["extension/package.json"]).toString(),
+    );
+    expect(manifest.type).toBe("module");
+    expect(manifest.main).toBe("./dist/extension.bundle.js");
+    expect(Buffer.from(entries["extension/dist/extension.bundle.js"])).toEqual(
+      await readFile("apps/vscode/dist/extension.bundle.js"),
+    );
+    expect(Buffer.from(entries["extension/LICENSE.txt"])).toEqual(
+      await readFile("LICENSE"),
+    );
+    expect(Buffer.from(entries["extension.vsixmanifest"]).toString()).toContain(
+      "<License>extension/LICENSE.txt</License>",
+    );
   });
 
   it("includes the extension name, description and Studio logo", async () => {
@@ -157,7 +185,7 @@ describe("local extension archive", () => {
   it.each([
     "extension/.env",
     "extension/tests/fixture.mjs",
-    "extension/dist/extension.mjs.map",
+    "extension/dist/extension.bundle.js.map",
     "extension/.local/plan.md",
   ])("rejects an unexpected archive entry %s", async (name) => {
     const entries = unzipSync(await readFile(path));
@@ -181,6 +209,17 @@ describe("local extension archive", () => {
       /Private or development/,
     );
   });
+
+  it.each(["extension/dist/extension.bundle.js", "extension/dist/worker.mjs"])(
+    "rejects editor frameworks in %s",
+    async (name) => {
+      const entries = unzipSync(await readFile(path));
+      entries[name] = new TextEncoder().encode("node_modules/react/index.js");
+      expect(() => inspectPackage(zipSync(entries))).toThrow(
+        /Editor framework/,
+      );
+    },
+  );
 
   it("rejects a runtime whose bytes differ from its identity", async () => {
     const entries = unzipSync(await readFile(path));

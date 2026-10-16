@@ -44,6 +44,7 @@ tests/unit/preview-build.test.mjs -ci-language ci-studio ci-vscode
 .gitattributes -product
 .gitignore -product
 .github/** -product
+architecture/STACK.md -product
 tests/** -product
 conformance/** -product
 eslint.config.js -product
@@ -55,6 +56,7 @@ scripts/check* -product
 scripts/tests/** -product
 scripts/candidate-*.mjs -product
 scripts/release-plan.mjs -product
+scripts/release-contract.mjs -product
 scripts/release-candidate.mjs -product
 scripts/consumer-*.mjs -product
 scripts/installed-*.mjs -product
