@@ -28,7 +28,7 @@
     "build:vscode": "tsc -b apps/vscode apps/studio/tsconfig.preview.json packages/language-server && node scripts/build.mjs vscode",
     "test:vscode:unit": "vitest run --config scripts/vscode-vitest.config.js --coverage",
     "test:vscode:browser": "playwright test --config scripts/vscode-playwright.config.js",
-    "package:vscode": "pnpm build && node scripts/package-vscode.mjs",
+    "package:vscode": "pnpm build:vscode && node scripts/package-vscode.mjs",
     "build:language": "tsc -b packages/language-server packages/local-files packages/reader && node scripts/build.mjs language",
     "build:studio": "tsc -b apps/studio packages/cli && node scripts/build.mjs studio"
   },

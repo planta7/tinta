@@ -412,6 +412,23 @@ it("binds official publication jobs to tested archives and the trusted workflow 
   expect(selection.run).toContain(
     'node scripts/release-plan.mjs --affected "$BEFORE" "$SOURCE" --pending',
   );
+  expect(
+    ci.jobs.verify.steps.find(
+      (step) =>
+        step.run ===
+        "pnpm exec playwright install --with-deps chromium firefox webkit",
+    ).if,
+  ).toBe(
+    "steps.affected.outputs.language == 'true' || steps.affected.outputs.studio == 'true'",
+  );
+  expect(
+    ci.jobs.verify.steps.find(
+      (step) =>
+        step.run === "pnpm exec playwright install --with-deps chromium",
+    ).if,
+  ).toBe(
+    "steps.affected.outputs.language != 'true' && steps.affected.outputs.studio != 'true' && steps.affected.outputs.vscode == 'true'",
+  );
   expect(vscodeConfig.test.include).toEqual(
     expect.arrayContaining([
       "tests/unit/vscode-package.test.mjs",

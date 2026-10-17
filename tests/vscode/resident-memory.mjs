@@ -23,8 +23,11 @@ export async function residentBytes({
     return collection;
   };
   if (platform === "win32") {
+    const systemRoot = Object.entries(env).find(
+      ([name]) => name.toLowerCase() === "systemroot",
+    )?.[1];
     const command = join(
-      env.SystemRoot,
+      systemRoot,
       "System32/WindowsPowerShell/v1.0/powershell.exe",
     );
     const { stdout } = await collect(command, [

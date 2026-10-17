@@ -33,7 +33,7 @@ Build and test outputs live under ignored `build/` and `reports/` directories. T
 
 ## Local VS Code artifact
 
-`pnpm package:vscode` rebuilds and creates `build/vscode/tinta-0.1.0-dev.0.vsix` with an explicit archive allowlist and byte hashes. Packaging reads the Git revision and current public source inventory. It uses the existing locked artifact ZIP dependency and adds no package-manager or publication tool. The installed manifest has the internal identity `tinta-local.tinta`; workspace packages remain private. The catalog and preview are embedded in the runtime bundles.
+`pnpm package:vscode` builds the extension and its dependencies, then creates `build/vscode/tinta-0.1.0-dev.0.vsix` using the pinned `vsce package` tool. Packaging reads the Git revision and current public source inventory. The existing ZIP inspector checks the explicit archive allowlist and byte hashes. The installed manifest has the internal identity `tinta-local.tinta`; workspace packages remain private. The catalog and preview are embedded in the runtime bundles.
 
 `pnpm verify --suite vscode` combines static checks, coverage, conformance, preview browser tests and native installed-extension checks on the current machine. Set `TINTA_VSCODE_EXECUTABLE` to the pinned desktop executable and `TINTA_VSCODE_CLI` to its command-line launcher. Missing prerequisites or any mandatory child failure return nonzero. Provision the desktop and browser binaries before running offline. No unavailable platform is inferred from another platform.
 
