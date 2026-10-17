@@ -22,6 +22,25 @@ const processes = [
 ];
 
 describe("native resident memory measurements", () => {
+  it.each(["SystemRoot", "SYSTEMROOT", "systemroot"])(
+    "locates the Windows collector with %s",
+    async (name) => {
+      const run = vi.fn().mockResolvedValue({
+        stdout: JSON.stringify(processes),
+      });
+      expect(
+        await residentBytes({
+          platform: "win32",
+          pid: 20,
+          env: { [name]: "C:/Windows" },
+          run,
+        }),
+      ).toBe(7168);
+      expect(run.mock.calls[0][0]).toBe(
+        join("C:/Windows", "System32/WindowsPowerShell/v1.0/powershell.exe"),
+      );
+    },
+  );
   it.each(["darwin", "linux", "win32"])(
     "sums the host and descendants on %s",
     async (platform) => {

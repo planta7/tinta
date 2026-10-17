@@ -53,7 +53,9 @@ jobs:
           pnpm check:licenses
           pnpm exec vitest run tests/unit/release-plan.test.mjs tests/unit/release-contract.test.mjs tests/unit/release-candidate.test.mjs
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
-        if: steps.affected.outputs.studio == 'true' || steps.affected.outputs.vscode == 'true'
+        if: steps.affected.outputs.language == 'true' || steps.affected.outputs.studio == 'true'
+      - run: pnpm exec playwright install --with-deps chromium
+        if: steps.affected.outputs.language != 'true' && steps.affected.outputs.studio != 'true' && steps.affected.outputs.vscode == 'true'
       - run: pnpm verify --suite editing
         if: steps.affected.outputs.language == 'true'
       - name: Build and test Studio and CLI
