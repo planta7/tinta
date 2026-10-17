@@ -22,7 +22,7 @@ Each normative rule must have an identifiable assertion or a concrete behavior i
 
 ## Coverage and property-test policy
 
-For syntax/engine: at least 95% statements and 90% branches, including every diagnostic family. For charts/artifacts: at least 90% statements and 85% branches. UI scaffolding/CLI: at least 85% statements and 80% branches. Generated type declarations and vendored third-party code are excluded with an explicit path list; project error paths are not excluded. A coverage threshold is not permission to omit an identified rule.
+For syntax/engine: at least 95% statements and 90% branches, including every diagnostic family. For charts/artifacts: at least 90% statements and 85% branches. UI/CLI: at least 85% statements and 80% branches. Generated type declarations and vendored third-party code are excluded with an explicit path list; project error paths are not excluded. A coverage threshold is not permission to omit an identified rule.
 
 Run deterministic fast-check seeds in CI: 1000 generated inputs per mandatory property per PR, 10000 per property with `pnpm test:hardening`. Commit seed and minimal regression for each found failure. Fuzz malformed source, nested expression/Markdown structure, CSV/JSON, snapshot maps, bundle metadata and messages. Every named numeric limit needs at-limit and limit+1 tests. Wall-clock watchdog tests use controlled fake scheduling or isolated workers, not flaky “should be fast” assertions.
 
@@ -47,12 +47,12 @@ source typing and a dependent chart control separately, with 10 warm-up actions
 and 50 measured actions per scenario. Use the production offline artifact on the
 reference machine. Each run must meet all of these budgets:
 
-| Metric | Budget | Purpose |
-|---|---|---|
-| Typing event to editor paint opportunity, p95 | <=100ms | Prompt feedback while writing |
-| Control event to updated reader paint opportunity, p95 | <=150ms | Preserve the medium answer-update budget |
-| Typing event to updated preview paint opportunity, p95 | <=1000ms | Include the 200ms debounce, worker work and presentation |
-| Maximum observed main-thread task during either scenario | <=200ms | Reject severe individual stalls even with a good p95 |
+| Metric                                                   | Budget   | Purpose                                                  |
+| -------------------------------------------------------- | -------- | -------------------------------------------------------- |
+| Typing event to editor paint opportunity, p95            | <=100ms  | Prompt feedback while writing                            |
+| Control event to updated reader paint opportunity, p95   | <=150ms  | Preserve the medium answer-update budget                 |
+| Typing event to updated preview paint opportunity, p95   | <=1000ms | Include the 200ms debounce, worker work and presentation |
+| Maximum observed main-thread task during either scenario | <=200ms  | Reject severe individual stalls even with a good p95     |
 
 A paint opportunity is measured conservatively by two consecutive animation-frame
 callbacks after the relevant DOM update. It is a laboratory proxy, not proof of
@@ -69,13 +69,56 @@ it identifies individual product functions. Avoid automation DOM polling during
 timed intervals. Preserve all three runs, including failures; do not retry until
 a passing run appears. A failed run is retained and reported as a measurement failure.
 
-These are engineering budgets chosen before evaluation, not thresholds derived
-from the current implementation's results. The one-second preview budget does
-not replace the existing compile/evaluate or reader-update budgets. See the
-[responsiveness decision](../decisions/studio-responsiveness.md) for rationale,
-measurement limits and the superseded absolute 50ms criterion.
+These budgets are independent of measured results. The one-second preview budget
+includes the 200ms debounce and presentation; it does not replace the existing
+750ms medium compile/evaluate or 150ms reader-update budgets. The
+[Long Tasks API](https://www.w3.org/TR/longtasks-1/) reports event-loop tasks, not
+individual functions. Its 50ms reporting threshold helps identify blocking work,
+but several shorter tasks can delay an interaction too. The 200ms maximum task
+guard is a separate stall limit, not a claim that a task of that length is
+imperceptible or equivalent to an interaction score.
 
-Bundle ceilings: portable core+syntax+engine <=500KiB gzip, reader+charts <=350KiB gzip excluding document payload/assets, standalone Studio <=3MiB gzip excluding bundled example raster fixtures. Report actual minified/gzip bytes and dependency composition. These are engineering targets to prove or check against actual measurements, not performance measured without measurements. Do not silently lift ceilings or claim success based on estimated sizes.
+Use keyboard events on the actual editor and native control, and passive DOM
+observation instead of repeated text searches during timing. Browser scheduling,
+garbage collection and instrumentation can affect measured tasks; attribution is
+contextual, not proof of an individual function's cost. Include all observed tasks
+overlapping the interaction. REQ-18 and SC-040/SC-041 retain coverage for missing
+samples, exact limits, a single extreme stall and failure in any of the three runs
+through `tests/unit/performance-policy.test.mjs` and `scripts/performance-browser.mjs`.
+Language semantics, resource limits, worker isolation, validated IR, security checks
+and the other compile/evaluate, reader-update and export budgets are unchanged.
+
+Bundle ceilings: portable core+syntax+engine <=500KiB gzip, reader+charts <=350KiB gzip excluding document payload/assets, standalone Studio <=3MiB gzip excluding bundled example raster fixtures. Report actual minified/gzip bytes and dependency composition. Check these ceilings against measured output sizes; estimates do not establish compliance.
+
+## Native timing confirmation
+
+The [VS Code performance targets](13_VSCODE.md#scheduling-bounds-and-failures)
+apply to a particular installed build and host. A 30-sample p95 is the second
+slowest sample, so a brief scheduling stall can affect the result. One exceeded
+timing target alone does not establish a reproducible regression or its cause.
+
+Measure each analysis size, cached completion and host responsiveness once. A
+passing scenario needs no confirmation. A timing failure triggers exactly two
+further complete measurements, including both confirmations if the second attempt
+passes. Keep the same installed archive, profile, corpus, warmup, 30 samples and
+resident-memory collector; do not reinstall, restart the host or rebuild between
+attempts. Each responsiveness attempt repeats all three analysis sizes, cached
+completion and eight-document rapid editing. Assess its p95 and maximum together.
+
+One timing failure out of three is `UNSTABLE`: retain it in the report, emit a CI
+warning and allow CI to continue. Two or three failures are `FAIL` and block CI.
+Keep every original value, raw analysis/completion sample, responsiveness p95,
+maximum and sample count, plus the analysis/completion blocks used as the
+responsiveness workload. Never discard slow samples, average attempts or retry
+until passing. Instability remains evidence of timing variability, not a guarantee
+that the host consistently meets its targets.
+
+Functional failures, watchdog expiry, collection errors and incomplete or invalid
+measurements block immediately and are not retried by this policy. Retained heap
+and resident-memory limits retain their single-run assessment. Preserve completed
+measurements in a partial report if later confirmation fails functionally. This
+procedure changes neither source semantics nor runtime scheduling, numeric targets,
+resource limits, format/protocol versions, telemetry or network access.
 
 ## Test commands
 
@@ -87,4 +130,4 @@ Dependency advisory checks use the locked graph. An unavailable advisory endpoin
 
 Generated reports include the invoked command, environment/tool versions, source fixture hashes, exit code, assertion counts and browser revisions where applicable. Test reports and synthetic screenshots live under ignored `reports/` output directories and remain separate from fixture definitions. A build result or an existing screenshot does not establish that a semantic or interaction assertion ran.
 
-A check succeeds only when its requested assertions execute and pass; missing prerequisites, skipped work and failures remain visible in its output. Source fixtures describe expected behavior and contain no execution state. Build output and test results do not authorize publication.
+A check succeeds only when its requested assertions execute and pass; missing prerequisites, skipped work and failures remain visible in its output. Source fixtures describe expected behavior and contain no execution state.

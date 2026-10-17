@@ -39,7 +39,7 @@ The [closed JSON schema](../schemas/program.schema.json) and standalone validato
 
 CSV and JSON importers consume explicit UTF-8 byte arrays and return an embedded `@data` source candidate, column mapping and row count. They neither read files nor modify a document. CSV inference examines every row; JSON retains scalar types and rejects duplicate keys before values can be overwritten. Optional column mappings are validated completely. Host applications own preview, approval, insertion and undo.
 
-From the repository root with the pinned tools:
+To test the engine from a checkout with the pinned toolchain:
 
 ```sh
 pnpm install --frozen-lockfile

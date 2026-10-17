@@ -29,7 +29,7 @@ The regression suite uses temporary public copies and destructive negative fixtu
 
 `node scripts/traceability.mjs` checks normative clause mappings, concrete test declarations, supporting inputs, diagnostic codes and registered limits. Missing or changed mappings return nonzero. Mapping integrity is distinct from executing a test or observing behavior with assistive technology.
 
-Build and test outputs live under ignored `build/` and `reports/` directories. They use synthetic documents and do not read private local instructions. Public commands work from a checkout without Git history or private progress records unless their documented operation explicitly inspects the repository revision.
+Build and test outputs live under ignored `build/` and `reports/` directories. Tests use synthetic documents. Commands that inspect the repository revision require Git history; other checks can run from a source copy.
 
 ## Local VS Code artifact
 

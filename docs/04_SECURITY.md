@@ -10,16 +10,16 @@ Treat `.md`, `.tinta`, imported CSV/JSON, ZIP entries/manifests, image headers/b
 
 ## Enforced boundaries
 
-| Threat | Required controls | Required verification |
-|---|---|---|
-| Script injection | Bounded AST interpreter; no eval/Function; inert raw HTML; safe text/attributes; JSON script escaping; hash-based export CSP. | Source/payload `</script>`, HTML handlers, entity/scheme obfuscation and template strings cannot execute. |
-| Data exfiltration | No remote resources/network API; blocked resource CSP; no author URL interpolation; explicit link navigation only. | Request interception shows no automatic external request on load, interactions, export or recovery. |
-| Host access | Pure engine no fs/storage/network; sandboxed preview without same-origin; explicit file capabilities. | A preview cannot read parent storage, files, cookies or call unlisted host messages. |
-| ZIP traversal/bomb | Entry allowlist, decoded path rules, no links, CRC/hash checks, incremental actual byte ceilings. | Traversal, duplicate/case collision, metadata lies, ZIP64, encryption, overexpansion fail before write. |
-| Denial of service | Source/nesting/AST/row/mark limits, global operation budgets, worker watchdog, bounded output and diagnostic counts. | Fuzzing, adversarial depth, repeated views/charts and oversized images terminate predictably. |
-| Misleading state | Candidate evaluation then atomic commit; immutable rows; export revision guard. | Failed calculations/chart domains never leave updated text with an old figure. |
-| Accidental disclosure | Explicit interactive/static export difference; automatic local drafts with a persistent opt-out; no log content. | Hidden branches/images absent from static output when not visible; full-content warning for interactive. |
-| Supply chain | Exact locks, provenance, license inventories and advisory checks, minimal modules, action SHA pins. | Build inventory and no editor dependencies in exports. |
+| Threat                | Required controls                                                                                                             | Required verification                                                                                     |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Script injection      | Bounded AST interpreter; no eval/Function; inert raw HTML; safe text/attributes; JSON script escaping; hash-based export CSP. | Source/payload `</script>`, HTML handlers, entity/scheme obfuscation and template strings cannot execute. |
+| Data exfiltration     | No remote resources/network API; blocked resource CSP; no author URL interpolation; explicit link navigation only.            | Request interception shows no automatic external request on load, interactions, export or recovery.       |
+| Host access           | Pure engine no fs/storage/network; sandboxed preview without same-origin; explicit file capabilities.                         | A preview cannot read parent storage, files, cookies or call unlisted host messages.                      |
+| ZIP traversal/bomb    | Entry allowlist, decoded path rules, no links, CRC/hash checks, incremental actual byte ceilings.                             | Traversal, duplicate/case collision, metadata lies, ZIP64, encryption, overexpansion fail before write.   |
+| Denial of service     | Source/nesting/AST/row/mark limits, global operation budgets, worker watchdog, bounded output and diagnostic counts.          | Fuzzing, adversarial depth, repeated views/charts and oversized images terminate predictably.             |
+| Misleading state      | Candidate evaluation then atomic commit; immutable rows; export revision guard.                                               | Failed calculations/chart domains never leave updated text with an old figure.                            |
+| Accidental disclosure | Explicit interactive/static export difference; automatic local drafts with a persistent opt-out; no log content.              | Hidden branches/images absent from static output when not visible; full-content warning for interactive.  |
+| Supply chain          | Exact locks, provenance, license inventories and advisory checks, minimal modules, action SHA pins.                           | Build inventory and no editor dependencies in exports.                                                    |
 
 ## Renderer rules
 

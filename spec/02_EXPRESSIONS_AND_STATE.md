@@ -22,19 +22,19 @@ Arithmetic and ordering `< <= > >=` accept numbers only. For V1, text order is a
 
 ## Function signatures — exactly eleven
 
-| Function | Accepted signature | Exact behaviour |
-|---|---|---|
-| `if` | `if(boolean, T, T) -> T` | Scalar or scalar-list branches of compatible type; evaluate one branch only. No table branches. |
-| `min` | `min(number, number) -> number` | Smaller operand; exactly two arguments. |
-| `max` | `max(number, number) -> number` | Larger operand; exactly two arguments. |
-| `round` | `round(number, number=0) -> number` | Digits must be integer 0–10. Compute `Math.round(n * 10^d) / 10^d`; reject non-finite intermediate. Ties round toward positive infinity, normalize -0. |
-| `pow` | `pow(number, number) -> number` | Binary64 real power; 0^0 is 1; reject non-real/non-finite results. |
-| `count` | `count(list<T> or table<S>) -> number` | Number of elements/rows; empty is 0. |
-| `sum` | `sum(table<S>, "column") -> number` | Literal numeric-column name required; sum in current view row order, starting at 0. Empty is 0. Reject overflow. |
-| `mean` | `mean(table<S>, "column") -> number` | Same literal-column constraints; `sum / count`; empty is `E_EMPTY_MEAN`. |
-| `fixed` | `fixed(number, number) -> text` | Digits integer 0–10; localized fixed decimal places, grouping disabled. |
-| `percent` | `percent(number) -> text` | Ratio formatting (0.125 -> 12.5% in en-US); grouping disabled, minimum 0/maximum 1 fractional digits. |
-| `money` | `money(number) -> text` | Metadata locale/currency; grouping enabled; currency symbol; standard 0 digits for JPY, 2 for all other supported currencies. |
+| Function  | Accepted signature                     | Exact behaviour                                                                                                                                        |
+| --------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `if`      | `if(boolean, T, T) -> T`               | Scalar or scalar-list branches of compatible type; evaluate one branch only. No table branches.                                                        |
+| `min`     | `min(number, number) -> number`        | Smaller operand; exactly two arguments.                                                                                                                |
+| `max`     | `max(number, number) -> number`        | Larger operand; exactly two arguments.                                                                                                                 |
+| `round`   | `round(number, number=0) -> number`    | Digits must be integer 0–10. Compute `Math.round(n * 10^d) / 10^d`; reject non-finite intermediate. Ties round toward positive infinity, normalize -0. |
+| `pow`     | `pow(number, number) -> number`        | Binary64 real power; 0^0 is 1; reject non-real/non-finite results.                                                                                     |
+| `count`   | `count(list<T> or table<S>) -> number` | Number of elements/rows; empty is 0.                                                                                                                   |
+| `sum`     | `sum(table<S>, "column") -> number`    | Literal numeric-column name required; sum in current view row order, starting at 0. Empty is 0. Reject overflow.                                       |
+| `mean`    | `mean(table<S>, "column") -> number`   | Same literal-column constraints; `sum / count`; empty is `E_EMPTY_MEAN`.                                                                               |
+| `fixed`   | `fixed(number, number) -> text`        | Digits integer 0–10; localized fixed decimal places, grouping disabled.                                                                                |
+| `percent` | `percent(number) -> text`              | Ratio formatting (0.125 -> 12.5% in en-US); grouping disabled, minimum 0/maximum 1 fractional digits.                                                  |
+| `money`   | `money(number) -> text`                | Metadata locale/currency; grouping enabled; currency symbol; standard 0 digits for JPY, 2 for all other supported currencies.                          |
 
 For `sum`/`mean`, even empty tables and unexecuted branches require an existing numeric column. The second operand must be a string literal, not a computed text value. For `round` and `fixed`, a dynamic digit value is legal but checked each evaluation. Do not accept extra arguments. Formatting uses `Intl.NumberFormat` with the exact options above and the supported locale set in metadata. It is not based on the browser's ambient language. Currency defaults are in the registry.
 
@@ -44,7 +44,7 @@ ECMAScript binary64 arithmetic and the selected rounding procedure are normative
 
 ## Declarations and dependency graph
 
-`@let` binds immutable scalar/list values. Unlike the prototype, it may reference other `@let` declarations, including forward references, but must not depend on a control, a `@calc` or a table/view. Built-ins other than table aggregates may be used if all arguments are constant and correctly typed.
+`@let` binds immutable scalar/list values. It may reference other `@let` declarations, including forward references, but must not depend on a control, a `@calc` or a table/view. Built-ins other than table aggregates may be used if all arguments are constant and correctly typed.
 
 `@calc` binds a derived scalar/list expression and may reference constants, controls, other calculations, and tables/views through the defined aggregate functions. It cannot be a table alias. `@view` binds a table with the same schema as its input. Source tables are immutable. Control initial values and static directive properties are literals, not name references.
 

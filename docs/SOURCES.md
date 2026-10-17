@@ -36,7 +36,7 @@ Modular data/scale/shape helpers. Tinta, not D3, defines selection and chart sem
 
 https://vite.dev/guide/
 
-Browser tooling and runtime requirements; official current major line reviewed for stack selection.
+Browser tooling and runtime requirements; requirements for the selected version.
 
 ## S07 — Vitest getting started
 
@@ -84,7 +84,7 @@ Permissive license text; third-party material retains its own terms.
 
 https://www.w3.org/TR/WCAG22/
 
-Accessibility target, not a certification or an assertion that the prototype is compliant.
+Accessibility requirements; a target does not establish certification or compliance.
 
 ## S15 — MDN Content Security Policy guide
 
@@ -110,6 +110,6 @@ https://developer.mozilla.org/en-US/docs/Web/API/Window/showSaveFilePicker
 
 Feature detection and limited availability; no promise that it works in every browser/file origin.
 
-## Internal decisions versus external facts
+## Scope of these references
 
 These references describe external tools and platform behavior. The Tinta specification defines its syntax, functions, chart semantics, file formats and limits. The lockfile and dependency inventory identify the exact installed versions.

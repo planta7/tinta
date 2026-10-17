@@ -1,6 +1,6 @@
 # Contract implementation notes
 
-The declarations in public-api.d.ts define the public integration surface. The owning packages implement those interfaces; successful results must contain validated values rather than partially initialized placeholders.
+The declarations in public-api.d.ts define the public integration surface. Implementations must return validated values on success, with no partially initialized placeholders.
 
 `Program` has a private TypeScript brand only after validation. That brand has no wire representation. `encodeProgram` yields the exact ProgramIR fields; `decodeProgram` validates unknown JSON recursively, rejects unknown keys/enum values, verifies source hash, source spans, names, types, cycles, control grids and resource limits, and recreates internal immutable indexes. A successful JSON Schema envelope alone is insufficient to brand a program. ProgramIR ABI `tinta-ir-1` must reject unsupported fields rather than evaluate them. Binary blobs or arbitrary source strings in fields are not accepted as functions.
 

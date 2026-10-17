@@ -27,7 +27,6 @@ PUBLIC_ROOTS = (
     'conformance',
     'examples',
     'docs',
-    'decisions',
     'scripts',
     'patches',
     'third_party',
@@ -36,7 +35,6 @@ PUBLIC_ROOTS = (
 PUBLIC_TOP = (
     'README.md',
     'CONTRIBUTING.md',
-    'DECISIONS.md',
     'LICENSE',
     'SECURITY.md',
     '.gitignore',

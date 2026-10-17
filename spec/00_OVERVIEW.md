@@ -1,6 +1,6 @@
 # Language overview and normative authority
 
-Contract revision: **1.0-draft.3**. Target source-format version: **1.0**. This is a specification for implementation, not a released standard or a statement that software is complete.
+Contract revision: **1.0-draft.3**. Target source-format version: **1.0**. The language remains a draft; the source-format target is independent of software release versions.
 
 **MUST**, **MUST NOT**, **SHOULD** and **MAY** are requirement levels in this package. MUST/MUST NOT are conformance requirements. SHOULD requires a written reason for deviation. MAY is optional only where explicitly stated; it must not introduce observable alternative semantics. No unspecified extension may be enabled in a conforming V1 reader.
 
@@ -14,7 +14,7 @@ There are twelve named directives: `meta`, `let`, `calc`, `slider`, `toggle`, `c
 
 A `.md` file is opened in `markdown` profile: CommonMark plus the three documented extensions, with tinta recognition entirely disabled. A `.tinta` file is opened in `tinta` profile, unless the caller explicitly selects another profile. Profile is an API parameter; the pure engine never guesses a filename from global state. Unknown file extensions require an explicit profile or a UI choice.
 
-An author may omit `@meta`; the default version is `1.0`, locale `en-US`, currency `USD`. New-file templates insert no mandatory scaffolding. If present, metadata is a single root directive before any non-comment, nonblank content, with these supported keys only:
+An author may omit `@meta`; the default version is `1.0`, locale `en-US`, currency `USD`. New files require no configuration block. If present, metadata is a single root directive before any non-comment, nonblank content, with these supported keys only:
 
 ```tinta
 @meta (version: "1.0", title: "An explorable note", locale: "en-US", currency: "EUR")

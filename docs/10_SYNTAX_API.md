@@ -22,7 +22,7 @@ pnpm test:conformance parsing
 pnpm verify --suite parsing
 ```
 
-The parsing aggregate includes specification checks, strict types, formatting/lint, dependency/license/architecture checks, unit/property/corpus tests, build, offline browser portability and the parse-only adapter. The parsing adapter leaves semantic/import expectations unrun; the separate [engine adapter](11_ENGINE_API.md) executes them. Coverage includes all syntax implementation modules; the generated registry copy and type declarations are excluded, and the registry is compared byte-for-value with its normative source. The fixtures define expected parse results; test commands report observed results separately.
+The parsing aggregate includes specification checks, strict types, formatting/lint, dependency/license/architecture checks, unit/property/corpus tests, build, offline browser portability and the parse-only adapter. The parsing adapter checks syntax; the [engine adapter](11_ENGINE_API.md) checks semantics and imports. Coverage includes all syntax implementation modules; the generated registry copy and type declarations are excluded, and the registry is compared byte-for-value with its normative source. The fixtures define expected parse results; test commands report observed results separately.
 
 ## Editor metadata and incomplete contexts
 

@@ -4,7 +4,6 @@
 # Prose alone uses metadata checks; normative contracts and packaged README files
 # remain shared inputs. Component application rules below retain their ownership.
 *.md -ci-language -ci-studio -ci-vscode
-DECISIONS.md ci-language ci-studio ci-vscode
 architecture/** ci-language ci-studio ci-vscode
 spec/** ci-language ci-studio ci-vscode
 contracts/** ci-language ci-studio ci-vscode

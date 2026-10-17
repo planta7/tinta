@@ -16,17 +16,15 @@
 
 ---
 
-**tinta is a language for interactive documents.** It brings writing, data and interaction into a single document. Readers can explore a question, compare scenarios and see how their choices change the explanation.
+**tinta is a language for interactive documents.** Add controls, calculations and charts to Markdown so readers can change assumptions and see the results in the text. Save the document as a text file or export HTML that works offline.
 
-An article that invites questions. A report where readers can test their assumptions. A guide that gives each reader the explanation they need.
+Write in Studio, VS Code or a text editor, and use the CLI to check and export files. Exported HTML opens in a browser without these tools.
 
-Choose the tool that fits your work. They share the same language and engine, and exported HTML opens independently of all three.
-
-| Work in | Use it to |
-| --- | --- |
-| [tinta studio](#meet-tinta-studio) | Explore examples, write and preview documents in a browser. |
-| [VS Code](#write-in-vs-code) | Write with completion, diagnostics and an interactive preview. |
-| [The CLI](#try-it-locally) | Check documents and create HTML exports from the terminal. |
+| Work in                            | Use it to                                                      |
+| ---------------------------------- | -------------------------------------------------------------- |
+| [tinta studio](#meet-tinta-studio) | Explore examples, write and preview documents in a browser.    |
+| [VS Code](#write-in-vs-code)       | Write with completion, diagnostics and an interactive preview. |
+| [The CLI](#try-it-locally)         | Check documents and create HTML exports from the terminal.     |
 
 ## Meet tinta studio
 
@@ -34,40 +32,42 @@ Choose the tool that fits your work. They share the same language and engine, an
 > **You can try tinta studio in your browser.** [Open the demo →](https://planta7.github.io/tinta/)
 > Explore an example, change a control and watch the document respond. No account needed.
 
-Write on the left. Read and interact on the right.
+Studio shows your source beside an interactive preview.
 
 <p align="center">
   <img src="docs/assets/studio.png" alt="tinta studio editing the illustrated newsletter article: Markdown source on the left and the live document with two sliders on the right." width="1100">
 </p>
 
-<p align="center"><em>The updated <a href="examples/article.tinta">explorable article</a>, open in tinta studio.</em></p>
+<p align="center"><em>An <a href="examples/article.tinta">interactive article</a> open in tinta studio.</em></p>
 
-- **Write and preview.** Write and see the document update beside you. Search, undo and clear error messages help you keep going.
+- **Write and preview.** Edit the source and see the preview update. Use search and undo, and jump to errors in the source.
 - **Start from Markdown or an example.** Browse rendered examples and reusable snippets. Bring an existing Markdown file or import local CSV, JSON and raster images.
-- **Try controls and charts.** Move a slider, choose a scenario or inspect a chart. The explanation stays connected to the same underlying data.
-- **Recover a draft.** Recovery copies help you return to a draft. Save your work, then export the finished document for your readers.
+- **Try controls and charts.** Move a slider, choose a scenario or inspect a chart. Text, tables and charts update from the same data.
+- **Recover a draft.** Studio keeps local recovery copies. Save a source file to keep your own copy, then export HTML for readers.
 
 New documents open ready to type. Existing documents open in Reading mode. Studio runs as a static web app or as a single local HTML file, without an account or backend. You can also [run it locally](#try-it-locally).
 
 ## Write in VS Code
 
-The local VS Code Desktop extension brings `.tinta` documents into your editor: directive and expression completion, diagnostics, hover help, definitions and references, plus an interactive preview with controls and charts.
+The VS Code Desktop extension provides completion, diagnostics, hover help, definitions and references for `.tinta` files, plus an interactive preview with controls and charts.
 
 Enrich an existing Markdown file into a separate tinta document, select local images, open and save source bundles, and export interactive or static HTML. Markdown files keep their normal editing behavior. Image, bundle, enrichment and export commands require a trusted workspace.
 
-After installing the [repository toolchain and dependencies](#try-it-locally), build the local extension:
+Install a VSIX from the [release downloads](https://github.com/planta7/tinta/releases) with **Extensions: Install from VSIX…**, then reload VS Code. Open a `.tinta` file and run **tinta: Open Preview**.
+
+To build the extension from source, install the [repository toolchain and dependencies](#try-it-locally), then run:
 
 ```sh
 pnpm package:vscode
 ```
 
-In VS Code, run **Extensions: Install from VSIX…**, select `build/vscode/tinta-0.1.0-dev.0.vsix`, then reload. Open a `.tinta` file and run **tinta: Open Preview**.
+Install the resulting `build/vscode/tinta-0.1.0-dev.0.vsix` with the same command. If switching to a release extension, disable or uninstall the local extension first to avoid duplicate providers.
 
 Use the extension in VS Code Desktop on macOS arm64, Linux arm64 or Windows x64. Remote workspaces and vscode.dev are unsupported. Rename, quick fixes and formatting are not available.
 
 See the [VS Code quickstart](docs/14_VSCODE_QUICKSTART.md) for examples, local installation, diagnostics and exports, and the [host reference](docs/13_VSCODE.md) for behavior and limits.
 
-## A small document, a real interaction
+## Example document
 
 This is a complete document:
 
@@ -89,13 +89,15 @@ Consider dividing the reading into two sessions.
 @end
 ```
 
-Move the slider. Include a discussion. The total changes, and the advice appears when it becomes relevant. **No author JavaScript, event handlers or build setup inside the document.**
+Changing the page count or including a discussion updates the total. When it exceeds 45 minutes, the document suggests two sessions. The calculations and conditions are written directly in the source.
 
 tinta uses Markdown for text formatting and adds its own syntax for values, calculations, controls, data and conditional content. It supports CommonMark 0.31.2, with pipe tables, task lists and double-tilde strikethrough. A `.md` file stays in Markdown mode until you explicitly choose **Enrich as tinta**; the original file is preserved.
 
 ## Try it locally
 
-Use **Node 24.21.0** and **pnpm 10.34.6**. From a checkout:
+Download the standalone Studio HTML from the [release downloads](https://github.com/planta7/tinta/releases) and open it in a browser to work offline.
+
+To run from source, use **Node 24.21.0** and **pnpm 10.34.6**. From a checkout:
 
 ```sh
 pnpm install --frozen-lockfile
@@ -112,9 +114,9 @@ pnpm build
 pnpm preview
 ```
 
-The static application lives in `build/studio/`. Hash URLs support refresh without server rewrites.
+The static application is in `build/studio/`.
 
-For a server-free workspace, open **`build/tinta-studio.html`** directly in a browser. It contains the editor and its runtimes in one local file. Browser storage and file permissions still depend on the environment; local recovery copies are not a substitute for saving your source.
+Open **`build/tinta-studio.html`** directly in a browser to use the standalone editor. Save your source files separately from browser recovery copies.
 
 See the [setup and toolchain guide](docs/09_FOUNDATION_TOOLCHAIN.md) for prerequisites and troubleshooting.
 
@@ -139,9 +141,9 @@ The [CLI reference](docs/06_CLI.md) covers validation, enrichment, imports, expo
 
 </details>
 
-Studio targets modern desktop Chromium, Firefox and Safari; the reader and HTML exports also support narrow layouts. Browser storage, file permissions and assistive technology vary by environment. See the [usage environments](docs/01_PRODUCT.md#supported-usage-environments) and [accessibility requirements](docs/05_ACCESSIBILITY_AND_DESIGN.md). Support on Safari and iOS depends on the specific browser and device; see those references for limitations.
+Studio targets modern desktop Chromium, Firefox and Safari; the reader and HTML exports also support narrow layouts. Storage, file access and assistive technology support vary by browser and device. See [supported environments](docs/01_PRODUCT.md#supported-usage-environments) and [accessibility](docs/05_ACCESSIBILITY_AND_DESIGN.md), including the limitations of automated WebKit testing for Safari and iOS.
 
-## More than a slider
+## Language features
 
 | In your document                      | What it does                                                               |
 | ------------------------------------- | -------------------------------------------------------------------------- |
@@ -155,7 +157,7 @@ Charts include keyboard exploration and a complete data table. Compatible charts
 
 Start with the [cheatsheet](docs/CHEATSHEET.md), then explore the [expression rules](spec/02_EXPRESSIONS_AND_STATE.md), [directives](spec/03_DIRECTIVES.md), [data model](spec/04_DATA.md) and [chart specification](spec/05_CHARTS.md).
 
-## Open an example. Change one thing.
+## Examples
 
 | Document                                                 | Try this                                                  |
 | -------------------------------------------------------- | --------------------------------------------------------- |
@@ -168,26 +170,26 @@ The [example collection](examples/README.md) also includes a minimal starting po
 
 ## Save and share your document
 
-| Format               | What you keep                                                        |
-| -------------------- | -------------------------------------------------------------------- |
-| `.tinta`             | Editable UTF-8 source and embedded table data.                       |
-| `.tinta.zip`         | Source together with local PNG, JPEG or WebP images.                  |
-| **Interactive HTML** | A complete offline document with controls and its embedded runtime.  |
-| **Static HTML**      | The visible result, with fixed values and no interactive controls.    |
-| `.tinta.state.json`  | Reader answers saved for this exact document. |
+| Format               | What you keep                                                       |
+| -------------------- | ------------------------------------------------------------------- |
+| `.tinta`             | Editable UTF-8 source and embedded table data.                      |
+| `.tinta.zip`         | Source together with local PNG, JPEG or WebP images.                |
+| **Interactive HTML** | A complete offline document with controls and its embedded runtime. |
+| **Static HTML**      | The visible result, with fixed values and no interactive controls.  |
+| `.tinta.state.json`  | Reader answers saved for this exact document.                       |
 
 > [!IMPORTANT]
-> **Interactive HTML includes the complete source, hidden branches and all embedded data.** Hidden content is still present in the file. Static HTML contains only the resolved visible presentation and its referenced images. See the [file and export contract](docs/02_FILES_AND_EXPORTS.md) for the exact boundaries.
+> **Interactive HTML includes the complete source, hidden branches and all embedded data.** Hidden content is still present in the file. Static HTML contains only the resolved visible presentation and its referenced images. Images may retain metadata. Read about [file formats and exports](docs/02_FILES_AND_EXPORTS.md).
 
 Studio's local recovery stores up to 10 copies and 30 MiB, replacing the oldest copies first. It can be disabled, and copies can be deleted. Reader answers are not automatically persisted. Studio can explicitly export an answers snapshot; the CLI can apply a matching snapshot during export. The VS Code preview keeps answers in memory and can include them in HTML exports, but does not provide snapshot import/export. [How saving and recovery work →](docs/03_EDITOR_AND_READER.md)
 
 CSV and JSON imports in Studio or the CLI copy data into typed document tables; they do not retain a live connection to the original file. Images must be local PNG, JPEG or WebP files. Use a source bundle when moving a document together with its images. See the [data and import rules](spec/04_DATA.md) and [file formats](docs/02_FILES_AND_EXPORTS.md).
 
-## A small language. Clear boundaries.
+## Limitations
 
-Documents cannot execute author JavaScript, CSS, HTML, plug-ins or code fences, fetch remote data, or submit forms. Raw author HTML is inert; code fences remain literal examples. Choose which local images the document can use.
+Documents cannot run scripts or plug-ins, apply custom CSS, fetch remote data or submit forms. HTML is displayed as text, and code blocks remain literal examples. Images must be selected from local files.
 
-tinta focuses on interactive documents. There is no cloud storage, account system, telemetry, AI feature, website generator or publication service. PDF and flattened Markdown exports are outside the current scope. See the [product scope](docs/01_PRODUCT.md) and [security model](docs/04_SECURITY.md).
+Files stay on your device; tinta does not upload, synchronize or host documents, collect telemetry or call AI models. It does not provide page layouts or generate websites. PDF and flattened Markdown exports are not supported. See [supported features](docs/01_PRODUCT.md) and [security and privacy](docs/04_SECURITY.md).
 
 ## Write with a coding agent
 
@@ -213,7 +215,7 @@ The parser and semantic engine are portable TypeScript. The reader and export ru
 | Looking for                                   | Start here                                                                                                       |
 | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
 | Syntax and complete documents                 | [Cheatsheet](docs/CHEATSHEET.md) · [Examples](examples/README.md)                                                |
-| Studio editing, imports, saving and recovery  | [Editor and reader reference](docs/03_EDITOR_AND_READER.md)                                                          |
+| Studio editing, imports, saving and recovery  | [Editor and reader reference](docs/03_EDITOR_AND_READER.md)                                                      |
 | VS Code installation and everyday use         | [Quickstart](docs/14_VSCODE_QUICKSTART.md) · [Host behavior and limits](docs/13_VSCODE.md)                       |
 | Terminal commands and automation              | [CLI reference](docs/06_CLI.md)                                                                                  |
 | Source bundles, answers and HTML exports      | [File and export formats](docs/02_FILES_AND_EXPORTS.md)                                                          |
@@ -221,12 +223,10 @@ The parser and semantic engine are portable TypeScript. The reader and export ru
 | Keyboard use, charts and accessible reading   | [Accessibility and design](docs/05_ACCESSIBILITY_AND_DESIGN.md)                                                  |
 | Local resource access and untrusted documents | [Security model](docs/04_SECURITY.md) · [Security reporting](SECURITY.md)                                        |
 | Development setup and checks                  | [Toolchain](docs/09_FOUNDATION_TOOLCHAIN.md) · [Testing](docs/07_VERIFICATION.md) · [Scripts](scripts/README.md) |
-| Package formats and versions                  | [Software distribution](docs/15_DISTRIBUTION.md) |
-| Scope and compatibility                       | [Product contract](docs/01_PRODUCT.md) · [Decisions](DECISIONS.md) · [Change control](docs/08_CHANGE_CONTROL.md) |
+| Package formats and versions                  | [Software distribution](docs/15_DISTRIBUTION.md)                                                                 |
+| Scope and compatibility                       | [Product contract](docs/01_PRODUCT.md) · [Change control](docs/08_CHANGE_CONTROL.md)                             |
 
 ## Status
-
-**Draft language. Working local tools.**
 
 The language contract is **1.0-draft.3**, targeting source-format version **1.0**. Its syntax may change before stabilization. The repository includes the specification, reusable packages, CLI, Studio and VS Code extension. See the [compatibility rules](docs/08_CHANGE_CONTROL.md) and [changelog](https://github.com/planta7/tinta/blob/main/CHANGELOG.md) for format and software versions.
 
@@ -234,28 +234,7 @@ The language contract is **1.0-draft.3**, targeting source-format version **1.0*
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md), the [architecture](architecture/MODULES.md) and [compatibility rules](docs/08_CHANGE_CONTROL.md) before proposing language or contract changes. Report security issues through [SECURITY.md](SECURITY.md).
 
-<details>
-<summary><strong>Run the existing checks</strong></summary>
-
-```sh
-pnpm exec playwright install chromium firefox webkit
-pnpm verify
-```
-
-`pnpm verify` runs the infrastructure aggregate. `pnpm verify --suite editing` adds the implemented document-tooling and editor checks. Dependency auditing needs access to the npm advisory service.
-
-For the native extension, run `pnpm verify --suite vscode` after provisioning VS Code Desktop and setting `TINTA_VSCODE_EXECUTABLE` and `TINTA_VSCODE_CLI` to its executable and CLI launcher. This suite includes local VSIX packaging and installed-extension workflows; missing desktop prerequisites return nonzero. See the [native test instructions](scripts/README.md#local-vs-code-artifact).
-
-Specification consistency checks use Python's standard library:
-
-```sh
-python3 scripts/check_spec.py
-python3 -m unittest discover -s scripts/tests -v
-```
-
-See [testing and performance](docs/07_VERIFICATION.md), [conformance fixtures](conformance/README.md) and [checker prerequisites](scripts/README.md).
-
-</details>
+See [testing and performance](docs/07_VERIFICATION.md) and [test commands](scripts/README.md) for development checks.
 
 ## License
 

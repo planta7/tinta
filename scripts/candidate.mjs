@@ -33,7 +33,6 @@ export function captureCandidate() {
       "docs",
       "architecture",
       "examples",
-      "decisions",
       ".github",
     ];
     const rootFiles = [
@@ -41,7 +40,6 @@ export function captureCandidate() {
       "CHANGELOG.md",
       "CONTRIBUTING.md",
       "SECURITY.md",
-      "DECISIONS.md",
       "LICENSE",
       "THIRD_PARTY_NOTICES.txt",
       ".gitignore",

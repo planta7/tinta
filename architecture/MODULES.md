@@ -68,15 +68,15 @@ The build also emits `build/preview.html` as the supported, framework-free opaqu
 
 ## Native editor adapters
 
-The [VS Code host contract](../docs/13_VSCODE.md) adds these separate owners:
+The [VS Code host contract](../docs/13_VSCODE.md) uses these packages and runtime entries:
 
-| Owner | Dependencies and authority |
-|---|---|
-| `@tinta-lang/language-service` | types, syntax, engine; pure analysis and query DTOs, no host APIs. |
-| `@tinta-lang/language-server` | types, language-service; local LSP scheduling and worker supervision, no asset/filesystem/network authority. |
-| `@tinta-lang/local-files` | types, artifacts; explicit Node file capabilities shared by CLI and native host. |
-| `@tinta-lang/vscode` | types, language-service, local-files, artifacts; local VS Code document adapter, client and grants. |
-| VS Code artifact worker | types, engine, artifacts and a fixed worker port; separate `src/artifact-worker` subtree, supplied bytes only, no filesystem or native editor APIs. |
-| VS Code browser entry | types, engine, reader, artifacts; separate `src/webview` subtree with no Node, VS Code API import, React or CodeMirror. |
+| Package or entry               | Dependencies and permissions                                                                                                                        |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@tinta-lang/language-service` | types, syntax, engine; pure analysis and query DTOs, no host APIs.                                                                                  |
+| `@tinta-lang/language-server`  | types, language-service; local LSP scheduling and worker supervision, no asset/filesystem/network authority.                                        |
+| `@tinta-lang/local-files`      | types, artifacts; explicit Node file capabilities shared by CLI and native host.                                                                    |
+| `@tinta-lang/vscode`           | types, language-service, local-files, artifacts; local VS Code document adapter, client and grants.                                                 |
+| VS Code artifact worker        | types, engine, artifacts and a fixed worker port; separate `src/artifact-worker` subtree, supplied bytes only, no filesystem or native editor APIs. |
+| VS Code browser entry          | types, engine, reader, artifacts; separate `src/webview` subtree with no Node, VS Code API import, React or CodeMirror.                             |
 
-The local-files adapter supplies exact opened-source reads, bounded explicit inputs, root-contained raster reads and atomic output commits to both CLI and native commands. The native host supervises a fixed bundled artifact worker alongside its language server; the worker performs enrichment, bundle validation and artifact generation without receiving file grants. At most one file operation runs, with the registry watchdog and explicit cancellation. The architecture checker inspects each as soon as its directory exists and forbids browser imports across its subtree. Existing required owners remain mandatory. Shared file extraction preserves CLI behavior; this boundary does not authorize arbitrary Node imports in language or browser packages. Only the native host loads the fixed bundled language server; no workspace-selected executable. Pure ESM stays intact. Trusted browser bundles remain classic scripts. The probe runner uses an isolated CommonJS test-loader shim; it does not convert engine packages to CommonJS. Product activation uses native ESM. The bundled upstream LSP SDK is CommonJS and receives a fixed Node createRequire shim in the extension/server bundles only; this does not permit author-selected imports or a CommonJS fallback in portable packages.
+The local-files adapter supplies exact opened-source reads, bounded explicit inputs, root-contained raster reads and atomic output commits to both CLI and native commands. The native host supervises a fixed bundled artifact worker alongside its language server; the worker performs enrichment, bundle validation and artifact generation without receiving file grants. At most one file operation runs, with the registry watchdog and explicit cancellation. The architecture checker enforces these package dependencies and forbids browser imports in native adapter subtrees. CLI and native commands share the file adapter; language and browser packages cannot import Node APIs. Only the native host loads the fixed bundled language server; no workspace-selected executable. Pure ESM stays intact. Trusted browser bundles remain classic scripts. The probe runner uses an isolated CommonJS test-loader shim; it does not convert engine packages to CommonJS. Product activation uses native ESM. The bundled upstream LSP SDK is CommonJS and receives a fixed Node createRequire shim in the extension/server bundles only; this does not permit author-selected imports or a CommonJS fallback in portable packages.

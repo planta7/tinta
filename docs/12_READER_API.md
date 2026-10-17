@@ -32,7 +32,7 @@ Compile warnings remain available from the compiler result and should also be di
 
 ## Verification
 
-Use the pinned toolchain from [foundation tooling](09_FOUNDATION_TOOLCHAIN.md), then:
+Use the pinned toolchain from [toolchain setup](09_FOUNDATION_TOOLCHAIN.md), then:
 
 ```sh
 pnpm build

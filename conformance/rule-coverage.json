@@ -2716,7 +2716,7 @@
       "authority": "contracts/CONTRACT_RULES.md",
       "section": "Contract implementation notes",
       "line": 3,
-      "sha256": "343b7d0edd49fc56cea3e97db4063c2011d1db2564aaec252274f828f1815679",
+      "sha256": "144c40b8050982931af7b6f981b345d6e13146e46f9af025f8d11f875a56292f",
       "assertion": "Assert validated IR branding, closed shapes, source identity, immutable lifecycle, authentic hosts and capability/revision handling.",
       "references": [
         "engine-d7e781652616",
@@ -3048,7 +3048,7 @@
     {
       "id": "RULE-014",
       "authority": "docs/01_PRODUCT.md",
-      "section": "Required author journeys",
+      "section": "Authoring workflows",
       "line": 11,
       "sha256": "566e0a33023bc8766e7f184603068859cfee60f728f99dee22ad91b28b5a1fa0",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
@@ -3072,9 +3072,9 @@
     {
       "id": "RULE-015",
       "authority": "docs/01_PRODUCT.md",
-      "section": "Required author journeys",
+      "section": "Authoring workflows",
       "line": 13,
-      "sha256": "d077ad844517b8ab3a0af9b9c824956bb15686c123010028f58986f3d4a2f0ef",
+      "sha256": "06c59a1fbab1a68ea7f7aa9decd27dd7a1e66b62fad710f74db316734f5345d7",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
       "references": [
         "editor-a42d8ae0bd82",
@@ -3096,9 +3096,9 @@
     {
       "id": "RULE-016",
       "authority": "docs/01_PRODUCT.md",
-      "section": "Required author journeys",
+      "section": "Authoring workflows",
       "line": 15,
-      "sha256": "0e7ea260391e6cc6ce2287cc2b2d3b56afd9902a719d18a7b7022c2acef9658d",
+      "sha256": "39d9ee8e595f061eb17a3b448c8668c89bf7cd4fd9f042ea2219a61311583f11",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
       "references": [
         "editor-a42d8ae0bd82",
@@ -3120,7 +3120,7 @@
     {
       "id": "RULE-017",
       "authority": "docs/01_PRODUCT.md",
-      "section": "Required author journeys",
+      "section": "Authoring workflows",
       "line": 17,
       "sha256": "35202be47b4e9ac29d038c06c90e91bb26a5ba71bd3c0f92b6b156ef803372d3",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
@@ -3144,7 +3144,7 @@
     {
       "id": "RULE-018",
       "authority": "docs/01_PRODUCT.md",
-      "section": "Required author journeys",
+      "section": "Authoring workflows",
       "line": 19,
       "sha256": "8a6acec7c4b34353a3b5b53d640f69a71c89809904084b38e47b3b14460b121c",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
@@ -3170,7 +3170,7 @@
       "authority": "docs/01_PRODUCT.md",
       "section": "Language and tools",
       "line": 23,
-      "sha256": "aece822287e42a9159e95e7e890d882bd1222e9789f9892d4daa884ac0c65137",
+      "sha256": "1cd12f45f3dc1cf1e46568256c3c194fe40a5d6cc528a904a7821335151b857e",
       "assertion": "Assert actual local editing, semantic transactions and offline portable delivery; inspect overall product scope separately.",
       "references": [
         "editor-a42d8ae0bd82",
@@ -3265,7 +3265,7 @@
       "id": "RULE-023",
       "authority": "docs/01_PRODUCT.md",
       "section": "Supported usage environments",
-      "line": 37,
+      "line": 56,
       "sha256": "543e6441c52d6c38701d0e7013005b178c934faecc8e69ee5848677043a8e923",
       "assertion": "Browser automation and CLI tests are distinct from physical-device and operating-system behavior.",
       "references": [
@@ -3761,9 +3761,9 @@
     {
       "id": "RULE-054",
       "authority": "docs/03_EDITOR_AND_READER.md",
-      "section": "App form",
+      "section": "Application and navigation",
       "line": 9,
-      "sha256": "04572129b359e7d564991a2b589b49f410770d4a69f174f21f7b01c91b8f06ae",
+      "sha256": "d92f013975865e3852d65aa510cebaab89d9f263c708fcc90b934abe4a658ab4",
       "assertion": "Assert local welcome/new/example/file flows and responsive source/reading surfaces.",
       "references": [
         "editor-a42d8ae0bd82",
@@ -3780,7 +3780,7 @@
     {
       "id": "RULE-055",
       "authority": "docs/03_EDITOR_AND_READER.md",
-      "section": "App form",
+      "section": "Application and navigation",
       "line": 11,
       "sha256": "66d62efc3dcbb5e9f2dc494eb433a3ec54c57b6c8f6c36b84ad472c76e8bd446",
       "assertion": "Assert local welcome/new/example/file flows and responsive source/reading surfaces.",
@@ -3806,9 +3806,9 @@
     {
       "id": "RULE-056",
       "authority": "docs/03_EDITOR_AND_READER.md",
-      "section": "App form",
+      "section": "Application and navigation",
       "line": 13,
-      "sha256": "751871ccbe591c0cf51c566d6283dc77d42ab003d83ab37053aff39c59accecf",
+      "sha256": "5593a724ba9283264fc62b17790876abd40578d1d03517fcec546cf6c3e9d5c7",
       "assertion": "Assert local welcome/new/example/file flows and responsive source/reading surfaces.",
       "references": [
         "editor-a42d8ae0bd82",
@@ -4120,7 +4120,7 @@
       "authority": "docs/03_EDITOR_AND_READER.md",
       "section": "Keyboard commands",
       "line": 63,
-      "sha256": "54d8f899a5da09c1091eaf0b107b98e993f828a7c0b2720129a86c85fe6670e0",
+      "sha256": "f2156cfec3c66eebd507e784191bb9ce059c3e68b2d172b461891aeb317402c3",
       "assertion": "Assert native shortcuts, unsaved decisions and labelled accessible dialogs.",
       "references": [
         "editor-ac92108d5700",
@@ -4201,7 +4201,7 @@
       "authority": "docs/04_SECURITY.md",
       "section": "Enforced boundaries",
       "line": 13,
-      "sha256": "ebd303c7d588381f6563658103ff0a634e4196c7f7ab0772563a06b8339091dd",
+      "sha256": "2770117e5e28e7cfde1b4f95d82507fecccf96eae1b139c555e70584ce6f259a",
       "assertion": "Assert bounded untrusted input handling, inert rendering, isolated capabilities, no automatic requests and fail-closed protocol/artifact validation.",
       "references": [
         "reader-2f5f596d2b81",
@@ -4485,7 +4485,7 @@
       "authority": "docs/05_ACCESSIBILITY_AND_DESIGN.md",
       "section": "Product character",
       "line": 5,
-      "sha256": "06eb9b4853ab88be4bb020c752bf3f0fe2abc936465a1a957c3dbd965daf4be0",
+      "sha256": "6169a724c56bea34113fcd16cab31deb791e01f4bc034f059b218f79f8548425",
       "assertion": "Check native keyboard behavior, safe reflow, accessible names, focus, announcements and visual cues against the clause.",
       "references": [
         "reader-03843a0b43b3",
@@ -5239,7 +5239,7 @@
       "authority": "docs/07_VERIFICATION.md",
       "section": "Coverage and property-test policy",
       "line": 25,
-      "sha256": "7898a571aac6718c944efdd0e200244ea95e80045555cc3f29edb01bb9168151",
+      "sha256": "7996edc07e340ff5f85c78b070fa15b83be23909af82d1c09c75567106233588",
       "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
@@ -5382,7 +5382,7 @@
       "authority": "docs/07_VERIFICATION.md",
       "section": "Studio interaction protocol",
       "line": 50,
-      "sha256": "b7106f4ffea51596c3b0617c7a10b8b196205b985db57ca4ab07898a97a849ed",
+      "sha256": "94874ee27d320ab7f5dff2106e48aeb8c070c100e0b2fe8cac35ade4aeebb6c8",
       "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run budget checks with trusted browser interactions.",
       "references": [
         "performance-8e943fd71cb3",
@@ -5445,7 +5445,7 @@
       "authority": "docs/07_VERIFICATION.md",
       "section": "Studio interaction protocol",
       "line": 72,
-      "sha256": "5ddfe87baf80c442d04b7b2f1b74fae741ed97167d515bf211cf2aa81a893989",
+      "sha256": "61490b0a002c0f4ac6dee25a6a26b4dee6d66956358cefda569806c3870aee62",
       "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run budget checks with trusted browser interactions.",
       "references": [
         "performance-8e943fd71cb3",
@@ -5465,8 +5465,8 @@
       "id": "RULE-132",
       "authority": "docs/07_VERIFICATION.md",
       "section": "Studio interaction protocol",
-      "line": 78,
-      "sha256": "ba69217f01cd2aff53af41379f1aed94e1824b61efa070349a1e0238320990fe",
+      "line": 91,
+      "sha256": "1a1a37bfe1352fcc78e01934baf30ddea12a3822215340316b56c3b42774ffe3",
       "assertion": "Assert exact latency/task boundaries, missing-sample failure and all-three-run budget checks with trusted browser interactions.",
       "references": [
         "performance-8e943fd71cb3",
@@ -5486,7 +5486,7 @@
       "id": "RULE-133",
       "authority": "docs/07_VERIFICATION.md",
       "section": "Test commands",
-      "line": 82,
+      "line": 125,
       "sha256": "70cf0272cc8a657cfbba5a279c1723ce436b6e7dc9fe44dbdfa72d91d3e5c037",
       "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
@@ -5503,7 +5503,7 @@
       "id": "RULE-134",
       "authority": "docs/07_VERIFICATION.md",
       "section": "Test commands",
-      "line": 84,
+      "line": 127,
       "sha256": "3ba3b49f1aeee788912c4176f585fcefc58621be176634378e556b7e861f34b4",
       "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
@@ -5520,7 +5520,7 @@
       "id": "RULE-135",
       "authority": "docs/07_VERIFICATION.md",
       "section": "Test reports",
-      "line": 88,
+      "line": 131,
       "sha256": "734360af703fae99034f7f64eb888bc5a3804ae1839f359318b003254c7750f7",
       "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
@@ -5537,8 +5537,8 @@
       "id": "RULE-136",
       "authority": "docs/07_VERIFICATION.md",
       "section": "Test reports",
-      "line": 90,
-      "sha256": "b894ef6e6dc36e39095df8e3c8b44aa31166b06f75491c1897361892685071bc",
+      "line": 133,
+      "sha256": "ce796f8a50a6119068c237e64ca20804425b5c5f9133773e56492fbc3d01970f",
       "assertion": "Test commands enforce their documented assertions, fixture boundaries, coverage and failure reporting.",
       "references": [
         "check-scripts-verify.mjs",
@@ -5555,7 +5555,7 @@
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Authority",
       "line": 5,
-      "sha256": "6624068d1b60e5d1950824d12209f590ece760db1b6d2b1cef0dfcf3422bdcd5",
+      "sha256": "6905002988929ac23057a6e629733e0152c7b3924cdd5e3a9260f968ac72170c",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
@@ -5591,7 +5591,7 @@
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Versioning",
       "line": 11,
-      "sha256": "a44d51f7a8f3650f60818ea4a173583c5e72b93f92ae95c3afa8abd71c0d9f84",
+      "sha256": "62ea6aeb37a8d875cd09bc0a654dbb04ea7068d4c8f19f0281633eb7fde61a1f",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
@@ -5627,7 +5627,7 @@
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Versioning",
       "line": 15,
-      "sha256": "35e016165b5f49f36237378e9f3a4e11dff2bd8bb87474aad4b349e132da7c23",
+      "sha256": "730c28a351396dda7037e535d90d4f612abdaa6e35fc11419c2fcd1b02753808",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
@@ -5644,8 +5644,8 @@
       "id": "RULE-142",
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Draft 2 identifier revision",
-      "line": 23,
-      "sha256": "1c98dc7b780314136444ce5fa7e1c318ac57a3e3b0be14097382cc6c1cd91de1",
+      "line": 29,
+      "sha256": "3af3fd7006e09e8e1b6128acf06600d37680cc3a6d8c8a835e538989f93b891c",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
         "check-scripts-check_spec.py",
@@ -5662,7 +5662,7 @@
       "id": "RULE-143",
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Licensing",
-      "line": 27,
+      "line": 33,
       "sha256": "79472ea3f55d3282677c44c4054b40e48abaef034427b7cedff3dce7bd8a37b8",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
@@ -5680,7 +5680,7 @@
       "id": "RULE-144",
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Licensing",
-      "line": 29,
+      "line": 35,
       "sha256": "ffeb525c711786d898b27ec9a2e23de19876299b8d8df954bdc3699e2f85a7f6",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
@@ -5698,7 +5698,7 @@
       "id": "RULE-145",
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Licensing",
-      "line": 31,
+      "line": 37,
       "sha256": "243ace7936b6b4193675ea7bda6936f8960bceb50019e6e9e5dd83dba7c023eb",
       "assertion": "Public authority, version, license and release provenance are review obligations; automated checks verify the repository envelope and artifact inventory.",
       "references": [
@@ -5717,7 +5717,7 @@
       "authority": "spec/00_OVERVIEW.md",
       "section": "Language overview and normative authority",
       "line": 3,
-      "sha256": "37ac4e5d3935223fea660dddf93f1c4ce43081165bc9047e7f2aa6072aa9630f",
+      "sha256": "be0e02bd725b0371513e49b96d3251b52b2017b69ee5f5ddbe6c0dde29068883",
       "assertion": "Inspect accepted authority and compatibility claims; closed schemas and source version errors provide automated enforcement.",
       "references": [
         "engine-b8ef2c0fbf9d",
@@ -5798,7 +5798,7 @@
       "authority": "spec/00_OVERVIEW.md",
       "section": "Source modes",
       "line": 17,
-      "sha256": "a2a2ea3a445a28cc6f379c3a3fd63f3bc1d6b9039f214a73c2821d832e7debdb",
+      "sha256": "e182fdbef9f52d507b0d624385bfe549a040e727b9a3bba91ab433f289aa951f",
       "assertion": "Assert portable Markdown-first parsing, explicit enrichment, supported examples and atomic finite state evaluation.",
       "references": [
         "syntax-f5ca6247243b",
@@ -6016,7 +6016,7 @@
       "authority": "spec/01_MARKDOWN_AND_LEXING.md",
       "section": "Block boundaries",
       "line": 23,
-      "sha256": "b3bfb1feeddae9a46d03a9ea6b966767b69eccd6b797590a50e5f6fd6acbf898",
+      "sha256": "2d903fe6bfd2b92a1a5e99e8dbb3bf56b6fec3ee3f7eaa4559c864cae246d2d3",
       "assertion": "Assert nested flow, unmatched terminators, recovery and root-only declaration errors.",
       "references": [
         "syntax-56f5c856b319",
@@ -6391,7 +6391,7 @@
       "authority": "spec/02_EXPRESSIONS_AND_STATE.md",
       "section": "Function signatures — exactly eleven",
       "line": 25,
-      "sha256": "64862caa6b7117adb5ffacc383dc2c151d1dc6d95c7cbb94469b3fbddf5edf0d",
+      "sha256": "02d777ce9fca50261214ca1a51827f2eab2e741ac4d2ce714c8e67fcacfbc4a1",
       "assertion": "Assert each registered function's values and arities, aggregate column checking, extreme formatting and locale/currency behaviour.",
       "references": [
         "engine-60ba1dd5d232",
@@ -6459,7 +6459,7 @@
       "authority": "spec/02_EXPRESSIONS_AND_STATE.md",
       "section": "Declarations and dependency graph",
       "line": 47,
-      "sha256": "b1cbc2ce98b0da55ed1b25e9c793422bc037f243bbceb27e59a6ed4be3b036ac",
+      "sha256": "12fba78c0d2e153c93655c0a6d80733a5c8f5f50e338d803d8bf27c1d71c7d64",
       "assertion": "Assert forward constants, forbidden constant dependencies, root scope, duplicate spans and every strongly connected component.",
       "references": [
         "engine-bc5a2c51299b",
@@ -7101,7 +7101,7 @@
       "authority": "spec/05_CHARTS.md",
       "section": "Required type matrix",
       "line": 15,
-      "sha256": "5478d01f546fd1cf89b24499e9c8c1c979aa7137c9897d2bf9e39bf6db0282d9",
+      "sha256": "72b6ab910821b58a917b3695b5986c866c7c419fb450157c2f9f770323ec3755",
       "assertion": "Assert supported x/y combinations, ordering, duplicates, geometry types and selection domains.",
       "references": [
         "engine-aefe2a782247",
@@ -7593,7 +7593,7 @@
       "authority": "spec/06_LIMITS_AND_DIAGNOSTICS.md",
       "section": "Limits",
       "line": 9,
-      "sha256": "8d22bd10ca31d222f4fb9ff5cbf43351297b59dacc1f66a0c39e21d5c941f97b",
+      "sha256": "ec881328f2e2d17258c9e050141decb517652c3e45a2f873f041d616280c4fb1",
       "assertion": "Boundary ledger below distinguishes maxima, minima, defaults, counters, timers and eviction; integration tests ensure shared transaction accounting.",
       "references": [
         "syntax-56030d16cf48",
@@ -7731,7 +7731,7 @@
       "authority": "spec/06_LIMITS_AND_DIAGNOSTICS.md",
       "section": "Errors",
       "line": 67,
-      "sha256": "07ade0e045daee36ff1099653e035411424894babf7c6bde42ca34e7d39e4216",
+      "sha256": "3fd75f83a04a17286666a04804a682e2c825841774587b42bf69da294f2e06c0",
       "assertion": "Each registered diagnostic is mapped separately below to a concrete assertion or explicit unclosed inspection.",
       "references": [
         "engine-bc5a2c51299b",
@@ -7743,7 +7743,7 @@
       "authority": "spec/06_LIMITS_AND_DIAGNOSTICS.md",
       "section": "Warnings",
       "line": 129,
-      "sha256": "8d1d7f9aa12f97f0be79daf0182b35cbb990b79323992505ff28b6e2de1bd65e",
+      "sha256": "6dcd66e7ef1c16faf62e43ad04db14aafccd387c85318d6c4fe84c55916394a8",
       "assertion": "Each registered diagnostic is mapped separately below to a concrete assertion or explicit unclosed inspection.",
       "references": [
         "engine-bc5a2c51299b",
@@ -7915,7 +7915,7 @@
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Draft 3 syntax clarification",
       "line": 19,
-      "sha256": "fbad853de6f81bd980a533c4a76b41700d84c7f6e187a7122b443a5fcd8ab6db",
+      "sha256": "3d78c528ba14e368c72b8bbc5aac70ea46ea14c9daad19ac865784ccee6d796e",
       "assertion": "Assert literal, label, metadata and reserved-column boundaries for the current draft contract.",
       "references": [
         "language-9f4211bb6ba1",
@@ -8008,22 +8008,22 @@
       "id": "RULE-REFERENCE-docs-08-CHANGE-CONTROL-md-35",
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Native editor integration",
-      "line": 35,
-      "sha256": "7f6ea1288c6916b438baa4ba1962af838c12bbac7b566b135d665b8d75704593",
+      "line": 41,
+      "sha256": "6c48689d178bb92ff805581184e36f56e5febaccf8484a06fb956769648e9b9c",
       "assertion": "Inspect the documented integration boundary and preserve source identity, protocol and resource restrictions.",
       "references": [],
       "inspection": {
         "kind": "contract",
         "procedure": "Compare the public integration reference with its named type declarations, host and artifact implementations.",
-        "expected": "The [VS Code host](13_VSCODE.md) introduces portable editor-analysis DTOs and an independent outer webview protocol, `tinta-vscode-1`. It does not change source format 1.0, `tinta-ir-1`, `tinta-host-1`, source bundles or answer snapshots. The shared file adapter expands the host boundary to explicitly granted native editor operations without granting filesystem access to core packages. See [the source-fidelity decision](../decisions/native-editor-source-fidelity.md) for the native editor's line-ending limitation and separate-copy policy."
+        "expected": "The [VS Code host](13_VSCODE.md) introduces portable editor-analysis DTOs and an independent outer webview protocol, `tinta-vscode-1`. It does not change source format 1.0, `tinta-ir-1`, `tinta-host-1`, source bundles or answer snapshots. The shared file adapter expands the host boundary to explicitly granted native editor operations without granting filesystem access to core packages. See [source identity and fidelity](13_VSCODE.md#source-identity-and-fidelity) for the native editor's line-ending limitation and separate-copy policy."
       }
     },
     {
       "id": "RULE-REFERENCE-docs-08-CHANGE-CONTROL-md-39",
       "authority": "docs/08_CHANGE_CONTROL.md",
       "section": "Local extension artifact identity",
-      "line": 39,
-      "sha256": "8b930f7dfe63374beeec46175765c09dc775d457f381e45816854fea583ba160",
+      "line": 45,
+      "sha256": "a012eda311aac51d006d695ce43cff3ba3b94820b493bd84ce4b82f6680ded82",
       "assertion": "Inspect the documented integration boundary and preserve source identity, protocol and resource restrictions.",
       "references": [],
       "inspection": {
@@ -8044,6 +8044,160 @@
         "kind": "contract",
         "procedure": "Compare the public integration reference with its named type declarations, host and artifact implementations.",
         "expected": "The [software distribution contract](15_DISTRIBUTION.md) defines proposed public identities, an implementation version group, independent numeric Marketplace versions, channels and closed release metadata. Private source manifests retain their development placeholders; builds embed the selected implementation version from the distribution configuration. Source format and ABI versions remain separate from software versions.\n"
+      }
+    },
+    {
+      "id": "RULE-DOC-01-01",
+      "authority": "docs/01_PRODUCT.md",
+      "section": "Unsupported features",
+      "line": 37,
+      "sha256": "8881ced7b4605192b09759b6162ea55b0b78a2f2d932e9eb903fe9c0c9751b0b",
+      "assertion": "V1 does not provide layout primitives such as cards, columns, grids, pages or\nroutes, or freely positioned controls. It does not accept author components,\nfunctions, loops, assignment statements, API requests, submitted forms,\nJavaScript, CSS or executable code fences. Runtime plug-ins, packages, macros,\nincludes and module resolution are unsupported.",
+      "references": [],
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the documented scope and compatibility rules with the language specification, registry, public interfaces and corresponding source fixtures.",
+        "expected": "V1 does not provide layout primitives such as cards, columns, grids, pages or\nroutes, or freely positioned controls. It does not accept author components,\nfunctions, loops, assignment statements, API requests, submitted forms,\nJavaScript, CSS or executable code fences. Runtime plug-ins, packages, macros,\nincludes and module resolution are unsupported."
+      }
+    },
+    {
+      "id": "RULE-DOC-01-02",
+      "authority": "docs/01_PRODUCT.md",
+      "section": "Unsupported features",
+      "line": 43,
+      "sha256": "e2ca33c5a625fa62bb9f96c0e7820154a0b251ede5330854235a7b8d62836d36",
+      "assertion": "The tools do not provide collaboration, online sharing, telemetry, native\ninstallers, automatic updates, synchronization, accounts, a database service,\nmonetization or AI features. Document processing stays local, without a document\npublication workflow or hosting service. Software distribution is described\nseparately in [distribution](15_DISTRIBUTION.md).",
+      "references": [],
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the documented scope and compatibility rules with the language specification, registry, public interfaces and corresponding source fixtures.",
+        "expected": "The tools do not provide collaboration, online sharing, telemetry, native\ninstallers, automatic updates, synchronization, accounts, a database service,\nmonetization or AI features. Document processing stays local, without a document\npublication workflow or hosting service. Software distribution is described\nseparately in [distribution](15_DISTRIBUTION.md)."
+      }
+    },
+    {
+      "id": "RULE-DOC-01-03",
+      "authority": "docs/01_PRODUCT.md",
+      "section": "Unsupported features",
+      "line": 49,
+      "sha256": "af2b5490b33aa80c386e90c084346982b13816732e63e932d7177bdf5c071e7f",
+      "assertion": "PDF and flattened Markdown exports, real-time remote data, maps, 3D charts,\nchart animation, pan/zoom/brush and multiple selection are unsupported. The\n[chart specification](../spec/05_CHARTS.md) defines the seven supported chart types\nand their interactions.",
+      "references": [],
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the documented scope and compatibility rules with the language specification, registry, public interfaces and corresponding source fixtures.",
+        "expected": "PDF and flattened Markdown exports, real-time remote data, maps, 3D charts,\nchart animation, pan/zoom/brush and multiple selection are unsupported. The\n[chart specification](../spec/05_CHARTS.md) defines the seven supported chart types\nand their interactions."
+      }
+    },
+    {
+      "id": "RULE-DOC-07-04",
+      "authority": "docs/07_VERIFICATION.md",
+      "section": "Studio interaction protocol",
+      "line": 81,
+      "sha256": "572abe32c7b43b622bd5e1243de1022973807cdc17986744612ee169ee6df234",
+      "assertion": "Use keyboard events on the actual editor and native control, and passive DOM\nobservation instead of repeated text searches during timing. Browser scheduling,\ngarbage collection and instrumentation can affect measured tasks; attribution is\ncontextual, not proof of an individual function's cost. Include all observed tasks\noverlapping the interaction. REQ-18 and SC-040/SC-041 retain coverage for missing\nsamples, exact limits, a single extreme stall and failure in any of the three runs\nthrough `tests/unit/performance-policy.test.mjs` and `scripts/performance-browser.mjs`.\nLanguage semantics, resource limits, worker isolation, validated IR, security checks\nand the other compile/evaluate, reader-update and export budgets are unchanged.",
+      "references": [],
+      "inspection": {
+        "kind": "performance",
+        "procedure": "Compare the documented measurement procedure with the Studio benchmark and installed VS Code timing tests, including sample counts, failure handling and retained results.",
+        "expected": "Use keyboard events on the actual editor and native control, and passive DOM\nobservation instead of repeated text searches during timing. Browser scheduling,\ngarbage collection and instrumentation can affect measured tasks; attribution is\ncontextual, not proof of an individual function's cost. Include all observed tasks\noverlapping the interaction. REQ-18 and SC-040/SC-041 retain coverage for missing\nsamples, exact limits, a single extreme stall and failure in any of the three runs\nthrough `tests/unit/performance-policy.test.mjs` and `scripts/performance-browser.mjs`.\nLanguage semantics, resource limits, worker isolation, validated IR, security checks\nand the other compile/evaluate, reader-update and export budgets are unchanged."
+      }
+    },
+    {
+      "id": "RULE-DOC-07-05",
+      "authority": "docs/07_VERIFICATION.md",
+      "section": "Native timing confirmation",
+      "line": 95,
+      "sha256": "12bd39f446d329667c0595567515f8d1172e8d877fb76739e7ef937aea38731b",
+      "assertion": "The [VS Code performance targets](13_VSCODE.md#scheduling-bounds-and-failures)\napply to a particular installed build and host. A 30-sample p95 is the second\nslowest sample, so a brief scheduling stall can affect the result. One exceeded\ntiming target alone does not establish a reproducible regression or its cause.",
+      "references": [],
+      "inspection": {
+        "kind": "performance",
+        "procedure": "Compare the documented measurement procedure with the Studio benchmark and installed VS Code timing tests, including sample counts, failure handling and retained results.",
+        "expected": "The [VS Code performance targets](13_VSCODE.md#scheduling-bounds-and-failures)\napply to a particular installed build and host. A 30-sample p95 is the second\nslowest sample, so a brief scheduling stall can affect the result. One exceeded\ntiming target alone does not establish a reproducible regression or its cause."
+      }
+    },
+    {
+      "id": "RULE-DOC-07-06",
+      "authority": "docs/07_VERIFICATION.md",
+      "section": "Native timing confirmation",
+      "line": 100,
+      "sha256": "3b6423b73de6eac38a9d05429b33639203caf1c7352834f9cbdeff74366f4fc2",
+      "assertion": "Measure each analysis size, cached completion and host responsiveness once. A\npassing scenario needs no confirmation. A timing failure triggers exactly two\nfurther complete measurements, including both confirmations if the second attempt\npasses. Keep the same installed archive, profile, corpus, warmup, 30 samples and\nresident-memory collector; do not reinstall, restart the host or rebuild between\nattempts. Each responsiveness attempt repeats all three analysis sizes, cached\ncompletion and eight-document rapid editing. Assess its p95 and maximum together.",
+      "references": [],
+      "inspection": {
+        "kind": "performance",
+        "procedure": "Compare the documented measurement procedure with the Studio benchmark and installed VS Code timing tests, including sample counts, failure handling and retained results.",
+        "expected": "Measure each analysis size, cached completion and host responsiveness once. A\npassing scenario needs no confirmation. A timing failure triggers exactly two\nfurther complete measurements, including both confirmations if the second attempt\npasses. Keep the same installed archive, profile, corpus, warmup, 30 samples and\nresident-memory collector; do not reinstall, restart the host or rebuild between\nattempts. Each responsiveness attempt repeats all three analysis sizes, cached\ncompletion and eight-document rapid editing. Assess its p95 and maximum together."
+      }
+    },
+    {
+      "id": "RULE-DOC-07-07",
+      "authority": "docs/07_VERIFICATION.md",
+      "section": "Native timing confirmation",
+      "line": 108,
+      "sha256": "1af2e9934449e857df2a6b2bfac21d1c6a6c2d0caad62b5f2d2aab6269cf04da",
+      "assertion": "One timing failure out of three is `UNSTABLE`: retain it in the report, emit a CI\nwarning and allow CI to continue. Two or three failures are `FAIL` and block CI.\nKeep every original value, raw analysis/completion sample, responsiveness p95,\nmaximum and sample count, plus the analysis/completion blocks used as the\nresponsiveness workload. Never discard slow samples, average attempts or retry\nuntil passing. Instability remains evidence of timing variability, not a guarantee\nthat the host consistently meets its targets.",
+      "references": [],
+      "inspection": {
+        "kind": "performance",
+        "procedure": "Compare the documented measurement procedure with the Studio benchmark and installed VS Code timing tests, including sample counts, failure handling and retained results.",
+        "expected": "One timing failure out of three is `UNSTABLE`: retain it in the report, emit a CI\nwarning and allow CI to continue. Two or three failures are `FAIL` and block CI.\nKeep every original value, raw analysis/completion sample, responsiveness p95,\nmaximum and sample count, plus the analysis/completion blocks used as the\nresponsiveness workload. Never discard slow samples, average attempts or retry\nuntil passing. Instability remains evidence of timing variability, not a guarantee\nthat the host consistently meets its targets."
+      }
+    },
+    {
+      "id": "RULE-DOC-07-08",
+      "authority": "docs/07_VERIFICATION.md",
+      "section": "Native timing confirmation",
+      "line": 116,
+      "sha256": "eeed8c70a27aadd3d03202d4eb6bbe1129f4b45078845f0db65aa93fd06a26a7",
+      "assertion": "Functional failures, watchdog expiry, collection errors and incomplete or invalid\nmeasurements block immediately and are not retried by this policy. Retained heap\nand resident-memory limits retain their single-run assessment. Preserve completed\nmeasurements in a partial report if later confirmation fails functionally. This\nprocedure changes neither source semantics nor runtime scheduling, numeric targets,\nresource limits, format/protocol versions, telemetry or network access.",
+      "references": [],
+      "inspection": {
+        "kind": "performance",
+        "procedure": "Compare the documented measurement procedure with the Studio benchmark and installed VS Code timing tests, including sample counts, failure handling and retained results.",
+        "expected": "Functional failures, watchdog expiry, collection errors and incomplete or invalid\nmeasurements block immediately and are not retried by this policy. Retained heap\nand resident-memory limits retain their single-run assessment. Preserve completed\nmeasurements in a partial report if later confirmation fails functionally. This\nprocedure changes neither source semantics nor runtime scheduling, numeric targets,\nresource limits, format/protocol versions, telemetry or network access."
+      }
+    },
+    {
+      "id": "RULE-DOC-08-09",
+      "authority": "docs/08_CHANGE_CONTROL.md",
+      "section": "Draft 3 syntax clarification",
+      "line": 21,
+      "sha256": "63804688215d3b50ae6352aa7cee58eb4f72f64358ff4631e8e2acbe2c11b8fd",
+      "assertion": "Effective control labels and details summaries must contain a character after ECMAScript `String.prototype.trim`, including labels generated from control names. Validation does not trim the displayed text. An underscore-only name needs an explicit nonblank label; invalid effective labels report `E_PROPERTY_VALUE`.",
+      "references": [],
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the documented scope and compatibility rules with the language specification, registry, public interfaces and corresponding source fixtures.",
+        "expected": "Effective control labels and details summaries must contain a character after ECMAScript `String.prototype.trim`, including labels generated from control names. Validation does not trim the displayed text. An underscore-only name needs an explicit nonblank label; invalid effective labels report `E_PROPERTY_VALUE`."
+      }
+    },
+    {
+      "id": "RULE-DOC-08-10",
+      "authority": "docs/08_CHANGE_CONTROL.md",
+      "section": "Draft 3 syntax clarification",
+      "line": 23,
+      "sha256": "76a28c3bbcb9ab8a6ee235ad99e2d6aab37ac36eb083c6a935eb572cbbf15c68",
+      "assertion": "Metadata accepts only blank lines and HTML comments before it. Markdown link reference definitions count as content for placement and produce `E_META_POSITION` when followed by metadata. They remain non-rendered for block-content checks and retain their document-wide link scope.",
+      "references": [],
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the documented scope and compatibility rules with the language specification, registry, public interfaces and corresponding source fixtures.",
+        "expected": "Metadata accepts only blank lines and HTML comments before it. Markdown link reference definitions count as content for placement and produce `E_META_POSITION` when followed by metadata. They remain non-rendered for block-content checks and retain their document-wide link scope."
+      }
+    },
+    {
+      "id": "RULE-DOC-08-11",
+      "authority": "docs/08_CHANGE_CONTROL.md",
+      "section": "Draft 3 syntax clarification",
+      "line": 25,
+      "sha256": "83f758301c7ff9272de783cc8a4df198938ed1d81c50d705bea2dbde925d8cd8",
+      "assertion": "The directive examples use `readings` instead of the reserved column name `count`; reserved identifiers and the function set are unchanged. Existing documents must correct grouped static values, blank labels and late metadata before compilation under draft 3. Source version 1.0 and IR ABI identifiers are unchanged, but compiled IR records the exact contract revision, so old compiled payloads must be recompiled from source. These restrictions add no execution capabilities and do not declare a stable language release. Regression coverage is in `tests/unit/language-boundaries.test.mjs`.",
+      "references": [],
+      "inspection": {
+        "kind": "contract",
+        "procedure": "Compare the documented scope and compatibility rules with the language specification, registry, public interfaces and corresponding source fixtures.",
+        "expected": "The directive examples use `readings` instead of the reserved column name `count`; reserved identifiers and the function set are unchanged. Existing documents must correct grouped static values, blank labels and late metadata before compilation under draft 3. Source version 1.0 and IR ABI identifiers are unchanged, but compiled IR records the exact contract revision, so old compiled payloads must be recompiled from source. These restrictions add no execution capabilities and do not declare a stable language release. Regression coverage is in `tests/unit/language-boundaries.test.mjs`."
       }
     }
   ],

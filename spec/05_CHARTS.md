@@ -12,15 +12,15 @@ All property validation is performed at compile time where schema/static values 
 
 ## Required type matrix
 
-| Type | x | y | Ordering and duplicate x | Geometry | Selection |
-|---|---|---|---|---|---|
-| `line` | text or number | 1–6 numeric series or one computed series | Numeric x ascending; text x incoming row order. Duplicate x rejected. | Straight line segments, no smoothing, dash pattern per series. | x -> matching choice/slider |
-| `area` | text or number | As line | Same as line. | Unstacked overlays filled to y=0; preserve negative values. | As line |
-| `bar` | text or number, treated as categories | 1–6 numeric series or one computed series | Incoming row order; duplicate x rejected. | Vertical grouped bars; baseline 0, negatives below. | x -> matching choice/slider |
-| `scatter` | number | 1–6 numeric series or one computed series | Incoming row order; duplicate x allowed. | Discrete points, no connecting path. | x only; equal x select the same control value |
-| `pie` | text or number | One nonnegative numeric series only | Incoming row order; duplicate x rejected. | Sectors in source order, clockwise from 12 o'clock; no exploded wedges. | x -> matching choice/slider |
-| `donut` | As pie | As pie | As pie | Pie with inner radius 60% of outer and visible-total label. | As pie |
-| `histogram` | number | Forbidden | Observations; duplicate x allowed. | Counts in equal-width computed intervals. | Forbidden |
+| Type        | x                                     | y                                         | Ordering and duplicate x                                              | Geometry                                                                | Selection                                     |
+| ----------- | ------------------------------------- | ----------------------------------------- | --------------------------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------- |
+| `line`      | text or number                        | 1–6 numeric series or one computed series | Numeric x ascending; text x incoming row order. Duplicate x rejected. | Straight line segments, no smoothing, dash pattern per series.          | x -> matching choice/slider                   |
+| `area`      | text or number                        | As line                                   | Same as line.                                                         | Unstacked overlays filled to y=0; preserve negative values.             | As line                                       |
+| `bar`       | text or number, treated as categories | 1–6 numeric series or one computed series | Incoming row order; duplicate x rejected.                             | Vertical grouped bars; baseline 0, negatives below.                     | x -> matching choice/slider                   |
+| `scatter`   | number                                | 1–6 numeric series or one computed series | Incoming row order; duplicate x allowed.                              | Discrete points, no connecting path.                                    | x only; equal x select the same control value |
+| `pie`       | text or number                        | One nonnegative numeric series only       | Incoming row order; duplicate x rejected.                             | Sectors in source order, clockwise from 12 o'clock; no exploded wedges. | x -> matching choice/slider                   |
+| `donut`     | As pie                                | As pie                                    | As pie                                                                | Pie with inner radius 60% of outer and visible-total label.             | As pie                                        |
+| `histogram` | number                                | Forbidden                                 | Observations; duplicate x allowed.                                    | Counts in equal-width computed intervals.                               | Forbidden                                     |
 
 For pie/donut a one-element y list is legal and equivalent to a single named column. A y array with more than one item is `E_CHART_SERIES`. No stacked bars/areas, date/time axis, log scale, explicit domain, secondary axis, custom tick formatter, author colour, author dimensions, animation or zoom/pan/brush.
 

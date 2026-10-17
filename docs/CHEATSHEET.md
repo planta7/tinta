@@ -1,6 +1,6 @@
 # tinta syntax quick reference — 1.0-draft.3
 
-**Write a document. Add exploration only where it helps the reader.** `.tinta` is UTF-8 text. The examples below show the supported syntax for this draft contract. Normative details live in spec/; this reference does not override them.
+A `.tinta` file is UTF-8 text containing Markdown, controls, calculations and data. The examples below show the supported syntax. The [language specification](../spec/00_OVERVIEW.md) defines the complete rules.
 
 ## 1. A document with one interactive idea
 
@@ -93,41 +93,41 @@ The interpolation result is text, not fresh Markdown or HTML. Numbers/text/boole
 
 ## 6. Types and operators
 
-| Kind | Examples |
-|---|---|
-| Number | `19`, `-2.5`, `1e3` |
-| Text | `"A sentence"`, `"Quote: \"yes\""` |
-| Boolean | `true`, `false` |
-| Homogeneous scalar list | `[1, 2, 3]`, `["short", "long"]` |
-| Name | `reading_time`, `_note`, `month2` |
-| Row field, only in a row context | `row.month` |
+| Kind                             | Examples                           |
+| -------------------------------- | ---------------------------------- |
+| Number                           | `19`, `-2.5`, `1e3`                |
+| Text                             | `"A sentence"`, `"Quote: \"yes\""` |
+| Boolean                          | `true`, `false`                    |
+| Homogeneous scalar list          | `[1, 2, 3]`, `["short", "long"]`   |
+| Name                             | `reading_time`, `_note`, `month2`  |
+| Row field, only in a row context | `row.month`                        |
 
 Names use ASCII letters/digits/underscore, never a leading digit. Text supports Unicode. No null, objects, nested lists, indexes, general property access, implicit coercion or user functions. Only `row.column` is field syntax.
 
-| Operation | Forms |
-|---|---|
+| Operation  | Forms                                  |
+| ---------- | -------------------------------------- |
 | Arithmetic | `+`, `-`, `*`, `/`, `%`, unary `+`/`-` |
-| Comparison | `<`, `<=`, `>`, `>=`, `==`, `!=` |
-| Boolean | `and`, `or`, `not` |
-| Grouping | `(expression)` |
+| Comparison | `<`, `<=`, `>`, `>=`, `==`, `!=`       |
+| Boolean    | `and`, `or`, `not`                     |
+| Grouping   | `(expression)`                         |
 
 Operators are strict: `+` does not join strings; `"5" == 5` is an error. `and`/`or` short-circuit; all references and types are checked even in branches that do not run. `if` evaluates only the chosen branch. Numeric results must be finite.
 
 ## 7. All eleven functions
 
-| Function | Meaning |
-|---|---|
-| `if(condition, when_true, when_false)` | One lazily evaluated branch, with compatible result types. |
-| `min(a, b)` | Smaller of exactly two numbers. |
-| `max(a, b)` | Larger of exactly two numbers. |
-| `round(n, digits = 0)` | Rounds to 0–10 fractional digits; halfway cases toward positive infinity. |
-| `pow(base, exponent)` | Numeric power; a non-finite result is an error. |
-| `count(list_or_table)` | Number of items/rows. |
-| `sum(table_or_view, "column")` | Sum of a numeric column; empty is zero. |
-| `mean(table_or_view, "column")` | Mean of a numeric column; empty is an error. |
-| `fixed(n, digits)` | Locale-formatted number with exactly 0–10 fractional digits. |
-| `percent(n)` | Locale percent, 0–1 fractional digits; `0.125` is `12.5%` in en-US. |
-| `money(n)` | Metadata currency/locale; currency-standard fraction digits. |
+| Function                               | Meaning                                                                   |
+| -------------------------------------- | ------------------------------------------------------------------------- |
+| `if(condition, when_true, when_false)` | One lazily evaluated branch, with compatible result types.                |
+| `min(a, b)`                            | Smaller of exactly two numbers.                                           |
+| `max(a, b)`                            | Larger of exactly two numbers.                                            |
+| `round(n, digits = 0)`                 | Rounds to 0–10 fractional digits; halfway cases toward positive infinity. |
+| `pow(base, exponent)`                  | Numeric power; a non-finite result is an error.                           |
+| `count(list_or_table)`                 | Number of items/rows.                                                     |
+| `sum(table_or_view, "column")`         | Sum of a numeric column; empty is zero.                                   |
+| `mean(table_or_view, "column")`        | Mean of a numeric column; empty is an error.                              |
+| `fixed(n, digits)`                     | Locale-formatted number with exactly 0–10 fractional digits.              |
+| `percent(n)`                           | Locale percent, 0–1 fractional digits; `0.125` is `12.5%` in en-US.       |
+| `money(n)`                             | Metadata currency/locale; currency-standard fraction digits.              |
 
 Formatting functions return text. For `round` and `fixed`, `digits` is a runtime integer in range, not a global precision setting. No arbitrary currency argument or formatting pattern is available. Guard empty means explicitly: `if(count(rows) == 0, 0, mean(rows, "score"))`.
 
@@ -234,7 +234,7 @@ Wed | 145
 
 Selecting a mark updates an existing compatible choice/slider; changing that control highlights matching marks. No implicit new state is created. A filter hiding the selection does not reset it. Chart legends temporarily hide series/categories, but never change the table, formulas or selection. Keyboard users can inspect through the figure's native range explorer, use its action button, and read its complete data table. Histogram permits inspection but no answer binding.
 
-## 12. Metadata, files and boundaries
+## 12. Metadata and file formats
 
 The complete directive set is `meta`, `let`, `calc`, `slider`, `toggle`, `choice`, `when`, `details`, `data`, `view`, `table`, `chart`; `end` is their closing delimiter. Metadata must precede everything except blank lines and comments, including Markdown link reference definitions. Metadata defaults are source version 1.0, locale en-US, currency USD and title derived from the first root heading or Untitled document. See spec/03 for the exact locale/currency allowlists.
 

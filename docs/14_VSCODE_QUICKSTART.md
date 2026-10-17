@@ -6,7 +6,7 @@ Learn more about the language, examples and other tools in the [tinta project on
 
 ## Install and start writing
 
-Install the supplied `.vsix` with **Extensions: Install from VSIX…**, then reload VS Code. Open a `.tinta` file, or choose **tinta** as the language for a new untitled editor. The extension runs in VS Code Desktop on macOS arm64, Linux arm64 and Windows x64. Remote workspaces, containers, virtual filesystems and vscode.dev are unsupported.
+Download a `.vsix` from the [release downloads](https://github.com/planta7/tinta/releases), install it with **Extensions: Install from VSIX…**, then reload VS Code. Open a `.tinta` file, or choose **tinta** as the language for a new untitled editor. The extension runs in VS Code Desktop on macOS arm64, Linux arm64 and Windows x64. Remote workspaces, containers, virtual filesystems and vscode.dev are unsupported.
 
 Try this in `example.tinta`:
 

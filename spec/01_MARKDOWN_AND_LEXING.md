@@ -20,7 +20,7 @@ The engine uses a Markdown tokenizer extension with context, not a global line r
 
 `@when` and `@details` parse their bodies as Markdown+Tinta flow at the same physical indentation, so existing lists and code can be wrapped without reindentation. They may nest each other, controls, charts and tables. Root declarations are forbidden inside them. Empty bodies (only blank lines or comments) are `E_BLOCK_EMPTY`. `@data` has typed rows, not Markdown, and cannot contain another directive or a Tinta block. A quoted text cell containing `"@end"` is just data.
 
-Because block directives are column-1 constructs, they are not supported inside a Markdown list item or block quote in V1. Authors can place a full list/quote inside a condition instead. No hidden indentation-based directive syntax is accepted as an alias for the old prototype.
+Because block directives are column-1 constructs, they are not supported inside a Markdown list item or block quote in V1. Authors can place a full list/quote inside a condition instead. Indented directives are ordinary Markdown text; indentation does not provide an alternate directive syntax.
 
 ### Option lists and line continuation
 

@@ -104,7 +104,7 @@ class PublicChecks(unittest.TestCase):
     def test_missing_link_and_anchor(self):
         p = self.root / 'README.md'
         original = p.read_text()
-        for target in ('missing.md', 'DECISIONS.md#missing-heading'):
+        for target in ('missing.md', 'docs/01_PRODUCT.md#missing-heading'):
             with self.subTest(target=target):
                 p.write_text(original + '\n[Reference](' + target + ')\n')
                 self.run_check(False)
